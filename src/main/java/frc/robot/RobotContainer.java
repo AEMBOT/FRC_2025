@@ -23,10 +23,15 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.drive.Drive;
 
 public class RobotContainer {
+  // Subsystems
   private Drive drive;
+
+  private final CommandXboxController controller = new CommandXboxController(0);
+  private final CommandXboxController backupController = new CommandXboxController(1);
 
   public RobotContainer() {
     this.drive = new Drive();
@@ -54,6 +59,9 @@ public class RobotContainer {
     );
 
     Command goToSource = AutoBuilder.followPath(sourceNavigationPath);
+
+    // Controller bindings
+    controller.b().whileTrue(goToSource);
   }
 
   public Command getAutonomousCommand() {

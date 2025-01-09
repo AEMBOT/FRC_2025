@@ -26,9 +26,14 @@ public class RobotContainer {
     configureBindings();
   }
 
-  private void configureBindings() throws FileVersionException, IOException, ParseException {
+  private void configureBindings() {
     // Auto/drive assist stuff
-    PathPlannerPath alignToSourcePath = PathPlannerPath.fromPathFile("Go to source");
+    PathPlannerPath alignToSourcePath = null;
+    try {
+      alignToSourcePath = PathPlannerPath.fromPathFile("Go to source");
+    } catch (FileVersionException | IOException | ParseException e) {
+      e.printStackTrace();
+    }
     PathConstraints alignToSourceConstraints = new PathConstraints(
       0.5, 
       0.1, 

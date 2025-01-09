@@ -52,6 +52,8 @@ public class RobotContainer {
             null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
             new GoalEndState(0.0, Rotation2d.fromDegrees(-125)) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
     );
+
+    Command goToSource = AutoBuilder.followPath(sourceNavigationPath);
   }
 
   public Command getAutonomousCommand() {

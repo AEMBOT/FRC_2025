@@ -4,11 +4,48 @@
 
 package frc.robot;
 
+import static frc.robot.Constants.currentMode;
+import static frc.robot.Constants.currentRobot;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.Constants.AprilTagConstants;
+import frc.robot.Constants.AprilTagConstants.LightcycleCameras;
+import frc.robot.subsystems.apriltagvision.AprilTagVision;
+import frc.robot.subsystems.apriltagvision.AprilTagVisionIO;
+import frc.robot.subsystems.apriltagvision.AprilTagVisionIOReal;
+import frc.robot.subsystems.apriltagvision.AprilTagVisionIOReal.SelfContainedPoseEstimator;
 
 public class RobotContainer {
+  AprilTagVision aprilTagVision;
+
   public RobotContainer() {
+    SelfContainedPoseEstimator[] visionPoseEstimators = {};
+    switch (currentRobot) {
+      case LIGHTCYCLE:
+        visionPoseEstimators = new SelfContainedPoseEstimator[] {
+          new SelfContainedPoseEstimator(
+            LightcycleCameras.frontCamName, LightcycleCameras.frontCamToRobot, AprilTagConstants.poseStrategy
+          ),
+          new SelfContainedPoseEstimator(
+            LightcycleCameras.leftCamName, LightcycleCameras.leftCamToRobot, AprilTagConstants.poseStrategy
+          ),
+          new SelfContainedPoseEstimator(
+            LightcycleCameras.rightCamName, LightcycleCameras.rightCamToRobot, AprilTagConstants.poseStrategy)
+        };
+      case AEMBOAT:
+        break;
+    }
+
+    switch (currentMode) {
+      case REAL: 
+        aprilTagVision = new AprilTagVision(new AprilTagVisionIOReal(visionPoseEstimators));
+      case REPLAY:
+        aprilTagVision = new AprilTagVision(new AprilTagVisionIO() {});
+      case SIM:
+        aprilTagVision = new AprilTagVision(new AprilTagVisionIO() {});
+    }
+
     configureBindings();
   }
 

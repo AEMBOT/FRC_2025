@@ -3,6 +3,8 @@ package frc.robot;
 import java.io.IOException;
 import java.nio.file.Path;
 
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
@@ -37,7 +39,7 @@ public final class Constants {
 
     // TODO Get camera vision constants for AEMBoat, currently just Clef constants
 
-    public final class AprilTagConstants {
+    public static final class AprilTagConstants {
         public static final AprilTagFieldLayout aprilTagFieldLayout;
         static {
             AprilTagFieldLayout layout = null;
@@ -49,54 +51,61 @@ public final class Constants {
             aprilTagFieldLayout = layout;
         }
 
+        static PoseStrategy poseStrategy = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
+
         public static enum CameraResolution {
             HIGH_RES,
             NORMAL
         }
-
-        public static final Transform3d frontCamToRobot =
+        public final class LightcycleCameras {
+            public static final String frontCamName = "front";
+            public static final Transform3d frontCamToRobot =
             new Transform3d(
                 new Translation3d(
                     Units.inchesToMeters(11.32), Units.inchesToMeters(7.08), Units.inchesToMeters(7.8)),
                 new Rotation3d(Units.degreesToRadians(180), Units.degreesToRadians(-30), 0.0));
-        public static final Transform3d leftCamToRobot =
-            switch (currentRobot) {
-                case AEMBOAT -> new Transform3d(
-                    new Translation3d(
-                        Units.inchesToMeters(-12.01),
-                        Units.inchesToMeters(11.65),
-                        Units.inchesToMeters(10.58)),
-                    new Rotation3d(0.0, Units.degreesToRadians(-23.5), Units.degreesToRadians(147)));
-                case LIGHTCYCLE -> new Transform3d(
-                    new Translation3d(
-                        Units.inchesToMeters(-12.01),
-                        Units.inchesToMeters(11.65),
-                        Units.inchesToMeters(10.58)),
-                    new Rotation3d(
-                        Units.degreesToRadians(180),
-                        Units.degreesToRadians(-23.5),
-                        Units.degreesToRadians(147)));
+
+            public static final String leftCamName = "left";
+            public static final Transform3d leftCamToRobot =
+                switch (currentRobot) {
+                    case AEMBOAT -> new Transform3d( // TODO Make these not switch statements and make an AemboatCameras class
+                        new Translation3d(
+                            Units.inchesToMeters(-12.01),
+                            Units.inchesToMeters(11.65),
+                            Units.inchesToMeters(10.58)),
+                        new Rotation3d(0.0, Units.degreesToRadians(-23.5), Units.degreesToRadians(147)));
+                    case LIGHTCYCLE -> new Transform3d(
+                     new Translation3d(
+                            Units.inchesToMeters(-12.01),
+                            Units.inchesToMeters(11.65),
+                            Units.inchesToMeters(10.58)),
+                        new Rotation3d(
+                            Units.degreesToRadians(180),
+                            Units.degreesToRadians(-23.5),
+                            Units.degreesToRadians(147)));
             };
 
-        public static final Transform3d rightCamToRobot =
-            switch (currentRobot) {
-                case AEMBOAT -> new Transform3d(
-                    new Translation3d(
-                        Units.inchesToMeters(-12.01),
-                        Units.inchesToMeters(-11.65),
-                        Units.inchesToMeters(10.58)),
-                    new Rotation3d(0.0, Units.degreesToRadians(-23.5), Units.degreesToRadians(-147)));
-                case LIGHTCYCLE -> new Transform3d(
-                    new Translation3d(
-                        Units.inchesToMeters(-12.01),
-                        Units.inchesToMeters(-11.65),
-                        Units.inchesToMeters(10.58)),
-                    new Rotation3d(
-                        Units.degreesToRadians(180),
-                        Units.degreesToRadians(-23.5),
-                        Units.degreesToRadians(-147)));
+            public static final String rightCamName = "right";
+            public static final Transform3d rightCamToRobot =
+                switch (currentRobot) {
+                    case AEMBOAT -> new Transform3d(
+                        new Translation3d(
+                            Units.inchesToMeters(-12.01),
+                            Units.inchesToMeters(-11.65),
+                            Units.inchesToMeters(10.58)),
+                        new Rotation3d(0.0, Units.degreesToRadians(-23.5), Units.degreesToRadians(-147)));
+                    case LIGHTCYCLE -> new Transform3d(
+                        new Translation3d(
+                            Units.inchesToMeters(-12.01),
+                            Units.inchesToMeters(-11.65),
+                            Units.inchesToMeters(10.58)),
+                        new Rotation3d(
+                            Units.degreesToRadians(180),
+                            Units.degreesToRadians(-23.5),
+                            Units.degreesToRadians(-147)));
             };
-
+        }
+        
         public static final Matrix<N3, N1> highResSingleTagStdDev =
             VecBuilder.fill(0.4, 0.4, Double.MAX_VALUE);
         public static final Matrix<N3, N1> normalSingleTagStdDev =

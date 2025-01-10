@@ -14,23 +14,23 @@ import frc.robot.Constants.AprilTagConstants.LightcycleCameras;
 import frc.robot.subsystems.apriltagvision.AprilTagVision;
 import frc.robot.subsystems.apriltagvision.AprilTagVisionIO;
 import frc.robot.subsystems.apriltagvision.AprilTagVisionIOReal;
-import frc.robot.subsystems.apriltagvision.AprilTagVisionIOReal.SelfContainedPoseEstimator;
+import frc.robot.subsystems.apriltagvision.AprilTagVisionIOReal.CameraPoseEstimator;
 
 public class RobotContainer {
   AprilTagVision aprilTagVision;
 
   public RobotContainer() {
-    SelfContainedPoseEstimator[] visionPoseEstimators = {};
+    CameraPoseEstimator[] visionPoseEstimators = {};
     switch (currentRobot) {
       case LIGHTCYCLE:
-        visionPoseEstimators = new SelfContainedPoseEstimator[] {
-          new SelfContainedPoseEstimator(
+        visionPoseEstimators = new CameraPoseEstimator[] {
+          new CameraPoseEstimator(
             LightcycleCameras.frontCamName, LightcycleCameras.frontCamToRobot, AprilTagConstants.poseStrategy
           ),
-          new SelfContainedPoseEstimator(
+          new CameraPoseEstimator(
             LightcycleCameras.leftCamName, LightcycleCameras.leftCamToRobot, AprilTagConstants.poseStrategy
           ),
-          new SelfContainedPoseEstimator(
+          new CameraPoseEstimator(
             LightcycleCameras.rightCamName, LightcycleCameras.rightCamToRobot, AprilTagConstants.poseStrategy)
         };
       case AEMBOAT:

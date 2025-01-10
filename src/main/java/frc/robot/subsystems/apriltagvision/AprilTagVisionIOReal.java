@@ -22,14 +22,14 @@ import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants.AprilTagConstants.CameraResolution;
 
 public class AprilTagVisionIOReal implements AprilTagVisionIO {
-    private final SelfContainedPoseEstimator[] poseEstimators;
+    private final CameraPoseEstimator[] poseEstimators;
 
     private Pose3d[] poseArray = new Pose3d[3];
     private double[] timestampArray = new double[3];
     private double[] visionStdArray = new double[9];
     private double[] latencyArray = new double[3];
 
-    public AprilTagVisionIOReal(SelfContainedPoseEstimator[] poseEstimators) {
+    public AprilTagVisionIOReal(CameraPoseEstimator[] poseEstimators) {
         this.poseEstimators = poseEstimators;
     }
 
@@ -67,7 +67,7 @@ public class AprilTagVisionIOReal implements AprilTagVisionIO {
     }
 
     /** A class containing a {@link PhotonCamera} and a {@link PhotonPoseEstimator} to keep the two objects together. */
-    public static final class SelfContainedPoseEstimator {
+    public static final class CameraPoseEstimator {
         public final String name;
         public final Transform3d robotToCamera;
 
@@ -80,7 +80,7 @@ public class AprilTagVisionIOReal implements AprilTagVisionIO {
          * @param robotToCamera The offset from the center of the robot to the camera.
          * @param poseStrategy The {@link PoseStrategy} to use for the {@link PhotonPoseEstimator}.
          */
-        public SelfContainedPoseEstimator(String name, Transform3d robotToCamera, PhotonPoseEstimator.PoseStrategy poseStrategy) {
+        public CameraPoseEstimator(String name, Transform3d robotToCamera, PhotonPoseEstimator.PoseStrategy poseStrategy) {
             this.name = name;
             this.robotToCamera = robotToCamera;
 

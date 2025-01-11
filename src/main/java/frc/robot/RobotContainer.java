@@ -7,6 +7,7 @@ package frc.robot;
 import static frc.robot.Constants.currentMode;
 import static frc.robot.Constants.currentRobot;
 
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants.AprilTagConstants;
@@ -38,12 +39,12 @@ public class RobotContainer {
     }
 
     switch (currentMode) {
-      case REAL: 
-        aprilTagVision = new AprilTagVision(new AprilTagVisionIOReal(visionPoseEstimators));
+      case REAL:  // TODO When drive is merged, pass drive SwerveDrivePoseEstimator into vision
+        aprilTagVision = new AprilTagVision(new AprilTagVisionIOReal(visionPoseEstimators), new SwerveDrivePoseEstimator(null, null, null, null));
       case REPLAY:
-        aprilTagVision = new AprilTagVision(new AprilTagVisionIO() {});
+        aprilTagVision = new AprilTagVision(new AprilTagVisionIO() {}, new SwerveDrivePoseEstimator(null, null, null, null));
       case SIM:
-        aprilTagVision = new AprilTagVision(new AprilTagVisionIO() {});
+        aprilTagVision = new AprilTagVision(new AprilTagVisionIO() {}, new SwerveDrivePoseEstimator(null, null, null, null));
     }
 
     configureBindings();

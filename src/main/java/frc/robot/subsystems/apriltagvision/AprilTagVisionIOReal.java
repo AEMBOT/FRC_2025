@@ -24,13 +24,18 @@ import frc.robot.Constants.AprilTagConstants.CameraResolution;
 public class AprilTagVisionIOReal implements AprilTagVisionIO {
     private final CameraPoseEstimator[] poseEstimators;
 
-    private Pose3d[] poseArray = new Pose3d[3];
-    private double[] timestampArray = new double[3];
-    private double[] visionStdArray = new double[9];
-    private double[] latencyArray = new double[3];
+    private Pose3d[] poseArray;
+    private double[] timestampArray;
+    private double[] visionStdArray;
+    private double[] latencyArray;
 
     public AprilTagVisionIOReal(CameraPoseEstimator[] poseEstimators) {
         this.poseEstimators = poseEstimators;
+
+        poseArray = new Pose3d[poseEstimators.length];
+        timestampArray = new double[poseEstimators.length];
+        visionStdArray = new double[poseEstimators.length * 3];
+        latencyArray = new double[poseEstimators.length];
     }
 
     @Override

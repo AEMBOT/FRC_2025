@@ -11,8 +11,14 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.AprilTagConstants;
+import frc.robot.Constants.AprilTagConstants.LightcycleCameras;
+import frc.robot.subsystems.apriltagvision.AprilTagVisionIOReal.CameraPoseEstimator;
 
 import static frc.robot.Constants.AprilTagConstants.aprilTagFieldLayout;
+import static frc.robot.Constants.currentRobot;
+import static frc.robot.Constants.currentMode;
+
 
 public class AprilTagVision extends SubsystemBase {
     AprilTagVisionIO io;
@@ -23,12 +29,36 @@ public class AprilTagVision extends SubsystemBase {
     @AutoLogOutput public boolean useVision = true;
 
     /**
-     * Constructor for the AprilTagVision subsystem
-     * @param io The implementation of {@link AprilTagVisionIO} corresponding to the current mode.
+     * Constructor for the AprilTagVision subsystem. This is intended to be instantiated in Drive.
      * @param swerveDrivePoseEstimator A {@link SwerveDrivePoseEstimator} to write vision data to. Probably from Drive.
      */
-    public AprilTagVision(AprilTagVisionIO io, SwerveDrivePoseEstimator swerveDrivePoseEstimator) {
-        this.io = io;
+    public AprilTagVision(SwerveDrivePoseEstimator swerveDrivePoseEstimator) {
+        CameraPoseEstimator[] visionPoseEstimators = {};
+        switch (currentRobot) {
+        case LIGHTCYCLE:
+            visionPoseEstimators = new CameraPoseEstimator[] {
+            new CameraPoseEstimator(
+                LightcycleCameras.frontCamName, LightcycleCameras.frontCamToRobot, AprilTagConstants.poseStrategy
+            ),
+            new CameraPoseEstimator(
+                LightcycleCameras.leftCamName, LightcycleCameras.leftCamToRobot, AprilTagConstants.poseStrategy
+            ),
+            new CameraPoseEstimator(
+                LightcycleCameras.rightCamName, LightcycleCameras.rightCamToRobot, AprilTagConstants.poseStrategy)
+            };
+        case AEMBOAT:
+            break; // TODO Implement AEMBoat case for vision
+        }
+
+        switch (currentMode) {
+            case REAL:  // TODO When drive is merged, pass drive SwerveDrivePoseEstimator into vision
+                this.io = new AprilTagVisionIOReal(visionPoseEstimators);
+            case REPLAY:
+                this.io = new AprilTagVisionIO() {};
+            case SIM:
+                this.io = new AprilTagVisionIO() {};
+        }
+        
         this.drivePoseEstimator = swerveDrivePoseEstimator;
     }
 

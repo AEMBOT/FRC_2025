@@ -51,7 +51,7 @@ public final class Constants {
             aprilTagFieldLayout = layout;
         }
 
-        static PoseStrategy poseStrategy = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
+        public static PoseStrategy poseStrategy = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
 
         public static enum CameraResolution {
             HIGH_RES,

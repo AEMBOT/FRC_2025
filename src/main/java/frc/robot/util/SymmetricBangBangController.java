@@ -1,12 +1,12 @@
 package frc.robot.util;
 
-public class BangBangController {
+public class SymmetricBangBangController {
     public final Double deadzone;
     public Double setpoint;
     public Double position;
     public Double error;
 
-    public BangBangController(Double deadzone) {
+    public SymmetricBangBangController(Double deadzone) {
         this.deadzone = deadzone;
     }
 

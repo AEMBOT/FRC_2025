@@ -6,7 +6,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import frc.robot.Constants.PivotConstants;
-import frc.robot.util.BangBangController;
+import frc.robot.util.SymmetricBangBangController;
 
 public class PivotIOReal implements PivotIO {
     private final TalonFX motorA = new TalonFX(PivotConstants.leaderMotorID);
@@ -20,7 +20,7 @@ public class PivotIOReal implements PivotIO {
     private double setpoint = getPosition();    // TODO Set this to `PivotConstants.initialSetpoint` 
                                                 // once we know a good value for that.
 
-    private BangBangController bangBangController = new BangBangController(PivotConstants.bangBangDeadzone);
+    private SymmetricBangBangController bangBangController = new SymmetricBangBangController(PivotConstants.bangBangDeadzone);
 
     public PivotIOReal() {
         var motorConfig = new MotorOutputConfigs();

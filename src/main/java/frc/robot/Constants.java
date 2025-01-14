@@ -30,10 +30,10 @@ public final class Constants {
         static {
             switch (currentRobot) {
             case AEMBOAT:
-                GEAR_RATIO = 100.0;
+                GEAR_RATIO = 1.0;
                 break;
             case LIGHTCYCLE:
-                GEAR_RATIO = 50.0;
+                GEAR_RATIO = 1.0;
                 break;
             default:
                 throw new IllegalStateException("In pivot gear ratio, robot value not accounted for: " + currentRobot);
@@ -47,5 +47,10 @@ public final class Constants {
         public static final int followerMotorID = 0;
         
         public static final int encoderID = 0;
+    }
+
+    public static final class ElevatorConstants {
+        /* Device IDs */
+        public static final int motorID = 0;
     }
 }

@@ -68,7 +68,7 @@ public class PivotIOReal implements PivotIO {
     }
 
     @Override
-    public void periodic() { // TODO Get SysID stuff and make this not a bang bang controller
+    public void periodic() { // TODO Before merge, get SysID stuff and make this not a bang bang controller
         double error = getError();
         if (error > PivotConstants.bangBangDeadzone) {
             setVoltage(PivotConstants.motorVoltage);

@@ -57,16 +57,16 @@ public class Module {
     public SwerveModuleState runSetpoint(SwerveModuleState state) {
         // Optimize state based on current angle
         // Controllers run in "periodic" when the setpoint is not null
-        var optimizedState = SwerveModuleState.optimize(state, getAngle());
+        state.optimize(getAngle());
 
         // Update setpoints, controllers run in "periodic"
-        io.setTurnSetpoint(optimizedState.angle);
-        io.setDriveSetpoint(optimizedState.speedMetersPerSecond);
+        io.setTurnSetpoint(state.angle);
+        io.setDriveSetpoint(state.speedMetersPerSecond);
 
-        Logger.recordOutput("Module" + index + "/AngleSetpoint", optimizedState.angle);
-        Logger.recordOutput("Module" + index + "/DriveSetpoint", optimizedState.speedMetersPerSecond);
+        Logger.recordOutput("Module" + index + "/AngleSetpoint", state.angle);
+        Logger.recordOutput("Module" + index + "/DriveSetpoint", state.speedMetersPerSecond);
 
-        return optimizedState;
+        return state;
     }
 
     /** Runs the module with the specified voltage while controlling to zero degrees. */

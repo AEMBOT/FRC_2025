@@ -267,6 +267,7 @@ public class Drive extends SubsystemBase {
     }
 
     /** Returns the average drive velocity in meters/sec. */
+    @AutoLogOutput(key = "Drive/AverageModuleSpeed")
     public double getCharacterizationVelocity() {
         double driveVelocityAverage = 0.0;
         for (Module module : modules) {

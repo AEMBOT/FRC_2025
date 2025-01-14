@@ -16,7 +16,7 @@ public class PivotIOReal implements PivotIO {
         PivotConstants.encoderOffset
     );
 
-    private double setpoint = encoder.get();    // TODO Set this to `PivotConstants.initialSetpoint` 
+    private double setpoint = getPosition();    // TODO Set this to `PivotConstants.initialSetpoint` 
                                                 // once we know a good value for that.
 
     public PivotIOReal() {
@@ -35,12 +35,12 @@ public class PivotIOReal implements PivotIO {
 
     /* Returns the pivot's rotational velocity in degrees per second. */
     public double getVelocity() {
-        return motorA.getVelocity().getValueAsDouble() * 360;
+        return (motorA.getVelocity().getValueAsDouble() * 360) / PivotConstants.GEAR_RATIO;
     }
 
     /* Returns the pivot's rotation in degrees. */
     public double getPosition() {
-        return encoder.get();
+        return encoder.get() / PivotConstants.GEAR_RATIO;
     }
 
     /* Returns the error betweeen the pivot setpoint and its position. (setpoint - position) */

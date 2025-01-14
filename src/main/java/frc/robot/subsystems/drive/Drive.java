@@ -253,7 +253,7 @@ public class Drive extends SubsystemBase {
     public void stopWithX() {
         Rotation2d[] headings = new Rotation2d[4];
         for (int i = 0; i < 4; i++) {
-        headings[i] = getModuleTranslations()[i].getAngle();
+            headings[i] = getModuleTranslations()[i].getAngle();
         }
         kinematics.resetHeadings(headings);
         stop();
@@ -262,7 +262,7 @@ public class Drive extends SubsystemBase {
     /** Runs drive characterization for each module with the given amount of volts. */
     private void runDriveCharacterizationVolts(double volts) {
         for (Module module : modules) {
-          module.runDriveCharacterization(volts);
+            module.runDriveCharacterization(volts);
         }
     }
 
@@ -270,7 +270,7 @@ public class Drive extends SubsystemBase {
     public double getCharacterizationVelocity() {
         double driveVelocityAverage = 0.0;
         for (Module module : modules) {
-        driveVelocityAverage += module.getVelocityMetersPerSec();
+            driveVelocityAverage += module.getVelocityMetersPerSec();
         }
         return driveVelocityAverage / 4.0;
     }
@@ -314,7 +314,7 @@ public class Drive extends SubsystemBase {
     /** Returns the current odometry pose. */
     @AutoLogOutput(key = "Odometry/Robot")
     public Pose2d getPose() {
-      return poseEstimator.getEstimatedPosition();
+        return poseEstimator.getEstimatedPosition();
     }
 
     /** Returns the current odometry rotation. */

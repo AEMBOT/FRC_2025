@@ -10,6 +10,7 @@ public class Arm extends SubsystemBase {
     WristIO wrist;
     private final ElevatorIOInputsAutoLogged elevatorInputs = new ElevatorIOInputsAutoLogged();
     private final PivotIOInputsAutoLogged pivotInputs = new PivotIOInputsAutoLogged();
+    private final WristIOInputsAutoLogged wristInputs = new WristIOInputsAutoLogged();
 
     public Arm() {
         switch (currentMode) {
@@ -34,5 +35,6 @@ public class Arm extends SubsystemBase {
     public void periodic() {
         pivot.updateInputs(pivotInputs);
         elevator.updateInputs(elevatorInputs);
+        wrist.updateInputs(wristInputs);
     }
 }

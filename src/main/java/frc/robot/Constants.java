@@ -53,4 +53,14 @@ public final class Constants {
         /* Device IDs */
         public static final int motorID = 0;
     }
+
+    public static final class WristConstants {
+        public static final double encoderOffset = 0;
+        public static final double[] wristLimits = {-90, 90}; // Lower limit, upper limit.
+        public static final double deadzone = 5.0;
+
+        /* Device IDs */
+        public static final int motorID = 0;
+        public static final int encoderID = 0;
+    }
 }

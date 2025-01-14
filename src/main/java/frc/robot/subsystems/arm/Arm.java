@@ -8,12 +8,13 @@ public class Arm extends SubsystemBase {
     ElevatorIO elevator;
     PivotIO pivot;
     WristIO wrist;
+    private final PivotIOInputsAutoLogged pivotInputs = new PivotIOInputsAutoLogged();
 
     public Arm() {
         switch (currentMode) {
             case REAL: {
                 elevator = new ElevatorIO() {};
-                pivot = new PivotIO() {};
+                pivot = new PivotIOReal() {};
                 wrist = new WristIO() {};
             }
             case REPLAY: {
@@ -27,5 +28,9 @@ public class Arm extends SubsystemBase {
                 wrist = new WristIO() {};
             }
         }
+    }
+
+    public void periodic() {
+        pivot.updateInputs(pivotInputs);
     }
 }

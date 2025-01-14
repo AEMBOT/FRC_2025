@@ -42,10 +42,17 @@ public class WristIOReal implements WristIO {
         bangBangController.setSetpoint(setpoint);
     }
 
+    /**
+     * Sets the voltage of the wrist motor.
+     * @param voltage The voltage to set.
+     */
     private void setVoltage(double voltage) {
         motor.setVoltage(voltage);
     }
 
+    /**
+     * @return the current rotation of the wrist, measured in degrees.
+     */
     private double getPosition() {
         return encoder.get();
     }

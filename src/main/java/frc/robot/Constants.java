@@ -21,4 +21,31 @@ public final class Constants {
         AEMBOAT,
         LIGHTCYCLE
     }
+    
+    public static final class PivotConstants {
+        public static final float bangBangDeadzone = 5.0f;
+        public static final double initialSetpoint = 0.0d; // Not currently used, the pivot will try to hold its initial position
+
+        public static final double GEAR_RATIO;
+        static {
+            switch (currentRobot) {
+            case AEMBOAT:
+                GEAR_RATIO = 100.0;
+                break;
+            case LIGHTCYCLE:
+                GEAR_RATIO = 50.0;
+                break;
+            default:
+                throw new IllegalStateException("In pivot gear ratio, robot value not accounted for: " + currentRobot);
+            }
+        }
+        public static final double encoderOffset = 0.0d;
+        public static final double motorVoltage = 5.0d;
+
+        /* Device IDs */
+        public static final int leaderMotorID = 0;
+        public static final int followerMotorID = 0;
+        
+        public static final int encoderID = 0;
+    }
 }

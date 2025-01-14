@@ -23,7 +23,7 @@ public final class Constants {
     }
     
     public static final class PivotConstants {
-        public static final float bangBangDeadzone = 5.0f;
+        public static final double bangBangDeadzone = 5.0f;
         public static final double initialSetpoint = 0.0d; // Not currently used, the pivot will try to hold its initial position
 
         public static final double GEAR_RATIO;

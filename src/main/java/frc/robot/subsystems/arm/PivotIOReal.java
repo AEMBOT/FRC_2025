@@ -6,6 +6,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import frc.robot.Constants.PivotConstants;
+import frc.robot.util.BangBangController;
 
 public class PivotIOReal implements PivotIO {
     private final TalonFX motorA = new TalonFX(PivotConstants.leaderMotorID);
@@ -18,6 +19,8 @@ public class PivotIOReal implements PivotIO {
 
     private double setpoint = getPosition();    // TODO Set this to `PivotConstants.initialSetpoint` 
                                                 // once we know a good value for that.
+
+    private BangBangController bangBangController = new BangBangController(PivotConstants.bangBangDeadzone);
 
     public PivotIOReal() {
         var motorConfig = new MotorOutputConfigs();
@@ -43,15 +46,10 @@ public class PivotIOReal implements PivotIO {
         return encoder.get() / PivotConstants.GEAR_RATIO;
     }
 
-    /* Returns the error betweeen the pivot setpoint and its position. (setpoint - position) */
-    public double getError() {
-        return setpoint - getPosition();
-    }
-
     @Override
     public void updateInputs(PivotIOInputs inputs) {
         inputs.pivotAbsolutePositionDeg = getPosition();
-        inputs.pivotErrorDeg = getError();
+        inputs.pivotErrorDeg = bangBangController.error;
         inputs.pivotVelocityDegPerSec = getVelocity();
         inputs.pivotSetpoint = this.setpoint;
         inputs.pivotAppliedVolts = motorA.getMotorVoltage().getValueAsDouble() 
@@ -69,13 +67,7 @@ public class PivotIOReal implements PivotIO {
 
     @Override
     public void periodic() { // TODO Before merge, get SysID stuff and make this not a bang bang controller
-        double error = getError();
-        if (error > PivotConstants.bangBangDeadzone) {
-            setVoltage(PivotConstants.motorVoltage);
-        } else if (error < -PivotConstants.bangBangDeadzone) {
-            setVoltage(-PivotConstants.motorVoltage);
-        } else {
-            setVoltage(0);
-        }
+        bangBangController.setSetpoint(setpoint);
+        bangBangController.update(getPosition());
     }
 }

@@ -50,6 +50,8 @@ public final class Constants {
     }
 
     public static final class ElevatorConstants {
+        public static double moveVoltage = 5.0;
+
         /* Device IDs */
         public static final int motorID = 0;
     }

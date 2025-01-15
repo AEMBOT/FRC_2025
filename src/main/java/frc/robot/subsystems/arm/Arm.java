@@ -17,7 +17,7 @@ public class Arm extends SubsystemBase {
             case REAL: {
                 elevator = new ElevatorIOReal() {};
                 pivot = new PivotIOReal() {};
-                wrist = new WristIO() {};
+                wrist = new WristIOReal() {};
             }
             case REPLAY: {
                 elevator = new ElevatorIO() {};

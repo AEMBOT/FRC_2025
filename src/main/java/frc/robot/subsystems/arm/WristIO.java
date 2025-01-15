@@ -16,4 +16,10 @@ public interface WristIO {
 
     /** Updates the set of loggable inputs. */
     public default void updateInputs(WristIOInputs inputs) {}
+
+    /**
+     * Sets the wrist rotation setpoint.
+     * @param position The rotation setpoint in degrees, clamped between
+     */
+    public default void setSetpoint(Double setpoint) {}
 }

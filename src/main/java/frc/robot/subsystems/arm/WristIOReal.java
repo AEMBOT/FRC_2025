@@ -20,7 +20,7 @@ public class WristIOReal implements WristIO {
     private Double setpoint;
 
     public WristIOReal() {
-        setSetpoint(0.0d);
+        setpoint = getPosition(); // Set to 0 once we know the encoder is zeroed.
     }
 
     @Override
@@ -31,11 +31,8 @@ public class WristIOReal implements WristIO {
 
         inputs.appliedVoltage = motor.getMotorVoltage().getValueAsDouble();
     }
-
-    /**
-     * Sets the wrist rotation setpoint.
-     * @param position The rotation setpoint in degrees, clamped between
-     */
+    
+    @Override
     public void setSetpoint(Double position) {
         // No Math.clamp function :(
         setpoint = Math.max(WristConstants.wristLimits[0], Math.min(WristConstants.wristLimits[1], position));

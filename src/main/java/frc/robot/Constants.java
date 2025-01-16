@@ -72,10 +72,10 @@ public final class Constants{
 
       public static final Rotation2d[] absoluteEncoderOffset = switch (currentRobot) {
         case BUNNYBOT -> new Rotation2d[] {
-          Rotation2d.fromRadians(2.2488158350403498), // FL
-          Rotation2d.fromRadians(2.462039164556454 + Math.PI), // FR
-          Rotation2d.fromRadians(1.945087639038993), // BL
-          Rotation2d.fromRadians(1.6428934238255217 + Math.PI) // BR
+          Rotation2d.fromRadians(2.291767297101148), // FL
+          Rotation2d.fromRadians(2.409883817768342 + Math.PI), // FR
+          Rotation2d.fromRadians(1.928213850372251), // BL
+          Rotation2d.fromRadians(1.73493227109866 + Math.PI) // BR
         };
         case LIGHTCYCLE -> new Rotation2d[] { // This is not currently correct
           Rotation2d.fromRadians(2.6599226861937018), // FL

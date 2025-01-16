@@ -400,8 +400,11 @@ public class Drive extends SubsystemBase {
             double linearMagnitude =
                 MathUtil.applyDeadband(
                     Math.hypot(xSupplier.getAsDouble(), ySupplier.getAsDouble()), DriveConstants.CONTROLLER_DEADBAND);
-            Rotation2d linearDirection =
-                new Rotation2d(xSupplier.getAsDouble(), ySupplier.getAsDouble());
+            Rotation2d linearDirection = new Rotation2d();
+            // If linearDirection is 0, constructing Rotation2d as (double, double) will return an error
+            linearDirection = (xSupplier.getAsDouble() == 0.0 && ySupplier.getAsDouble() == 0.0) 
+                ? new Rotation2d()
+                : new Rotation2d(xSupplier.getAsDouble(), ySupplier.getAsDouble());
             double omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble(), DriveConstants.CONTROLLER_DEADBAND);
 
             // Square values

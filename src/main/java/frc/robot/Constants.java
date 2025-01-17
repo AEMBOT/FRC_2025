@@ -2,7 +2,18 @@ package frc.robot;
 
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
+
+import com.ctre.phoenix.sensors.CANCoder;
+import com.ctre.phoenix6.hardware.CANcoder;
+
+import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 
 
 /**
@@ -86,4 +97,87 @@ public final class Constants{
       };
     }
   }
+
+  
+  public static final class PivotConstants { 
+    /** Maximum angle for the pivot to move to, in degrees */
+    public static final double pivotMaxAngle = 170;
+    /** Minimum angle for the pivot to move to, in degrees */
+    public static final double pivotMinAngle = 50;
+    /** ID of the left pivot sparkmax */
+    public static final int pivotLeftMotorID = currentRobot == Robot.BUNNYBOT
+      ? 10
+      : 0; // unused on llightcycle
+    /**  */
+    public static final boolean pivotLeftMotorInverted = false;
+    /**  */
+    public static final int pivotLeftMotorCurrentLimit = 10;
+    /** ID of the right pivot sparkmax */
+    public static final int pivotRightMotorID = currentRobot == Robot.BUNNYBOT
+      ? 11
+      : 0; // unused on llightcycle
+    /**  */
+    public static final boolean pivotRightMotorInverted = false;
+    /**  */
+    public static final int pivotRightMotorCurrentLimit = 10;
+    /**  */
+    public static final CANcoder pivotCancoder = new CANcoder(3, "");
+    /**  */
+    public static final double pivotEncoderPositionOffset = 0.25;
+    /**  */
+    public static final double gearRatio = 93.3333333;
+    /**  */
+    public static final ArmFeedforward pivotFFModel = new ArmFeedforward(
+      0.35, 
+      0.35, 
+      1.79, 
+      0.3);
+    /**  */
+    public static final PIDController pivotPIDController = new PIDController(
+      12, 
+      0, 
+      0.00);
+    /**  */
+    public static final TrapezoidProfile pivotProfile = new TrapezoidProfile(new TrapezoidProfile.Constraints(
+      2,
+      5));
+    /** Ramp Rate of the pivot System ID in volts per second */
+    public static final double pivotSysIdRampRate = 0.2;
+    /** Setp Voltage of the pivot System ID in volts */
+    public static final double pivotSysIdStepVolt = 7;
+    /** Timeout of the pivot System ID in volts */
+    public static final double pivotSysIdTimeout = 30;
+    /** How many degrees the pivot can be off its goal position for it to be sufficient */
+    public static final double pivotAngleAllowedDeviance = 1.15;
+    /**  */
+    public static final Translation3d pivotTranslationFromRobot = new Translation3d(-0.2, 0, 0.255);
+    /**  */
+    public static final double pivotDefaultAngle = 90;
+    /**  */
+    public static final double pivotSimGoalPosition = 1.05;
+    /**  */
+    public static final double pivotSimSetpointPosition = 1.05;
+    /**  */
+    public static final SingleJointedArmSim pivotSim = new SingleJointedArmSim(
+      DCMotor.getNEO(2), 
+      300, 
+      0.17, 
+      0.500, 
+      Units.degreesToRadians(pivotMinAngle), 
+      Units.degreesToRadians(pivotMaxAngle), 
+      true, 
+      Units.degreesToRadians(45));
+  }
+  
+  public static class LoaderConstants {
+    /* PORTS */
+    public static final int MOTOR_PORT = currentRobot == Robot.BUNNYBOT
+      ? 15
+      : 0; // unused on llightcycle
+    /* Voltages */
+    public static final double MOTOR_VOLTAGE = 12; // PLACEHOLDER VALUE
+    /* CURRENT LIMITS */
+    public static final int MOTOR_CURRENT_LIMIT = 25; // PLACEHOLDER VALUE
+  }
+  
 }

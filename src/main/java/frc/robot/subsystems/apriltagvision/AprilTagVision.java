@@ -46,8 +46,8 @@ public class AprilTagVision extends SubsystemBase {
             new CameraPoseEstimator(
                 LightcycleCameras.rightCamName, LightcycleCameras.rightCamToRobot, AprilTagConstants.poseStrategy)
             };
-        case AEMBOAT:
-            break; // TODO Implement AEMBoat case for vision
+        case BUNNYBOT:
+            break; // TODO Implement Dory case for vision
         }
 
         switch (currentMode) {

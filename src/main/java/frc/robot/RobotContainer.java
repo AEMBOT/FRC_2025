@@ -25,21 +25,69 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.drive.GyroIO;
+import frc.robot.subsystems.drive.GyroIONavX;
+import frc.robot.subsystems.drive.ModuleIO;
+import frc.robot.subsystems.drive.ModuleIOSim;
+import frc.robot.subsystems.drive.ModuleIOTalonFX;
 
 public class RobotContainer {
-  // Subsystems
-  private Drive drive;
 
-  private final CommandXboxController controller = new CommandXboxController(0);
-  private final CommandXboxController backupController = new CommandXboxController(1);
+  // Subsystems
+  private final Drive drive;
+
+    // Controllers
+    private final CommandXboxController controller = new CommandXboxController(0);
+    private final CommandXboxController backupController = new CommandXboxController(1);
+
 
   public RobotContainer() {
-    this.drive = new Drive();
+
+       switch (Constants.currentMode) {
+            case REAL:
+                drive = new Drive(
+                  new GyroIONavX(),
+                  new ModuleIOTalonFX(0),
+                  new ModuleIOTalonFX(1),
+                  new ModuleIOTalonFX(2),
+                  new ModuleIOTalonFX(3)
+                );
+                break;
+            
+            case SIM:
+                drive = new Drive(
+                  new GyroIO() {},
+                  new ModuleIOSim(),
+                  new ModuleIOSim(),
+                  new ModuleIOSim(),
+                  new ModuleIOSim()
+                  );
+                break;
+
+            default:
+                // Replayed robot, disable IO implementations
+                drive = new Drive(
+                  new GyroIO() {},
+                  new ModuleIO() {},
+                  new ModuleIO() {},
+                  new ModuleIO() {},
+                  new ModuleIO() {}
+                );
+                break;
+        }
 
     configureBindings();
   }
 
   private void configureBindings() {
+    drive.setDefaultCommand(
+      drive.joystickDrive(
+          drive,
+          () -> -controller.getLeftY(),
+          () -> -controller.getLeftX(),
+          () -> -controller.getRightX(),
+          () -> controller.getLeftTriggerAxis() > 0.5)); // Trigger locks make trigger boolean, rather than analog.
+
     // Auto/drive assist stuff
     List<Waypoint> sourceNavigationWaypoints = PathPlannerPath.waypointsFromPoses(
         new Pose2d(1.196, 1.092, Rotation2d.fromDegrees(0))

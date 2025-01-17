@@ -122,51 +122,49 @@ public final class Constants {
 
         public final class LightcycleCameras {
             public static final String frontCamName = "front";
-            public static final Transform3d frontCamToRobot =
-                new Transform3d(
-                    new Translation3d(
-                        Units.inchesToMeters(11.32), Units.inchesToMeters(7.08), Units.inchesToMeters(7.8)),
-                    new Rotation3d(Units.degreesToRadians(180), Units.degreesToRadians(-30), 0.0));
+            public static final Transform3d frontCamToRobot = new Transform3d (
+                new Translation3d(
+                Units.inchesToMeters(11.32), Units.inchesToMeters(7.08), Units.inchesToMeters(7.8)),
+                new Rotation3d(Units.degreesToRadians(180), Units.degreesToRadians(-30), 0.0)
+            );
 
             public static final String leftCamName = "left";
-            public static final Transform3d leftCamToRobot =
-                switch (currentRobot) {
-                    case BUNNYBOT -> new Transform3d( // TODO Make these not switch statements and make an AemboatCameras class
-                        new Translation3d(
-                            Units.inchesToMeters(-12.01),
-                            Units.inchesToMeters(11.65),
-                            Units.inchesToMeters(10.58)),
-                        new Rotation3d(0.0, Units.degreesToRadians(-23.5), Units.degreesToRadians(147)));
-                    case LIGHTCYCLE -> new Transform3d(
-                        new Translation3d(
-                            Units.inchesToMeters(-12.01),
-                            Units.inchesToMeters(11.65),
-                            Units.inchesToMeters(10.58)),
-                        new Rotation3d(
-                            Units.degreesToRadians(180),
-                            Units.degreesToRadians(-23.5),
-                            Units.degreesToRadians(147)));
-                };
+            public static final Transform3d leftCamToRobot = new Transform3d (
+                new Translation3d(
+                Units.inchesToMeters(-12.01),
+                Units.inchesToMeters(11.65),
+                Units.inchesToMeters(10.58)),
+                new Rotation3d(
+                Units.degreesToRadians(180),
+                Units.degreesToRadians(-23.5),
+                Units.degreesToRadians(147))
+            );
 
             public static final String rightCamName = "right";
-            public static final Transform3d rightCamToRobot =
-                switch (currentRobot) {
-                    case BUNNYBOT -> new Transform3d(
-                        new Translation3d(
-                            Units.inchesToMeters(-12.01),
-                            Units.inchesToMeters(-11.65),
-                            Units.inchesToMeters(10.58)),
-                        new Rotation3d(0.0, Units.degreesToRadians(-23.5), Units.degreesToRadians(-147)));
-                    case LIGHTCYCLE -> new Transform3d(
-                        new Translation3d(
-                            Units.inchesToMeters(-12.01),
-                            Units.inchesToMeters(-11.65),
-                            Units.inchesToMeters(10.58)),
-                        new Rotation3d(
-                            Units.degreesToRadians(180),
-                            Units.degreesToRadians(-23.5),
-                            Units.degreesToRadians(-147)));
-                };
+            public static final Transform3d rightCamToRobot = new Transform3d (
+                new Translation3d(
+                Units.inchesToMeters(-12.01),
+                Units.inchesToMeters(-11.65),
+                Units.inchesToMeters(10.58)),
+                new Rotation3d(
+                Units.degreesToRadians(180),
+                Units.degreesToRadians(-23.5),
+                Units.degreesToRadians(-147))
+            );
+        }
+
+        public final class DoryCameras {
+            public static final String frontLeftCamName = "front-left";
+            public static final Transform3d frontLeftCamToRobot = new Transform3d(); // TODO Get camera offsets for Dory
+
+            public static final String frontRightCamName = "front-right";
+            public static final Transform3d frontRightCamToRobot = new Transform3d();
+
+            public static final String backLeftCamName = "back-left";
+            public static final Transform3d backLeftCamToRobot = new Transform3d();
+
+            public static final String backRightCamName = "back-right";
+            public static final Transform3d backRightCamToRobot = new Transform3d();
         }
 
         public static final Matrix<N3, N1> highResSingleTagStdDev =

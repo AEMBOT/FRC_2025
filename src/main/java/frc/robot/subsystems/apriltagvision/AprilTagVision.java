@@ -12,6 +12,7 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.AprilTagConstants;
+import frc.robot.Constants.AprilTagConstants.DoryCameras;
 import frc.robot.Constants.AprilTagConstants.LightcycleCameras;
 import frc.robot.subsystems.apriltagvision.AprilTagVisionIOReal.CameraPoseEstimator;
 
@@ -44,14 +45,24 @@ public class AprilTagVision extends SubsystemBase {
                 LightcycleCameras.leftCamName, LightcycleCameras.leftCamToRobot, AprilTagConstants.poseStrategy
             ),
             new CameraPoseEstimator(
-                LightcycleCameras.rightCamName, LightcycleCameras.rightCamToRobot, AprilTagConstants.poseStrategy)
-            };
+                LightcycleCameras.rightCamName, LightcycleCameras.rightCamToRobot, AprilTagConstants.poseStrategy
+            )
+        };
         case BUNNYBOT:
-            break; // TODO Implement Dory case for vision
+            visionPoseEstimators = new CameraPoseEstimator[] {
+                new CameraPoseEstimator(DoryCameras.frontLeftCamName, DoryCameras.frontLeftCamToRobot, 
+                    AprilTagConstants.poseStrategy),
+                new CameraPoseEstimator(DoryCameras.frontRightCamName, DoryCameras.frontRightCamToRobot, 
+                    AprilTagConstants.poseStrategy),
+                new CameraPoseEstimator(DoryCameras.backLeftCamName, DoryCameras.backLeftCamToRobot, 
+                    AprilTagConstants.poseStrategy),
+                new CameraPoseEstimator(DoryCameras.backRightCamName, DoryCameras.backRightCamToRobot, 
+                    AprilTagConstants.poseStrategy),
+            };
         }
 
         switch (currentMode) {
-            case REAL:  // TODO When drive is merged, pass drive SwerveDrivePoseEstimator into vision
+            case REAL:
                 this.io = new AprilTagVisionIOReal(visionPoseEstimators);
             case REPLAY:
                 this.io = new AprilTagVisionIO() {};

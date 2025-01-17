@@ -88,13 +88,15 @@ public class RobotContainer {
           () -> -controller.getRightX(),
           () -> controller.getLeftTriggerAxis() > 0.5)); // Trigger locks make trigger boolean, rather than analog.
 
+    drive.setPose(new Pose2d(2.258, 2.432, Rotation2d.fromDegrees(-119.152))); // TODO Remove this once we have vision. This is just for testing
+
     // Auto/drive assist stuff
     List<Waypoint> sourceNavigationWaypoints = PathPlannerPath.waypointsFromPoses(
-        new Pose2d(1.196, 1.092, Rotation2d.fromDegrees(0))
+        new Pose2d(1.196, 1.092, Rotation2d.fromDegrees(-125))
     );
 
     PathConstraints sourceNavigationConstraints = new PathConstraints(
-      3.0, 3.0, 
+      0.5, 0.5, 
       Radians.convertFrom(45, Degrees), Radians.convertFrom(45, Degrees)
     ); // The constraints for this path.
 

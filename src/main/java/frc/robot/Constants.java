@@ -121,9 +121,9 @@ public final class Constants{
     /**  */
     public static final int pivotRightMotorCurrentLimit = 10;
     /**  */
-    public static final CANcoder pivotCancoder = new CANcoder(3, "");
+    public static final CANcoder pivotCANcoder = new CANcoder(3, "");
     /**  */
-    public static final double pivotEncoderPositionOffset = 0.25;
+    public static final double pivotCANcoderPositionOffset = 0.25;
     /**  */
     public static final double gearRatio = 93.3333333;
     /**  */

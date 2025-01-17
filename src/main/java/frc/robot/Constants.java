@@ -159,16 +159,49 @@ public final class Constants {
 
         public final class DoryCameras {
             public static final String frontLeftCamName = "front-left";
-            public static final Transform3d frontLeftCamToRobot = new Transform3d(); // TODO Get camera offsets for Dory
+            public static final Transform3d frontLeftCamToRobot = new Transform3d (
+                new Translation3d(
+                    Units.inchesToMeters(11.32), Units.inchesToMeters(7.08), Units.inchesToMeters(7.8)),
+                new Rotation3d(Units.degreesToRadians(180), Units.degreesToRadians(-30), 0.0)
+            );
 
             public static final String frontRightCamName = "front-right";
-            public static final Transform3d frontRightCamToRobot = new Transform3d();
+            public static final Transform3d frontRightCamToRobot = new Transform3d(
+                new Translation3d(
+                    Units.inchesToMeters(8.25),
+                    Units.inchesToMeters(11),
+                    Units.inchesToMeters(7.8)
+                ),
+                new Rotation3d(Units.degreesToRadians(180), Units.degreesToRadians(-30), 0.0)
+            );
 
             public static final String backLeftCamName = "back-left";
-            public static final Transform3d backLeftCamToRobot = new Transform3d();
+            public static final Transform3d backLeftCamToRobot = new Transform3d (
+                new Translation3d(
+                    Units.inchesToMeters(-12.01),
+                    Units.inchesToMeters(11.65),
+                    Units.inchesToMeters(10.58)
+                ),
+                new Rotation3d(
+                    Units.degreesToRadians(180),
+                    Units.degreesToRadians(-23.5),
+                    Units.degreesToRadians(147)
+                )
+            );
 
             public static final String backRightCamName = "back-right";
-            public static final Transform3d backRightCamToRobot = new Transform3d();
+            public static final Transform3d backRightCamToRobot = new Transform3d (
+                new Translation3d(
+                    Units.inchesToMeters(-12.01),
+                    Units.inchesToMeters(-11.65),
+                    Units.inchesToMeters(10.58)
+                ),
+                new Rotation3d(
+                    Units.degreesToRadians(180),
+                    Units.degreesToRadians(-23.5),
+                    Units.degreesToRadians(-147)
+                )
+            );
         }
 
         public static final Matrix<N3, N1> highResSingleTagStdDev =

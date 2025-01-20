@@ -2,6 +2,10 @@ package frc.robot;
 
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
+
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 
 
@@ -85,5 +89,19 @@ public final class Constants{
         };
       };
     }
+  }
+
+  public static final class PathingConstants {
+    public static final RobotConfig robotConfig;
+    static {
+      try {
+        robotConfig = RobotConfig.fromGUISettings();
+      } catch (Exception e) {
+        throw new RuntimeException("Failed to initialize RobotConfig for PathPlanner", e);
+      }
+    }
+
+    public static final PIDConstants translationPIDConstants = new PIDConstants(5.0);
+    public static final PIDConstants rotationPIDConstants = new PIDConstants(5.0);
   }
 }

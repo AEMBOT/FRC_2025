@@ -38,16 +38,16 @@ public class AprilTagVision extends SubsystemBase {
         switch (currentRobot) {
         case LIGHTCYCLE:
             visionPoseEstimators = new CameraPoseEstimator[] {
-            new CameraPoseEstimator(
-                LightcycleCameras.frontCamName, LightcycleCameras.frontCamToRobot, AprilTagConstants.poseStrategy
-            ),
-            new CameraPoseEstimator(
-                LightcycleCameras.leftCamName, LightcycleCameras.leftCamToRobot, AprilTagConstants.poseStrategy
-            ),
-            new CameraPoseEstimator(
-                LightcycleCameras.rightCamName, LightcycleCameras.rightCamToRobot, AprilTagConstants.poseStrategy
-            )
-        };
+                new CameraPoseEstimator(
+                    LightcycleCameras.frontCamName, LightcycleCameras.frontCamToRobot, AprilTagConstants.poseStrategy
+                ),
+                new CameraPoseEstimator(
+                    LightcycleCameras.leftCamName, LightcycleCameras.leftCamToRobot, AprilTagConstants.poseStrategy
+                ),
+                new CameraPoseEstimator(
+                    LightcycleCameras.rightCamName, LightcycleCameras.rightCamToRobot, AprilTagConstants.poseStrategy
+                )
+            };
         case BUNNYBOT:
             visionPoseEstimators = new CameraPoseEstimator[] {
                 new CameraPoseEstimator(DoryCameras.frontLeftCamName, DoryCameras.frontLeftCamToRobot, 
@@ -79,7 +79,7 @@ public class AprilTagVision extends SubsystemBase {
 
         for (int i = 0; i < aprilTagVisionInputs.timestamps.length; i++) {
             if ( // Bounds check the estimated robot pose is actually on the field
-            aprilTagVisionInputs.timestamps[i] >= 1.0
+                aprilTagVisionInputs.timestamps[i] >= 1.0
                 && Math.abs(aprilTagVisionInputs.visionPoses[i].getZ()) < 0.2
                 && aprilTagVisionInputs.visionPoses[i].getX() > 0
                 && aprilTagVisionInputs.visionPoses[i].getX() < aprilTagFieldLayout.getFieldLength()
@@ -89,8 +89,8 @@ public class AprilTagVision extends SubsystemBase {
                 && aprilTagVisionInputs.visionPoses[i].getRotation().getY() < 0.2
             ) {
                 if (aprilTagVisionInputs.timestamps[i] > (getTimestamp() / 1.0e6)) {
-                aprilTagVisionInputs.timestamps[i] =
-                    (getTimestamp() / 1.0e6) - aprilTagVisionInputs.latency[i];
+                    aprilTagVisionInputs.timestamps[i] =
+                        (getTimestamp() / 1.0e6) - aprilTagVisionInputs.latency[i];
                 }
 
                 Logger.recordOutput(

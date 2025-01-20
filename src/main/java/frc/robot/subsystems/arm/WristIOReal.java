@@ -1,61 +1,91 @@
 package frc.robot.subsystems.arm;
 
-import com.ctre.phoenix6.hardware.TalonFX;
+import static edu.wpi.first.math.MathUtil.clamp;
+import static frc.robot.Constants.UPDATE_PERIOD;
+import static frc.robot.Constants.WristConstants.*;
 
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import frc.robot.Constants.WristConstants;
-import frc.robot.util.SymmetricBangBangController;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 
 public class WristIOReal implements WristIO {
-    private final TalonFX motor = new TalonFX(WristConstants.motorID);
-    private final DutyCycleEncoder encoder = new DutyCycleEncoder(
-        WristConstants.encoderID, 
-        360, // Measure rotation in degrees
-        WristConstants.encoderOffset
-    );
-
-    private final SymmetricBangBangController bangBangController = 
-        new SymmetricBangBangController(WristConstants.deadzone);
-    
-    private Double setpoint;
+    private final TalonFX motor = new TalonFX(motorID);
+    private TrapezoidProfile.State wristGoal;
+    private TrapezoidProfile.State wristSetpoint;
 
     public WristIOReal() {
-        setpoint = getPosition(); // Set to 0 once we know the encoder is zeroed.
+
+        TalonFXConfiguration motorConfig = new TalonFXConfiguration();
+        motorConfig.CurrentLimits.StatorCurrentLimit = wristMotorCurrentLimit;
+        motorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+
+        motor.setNeutralMode(NeutralModeValue.Brake);
+
+        wristGoal = new TrapezoidProfile.State(getAbsolutePosition(), 0);
+        wristSetpoint = new TrapezoidProfile.State(getAbsolutePosition(), 0);
     }
 
     @Override
     public void updateInputs(WristIOInputs inputs) {
-        inputs.position = getPosition();
-        inputs.setpoint = setpoint;
-        inputs.error = bangBangController.error;
-
-        inputs.appliedVoltage = motor.getMotorVoltage().getValueAsDouble();
+        inputs.wristAbsAngle = getAbsolutePosition();
+        inputs.wristAbsVelocity = wristCANcoder.getVelocity().getValueAsDouble();
+        inputs.wristGoal = Units.radiansToDegrees(wristGoal.position);
+        inputs.wristSetpoint = Units.radiansToDegrees(wristSetpoint.position);
+        inputs.wristAppliedVoltage = motor.getMotorVoltage().getValueAsDouble();
+        inputs.wristCurrentAmps = motor.getStatorCurrent().getValueAsDouble();
     }
     
     @Override
-    public void setSetpoint(Double position) {
-        // No Math.clamp function :(
-        setpoint = Math.max(WristConstants.wristLimits[0], Math.min(WristConstants.wristLimits[1], position));
-        bangBangController.setSetpoint(setpoint);
+    public void setAngle(Double angle) {
+        angle = clamp(angle, wristMinAngle, wristMaxAngle);
+
+        wristGoal = new TrapezoidProfile.State(Units.degreesToRadians(angle), 0);
+
+        wristSetpoint = 
+            wristProfile.calculate(
+            UPDATE_PERIOD,
+            wristSetpoint,
+            wristGoal);
+
+        double feedForward = wristFFModel.calculate(
+            wristGoal.position, 
+            0);
+        double pidOutput = wristPIDController.calculate(
+                Units.degreesToRadians(getAbsolutePosition()), 
+                wristGoal.position);
+
+        setVoltage(feedForward - pidOutput);
+
     }
 
     /**
      * Sets the voltage of the wrist motor.
-     * @param voltage The voltage to set.
+     * @param volts The voltage to set.
      */
-    private void setVoltage(double voltage) {
-        motor.setVoltage(voltage);
+    private void setVoltage(double volts) {
+        if (getAbsolutePosition() < wristMinAngle) {
+            volts = clamp(volts, -Double.MAX_VALUE, 0);
+        }
+        if (getAbsolutePosition() > wristMaxAngle) {
+            volts = clamp(volts, 0, Double.MAX_VALUE);
+        }
+
+        motor.setVoltage(volts);
     }
 
     /**
      * @return the current rotation of the wrist, measured in degrees.
      */
-    private double getPosition() {
-        return encoder.get();
+    private double getAbsolutePosition() {
+        return (wristCANcoder.getAbsolutePosition().getValueAsDouble() * 180) - encoderOffset;
     }
 
     @Override
-    public void periodic() {
-        setVoltage(bangBangController.update(getPosition()));
+    public void resetProfile() {
+        wristGoal = new TrapezoidProfile.State(getAbsolutePosition(), 0);
+        wristSetpoint = new TrapezoidProfile.State(getAbsolutePosition(), 0);
     }
 }

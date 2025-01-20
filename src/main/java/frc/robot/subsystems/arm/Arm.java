@@ -107,7 +107,7 @@ public class Arm extends SubsystemBase {
      * This runs continously until the command ends.
      */
     public Command wristMoveClockwise() {
-        return new RunCommand(() -> wrist.setSetpoint(wristInputs.position - 1.0d));
+        return new RunCommand(() -> wrist.setAngle(wristInputs.wristAbsAngle - 1.0d));
     }
 
     /**
@@ -115,6 +115,26 @@ public class Arm extends SubsystemBase {
      * This runs continously until the command ends.
      */
     public Command wristMoveCounterclockwise() {
-        return new RunCommand(() -> wrist.setSetpoint(wristInputs.position + 1.0d));
+        return new RunCommand(() -> wrist.setAngle(wristInputs.wristAbsAngle + 1.0d));
+    }
+
+        /**
+     * Sets the setpoint of the wrist to a certain degree.
+     * @param posDeg Position in degrees to set the wrist to.
+     * @return A {@link RunCommand} to set the wrist setpoint to posDeg.
+     */
+    public Command setWristPositionCommand(DoubleSupplier posDeg) {
+        return run(() -> wrist.setAngle(posDeg.getAsDouble()));
+    }
+
+    /**
+     * Changes the setpoint of the wrist by a certain amount per second.
+     * @param velocityDegPerSec Speed to move the wrist in degrees per second.
+     * @return A {@link RunCommand} to change the wrist setpoint by velocityDegPerSec.
+     * Resets the wrist dampening profile after completion.
+     */
+    public Command changeWristGoalPosition(double velocityDegPerSec) {
+        return setWristPositionCommand(() -> wristInputs.wristGoal + (velocityDegPerSec * UPDATE_PERIOD))
+            .finallyDo(wrist::resetProfile);
     }
 }

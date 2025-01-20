@@ -5,11 +5,14 @@ import org.littletonrobotics.junction.AutoLog;
 public interface WristIO {
     @AutoLog
     public static class WristIOInputs {
-        public double position = 0.0;
-        public double setpoint = 0.0;
-        public double error = 0.0;
+        public double wristAbsAngle = 0.0;
+        public double wristAbsVelocity = 0.0;
 
-        public double appliedVoltage = 0.0;
+        public double wristGoal = 0.0;
+        public double wristSetpoint = 0.0;
+
+        public double wristAppliedVoltage = 0.0;
+        public double wristCurrentAmps = 0.0;
     }
 
     public default void periodic() {}
@@ -21,5 +24,7 @@ public interface WristIO {
      * Sets the wrist rotation setpoint.
      * @param position The rotation setpoint in degrees, clamped between
      */
-    public default void setSetpoint(Double setpoint) {}
+    public default void setAngle(Double angle) {}
+
+    public default void resetProfile() {}
 }

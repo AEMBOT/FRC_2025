@@ -112,11 +112,29 @@ public final class Constants {
 
     public static final class WristConstants {
         public static final double encoderOffset = 0;
-        public static final double[] wristLimits = {-90, 90}; // Lower limit, upper limit.
+        public static final double wristMaxAngle = 90;
+        public static final double wristMinAngle = -90;
         public static final double deadzone = 5.0;
 
         /* Device IDs */
         public static final int motorID = 0;
-        public static final int encoderID = 0;
+        public static final CANcoder wristCANcoder = new CANcoder(0, "");
+
+        public static final TrapezoidProfile wristProfile = new TrapezoidProfile(new TrapezoidProfile.Constraints(
+          2,
+          5));
+
+        public static final ArmFeedforward wristFFModel = new ArmFeedforward(
+          0.35, 
+          0.35, 
+          1.79, 
+          0.3);
+
+        public static final PIDController wristPIDController = new PIDController(
+          12, 
+          0, 
+          0.00);
+
+        public static final double wristMotorCurrentLimit = 5;
     }
 }

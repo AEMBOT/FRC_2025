@@ -1,7 +1,16 @@
 package frc.robot;
 
+import com.ctre.phoenix6.hardware.CANcoder;
+
+import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 
 public final class Constants {
     public static final DigitalInput robotJumper = new DigitalInput(0);
@@ -22,32 +31,77 @@ public final class Constants {
         LIGHTCYCLE
     }
     
-    public static final class PivotConstants {
-        public static final double bangBangDeadzone = 5.0f;
-        public static final double initialSetpoint = 0.0d; // Not currently used, the pivot will try to hold its initial position
+    public static final double UPDATE_PERIOD = 0.02;
 
-        public static final double GEAR_RATIO;
-        static {
-            switch (currentRobot) {
-            case AEMBOAT:
-                GEAR_RATIO = 1.0;
-                break;
-            case LIGHTCYCLE:
-                GEAR_RATIO = 1.0;
-                break;
-            default:
-                throw new IllegalStateException("In pivot gear ratio, robot value not accounted for: " + currentRobot);
-            }
-        }
-        public static final double encoderOffset = 0.0d;
-        public static final double motorVoltage = 5.0d;
-
-        /* Device IDs */
-        public static final int leaderMotorID = 0;
-        public static final int followerMotorID = 0;
-        
-        public static final int encoderID = 0;
-    }
+    public static final class PivotConstants { 
+    /** Maximum angle for the pivot to move to, in degrees */
+    public static final double pivotMaxAngle = 170;
+    /** Minimum angle for the pivot to move to, in degrees */
+    public static final double pivotMinAngle = 50;
+    /** ID of the left pivot sparkmax */
+    public static final int pivotLeftMotorID = currentRobot == Robot.AEMBOAT
+      ? 10
+      : 0; // unused on llightcycle
+    /**  */
+    public static final boolean pivotLeftMotorInverted = false;
+    /**  */
+    public static final int pivotLeftMotorCurrentLimit = 10;
+    /** ID of the right pivot sparkmax */
+    public static final int pivotRightMotorID = currentRobot == Robot.AEMBOAT
+      ? 11
+      : 0; // unused on llightcycle
+    /**  */
+    public static final boolean pivotRightMotorInverted = false;
+    /**  */
+    public static final int pivotRightMotorCurrentLimit = 10;
+    /**  */
+    public static final CANcoder pivotCANcoder = new CANcoder(3, "");
+    /**  */
+    public static final double pivotCANcoderPositionOffset = 0.25;
+    /**  */
+    public static final double gearRatio = 93.3333333;
+    /**  */
+    public static final ArmFeedforward pivotFFModel = new ArmFeedforward(
+      0.35, 
+      0.35, 
+      1.79, 
+      0.3);
+    /**  */
+    public static final PIDController pivotPIDController = new PIDController(
+      12, 
+      0, 
+      0.00);
+    /**  */
+    public static final TrapezoidProfile pivotProfile = new TrapezoidProfile(new TrapezoidProfile.Constraints(
+      2,
+      5));
+    /** Ramp Rate of the pivot System ID in volts per second */
+    public static final double pivotSysIdRampRate = 0.2;
+    /** Setp Voltage of the pivot System ID in volts */
+    public static final double pivotSysIdStepVolt = 7;
+    /** Timeout of the pivot System ID in volts */
+    public static final double pivotSysIdTimeout = 30;
+    /** How many degrees the pivot can be off its goal position for it to be sufficient */
+    public static final double pivotAngleAllowedDeviance = 1.15;
+    /**  */
+    public static final Translation3d pivotTranslationFromRobot = new Translation3d(-0.2, 0, 0.255);
+    /**  */
+    public static final double pivotDefaultAngle = 90;
+    /**  */
+    public static final double pivotSimGoalPosition = 1.05;
+    /**  */
+    public static final double pivotSimSetpointPosition = 1.05;
+    /**  */
+    public static final SingleJointedArmSim pivotSim = new SingleJointedArmSim(
+      DCMotor.getNEO(2), 
+      300, 
+      0.17, 
+      0.500, 
+      Units.degreesToRadians(pivotMinAngle), 
+      Units.degreesToRadians(pivotMaxAngle), 
+      true, 
+      Units.degreesToRadians(45));
+  }
 
     public static final class ElevatorConstants {
         public static double moveVoltage = 5.0;

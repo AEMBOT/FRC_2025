@@ -1,73 +1,118 @@
 package frc.robot.subsystems.arm;
 
-import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import static frc.robot.Constants.PivotConstants.*;
+import static edu.wpi.first.math.MathUtil.clamp;
+
+import edu.wpi.first.wpilibj.Timer;
+
+import org.littletonrobotics.junction.Logger;
+
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import frc.robot.Constants.PivotConstants;
-import frc.robot.util.SymmetricBangBangController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 
 public class PivotIOReal implements PivotIO {
-    private final TalonFX motorA = new TalonFX(PivotConstants.leaderMotorID);
-    private final TalonFX motorB = new TalonFX(PivotConstants.followerMotorID);
-    private final DutyCycleEncoder encoder = new DutyCycleEncoder(
-        PivotConstants.encoderID, 
-        360, // Set rotation to be measured in degrees
-        PivotConstants.encoderOffset
-    );
+    
+    private boolean openLoop = true;
+    private final TalonFX leadingMotor = new TalonFX(pivotLeftMotorID, "*");
+    private final TalonFX followingMotor = new TalonFX(pivotRightMotorID, "*");
+    private TrapezoidProfile.State pivotGoal;
+    private TrapezoidProfile.State pivotSetpoint;
+    private double lastTime;
 
-    private double setpoint = getPosition();    // TODO Set this to `PivotConstants.initialSetpoint` 
-                                                // once we know a good value for that.
-
-    private SymmetricBangBangController bangBangController = new SymmetricBangBangController(PivotConstants.bangBangDeadzone);
 
     public PivotIOReal() {
-        var motorConfig = new MotorOutputConfigs();
-        motorConfig.NeutralMode = NeutralModeValue.Brake;
 
-        motorA.getConfigurator().apply(motorConfig);
-        motorB.getConfigurator().apply(motorConfig);
+        TalonFXConfiguration leftMotorConfig = new TalonFXConfiguration();
+        TalonFXConfiguration rightMotorConfig = new TalonFXConfiguration();
+
+        leftMotorConfig.CurrentLimits.StatorCurrentLimit = pivotLeftMotorCurrentLimit;
+        leftMotorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+
+        rightMotorConfig.CurrentLimits.StatorCurrentLimit = pivotRightMotorCurrentLimit;
+        rightMotorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+
+        leadingMotor.setNeutralMode(NeutralModeValue.Brake);
+        followingMotor.setNeutralMode(NeutralModeValue.Brake);
+
+        followingMotor.setControl(new Follower(pivotLeftMotorID, true));
+
+        pivotGoal = new TrapezoidProfile.State(getAbsoluteEncoderPosition(), 0);
+        pivotSetpoint = new TrapezoidProfile.State(getAbsoluteEncoderPosition(), 0);
     }
 
-    /* Sets the voltage of the pivot motors. */
-    public void setVoltage(double voltage) {
-        motorA.setVoltage(voltage);
-        motorB.setVoltage(voltage);
-    }
-
-    /* Returns the pivot's rotational velocity in degrees per second. */
-    public double getVelocity() {
-        return (motorA.getVelocity().getValueAsDouble() * 360) / PivotConstants.GEAR_RATIO;
-    }
-
-    /* Returns the pivot's rotation in degrees. */
-    public double getPosition() {
-        return encoder.get() / PivotConstants.GEAR_RATIO;
-    }
-
-    @Override
     public void updateInputs(PivotIOInputs inputs) {
-        inputs.pivotAbsolutePositionDeg = getPosition();
-        inputs.pivotErrorDeg = bangBangController.error;
-        inputs.pivotVelocityDegPerSec = getVelocity();
-        inputs.pivotSetpoint = this.setpoint;
-        inputs.pivotAppliedVolts = motorA.getMotorVoltage().getValueAsDouble() 
-            + motorB.getMotorVoltage().getValueAsDouble();
-        inputs.pivotCurrentStatorAmps[0] = motorA.getStatorCurrent().getValueAsDouble();
-        inputs.pivotCurrentStatorAmps[1] = motorB.getStatorCurrent().getValueAsDouble();
-        inputs.pivotCurrentSupplyAmps[0] = motorA.getSupplyCurrent().getValueAsDouble();
-        inputs.pivotCurrentSupplyAmps[1] = motorB.getSupplyCurrent().getValueAsDouble();
+        inputs.pivotAbsolutePosition = getAbsoluteEncoderPosition();
+        inputs.pivotAppliedVolts = leadingMotor.getMotorVoltage().getValueAsDouble();
+        inputs.pivotCurrentAmps = new double[] {leadingMotor.getStatorCurrent().getValueAsDouble(), 
+                                                followingMotor.getStatorCurrent().getValueAsDouble()};
+        inputs.pivotAbsoluteVelocity = pivotCANcoder.getVelocity().getValueAsDouble();
+        inputs.pivotGoalPosition = Units.radiansToDegrees(pivotGoal.position);
+        inputs.pivotSetpointPosition = Units.radiansToDegrees(pivotSetpoint.position);
+        inputs.pivotSetpointVelocity = pivotSetpoint.velocity;
+        inputs.openLoopStatus = openLoop;
+    }   
+
+    @Override
+    public void setAngle(double angle) {
+        openLoop = false;
+
+        angle = clamp(angle, pivotMinAngle, pivotMaxAngle);
+
+        pivotGoal = new TrapezoidProfile.State(Units.degreesToRadians(angle), 0);
+
+        pivotSetpoint = 
+            pivotProfile.calculate(
+            (Timer.getFPGATimestamp() - lastTime > 0.25)
+                ? (Timer.getFPGATimestamp() - lastTime)
+                : 0.02,
+            pivotSetpoint,
+            pivotGoal);
+
+        double feedForward = pivotFFModel.calculate(
+            pivotGoal.position, 
+            0);
+        double pidOutput = pivotPIDController.calculate(
+                Units.degreesToRadians(getAbsoluteEncoderPosition()), 
+                pivotGoal.position);
+
+        Logger.recordOutput("Pivot/CalculatedFFVolts", feedForward);
+        Logger.recordOutput("Pivot/PIDCommandVolts", pidOutput);
+
+                
+        setMotorVoltage(feedForward - pidOutput);
+
+        lastTime = Timer.getFPGATimestamp();
     }
 
     @Override
-    public void setPosition(double position) {
-      setpoint = position;
+    public void setVoltage(double volts) {
+        openLoop = true;
+        setMotorVoltage(volts);
+    }
+
+    private double getAbsoluteEncoderPosition() {
+        return (pivotCANcoder.getAbsolutePosition().getValueAsDouble() - Math.toRadians(pivotCANcoderPositionOffset)) * 360;
+    }
+
+    private void setMotorVoltage(double volts) {
+        if (getAbsoluteEncoderPosition() < pivotMinAngle) {
+            volts = clamp(volts, -Double.MAX_VALUE, 0);
+        }
+        if (getAbsoluteEncoderPosition() > pivotMaxAngle) {
+            volts = clamp(volts, 0, Double.MAX_VALUE);
+        }
+
+        leadingMotor.setVoltage(volts);
     }
 
     @Override
-    public void periodic() { // TODO Before merge, get SysID stuff and make this not a bang bang controller
-        bangBangController.setSetpoint(setpoint);
-        bangBangController.update(getPosition());
+    public void resetProfile() {
+        pivotGoal = new TrapezoidProfile.State(getAbsoluteEncoderPosition(), 0);
+        pivotSetpoint = new TrapezoidProfile.State(getAbsoluteEncoderPosition(), 0);
     }
 }

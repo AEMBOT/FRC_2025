@@ -1,10 +1,14 @@
 package frc.robot.subsystems.arm;
 
+import static frc.robot.Constants.UPDATE_PERIOD;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static frc.robot.Constants.currentMode;
+
+import java.util.function.DoubleSupplier;
 
 public class Arm extends SubsystemBase {
     ElevatorIO elevator;
@@ -40,13 +44,35 @@ public class Arm extends SubsystemBase {
         wrist.updateInputs(wristInputs);
     }
 
+
+    /**
+     * Sets the setpoint of the pivot to a certain degree.
+     * @param posDeg Position in degrees to set the pivot to.
+     * @return A {@link RunCommand} to set the pivot setpoint to posDeg.
+     */
+    public Command setPivotPositionCommand(DoubleSupplier posDeg) {
+        return run(() -> pivot.setAngle(posDeg.getAsDouble()));
+    }
+
+    /**
+     * Changes the setpoint of the pivot by a certain amount per second.
+     * @param velocityDegPerSec Speed to move the pivot in degrees per second.
+     * @return A {@link RunCommand} to change the pivot setpoint by velocityDegPerSec.
+     * Resets the pivot dampening profile after completion.
+     */
+    public Command changePivotGoalPosition(double velocityDegPerSec) {
+        return setPivotPositionCommand(() -> pivotInputs.pivotGoalPosition + (velocityDegPerSec * UPDATE_PERIOD))
+            .finallyDo(pivot::resetProfile);
+    }
+
+    
     /**
      * Sets the setpoint of the pivot to its current position plus one degree.
      * @return A {@link RunCommand} to set the setpoint of the pivot to its current position plus once degree. 
      * This runs continously until the command ends.
      */
     public Command pivotMoveUp() {
-        return new RunCommand(() -> pivot.setPosition(pivotInputs.pivotAbsolutePositionDeg + 1.0));
+        return new RunCommand(() -> pivot.setAngle(pivotInputs.pivotAbsolutePosition + 1.0));
     }
 
     /**
@@ -55,7 +81,7 @@ public class Arm extends SubsystemBase {
      * This runs continously until the command ends.
      */
     public Command pivotMoveDown() {
-        return new RunCommand(() -> pivot.setPosition(pivotInputs.pivotAbsolutePositionDeg - 1.0));
+        return new RunCommand(() -> pivot.setAngle(pivotInputs.pivotAbsolutePosition - 1.0));
     }
 
     /**

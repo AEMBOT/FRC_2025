@@ -47,6 +47,12 @@ public class AprilTagVisionIOReal implements AprilTagVisionIO {
         inputs.latency = latencyArray;
     }
 
+    /**
+     * Updates the estimated poses for each {@link CameraPoseEstimator} in `poseEstimators`
+     * 
+     * Updates `poseArray`, `timestampArray`, `visionStdArray`, and `latencyArray` with data from the cameras. <br></br>
+     * If no updates are available, it will set defaults for `poseArray`, `timestampArray`, and `latencyArray`.
+     */
     public void getEstimatedPoseUpdates() {
         for (int i = 0; i < poseEstimators.length; i++) {
             final int index = i; // It doesn't like me using `i` inside of the `pose.ifPresentOrElse()`.

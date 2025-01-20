@@ -85,8 +85,13 @@ public class RobotContainer {
 
     drive.setPose(new Pose2d(2.258, 2.432, Rotation2d.fromDegrees(-119.152))); // TODO Remove this once we have vision. This is just for testing
 
-    // Auto/drive assist stuff
+    // Path controller bindings
+    controller.b().whileTrue(goToSource());
+  }
+
+  public Command goToSource() {
     List<Waypoint> sourceNavigationWaypoints = PathPlannerPath.waypointsFromPoses(
+        drive.getPose(),
         new Pose2d(1.196, 1.092, Rotation2d.fromDegrees(-125))
     );
 
@@ -103,10 +108,7 @@ public class RobotContainer {
             new GoalEndState(0.0, Rotation2d.fromDegrees(-125)) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
     );
 
-    Command goToSource = AutoBuilder.followPath(sourceNavigationPath);
-
-    // Controller bindings
-    controller.b().whileTrue(goToSource);
+    return AutoBuilder.followPath(sourceNavigationPath);
   }
 
   public Command getAutonomousCommand() {

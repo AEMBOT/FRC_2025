@@ -95,7 +95,7 @@ public final class Constants{
     public static final RobotConfig robotConfig;
     static {
       try {
-        robotConfig = RobotConfig.fromGUISettings();
+        robotConfig = RobotConfig.fromGUISettings(); // TODO Set up this configuration in PathPlanner GUI
       } catch (Exception e) {
         throw new RuntimeException("Failed to initialize RobotConfig for PathPlanner", e);
       }

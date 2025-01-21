@@ -10,6 +10,7 @@ import java.nio.file.Path;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -102,17 +103,9 @@ public final class Constants {
     }
 
     public static final class AprilTagConstants {
-        public static final AprilTagFieldLayout aprilTagFieldLayout;
-        static {
-            AprilTagFieldLayout layout = null;
-            try {
-                layout = new AprilTagFieldLayout(Path.of(Filesystem.getDeployDirectory().toURI() + "\\aprilTagFieldLayout"));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            aprilTagFieldLayout = layout;
-        }
-
+        public static final AprilTagFieldLayout aprilTagFieldLayout = 
+          AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+        
         public static PoseStrategy poseStrategy = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
 
         public static enum CameraResolution {

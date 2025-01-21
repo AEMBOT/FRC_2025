@@ -18,8 +18,8 @@ import edu.wpi.first.math.util.Units;
 public class PivotIOReal implements PivotIO {
     
     private boolean openLoop = true;
-    private final TalonFX leadingMotor = new TalonFX(pivotLeftMotorID, "*");
-    private final TalonFX followingMotor = new TalonFX(pivotRightMotorID, "*");
+    private final TalonFX leadingMotor = new TalonFX(pivotLeftMotorID);
+    private final TalonFX followingMotor = new TalonFX(pivotRightMotorID);
     private TrapezoidProfile.State pivotGoal;
     private TrapezoidProfile.State pivotSetpoint;
     private double lastTime;
@@ -50,7 +50,6 @@ public class PivotIOReal implements PivotIO {
         inputs.pivotAppliedVolts = leadingMotor.getMotorVoltage().getValueAsDouble();
         inputs.pivotCurrentAmps = new double[] {leadingMotor.getStatorCurrent().getValueAsDouble(), 
                                                 followingMotor.getStatorCurrent().getValueAsDouble()};
-        inputs.pivotAbsoluteVelocity = pivotCANcoder.getVelocity().getValueAsDouble();
         inputs.pivotGoalPosition = Units.radiansToDegrees(pivotGoal.position);
         inputs.pivotSetpointPosition = Units.radiansToDegrees(pivotSetpoint.position);
         inputs.pivotSetpointVelocity = pivotSetpoint.velocity;
@@ -96,7 +95,7 @@ public class PivotIOReal implements PivotIO {
     }
 
     private double getAbsoluteEncoderPosition() {
-        return (pivotCANcoder.getAbsolutePosition().getValueAsDouble() - Math.toRadians(pivotCANcoderPositionOffset)) * 360;
+        return (pivotEncoder.get() * 360) - pivotEncoderPositionOffset;
     }
 
     private void setMotorVoltage(double volts) {

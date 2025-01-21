@@ -9,13 +9,14 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 
 public final class Constants {
     public static final DigitalInput robotJumper = new DigitalInput(0);
     public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : Mode.REPLAY;
-    public static final Robot currentRobot = robotJumper.get() ? Robot.AEMBOAT : Robot.LIGHTCYCLE; // TODO: Confirm robotJumber works, we may have two jumpers on AEMBoat
+    public static final Robot currentRobot = robotJumper.get() ? Robot.NAUTILIUS : Robot.DORY; // TODO: Confirm robotJumber works, we may have two jumpers on Nautilus
 
     public enum Mode {
         /** Running on a real robot. */
@@ -27,8 +28,8 @@ public final class Constants {
     }
 
     public enum Robot {
-        AEMBOAT,
-        LIGHTCYCLE
+        NAUTILIUS,
+        DORY
     }
     
     public static final double UPDATE_PERIOD = 0.02;
@@ -39,25 +40,21 @@ public final class Constants {
     /** Minimum angle for the pivot to move to, in degrees */
     public static final double pivotMinAngle = 50;
     /** ID of the left pivot sparkmax */
-    public static final int pivotLeftMotorID = currentRobot == Robot.AEMBOAT
-      ? 10
-      : 0; // unused on llightcycle
+    public static final int pivotLeftMotorID = 10;
     /**  */
     public static final boolean pivotLeftMotorInverted = false;
     /**  */
     public static final int pivotLeftMotorCurrentLimit = 10;
     /** ID of the right pivot sparkmax */
-    public static final int pivotRightMotorID = currentRobot == Robot.AEMBOAT
-      ? 11
-      : 0; // unused on llightcycle
+    public static final int pivotRightMotorID = 11;
     /**  */
     public static final boolean pivotRightMotorInverted = false;
     /**  */
     public static final int pivotRightMotorCurrentLimit = 10;
     /**  */
-    public static final CANcoder pivotCANcoder = new CANcoder(3, "");
+    public static final DutyCycleEncoder pivotEncoder = new DutyCycleEncoder(1);
     /**  */
-    public static final double pivotCANcoderPositionOffset = 0.25;
+    public static final double pivotEncoderPositionOffset = 0.25;
     /**  */
     public static final double gearRatio = 93.3333333;
     /**  */
@@ -107,7 +104,7 @@ public final class Constants {
         public static double moveVoltage = 5.0;
 
         /* Device IDs */
-        public static final int motorID = 0;
+        public static final int motorID = 12;
     }
 
     public static final class WristConstants {
@@ -117,8 +114,8 @@ public final class Constants {
         public static final double deadzone = 5.0;
 
         /* Device IDs */
-        public static final int motorID = 0;
-        public static final CANcoder wristCANcoder = new CANcoder(0, "");
+        public static final int motorID = 13;
+        public static final DutyCycleEncoder wristEncoder = new DutyCycleEncoder(2);
 
         public static final TrapezoidProfile wristProfile = new TrapezoidProfile(new TrapezoidProfile.Constraints(
           2,

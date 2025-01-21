@@ -24,14 +24,13 @@ public class WristIOReal implements WristIO {
 
         motor.setNeutralMode(NeutralModeValue.Brake);
 
-        wristGoal = new TrapezoidProfile.State(getAbsolutePosition(), 0);
-        wristSetpoint = new TrapezoidProfile.State(getAbsolutePosition(), 0);
+        wristGoal = new TrapezoidProfile.State(getAbsoluteAngle(), 0);
+        wristSetpoint = new TrapezoidProfile.State(getAbsoluteAngle(), 0);
     }
 
     @Override
     public void updateInputs(WristIOInputs inputs) {
-        inputs.wristAbsAngle = getAbsolutePosition();
-        inputs.wristAbsVelocity = wristCANcoder.getVelocity().getValueAsDouble();
+        inputs.wristAbsAngle = getAbsoluteAngle();
         inputs.wristGoal = Units.radiansToDegrees(wristGoal.position);
         inputs.wristSetpoint = Units.radiansToDegrees(wristSetpoint.position);
         inputs.wristAppliedVoltage = motor.getMotorVoltage().getValueAsDouble();
@@ -54,7 +53,7 @@ public class WristIOReal implements WristIO {
             wristGoal.position, 
             0);
         double pidOutput = wristPIDController.calculate(
-                Units.degreesToRadians(getAbsolutePosition()), 
+                Units.degreesToRadians(getAbsoluteAngle()), 
                 wristGoal.position);
 
         setVoltage(feedForward - pidOutput);
@@ -66,10 +65,10 @@ public class WristIOReal implements WristIO {
      * @param volts The voltage to set.
      */
     private void setVoltage(double volts) {
-        if (getAbsolutePosition() < wristMinAngle) {
+        if (getAbsoluteAngle() < wristMinAngle) {
             volts = clamp(volts, -Double.MAX_VALUE, 0);
         }
-        if (getAbsolutePosition() > wristMaxAngle) {
+        if (getAbsoluteAngle() > wristMaxAngle) {
             volts = clamp(volts, 0, Double.MAX_VALUE);
         }
 
@@ -79,13 +78,13 @@ public class WristIOReal implements WristIO {
     /**
      * @return the current rotation of the wrist, measured in degrees.
      */
-    private double getAbsolutePosition() {
-        return (wristCANcoder.getAbsolutePosition().getValueAsDouble() * 180) - encoderOffset;
+    private double getAbsoluteAngle() {
+        return (wristEncoder.get() * 360) - encoderOffset;
     }
 
     @Override
     public void resetProfile() {
-        wristGoal = new TrapezoidProfile.State(getAbsolutePosition(), 0);
-        wristSetpoint = new TrapezoidProfile.State(getAbsolutePosition(), 0);
+        wristGoal = new TrapezoidProfile.State(getAbsoluteAngle(), 0);
+        wristSetpoint = new TrapezoidProfile.State(getAbsoluteAngle(), 0);
     }
 }

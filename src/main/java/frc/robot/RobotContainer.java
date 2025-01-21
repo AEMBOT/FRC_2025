@@ -13,13 +13,13 @@ import frc.robot.subsystems.arm.Arm;
 public class RobotContainer {
   private Arm arm;
   
-  private CommandXboxController primaryController = new CommandXboxController(0);
-  private CommandXboxController operatorController = new CommandXboxController(1);
+  private final CommandXboxController primaryController = new CommandXboxController(0);
+  private final CommandXboxController operatorController = new CommandXboxController(1);
 
   public RobotContainer() {
-    configureBindings();
-
     this.arm = new Arm();
+
+    configureBindings();
   }
 
   private void configureBindings() {

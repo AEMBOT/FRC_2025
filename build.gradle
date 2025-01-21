@@ -180,4 +180,11 @@ spotless {
         indentWithSpaces(2)
         endWithNewline()
     }
+    yaml {
+        target '**/*.yaml'
+        jackson()
+        prettier()
+        leadingTabsToSpaces(2)
+        endWithNewline()
+    }
 }

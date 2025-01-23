@@ -35,8 +35,10 @@ import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 public class ModuleIOSim implements ModuleIO {
   private static final double LOOP_PERIOD_SECS = 0.02;
 
-  private final DCMotorSim driveSim = new DCMotorSim(LinearSystemId.createDCMotorSystem(0, 0), DCMotor.getKrakenX60(0), 0.025);
-  private final DCMotorSim turnSim = new DCMotorSim(LinearSystemId.createDCMotorSystem(0, 0), DCMotor.getNEO(1), 150.0 / 7.0);
+  private final DCMotorSim driveSim =
+      new DCMotorSim(LinearSystemId.createDCMotorSystem(0, 0), DCMotor.getKrakenX60(0), 0.025);
+  private final DCMotorSim turnSim =
+      new DCMotorSim(LinearSystemId.createDCMotorSystem(0, 0), DCMotor.getNEO(1), 150.0 / 7.0);
 
   private final SimpleMotorFeedforward motorFF = new SimpleMotorFeedforward(0.0, 2.0, 0.01);
   private final PIDController turnPID = new PIDController(75.0, 0.0, 0.0);

@@ -15,7 +15,6 @@ package frc.robot.subsystems.drive;
 
 import edu.wpi.first.wpilibj.Notifier;
 import frc.robot.Constants.DriveConstants;
-
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;

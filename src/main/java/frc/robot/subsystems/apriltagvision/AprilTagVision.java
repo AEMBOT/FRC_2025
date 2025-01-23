@@ -12,7 +12,7 @@ import frc.robot.Constants;
 import frc.robot.Constants.AprilTagConstants;
 import frc.robot.Constants.AprilTagConstants.DoryCameras;
 import frc.robot.Constants.AprilTagConstants.LightcycleCameras;
-import frc.robot.subsystems.apriltagvision.AprilTagVisionIOReal.CameraPoseEstimator;
+import frc.robot.subsystems.apriltagvision.AprilTagVisionIO.CameraPoseEstimator;
 import java.util.Arrays;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;

@@ -11,6 +11,7 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.AprilTagConstants;
 import frc.robot.Constants.AprilTagConstants.DoryCameras;
 import frc.robot.Constants.AprilTagConstants.LightcycleCameras;
@@ -61,18 +62,22 @@ public class AprilTagVision extends SubsystemBase {
             };
         }
 
-        switch (currentMode) {
+        switch (Constants.currentMode) {
             case REAL:
                 this.io = new AprilTagVisionIOReal(visionPoseEstimators);
+                break;
             case REPLAY:
                 this.io = new AprilTagVisionIO() {};
+                break;
             case SIM:
                 this.io = new AprilTagVisionIO() {};
+                break;
         }
         
         this.drivePoseEstimator = swerveDrivePoseEstimator;
     }
 
+    @Override
     public void periodic() {
         io.updateInputs(aprilTagVisionInputs);
         Logger.processInputs("AprilTagVision", aprilTagVisionInputs);
@@ -80,7 +85,7 @@ public class AprilTagVision extends SubsystemBase {
         for (int i = 0; i < aprilTagVisionInputs.timestamps.length; i++) {
             if ( // Bounds check the estimated robot pose is actually on the field
                 aprilTagVisionInputs.timestamps[i] >= 1.0
-                && Math.abs(aprilTagVisionInputs.visionPoses[i].getZ()) < 0.2
+                && Math.abs(aprilTagVisionInputs.visionPoses[i].getZ()) < 1.0
                 && aprilTagVisionInputs.visionPoses[i].getX() > 0
                 && aprilTagVisionInputs.visionPoses[i].getX() < aprilTagFieldLayout.getFieldLength()
                 && aprilTagVisionInputs.visionPoses[i].getY() > 0

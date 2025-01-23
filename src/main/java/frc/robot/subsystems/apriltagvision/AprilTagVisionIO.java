@@ -1,8 +1,6 @@
 package frc.robot.subsystems.apriltagvision;
 
 import static frc.robot.Constants.AprilTagConstants.*;
-import static frc.robot.Constants.AprilTagConstants.aprilTagFieldLayout;
-import static frc.robot.Constants.AprilTagConstants.normalMultiTagStdDev;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
@@ -11,6 +9,8 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.wpilibj.Timer;
+import frc.robot.Constants.AprilTagConstants.CameraResolution;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +18,7 @@ import org.littletonrobotics.junction.AutoLog;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonPipelineResult;
 
 public interface AprilTagVisionIO {
@@ -96,6 +97,70 @@ public interface AprilTagVisionIO {
     }
 
     return estStdDevs;
+  }
+
+  /**
+   * Updates the estimated poses for each {@link CameraPoseEstimator} in given `poseEstimators`
+   *
+   * <p>Updates `poseArray`, `timestampArray`, `visionStdArray`, (and `latencyArray` if desired)
+   * with data from the cameras. <br>
+   * </br> If no updates are available, it will set defaults for `poseArray`, `timestampArray`, and
+   * `latencyArray`.
+   *
+   * @param poseEstimators An array containing the poseEstimators to collect data from
+   * @param doLatency Whether or not you want to update the latency array.
+   */
+  default void getEstimatedPoseUpdates(
+      CameraPoseEstimator[] poseEstimators,
+      Boolean doLatency,
+      Pose3d[] poseArray,
+      double[] timestampArray,
+      double[] visionStdArray,
+      double[] latencyArray) {
+    for (int i = 0; i < poseEstimators.length; i++) {
+      final int index = i; // It doesn't like me using `i` inside of the `pose.ifPresentOrElse()`.
+      SimpleEntry<Optional<EstimatedRobotPose>, Optional<PhotonPipelineResult>> poseEntry =
+          poseEstimators[index].update();
+      Optional<EstimatedRobotPose> pose = poseEntry.getKey();
+      Optional<PhotonPipelineResult> camResult = poseEntry.getValue();
+      pose.ifPresentOrElse(
+          estimatedRobotPose -> {
+            poseArray[index] = estimatedRobotPose.estimatedPose;
+            timestampArray[index] = estimatedRobotPose.timestampSeconds;
+            Matrix<N3, N1> stdDevs =
+                getEstimationStdDevs(estimatedRobotPose, poseEstimators[index].resolution);
+            System.arraycopy(stdDevs.getData(), 0, visionStdArray, 0, 3);
+            if (doLatency) {
+              latencyArray[index] =
+                  Timer.getFPGATimestamp() - camResult.get().getTimestampSeconds();
+            }
+          },
+          () -> {
+            poseArray[index] = new Pose3d();
+            timestampArray[index] = 0.0;
+            if (doLatency) {
+              latencyArray[index] = 0.0;
+            }
+          });
+    }
+  }
+
+  /**
+   * Updates the estimated poses for each {@link CameraPoseEstimator} in given `poseEstimators`
+   *
+   * <p>Updates `poseArray`, `timestampArray`, `visionStdArray`, and `latencyArray` with data from
+   * the cameras. <br>
+   * </br> If no updates are available, it will set defaults for `poseArray`, `timestampArray`, and
+   * `latencyArray`.
+   */
+  default void getEstimatedPoseUpdates(
+      CameraPoseEstimator[] poseEstimators,
+      Pose3d[] poseArray,
+      double[] timestampArray,
+      double[] visionStdArray,
+      double[] latencyArray) {
+    this.getEstimatedPoseUpdates(
+        poseEstimators, true, poseArray, timestampArray, visionStdArray, latencyArray);
   }
 
   /**

@@ -18,10 +18,10 @@ public interface AprilTagVisionIO {
   @AutoLog
   public static class AprilTagVisionIOInputs {
     public Pose3d[] visionPoses =
-        List.of(new Pose3d(), new Pose3d(), new Pose3d()).toArray(new Pose3d[0]);
-    public double[] timestamps = new double[3];
-    public double[] latency = new double[3];
-    public double[] visionStdDevs = new double[9];
+        List.of(new Pose3d(), new Pose3d(), new Pose3d(), new Pose3d()).toArray(new Pose3d[0]); // 
+    public double[] timestamps = new double[4];
+    public double[] latency = new double[4];
+    public double[] visionStdDevs = new double[4 * 3];
   }
 
   /** Updates the set of loggable inputs. */
@@ -59,7 +59,7 @@ public interface AprilTagVisionIO {
               .getNorm();
     }
 
-    if (numTags == 0) return estStdDevs;
+    if (numTags == 0) return VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
     avgDist /= numTags;
 
     // Decrease std devs if multiple targets are visible

@@ -12,6 +12,7 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.RobotBase;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
 /**
@@ -25,7 +26,10 @@ import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 public final class Constants {
   public static final DigitalInput robotJumper = new DigitalInput(0);
   public static final Robot currentRobot = Robot.BUNNYBOT;
-  public static final Mode currentMode = Mode.REAL;
+  public static final Mode currentMode =
+      RobotBase.isReal()
+          ? Mode.REAL
+          : Mode.REPLAY; // You need to manually switch betweeen SIM and REPLAY.
 
   public static enum Mode {
     /** Running on a real robot. */

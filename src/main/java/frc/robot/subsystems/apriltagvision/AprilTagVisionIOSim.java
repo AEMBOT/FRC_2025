@@ -48,16 +48,28 @@ public class AprilTagVisionIOSim implements AprilTagVisionIO {
 
     frontLeftPose =
         new CameraPoseEstimator(
-            frontLeft, DoryCameras.frontLeftCamToRobot, AprilTagConstants.poseStrategy);
+            frontLeft,
+            DoryCameras.frontLeftCamToRobot,
+            AprilTagConstants.poseStrategy,
+            CameraResolution.HIGH_RES);
     frontRightPose =
         new CameraPoseEstimator(
-            frontRight, DoryCameras.frontRightCamToRobot, AprilTagConstants.poseStrategy);
+            frontRight,
+            DoryCameras.frontRightCamToRobot,
+            AprilTagConstants.poseStrategy,
+            CameraResolution.HIGH_RES);
     backLeftPose =
         new CameraPoseEstimator(
-            backLeft, DoryCameras.backLeftCamToRobot, AprilTagConstants.poseStrategy);
+            backLeft,
+            DoryCameras.backLeftCamToRobot,
+            AprilTagConstants.poseStrategy,
+            CameraResolution.HIGH_RES);
     backRightPose =
         new CameraPoseEstimator(
-            backRight, DoryCameras.backRightCamToRobot, AprilTagConstants.poseStrategy);
+            backRight,
+            DoryCameras.backRightCamToRobot,
+            AprilTagConstants.poseStrategy,
+            CameraResolution.HIGH_RES);
 
     this.poseEstimators =
         new CameraPoseEstimator[] {frontLeftPose, frontRightPose, backLeftPose, backRightPose};
@@ -122,7 +134,7 @@ public class AprilTagVisionIOSim implements AprilTagVisionIO {
             poseArray[index] = estimatedRobotPose.estimatedPose;
             timestampArray[index] = estimatedRobotPose.timestampSeconds;
             Matrix<N3, N1> stdDevs =
-                getEstimationStdDevs(estimatedRobotPose, CameraResolution.HIGH_RES);
+                getEstimationStdDevs(estimatedRobotPose, poseEstimators[index].resolution);
             System.arraycopy(stdDevs.getData(), 0, visionStdArray, 0, 3);
             // latencyArray[index] = Timer.getFPGATimestamp() -
             // camResult.get().getTimestampSeconds();

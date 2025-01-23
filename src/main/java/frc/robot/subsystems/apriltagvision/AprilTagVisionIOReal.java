@@ -7,7 +7,6 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.Timer;
-import frc.robot.Constants.AprilTagConstants.CameraResolution;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
@@ -59,7 +58,7 @@ public class AprilTagVisionIOReal implements AprilTagVisionIO {
             poseArray[index] = estimatedRobotPose.estimatedPose;
             timestampArray[index] = estimatedRobotPose.timestampSeconds;
             Matrix<N3, N1> stdDevs =
-                getEstimationStdDevs(estimatedRobotPose, CameraResolution.HIGH_RES);
+                getEstimationStdDevs(estimatedRobotPose, poseEstimators[index].resolution);
             arraycopy(stdDevs.getData(), 0, visionStdArray, 0, 3);
             latencyArray[index] = Timer.getFPGATimestamp() - camResult.get().getTimestampSeconds();
           },

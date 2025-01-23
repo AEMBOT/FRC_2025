@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.AprilTagConstants;
+import frc.robot.Constants.AprilTagConstants.CameraResolution;
 import frc.robot.Constants.AprilTagConstants.DoryCameras;
 import frc.robot.Constants.AprilTagConstants.LightcycleCameras;
 import frc.robot.subsystems.apriltagvision.AprilTagVisionIO.CameraPoseEstimator;
@@ -43,15 +44,18 @@ public class AprilTagVision extends SubsystemBase {
               new CameraPoseEstimator(
                   new PhotonCamera(LightcycleCameras.frontCamName),
                   LightcycleCameras.frontCamToRobot,
-                  AprilTagConstants.poseStrategy),
+                  AprilTagConstants.poseStrategy,
+                  CameraResolution.HIGH_RES),
               new CameraPoseEstimator(
                   new PhotonCamera(LightcycleCameras.leftCamName),
                   LightcycleCameras.leftCamToRobot,
-                  AprilTagConstants.poseStrategy),
+                  AprilTagConstants.poseStrategy,
+                  CameraResolution.HIGH_RES),
               new CameraPoseEstimator(
                   new PhotonCamera(LightcycleCameras.rightCamName),
                   LightcycleCameras.rightCamToRobot,
-                  AprilTagConstants.poseStrategy)
+                  AprilTagConstants.poseStrategy,
+                  CameraResolution.HIGH_RES)
             };
       case BUNNYBOT:
         visionPoseEstimators =
@@ -59,19 +63,23 @@ public class AprilTagVision extends SubsystemBase {
               new CameraPoseEstimator(
                   new PhotonCamera(DoryCameras.frontLeftCamName),
                   DoryCameras.frontLeftCamToRobot,
-                  AprilTagConstants.poseStrategy),
+                  AprilTagConstants.poseStrategy,
+                  CameraResolution.NORMAL),
               new CameraPoseEstimator(
                   new PhotonCamera(DoryCameras.frontRightCamName),
                   DoryCameras.frontRightCamToRobot,
-                  AprilTagConstants.poseStrategy),
+                  AprilTagConstants.poseStrategy,
+                  CameraResolution.HIGH_RES),
               new CameraPoseEstimator(
                   new PhotonCamera(DoryCameras.backLeftCamName),
                   DoryCameras.backLeftCamToRobot,
-                  AprilTagConstants.poseStrategy),
+                  AprilTagConstants.poseStrategy,
+                  CameraResolution.HIGH_RES),
               new CameraPoseEstimator(
                   new PhotonCamera(DoryCameras.backRightCamName),
                   DoryCameras.backRightCamToRobot,
-                  AprilTagConstants.poseStrategy),
+                  AprilTagConstants.poseStrategy,
+                  CameraResolution.HIGH_RES),
             };
     }
 

@@ -105,6 +105,7 @@ public interface AprilTagVisionIO {
   public static final class CameraPoseEstimator {
     public final PhotonCamera camera;
     public final Transform3d robotToCamera;
+    public final CameraResolution resolution;
 
     public final PhotonPoseEstimator poseEstimator;
 
@@ -119,9 +120,11 @@ public interface AprilTagVisionIO {
     public CameraPoseEstimator(
         PhotonCamera camera,
         Transform3d robotToCamera,
-        PhotonPoseEstimator.PoseStrategy poseStrategy) {
+        PhotonPoseEstimator.PoseStrategy poseStrategy,
+        CameraResolution resolution) {
       this.camera = camera;
       this.robotToCamera = robotToCamera;
+      this.resolution = resolution;
 
       this.poseEstimator =
           new PhotonPoseEstimator(aprilTagFieldLayout, poseStrategy, robotToCamera);

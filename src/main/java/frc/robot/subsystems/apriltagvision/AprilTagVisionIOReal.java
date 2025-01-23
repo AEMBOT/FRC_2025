@@ -82,11 +82,10 @@ public class AprilTagVisionIOReal implements AprilTagVisionIO {
    * objects together.
    */
   public static final class CameraPoseEstimator {
-    public final String name;
+    public final PhotonCamera camera;
     public final Transform3d robotToCamera;
 
     public final PhotonPoseEstimator poseEstimator;
-    public final PhotonCamera camera;
 
     /**
      * A class containing a {@link PhotonCamera} and a {@link PhotonPoseEstimator} to keep the two
@@ -97,11 +96,12 @@ public class AprilTagVisionIOReal implements AprilTagVisionIO {
      * @param poseStrategy The {@link PoseStrategy} to use for the {@link PhotonPoseEstimator}.
      */
     public CameraPoseEstimator(
-        String name, Transform3d robotToCamera, PhotonPoseEstimator.PoseStrategy poseStrategy) {
-      this.name = name;
+        PhotonCamera camera,
+        Transform3d robotToCamera,
+        PhotonPoseEstimator.PoseStrategy poseStrategy) {
+      this.camera = camera;
       this.robotToCamera = robotToCamera;
 
-      this.camera = new PhotonCamera(name);
       this.poseEstimator =
           new PhotonPoseEstimator(aprilTagFieldLayout, poseStrategy, robotToCamera);
     }

@@ -16,6 +16,7 @@ import frc.robot.subsystems.apriltagvision.AprilTagVisionIOReal.CameraPoseEstima
 import java.util.Arrays;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
+import org.photonvision.PhotonCamera;
 
 public class AprilTagVision extends SubsystemBase {
   AprilTagVisionIO io;
@@ -38,15 +39,15 @@ public class AprilTagVision extends SubsystemBase {
         visionPoseEstimators =
             new CameraPoseEstimator[] {
               new CameraPoseEstimator(
-                  LightcycleCameras.frontCamName,
+                  new PhotonCamera(LightcycleCameras.frontCamName),
                   LightcycleCameras.frontCamToRobot,
                   AprilTagConstants.poseStrategy),
               new CameraPoseEstimator(
-                  LightcycleCameras.leftCamName,
+                  new PhotonCamera(LightcycleCameras.leftCamName),
                   LightcycleCameras.leftCamToRobot,
                   AprilTagConstants.poseStrategy),
               new CameraPoseEstimator(
-                  LightcycleCameras.rightCamName,
+                  new PhotonCamera(LightcycleCameras.rightCamName),
                   LightcycleCameras.rightCamToRobot,
                   AprilTagConstants.poseStrategy)
             };
@@ -54,19 +55,19 @@ public class AprilTagVision extends SubsystemBase {
         visionPoseEstimators =
             new CameraPoseEstimator[] {
               new CameraPoseEstimator(
-                  DoryCameras.frontLeftCamName,
+                  new PhotonCamera(DoryCameras.frontLeftCamName),
                   DoryCameras.frontLeftCamToRobot,
                   AprilTagConstants.poseStrategy),
               new CameraPoseEstimator(
-                  DoryCameras.frontRightCamName,
+                  new PhotonCamera(DoryCameras.frontRightCamName),
                   DoryCameras.frontRightCamToRobot,
                   AprilTagConstants.poseStrategy),
               new CameraPoseEstimator(
-                  DoryCameras.backLeftCamName,
+                  new PhotonCamera(DoryCameras.backLeftCamName),
                   DoryCameras.backLeftCamToRobot,
                   AprilTagConstants.poseStrategy),
               new CameraPoseEstimator(
-                  DoryCameras.backRightCamName,
+                  new PhotonCamera(DoryCameras.backRightCamName),
                   DoryCameras.backRightCamToRobot,
                   AprilTagConstants.poseStrategy),
             };

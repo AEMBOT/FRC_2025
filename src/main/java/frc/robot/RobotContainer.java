@@ -13,13 +13,11 @@ import frc.robot.subsystems.drive.GyroIONavX;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
-import frc.robot.subsystems.apriltagvision.AprilTagVision;
 
 public class RobotContainer {
 
   // Subsystems
   private final Drive drive;
-  AprilTagVision aprilTagVision;
 
   // Controllers
   private final CommandXboxController controller = new CommandXboxController(0);

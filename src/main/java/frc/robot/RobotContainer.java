@@ -23,42 +23,40 @@ public class RobotContainer {
   private final CommandXboxController controller = new CommandXboxController(0);
   private final CommandXboxController backupController = new CommandXboxController(1);
 
-
-
   public RobotContainer() {
 
-       switch (Constants.currentMode) {
-            case REAL:
-                drive = new Drive(
-                  new GyroIONavX(),
-                  new ModuleIOTalonFX(0),
-                  new ModuleIOTalonFX(1),
-                  new ModuleIOTalonFX(2),
-                  new ModuleIOTalonFX(3)
-                );
-                break;
-            
-            case SIM:
-                drive = new Drive(
-                  new GyroIO() {},
-                  new ModuleIOSim(),
-                  new ModuleIOSim(),
-                  new ModuleIOSim(),
-                  new ModuleIOSim()
-                  );
-                break;
+    switch (Constants.currentMode) {
+      case REAL:
+        drive =
+            new Drive(
+                new GyroIONavX(),
+                new ModuleIOTalonFX(0),
+                new ModuleIOTalonFX(1),
+                new ModuleIOTalonFX(2),
+                new ModuleIOTalonFX(3));
+        break;
 
-            default:
-                // Replayed robot, disable IO implementations
-                drive = new Drive(
-                  new GyroIO() {},
-                  new ModuleIO() {},
-                  new ModuleIO() {},
-                  new ModuleIO() {},
-                  new ModuleIO() {}
-                );
-                break;
-        }
+      case SIM:
+        drive =
+            new Drive(
+                new GyroIO() {},
+                new ModuleIOSim(),
+                new ModuleIOSim(),
+                new ModuleIOSim(),
+                new ModuleIOSim());
+        break;
+
+      default:
+        // Replayed robot, disable IO implementations
+        drive =
+            new Drive(
+                new GyroIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {});
+        break;
+    }
 
     configureBindings();
   }
@@ -66,13 +64,14 @@ public class RobotContainer {
   private void configureBindings() {
 
     drive.setDefaultCommand(
-      drive.joystickDrive(
-          drive,
-          () -> -controller.getLeftY(),
-          () -> -controller.getLeftX(),
-          () -> -controller.getRightX(),
-          () -> controller.getLeftTriggerAxis() > 0.5)); // Trigger locks make trigger boolean, rather than analog.
-
+        drive.joystickDrive(
+            drive,
+            () -> -controller.getLeftY(),
+            () -> -controller.getLeftX(),
+            () -> -controller.getRightX(),
+            () ->
+                controller.getLeftTriggerAxis()
+                    > 0.5)); // Trigger locks make trigger boolean, rather than analog.
   }
 
   public Command getAutonomousCommand() {

@@ -1,7 +1,7 @@
 package frc.robot.subsystems.apriltagvision;
 
-import static frc.robot.Constants.AprilTagConstants.aprilTagFieldLayout;
 import static frc.robot.Constants.AprilTagConstants.*;
+import static frc.robot.Constants.AprilTagConstants.aprilTagFieldLayout;
 import static frc.robot.Constants.AprilTagConstants.normalMultiTagStdDev;
 
 import edu.wpi.first.math.Matrix;
@@ -18,7 +18,7 @@ public interface AprilTagVisionIO {
   @AutoLog
   public static class AprilTagVisionIOInputs {
     public Pose3d[] visionPoses =
-        List.of(new Pose3d(), new Pose3d(), new Pose3d(), new Pose3d()).toArray(new Pose3d[0]); // 
+        List.of(new Pose3d(), new Pose3d(), new Pose3d(), new Pose3d()).toArray(new Pose3d[0]); //
     public double[] timestamps = new double[4];
     public double[] latency = new double[4];
     public double[] visionStdDevs = new double[4 * 3];

@@ -37,7 +37,6 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.Constants.DriveConstants;
-
 import java.util.Queue;
 
 /**
@@ -147,7 +146,6 @@ public class ModuleIOTalonFX implements ModuleIO {
     driveConfig.Slot0.kP = 7.5; // TODO hand tune
     driveConfig.Slot0.kD = 0.005;
 
-
     driveTalon.getConfigurator().apply(driveConfig);
     delay(0.1);
     setDriveBrakeMode(true);
@@ -165,7 +163,6 @@ public class ModuleIOTalonFX implements ModuleIO {
     turnConfig.Feedback.SensorToMechanismRatio = 1;
     turnConfig.Feedback.FeedbackRotorOffset =
         0.0; // Is this right? I think CANcoder config handles this
-
 
     turnConfig.Slot0.kV = 2.5678;
     turnConfig.Slot0.kA = 0.0;

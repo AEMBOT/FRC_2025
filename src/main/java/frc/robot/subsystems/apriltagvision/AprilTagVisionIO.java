@@ -1,6 +1,7 @@
 package frc.robot.subsystems.apriltagvision;
 
 import static frc.robot.Constants.AprilTagConstants.*;
+import static frc.robot.Constants.currentMode;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
@@ -11,6 +12,7 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants.AprilTagConstants.CameraResolution;
+import frc.robot.Constants.Mode;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.List;
 import java.util.Optional;
@@ -112,7 +114,6 @@ public interface AprilTagVisionIO {
    */
   default void getEstimatedPoseUpdates(
       CameraPoseEstimator[] poseEstimators,
-      Boolean doLatency,
       Pose3d[] poseArray,
       double[] timestampArray,
       double[] visionStdArray,
@@ -130,37 +131,23 @@ public interface AprilTagVisionIO {
             Matrix<N3, N1> stdDevs =
                 getEstimationStdDevs(estimatedRobotPose, poseEstimators[index].resolution);
             System.arraycopy(stdDevs.getData(), 0, visionStdArray, 0, 3);
-            if (doLatency) {
-              latencyArray[index] =
-                  Timer.getFPGATimestamp() - camResult.get().getTimestampSeconds();
+            if (currentMode
+                == Mode
+                    .SIM) { // Don't update latency if in sim. It doesn't work for some reason. TODO
+              // fix that
+              return; // Note this is in a lambda. Essentially equivalent to saying continue.
             }
+            latencyArray[index] = Timer.getFPGATimestamp() - camResult.get().getTimestampSeconds();
           },
           () -> {
             poseArray[index] = new Pose3d();
             timestampArray[index] = 0.0;
-            if (doLatency) {
-              latencyArray[index] = 0.0;
-            }
+            if (currentMode == Mode.SIM) {
+              return;
+            } // Don't update latency if in sim.
+            latencyArray[index] = 0.0;
           });
     }
-  }
-
-  /**
-   * Updates the estimated poses for each {@link CameraPoseEstimator} in given `poseEstimators`
-   *
-   * <p>Updates `poseArray`, `timestampArray`, `visionStdArray`, and `latencyArray` with data from
-   * the cameras. <br>
-   * </br> If no updates are available, it will set defaults for `poseArray`, `timestampArray`, and
-   * `latencyArray`.
-   */
-  default void getEstimatedPoseUpdates(
-      CameraPoseEstimator[] poseEstimators,
-      Pose3d[] poseArray,
-      double[] timestampArray,
-      double[] visionStdArray,
-      double[] latencyArray) {
-    this.getEstimatedPoseUpdates(
-        poseEstimators, true, poseArray, timestampArray, visionStdArray, latencyArray);
   }
 
   /**

@@ -96,7 +96,7 @@ public class AprilTagVisionIOSim implements AprilTagVisionIO {
   @Override
   public void updateInputs(AprilTagVisionIOInputs inputs) {
     getEstimatedPoseUpdates(
-        poseEstimators, false, poseArray, timestampArray, visionStdArray, latencyArray);
+        poseEstimators, poseArray, timestampArray, visionStdArray, latencyArray);
     inputs.visionPoses = poseArray;
     inputs.timestamps = timestampArray;
     inputs.visionStdDevs = visionStdArray;

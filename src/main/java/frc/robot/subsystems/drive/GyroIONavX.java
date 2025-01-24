@@ -13,8 +13,8 @@
 
 package frc.robot.subsystems.drive;
 
-import static frc.robot.Constants.currentRobot;
 import static frc.robot.Constants.DriveConstants.Module.ODOMETRY_FREQUENCY;
+import static frc.robot.Constants.currentRobot;
 
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -52,11 +52,13 @@ public class GyroIONavX implements GyroIO {
             // TODO NavX OMNIMOUNT configure both bots
             .map(
                 (Double value) ->
-                Rotation2d.fromDegrees(
-                  switch (currentRobot) {
-                    case BUNNYBOT -> -value; // According to last years code, clef NavX is inverted
-                    case LIGHTCYCLE -> -value;
-                })).toArray(Rotation2d[]::new);
+                    Rotation2d.fromDegrees(
+                        switch (currentRobot) {
+                          case BUNNYBOT ->
+                              -value; // According to last years code, clef NavX is inverted
+                          case LIGHTCYCLE -> -value;
+                        }))
+            .toArray(Rotation2d[]::new);
     yawTimestampQueue.clear();
     yawPositionQueue.clear();
 

@@ -1,13 +1,10 @@
 package frc.robot;
 
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DigitalInput;
-
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
-
 import edu.wpi.first.math.geometry.Rotation2d;
-
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DigitalInput;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -17,7 +14,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
  * <p>It is advised to statically import this class (or one of its inner classes) wherever the
  * constants are needed, to reduce verbosity.
  */
-public final class Constants{
+public final class Constants {
   public static final DigitalInput robotJumper = new DigitalInput(0);
   public static final Robot currentRobot = Robot.BUNNYBOT;
   public static final Mode currentMode = Mode.REAL;
@@ -46,7 +43,7 @@ public final class Constants{
     public static final double TRACK_WIDTH_X = Units.inchesToMeters(22.75); // 28 in square chassis
     public static final double TRACK_WIDTH_Y = Units.inchesToMeters(22.75);
     public static final double DRIVE_BASE_RADIUS =
-      Math.hypot(TRACK_WIDTH_X / 2.0, TRACK_WIDTH_Y / 2.0);
+        Math.hypot(TRACK_WIDTH_X / 2.0, TRACK_WIDTH_Y / 2.0);
     public static final double MAX_ANGULAR_SPEED = MAX_LINEAR_SPEED / DRIVE_BASE_RADIUS;
 
     public static final double CONTROLLER_DEADBAND = 0.05;
@@ -74,28 +71,33 @@ public final class Constants{
       public static final double WHEEL_RADIUS = Units.inchesToMeters(1.906);
       public static final double ODOMETRY_FREQUENCY = 200.0; // default 250, limited to 200 by NavX
 
-      public static final Rotation2d[] absoluteEncoderOffset = switch (currentRobot) {
-        case BUNNYBOT -> new Rotation2d[] {
-          Rotation2d.fromRadians(2.291767297101148), // FL
-          Rotation2d.fromRadians(2.409883817768342 + Math.PI), // FR
-          Rotation2d.fromRadians(1.928213850372251), // BL
-          Rotation2d.fromRadians(1.73493227109866 + Math.PI) // BR
-        };
-        case LIGHTCYCLE -> new Rotation2d[] { // This is not currently correct
-          Rotation2d.fromRadians(2.6599226861937018), // FL
-          Rotation2d.fromRadians(-2.9206994201342606 + Math.PI), // FR
-          Rotation2d.fromRadians(1.064582666792635), // BL
-          Rotation2d.fromRadians(-2.406815856192571 + Math.PI) // BR
-        };
-      };
+      public static final Rotation2d[] absoluteEncoderOffset =
+          switch (currentRobot) {
+            case BUNNYBOT ->
+                new Rotation2d[] {
+                  Rotation2d.fromRadians(2.291767297101148), // FL
+                  Rotation2d.fromRadians(2.409883817768342 + Math.PI), // FR
+                  Rotation2d.fromRadians(1.928213850372251), // BL
+                  Rotation2d.fromRadians(1.73493227109866 + Math.PI) // BR
+                };
+            case LIGHTCYCLE ->
+                new Rotation2d[] { // This is not currently correct
+                  Rotation2d.fromRadians(2.6599226861937018), // FL
+                  Rotation2d.fromRadians(-2.9206994201342606 + Math.PI), // FR
+                  Rotation2d.fromRadians(1.064582666792635), // BL
+                  Rotation2d.fromRadians(-2.406815856192571 + Math.PI) // BR
+                };
+          };
     }
   }
 
   public static final class PathingConstants {
     public static final RobotConfig robotConfig;
+
     static {
       try {
-        robotConfig = RobotConfig.fromGUISettings(); // TODO Set up this configuration in PathPlanner GUI
+        robotConfig =
+            RobotConfig.fromGUISettings(); // TODO Set up this configuration in PathPlanner GUI
       } catch (Exception e) {
         throw new RuntimeException("Failed to initialize RobotConfig for PathPlanner", e);
       }

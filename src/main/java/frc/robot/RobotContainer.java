@@ -16,6 +16,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.DeferredCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -24,6 +26,7 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import java.util.List;
+import java.util.Set;
 
 public class RobotContainer {
 
@@ -84,7 +87,7 @@ public class RobotContainer {
                     > 0.5)); // Trigger locks make trigger boolean, rather than analog.
 
     // Path controller bindings
-    controller.b().whileTrue(goToSource());
+    controller.b().whileTrue(new DeferredCommand(this::goToSource, Set.of(drive)));
   }
 
   public Command goToSource() {
@@ -94,8 +97,8 @@ public class RobotContainer {
 
     PathConstraints sourceNavigationConstraints =
         new PathConstraints(
-            0.1,
-            0.5,
+            0.01,
+            0.01,
             Radians.convertFrom(45, Degrees),
             Radians.convertFrom(45, Degrees)); // The constraints for this path.
 
@@ -113,7 +116,11 @@ public class RobotContainer {
             // differential drivetrain, the rotation will have no effect.
             );
 
-    return AutoBuilder.followPath(sourceNavigationPath);
+    // return AutoBuilder.followPath(sourceNavigationPath)
+    // .andThen(() -> System.out.println("Finished running path follow."));
+    return new RunCommand(() -> System.out.println("Starting source path"))
+        .andThen(AutoBuilder.followPath(sourceNavigationPath))
+        .andThen(() -> System.out.println("Finished running path follow."));
   }
 
   public Command getAutonomousCommand() {

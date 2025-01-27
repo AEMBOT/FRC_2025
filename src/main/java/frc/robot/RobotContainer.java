@@ -17,7 +17,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.DeferredCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -91,16 +90,23 @@ public class RobotContainer {
   }
 
   public Command goToSource() {
+    Pose2d target = new Pose2d(1.291, 1.163, Rotation2d.fromDegrees(-125));
+
+    Rotation2d heading =
+        new Rotation2d(
+            Math.atan2(
+                target.getY() - drive.getPose().getY(), target.getX() - drive.getPose().getX()));
+
     List<Waypoint> sourceNavigationWaypoints =
         PathPlannerPath.waypointsFromPoses(
-            drive.getPose(), new Pose2d(1.196, 1.092, Rotation2d.fromDegrees(-125)));
+            new Pose2d(drive.getPose().getTranslation(), heading), target);
 
     PathConstraints sourceNavigationConstraints =
         new PathConstraints(
-            0.01,
-            0.01,
-            Radians.convertFrom(45, Degrees),
-            Radians.convertFrom(45, Degrees)); // The constraints for this path.
+            1,
+            4,
+            Radians.convertFrom(360, Degrees),
+            Radians.convertFrom(360, Degrees)); // The constraints for this path.
 
     // Create the path using the waypoints created above
     PathPlannerPath sourceNavigationPath =
@@ -116,10 +122,7 @@ public class RobotContainer {
             // differential drivetrain, the rotation will have no effect.
             );
 
-    // return AutoBuilder.followPath(sourceNavigationPath)
-    // .andThen(() -> System.out.println("Finished running path follow."));
-    return new RunCommand(() -> System.out.println("Starting source path"))
-        .andThen(AutoBuilder.followPath(sourceNavigationPath))
+    return AutoBuilder.followPath(sourceNavigationPath)
         .andThen(() -> System.out.println("Finished running path follow."));
   }
 

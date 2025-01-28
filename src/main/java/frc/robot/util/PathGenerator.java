@@ -34,12 +34,8 @@ public class PathGenerator {
 
     List<Waypoint> waypoints =
         PathPlannerPath.waypointsFromPoses(
-            new Pose2d(
-                startingPosition.getTranslation(), 
-                heading),
-            new Pose2d(
-                targetPosition.getTranslation(),
-                heading));
+            new Pose2d(startingPosition.getTranslation(), heading),
+            new Pose2d(targetPosition.getTranslation(), heading));
 
     PathPlannerPath path =
         new PathPlannerPath(

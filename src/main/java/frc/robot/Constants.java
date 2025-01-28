@@ -1,11 +1,16 @@
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Radians;
+
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -119,6 +124,23 @@ public final class Constants {
 
     public static final PIDConstants translationPIDConstants = new PIDConstants(5.0);
     public static final PIDConstants rotationPIDConstants = new PIDConstants(5.0);
+
+    // TODO Constraints are placeholder. Figure out reasonable values.
+    /** Constraints for the majority of driver-assist and auto paths. */
+    public static final PathConstraints generalPathConstraints =
+        new PathConstraints(
+            1, 4, Radians.convertFrom(360, Degrees), Radians.convertFrom(360, Degrees));
+
+    public static final class Targets {
+      /** Our target pose for interfacing with the right source, relative to driverStation */
+      public static final Pose2d rightSourceWaypoint =
+          new Pose2d(
+              1.291,
+              1.163,
+              Rotation2d.fromDegrees(
+                  -125)); // TODO get a proper value for this. This value is for testing purposes
+      // and will probably be dynamically generated later.
+    }
   }
 
   public static final class AprilTagConstants {

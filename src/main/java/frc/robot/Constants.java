@@ -194,25 +194,21 @@ public final class Constants {
       public static final Transform3d frontLeftCamToRobot =
           new Transform3d(
               new Translation3d(
-                  Units.inchesToMeters(11.32),
-                  Units.inchesToMeters(7.08),
-                  Units.inchesToMeters(7.8)),
+                  Units.inchesToMeters(7), Units.inchesToMeters(11), Units.inchesToMeters(4)),
               new Rotation3d(Units.degreesToRadians(180), Units.degreesToRadians(-30), 0.0));
 
       public static final String frontRightCamName = "front-right";
       public static final Transform3d frontRightCamToRobot =
           new Transform3d(
               new Translation3d(
-                  Units.inchesToMeters(8.25), Units.inchesToMeters(11), Units.inchesToMeters(7.8)),
+                  Units.inchesToMeters(7), Units.inchesToMeters(-11), Units.inchesToMeters(4)),
               new Rotation3d(Units.degreesToRadians(180), Units.degreesToRadians(-30), 0.0));
 
       public static final String backLeftCamName = "back-left";
       public static final Transform3d backLeftCamToRobot =
           new Transform3d(
               new Translation3d(
-                  Units.inchesToMeters(-12.01),
-                  Units.inchesToMeters(11.65),
-                  Units.inchesToMeters(10.58)),
+                  Units.inchesToMeters(-11), Units.inchesToMeters(11.5), Units.inchesToMeters(6)),
               new Rotation3d(
                   Units.degreesToRadians(180),
                   Units.degreesToRadians(-23.5),
@@ -222,9 +218,7 @@ public final class Constants {
       public static final Transform3d backRightCamToRobot =
           new Transform3d(
               new Translation3d(
-                  Units.inchesToMeters(-12.01),
-                  Units.inchesToMeters(-11.65),
-                  Units.inchesToMeters(10.58)),
+                  Units.inchesToMeters(-11), Units.inchesToMeters(-11.5), Units.inchesToMeters(6)),
               new Rotation3d(
                   Units.degreesToRadians(180),
                   Units.degreesToRadians(-23.5),

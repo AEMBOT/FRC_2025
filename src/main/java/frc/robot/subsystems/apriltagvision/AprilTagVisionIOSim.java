@@ -34,33 +34,33 @@ public class AprilTagVisionIOSim implements AprilTagVisionIO {
   private double[] latencyArray;
 
   public AprilTagVisionIOSim() {
-    PhotonCamera frontLeft = new PhotonCamera(DoryCameras.frontLeftCamName);
-    PhotonCamera frontRight = new PhotonCamera(DoryCameras.frontRightCamName);
-    PhotonCamera backLeft = new PhotonCamera(DoryCameras.backLeftCamName);
-    PhotonCamera backRight = new PhotonCamera(DoryCameras.backRightCamName);
+    PhotonCamera frontLeft = new PhotonCamera(DoryCameras.frontLeftName);
+    PhotonCamera frontRight = new PhotonCamera(DoryCameras.frontRightName);
+    PhotonCamera backLeft = new PhotonCamera(DoryCameras.backLeftName);
+    PhotonCamera backRight = new PhotonCamera(DoryCameras.backRightName);
 
     frontLeftPose =
         new CameraPoseEstimator(
             frontLeft,
-            DoryCameras.frontLeftCamToRobot,
+            DoryCameras.frontLeftFromRobot,
             AprilTagConstants.poseStrategy,
             CameraResolution.HIGH_RES);
     frontRightPose =
         new CameraPoseEstimator(
             frontRight,
-            DoryCameras.frontRightCamToRobot,
+            DoryCameras.frontRightFromRobot,
             AprilTagConstants.poseStrategy,
             CameraResolution.HIGH_RES);
     backLeftPose =
         new CameraPoseEstimator(
             backLeft,
-            DoryCameras.backLeftCamToRobot,
+            DoryCameras.backLeftFromRobot,
             AprilTagConstants.poseStrategy,
             CameraResolution.HIGH_RES);
     backRightPose =
         new CameraPoseEstimator(
             backRight,
-            DoryCameras.backRightCamToRobot,
+            DoryCameras.backRightFromRobot,
             AprilTagConstants.poseStrategy,
             CameraResolution.HIGH_RES);
 
@@ -82,10 +82,10 @@ public class AprilTagVisionIOSim implements AprilTagVisionIO {
     backLeftSim = new PhotonCameraSim(backLeft, cameraProps);
     backRightSim = new PhotonCameraSim(backRight, cameraProps);
 
-    visionSim.addCamera(frontLeftSim, DoryCameras.frontLeftCamToRobot);
-    visionSim.addCamera(frontRightSim, DoryCameras.frontRightCamToRobot);
-    visionSim.addCamera(backLeftSim, DoryCameras.backLeftCamToRobot);
-    visionSim.addCamera(backRightSim, DoryCameras.backRightCamToRobot);
+    visionSim.addCamera(frontLeftSim, DoryCameras.frontLeftFromRobot);
+    visionSim.addCamera(frontRightSim, DoryCameras.frontRightFromRobot);
+    visionSim.addCamera(backLeftSim, DoryCameras.backLeftFromRobot);
+    visionSim.addCamera(backRightSim, DoryCameras.backRightFromRobot);
 
     frontLeftSim.enableDrawWireframe(true);
     frontRightSim.enableDrawWireframe(true);

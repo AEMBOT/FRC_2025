@@ -4,7 +4,6 @@ import static frc.robot.Constants.PivotConstants.pivotConstraints;
 
 import com.ctre.phoenix6.hardware.CANcoder;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.system.plant.DCMotor;

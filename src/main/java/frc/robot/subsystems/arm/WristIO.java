@@ -28,7 +28,7 @@ public interface WristIO {
      * Sets the wrist rotation setpoint.
      * @param position The rotation setpoint in degrees, clamped between
      */
-    public default void setAngle(double angle, double elevatorPosMet, double pivotAngleDeg) {}
+    public default void setAngle(double goalAngleDeg, double elevatorPosMet, double pivotAngleDeg) {}
 
     public default void wristResetProfile() {}
 

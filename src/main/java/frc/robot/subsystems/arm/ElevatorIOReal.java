@@ -97,9 +97,13 @@ public class ElevatorIOReal implements ElevatorIO {
         openLoopStatus = false;
         interpolateConstants(pivotAngleDeg);
 
-        double pidOutput = elevatorPIDController.calculate(getElevatorPosition(), goalPosMet);
+        double pidOutput = elevatorPIDController.calculate(
+            getElevatorPosition(), 
+            goalPosMet);
         double acceleration = (elevatorPIDController.getSetpoint().velocity - lastVelocity) / (Timer.getFPGATimestamp() - lastTime);
-        double feedForward = calculateElevatorFeedforward(elevatorPIDController.getSetpoint().velocity, acceleration);
+        double feedForward = calculateElevatorFeedforward(
+            elevatorPIDController.getSetpoint().velocity, 
+            acceleration);
         motor.setVoltage(
             pidOutput
             + feedForward);

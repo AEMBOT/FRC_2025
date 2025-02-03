@@ -191,6 +191,22 @@ public class Arm extends SubsystemBase {
     }
 
     /**
+     * Command that sets the pivot's default setting.
+     * @return  Command to set pivot goal to the default.
+     */
+    public Command pivotGetDefault() {
+        return pivotSetPositionCommand(() -> 0);
+    }
+
+    /**
+     * Command that sets the wrist's default setting.
+     * @return  Command to set wrist goal to the default.
+     */
+    public Command wristGetDefault() {
+        return wristSetPositionCommand(() -> 0);
+    }
+
+    /**
      * Private method accessible by !!!!ONLY!!!! other commands to send elevator target goal down.
      * @param goalMet Target goal (in meters) of the elevator
      */

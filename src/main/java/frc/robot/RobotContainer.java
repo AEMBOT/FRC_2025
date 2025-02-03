@@ -25,7 +25,9 @@ public class RobotContainer {
   private void configureBindings() {
     arm.setDefaultCommand(
       Commands.sequence(
-        arm.elevatorGetDefault()
+        arm.elevatorGetDefault(),
+        arm.pivotGetDefault(),
+        arm.wristGetDefault()
       )
     );
     // Temporary arm bindings for testing
@@ -45,7 +47,6 @@ public class RobotContainer {
     .leftTrigger(0.25d)
     .whileTrue(arm.elevatorChangeGoal(-0.2))
     .onFalse(arm.elevatorChangeGoal(0.0));
-
     primaryController.a().whileTrue(arm.elevatorSetGoal(() -> 2));
 
     primaryController.rightBumper().whileTrue(arm.wristMoveClockwise());
@@ -53,12 +54,12 @@ public class RobotContainer {
     primaryController.rightBumper()
     .and
     (primaryController.leftBumper()
-    .whileFalse(arm.wristSetPositionCommand(() -> 0)));
+    .whileFalse(arm.wristSetPositionCommand(() -> 180)));
 
     // characterization commands
     primaryController.x().whileTrue(arm.runPivotCharacterization());
     primaryController.y().whileTrue(arm.runElevatorCharacterization());
-    primaryController.a().whileTrue(arm.runWristCharacterization());
+    primaryController.b().whileTrue(arm.runWristCharacterization());
   }
 
   public Command getAutonomousCommand() {

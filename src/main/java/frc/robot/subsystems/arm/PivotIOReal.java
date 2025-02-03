@@ -21,11 +21,8 @@ public class PivotIOReal implements PivotIO {
     private final TalonFX leadingMotor = new TalonFX(pivotLeftMotorID);
     private final TalonFX followingMotor = new TalonFX(pivotRightMotorID);
 
-    private final TrapezoidProfile pivotProfile = 
-    new TrapezoidProfile(new TrapezoidProfile.Constraints(2, 5));
-    private TrapezoidProfile.State pivotGoal;
-    private TrapezoidProfile.State pivotSetpoint;
     private double lastTime;
+    private double lastVelocity;
 
         //elevator FF values because built in class doesn't work
     private double FeedForwardKs = 0.35;
@@ -52,9 +49,6 @@ public class PivotIOReal implements PivotIO {
 
         //TODO set proper tolerance value for our PID controller
         pivotPIDController.setTolerance(0.1, 0.1);
-
-        pivotGoal = new TrapezoidProfile.State(getAbsoluteEncoderPosition(), 0);
-        pivotSetpoint = new TrapezoidProfile.State(getAbsoluteEncoderPosition(), 0);
     }
 
     public void updateInputs(PivotIOInputs inputs) {
@@ -63,9 +57,9 @@ public class PivotIOReal implements PivotIO {
         inputs.pivotVelocity = leadingMotor.getVelocity().getValueAsDouble();
         inputs.pivotCurrentAmps = new double[] {leadingMotor.getStatorCurrent().getValueAsDouble(), 
                                                 followingMotor.getStatorCurrent().getValueAsDouble()};
-        inputs.pivotGoalPosition = Units.radiansToDegrees(pivotGoal.position);
-        inputs.pivotSetpointPosition = Units.radiansToDegrees(pivotSetpoint.position);
-        inputs.pivotSetpointVelocity = pivotSetpoint.velocity;
+        inputs.pivotGoalPosition = Units.radiansToDegrees(pivotPIDController.getGoal().position);
+        inputs.pivotSetpointPosition = Units.radiansToDegrees(pivotPIDController.getSetpoint().position);
+        inputs.pivotSetpointVelocity = pivotPIDController.getSetpoint().velocity;
 
         inputs.pivotAtGoal = pivotPIDController.atGoal();
 
@@ -73,29 +67,25 @@ public class PivotIOReal implements PivotIO {
     }   
 
     @Override
-    public void setAngle(double angle, double elevatorPositionMet) {
+    public void setAngle(double goalAngleDeg, double elevatorPositionMet) {
         pivotOpenLoop = false;
         interpolateConstants(elevatorPositionMet);
+        goalAngleDeg = clamp(goalAngleDeg, pivotMinAngle, pivotMaxAngle);
 
-        angle = clamp(angle, pivotMinAngle, pivotMaxAngle);
-
-        pivotGoal = new TrapezoidProfile.State(Units.degreesToRadians(angle), 0);
-
-        pivotSetpoint = 
-            pivotProfile.calculate(
-            (Timer.getFPGATimestamp() - lastTime > 0.25)
-                ? (Timer.getFPGATimestamp() - lastTime)
-                : 0.02,
-            pivotSetpoint,
-            pivotGoal);
-
-        double feedForward = calculatePivotFeedForward(
-            pivotGoal.position, 
-            0,
-            0);
         double pidOutput = pivotPIDController.calculate(
-                Units.degreesToRadians(getAbsoluteEncoderPosition()), 
-                pivotGoal.position);
+            getAbsoluteEncoderPosition(), 
+            goalAngleDeg);
+        double acceleration = (pivotPIDController.getSetpoint().velocity - lastVelocity) / (Timer.getFPGATimestamp() - lastTime);
+        double feedForward = calculatePivotFeedforward(
+            pivotPIDController.getSetpoint().position,
+            pivotPIDController.getSetpoint().velocity, 
+            acceleration);
+        
+        setVoltage(
+            pidOutput
+            + feedForward);
+        lastVelocity = pivotPIDController.getSetpoint().velocity;
+        lastTime = Timer.getFPGATimestamp();   
 
         Logger.recordOutput("Pivot/CalculatedFFVolts", feedForward);
         Logger.recordOutput("Pivot/PIDCommandVolts", pidOutput);
@@ -105,6 +95,7 @@ public class PivotIOReal implements PivotIO {
         
         setMotorVoltage(feedForward + pidOutput);
 
+        lastVelocity = pivotPIDController.getSetpoint().velocity;
         lastTime = Timer.getFPGATimestamp();
     }
 
@@ -118,12 +109,16 @@ public class PivotIOReal implements PivotIO {
         return (pivotEncoder.get() * 360) - pivotEncoderPositionOffset;
     }
 
-    public double calculatePivotFeedForward(
-        double positionRadians, double velocityRadPerSec, double accelRadPerSecSquared) {
-      return FeedForwardKs * Math.signum(velocityRadPerSec)
-          + FeedForwardKg * Math.cos(positionRadians)
-          + FeedForwardKv * velocityRadPerSec
-          + FeedForwardKa * accelRadPerSecSquared;
+    private double getPivotVelocity() {
+        return (leadingMotor.getVelocity().getValueAsDouble() * 360);
+    }
+
+    public double calculatePivotFeedforward(
+        double positionDeg, double velocityDegPerSec, double accelDegPerSecSquared) {
+      return FeedForwardKs * Math.signum(Units.degreesToRadians(velocityDegPerSec))
+          + FeedForwardKg * Math.cos(Units.degreesToRadians(positionDeg))
+          + FeedForwardKv * Units.degreesToRadians(velocityDegPerSec)
+          + FeedForwardKa * Units.degreesToRadians(accelDegPerSecSquared);
     }
 
     private void setMotorVoltage(double volts) {
@@ -152,7 +147,6 @@ public class PivotIOReal implements PivotIO {
 
     @Override
     public void pivotResetProfile() {
-        pivotGoal = new TrapezoidProfile.State(getAbsoluteEncoderPosition(), 0);
-        pivotSetpoint = new TrapezoidProfile.State(getAbsoluteEncoderPosition(), 0);
+        pivotPIDController.reset(getAbsoluteEncoderPosition(), getPivotVelocity());
     }
 }

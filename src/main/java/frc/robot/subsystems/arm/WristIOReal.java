@@ -4,19 +4,23 @@ import static edu.wpi.first.math.MathUtil.clamp;
 import static frc.robot.Constants.UPDATE_PERIOD;
 import static frc.robot.Constants.WristConstants.*;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.Timer;
 
 public class WristIOReal implements WristIO {
 
     private boolean OpenLoopStatus = true;
     private final TalonFX motor = new TalonFX(motorID);
-    private TrapezoidProfile.State wristGoal;
-    private TrapezoidProfile.State wristSetpoint;
+
+    private double lastTime;
+    private double lastVelocity;
 
     // Wrist FF variables
     private double FeedForwardKs = 0.35;
@@ -33,16 +37,13 @@ public class WristIOReal implements WristIO {
 
         //TODO set proper tolerance value for our PID controller
         wristPIDController.setTolerance(0.1, 0.1);
-
-        wristGoal = new TrapezoidProfile.State(getAbsoluteAngle(), 0);
-        wristSetpoint = new TrapezoidProfile.State(getAbsoluteAngle(), 0);
     }
 
     @Override
     public void updateInputs(WristIOInputs inputs) {
         inputs.wristAbsAngle = getAbsoluteAngle();
-        inputs.wristGoal = Units.radiansToDegrees(wristGoal.position);
-        inputs.wristSetpoint = Units.radiansToDegrees(wristSetpoint.position);
+        inputs.wristGoal = Units.radiansToDegrees(wristPIDController.getGoal().position);
+        inputs.wristSetpoint = Units.radiansToDegrees(wristPIDController.getSetpoint().position);
         inputs.wristAppliedVoltage = motor.getMotorVoltage().getValueAsDouble();
         inputs.wristCurrentAmps = motor.getStatorCurrent().getValueAsDouble();
         inputs.wristOpenLoopStatus = OpenLoopStatus;
@@ -50,26 +51,29 @@ public class WristIOReal implements WristIO {
     }
     
     @Override
-    public void setAngle(double angle, double elevatorPosMet, double pivotAngleDeg) {
-        angle = clamp(angle, wristMinAngle, wristMaxAngle);
+    public void setAngle(double goalAngleDeg, double elevatorPosMet, double pivotAngleDeg) {
+        goalAngleDeg = clamp(goalAngleDeg, wristMinAngle, wristMaxAngle);
         interpolateConstants(elevatorPosMet, pivotAngleDeg);
 
-        wristGoal = new TrapezoidProfile.State(Units.degreesToRadians(angle), 0);
+        double acceleration = (wristPIDController.getSetpoint().velocity - lastVelocity) / (Timer.getFPGATimestamp() - lastTime);
 
-        wristSetpoint = 
-            wristProfile.calculate(
-            UPDATE_PERIOD,
-            wristSetpoint,
-            wristGoal);
-
-        double feedForward = calculateWristFeedForward(
-            wristGoal.position, 
-            0);
         double pidOutput = wristPIDController.calculate(
-                Units.degreesToRadians(getAbsoluteAngle()), 
-                wristGoal.position);
+            getAbsoluteAngle(), 
+            goalAngleDeg);
+        double feedForward = calculateWristFeedForward(
+            wristPIDController.getGoal().velocity, 
+            acceleration);
+
+        Logger.recordOutput("Wrist/CalculatedFFVolts", feedForward);
+        Logger.recordOutput("Wrist/PIDCommandVolts", pidOutput);
+
+        Logger.recordOutput("Wrist/VelocityError", wristPIDController.getVelocityError());
+        Logger.recordOutput("Wrist/PositionError", wristPIDController.getPositionError());
 
         setVoltage(feedForward + pidOutput);
+
+        lastVelocity = wristPIDController.getSetpoint().velocity;
+        lastTime = Timer.getFPGATimestamp();
     }
 
     /**
@@ -108,6 +112,10 @@ public class WristIOReal implements WristIO {
         return (wristEncoder.get() * 360) - encoderOffset;
     }
 
+    private double getWristVelocity() {
+        return (motor.getVelocity().getValueAsDouble() * 360);
+    }
+
     public double calculateWristFeedForward(double velocity, double acceleration) {
         return FeedForwardKs * Math.signum(velocity) + FeedForwardKv * velocity + FeedForwardKa * acceleration;
     }
@@ -119,7 +127,6 @@ public class WristIOReal implements WristIO {
 
     @Override
     public void wristResetProfile() {
-        wristGoal = new TrapezoidProfile.State(getAbsoluteAngle(), 0);
-        wristSetpoint = new TrapezoidProfile.State(getAbsoluteAngle(), 0);
+        wristPIDController.reset(getAbsoluteAngle(), getWristVelocity());
     }
 }

@@ -33,7 +33,7 @@ public interface PivotIO {
     public default void updateInputs(PivotIOInputs inputs) {}
 
     /** Sets the angle of pivot, in degrees */
-    public default void setAngle(double angle, double elevatorPositionMet) {}
+    public default void setAngle(double goalAngleDeg, double elevatorPositionMet) {}
 
     /** Run open loop at the specified voltage. */
     public default void setVoltage(double volts) {}

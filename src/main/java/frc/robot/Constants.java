@@ -1,9 +1,11 @@
 package frc.robot;
 
+import static frc.robot.Constants.PivotConstants.pivotConstraints;
+
 import com.ctre.phoenix6.hardware.CANcoder;
 
-import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -58,16 +60,14 @@ public final class Constants {
     /**  */
     public static final double gearRatio = 93.3333333;
     /**  */
-    public static final ArmFeedforward pivotFFModel = new ArmFeedforward(
-      0.35, 
-      0.35, 
-      1.79, 
-      0.3);
-    /**  */
-    public static final PIDController pivotPIDController = new PIDController(
+
+    public static final TrapezoidProfile.Constraints pivotConstraints = new TrapezoidProfile.Constraints(1, 0.1);
+
+    public static final ProfiledPIDController pivotPIDController = new ProfiledPIDController(
       12, 
       0, 
-      0.00);
+      0.00, 
+      pivotConstraints);
     /**  */
     public static final TrapezoidProfile pivotProfile = new TrapezoidProfile(new TrapezoidProfile.Constraints(
       2,
@@ -101,8 +101,23 @@ public final class Constants {
   }
 
     public static final class ElevatorConstants {
-        public static double moveVoltage = 5.0;
+        public static final TrapezoidProfile.Constraints elevatorConstraints =
+          new TrapezoidProfile.Constraints(
+            2, 
+            5);
+        // Built in PID class works
+        public static final ProfiledPIDController elevatorPIDController =
+          new ProfiledPIDController(
+          0, 
+          0, 
+          0, 
+          elevatorConstraints);
 
+        //TODO find the factor of elevator motor rotation -> elevator position
+        public static final double PositionFactor = 2 * Math.PI * 0.0;
+
+        public static double moveVoltage = 5.0;
+        
         /* Device IDs */
         public static final int motorID = 12;
     }
@@ -121,16 +136,13 @@ public final class Constants {
           2,
           5));
 
-        public static final ArmFeedforward wristFFModel = new ArmFeedforward(
-          0.35, 
-          0.35, 
-          1.79, 
-          0.3);
+        public static final TrapezoidProfile.Constraints wristConstraints = new TrapezoidProfile.Constraints(2, 5);
 
-        public static final PIDController wristPIDController = new PIDController(
+        public static final ProfiledPIDController wristPIDController = new ProfiledPIDController(
           12, 
           0, 
-          0.00);
+          0.00,
+          wristConstraints);
 
         public static final double wristMotorCurrentLimit = 5;
     }

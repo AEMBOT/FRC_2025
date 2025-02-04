@@ -7,6 +7,7 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -130,7 +131,7 @@ public interface AprilTagVisionIO {
             timestampArray[index] = estimatedRobotPose.timestampSeconds;
             Matrix<N3, N1> stdDevs =
                 getEstimationStdDevs(estimatedRobotPose, poseEstimators[index].resolution);
-            System.arraycopy(stdDevs.getData(), 0, visionStdArray, 0, 3);
+            System.arraycopy(stdDevs.getData(), 0, visionStdArray, index * 3, 3);
             if (currentMode
                 == Mode
                     .SIM) { // Don't update latency if in sim. It doesn't work for some reason. TODO
@@ -140,7 +141,12 @@ public interface AprilTagVisionIO {
             latencyArray[index] = Timer.getFPGATimestamp() - camResult.get().getTimestampSeconds();
           },
           () -> {
-            poseArray[index] = new Pose3d();
+            poseArray[index] =
+                new Pose3d(
+                    Double.NaN,
+                    Double.NaN,
+                    Double.NaN,
+                    new Rotation3d(Double.NaN, Double.NaN, Double.NaN));
             timestampArray[index] = 0.0;
             if (currentMode == Mode.SIM) {
               return;

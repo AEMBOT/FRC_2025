@@ -1,7 +1,5 @@
 package frc.robot;
 
-import static frc.robot.Constants.PivotConstants.pivotConstraints;
-
 import com.ctre.phoenix6.hardware.CANcoder;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -60,17 +58,17 @@ public final class Constants {
     public static final double gearRatio = 93.3333333;
     /**  */
 
-    public static final TrapezoidProfile.Constraints pivotConstraints = new TrapezoidProfile.Constraints(1, 0.1);
+    public static final TrapezoidProfile.Constraints pivotConstraints = 
+      new TrapezoidProfile.Constraints(
+        2, 
+        5);
 
     public static final ProfiledPIDController pivotPIDController = new ProfiledPIDController(
       12, 
       0, 
       0.00, 
       pivotConstraints);
-    /**  */
-    public static final TrapezoidProfile pivotProfile = new TrapezoidProfile(new TrapezoidProfile.Constraints(
-      2,
-      5));
+
     /** Ramp Rate of the pivot System ID in volts per second */
     public static final double pivotSysIdRampRate = 0.2;
     /** Setp Voltage of the pivot System ID in volts */
@@ -102,8 +100,8 @@ public final class Constants {
     public static final class ElevatorConstants {
         public static final TrapezoidProfile.Constraints elevatorConstraints =
           new TrapezoidProfile.Constraints(
-            2, 
-            5);
+            Units.radiansToDegrees(2), 
+            Units.radiansToDegrees(5));
         // Built in PID class works
         public static final ProfiledPIDController elevatorPIDController =
           new ProfiledPIDController(
@@ -131,11 +129,10 @@ public final class Constants {
         public static final int motorID = 13;
         public static final DutyCycleEncoder wristEncoder = new DutyCycleEncoder(2);
 
-        public static final TrapezoidProfile wristProfile = new TrapezoidProfile(new TrapezoidProfile.Constraints(
-          2,
-          5));
-
-        public static final TrapezoidProfile.Constraints wristConstraints = new TrapezoidProfile.Constraints(2, 5);
+        public static final TrapezoidProfile.Constraints wristConstraints = 
+          new TrapezoidProfile.Constraints(
+            2, 
+            5);
 
         public static final ProfiledPIDController wristPIDController = new ProfiledPIDController(
           12, 

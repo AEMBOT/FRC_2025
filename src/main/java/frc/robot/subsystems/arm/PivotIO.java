@@ -8,14 +8,13 @@ public interface PivotIO {
     
     @AutoLog
     public static class PivotIOInputs {
+        /** Whether the pivot is at the goal position or not */
         public boolean pivotAtGoal = true;
         /** Current angle of the pivot in degrees */
         public double pivotAbsolutePosition = 0.0;
-        /** Current velocity the pivot in travelling at in rotations per minute */
-        public double pivotAbsoluteVelocity = 0.0;
-        /**  */
+        /** Current velocity the pivot in travelling at in rotations per second */
         public double pivotVelocity = 0.0;
-
+        /** Current volts applied to the pivot.*/
         public double pivotAppliedVolts = 0.0;
         /** Currents amps applied to each motor. Both motors are logged indivually to better find issues. */
         public double[] pivotCurrentAmps = new double[] {};
@@ -23,7 +22,7 @@ public interface PivotIO {
         public double pivotGoalPosition = Units.degreesToRadians(50);
         /** Setpoint position of the pivot in degrees */
         public double pivotSetpointPosition = 0.0;
-        /** Setpoint position of the pivot in rotations per second TODO confirm that this is in rpm and not radpersec */
+        /** Setpoint position of the pivot in rotations per second */
         public double pivotSetpointVelocity = 0.0;
         /** Whether the pivot subsystem is running in an openloop */
         public boolean pivotOpenLoopStatus = false;

@@ -10,7 +10,6 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 
@@ -36,18 +35,80 @@ public class WristIOReal implements WristIO {
         motor.setNeutralMode(NeutralModeValue.Brake);
 
         //TODO set proper tolerance value for our PID controller
-        wristPIDController.setTolerance(0.1, 0.1);
+        wristPIDController.setTolerance(2, 0.1);
     }
 
     @Override
     public void updateInputs(WristIOInputs inputs) {
         inputs.wristAbsAngle = getAbsoluteAngle();
+        inputs.wristVelocity = getWristVelocity();
         inputs.wristGoal = Units.radiansToDegrees(wristPIDController.getGoal().position);
         inputs.wristSetpoint = Units.radiansToDegrees(wristPIDController.getSetpoint().position);
         inputs.wristAppliedVoltage = motor.getMotorVoltage().getValueAsDouble();
         inputs.wristCurrentAmps = motor.getStatorCurrent().getValueAsDouble();
         inputs.wristOpenLoopStatus = OpenLoopStatus;
         inputs.wristAtGoal = wristPIDController.atGoal();
+    }
+
+    /**
+     * Sets the voltage of the wrist motor.
+     * @param volts The voltage to set.
+     */
+    private void setMotorVoltage(double volts) {
+        OpenLoopStatus = true;
+        if (getAbsoluteAngle() < wristMinAngle) {
+            volts = clamp(volts, -Double.MAX_VALUE, 0);
+        }
+        if (getAbsoluteAngle() > wristMaxAngle) {
+            volts = clamp(volts, 0, Double.MAX_VALUE);
+        }
+
+        motor.setVoltage(volts);
+    }
+
+    /**
+     * Interpolates our PID and feedforward constants and sets them.
+     * @param elevatorPosMet Elevator current position in meters
+     * @param pivotAngleDeg Pivot current angle in degrees
+     */
+    private void interpolateConstants(double elevatorPosMet, double pivotAngleDeg) {
+        //TODO either set this to bangbang controller or calculate the lagrange as this 
+        // is not a simple function
+    wristPIDController.setPID(
+        0, 
+        0, 
+        0);
+        FeedForwardKs = 0.0 * pivotAngleDeg * elevatorPosMet;
+        FeedForwardKv = 0.0 * pivotAngleDeg * elevatorPosMet;
+        FeedForwardKa = 0.0 * pivotAngleDeg * elevatorPosMet;
+    }
+
+    /**
+     * @return the current rotation of the wrist, measured in degrees.
+     */
+    private double getAbsoluteAngle() {
+        return (wristEncoder.get() * 360) - encoderOffset;
+    }
+
+    /**
+     * 
+     * @return the current velocity of the wrist in degrees
+     */
+    private double getWristVelocity() {
+        return (motor.getVelocity().getValueAsDouble());
+    }
+
+    /**
+     * 
+     * @param velocity Current velocity of wrist in degrees per second
+     * @param acceleration Current acceleration of wrist in degrees per second squared
+     * @return Our calculated simple feedforward values
+     */
+    private double calculateWristFeedForward(double velocity, double acceleration) {
+        return 
+        FeedForwardKs * Math.signum(velocity) 
+        + FeedForwardKv * velocity 
+        + FeedForwardKa * acceleration;
     }
     
     @Override
@@ -76,53 +137,10 @@ public class WristIOReal implements WristIO {
         lastTime = Timer.getFPGATimestamp();
     }
 
-    /**
-     * Sets the voltage of the wrist motor.
-     * @param volts The voltage to set.
-     */
-    private void setVoltage(double volts) {
+    @Override 
+    public void setVoltage(double volts) {
         OpenLoopStatus = true;
-        if (getAbsoluteAngle() < wristMinAngle) {
-            volts = clamp(volts, -Double.MAX_VALUE, 0);
-        }
-        if (getAbsoluteAngle() > wristMaxAngle) {
-            volts = clamp(volts, 0, Double.MAX_VALUE);
-        }
-
-        motor.setVoltage(volts);
-    }
-
-    private void interpolateConstants(double elevatorPosMet, double pivotAngleDeg) {
-        //TODO either set this to bangbang controller or calculate the lagrange as this 
-        // is not a simple function
-    wristPIDController.setPID(
-        0, 
-        0, 
-        0
-        );
-        FeedForwardKs = 0.0 * pivotAngleDeg * elevatorPosMet;
-        FeedForwardKv = 0.0 * pivotAngleDeg * elevatorPosMet;
-        FeedForwardKa = 0.0 * pivotAngleDeg * elevatorPosMet;
-    }
-
-    /**
-     * @return the current rotation of the wrist, measured in degrees.
-     */
-    private double getAbsoluteAngle() {
-        return (wristEncoder.get() * 360) - encoderOffset;
-    }
-
-    private double getWristVelocity() {
-        return (motor.getVelocity().getValueAsDouble() * 360);
-    }
-
-    public double calculateWristFeedForward(double velocity, double acceleration) {
-        return FeedForwardKs * Math.signum(velocity) + FeedForwardKv * velocity + FeedForwardKa * acceleration;
-    }
-
-    @Override //probably unnecessary
-    public void setCharacterizationVoltage(double volts) {
-        motor.setVoltage(volts);
+        setMotorVoltage(volts);
     }
 
     @Override

@@ -31,49 +31,8 @@ public class ElevatorIOReal implements ElevatorIO {
         motor.getConfigurator().apply(motorConfig);
 
         //TODO set proper tolerance value for our PID controller
-        elevatorPIDController.setTolerance(0.1, 0.1);
+        elevatorPIDController.setTolerance(0.2, 0.1);
     }
-
-    /* Returns, in degrees, the position of the elevator motor relative to its starting position. */
-    private double getMotorRotation() {
-        return motor.getPosition().getValueAsDouble() * 360;
-    }
-
-    /* Returns (in degrees per second) the current velocity of the motor */
-    private double getMotorVelocity() {
-        return motor.getVelocity().getValueAsDouble() * 360;
-    }
-
-    /* Returns (in meters per second) the current velocity of the elevator */
-    private double getElevatorVelocity() {
-        return motor.getVelocity().getValueAsDouble() * 360 * PositionFactor;
-    }
-
-    /* Returns (in meters) the position of the elevator relative to the start position */
-    private double getElevatorPosition() {
-    // TODO Before merge, make a way to get and set the absolute vertical position of the elevator
-        return clamp(motor.getPosition().getValueAsDouble() * 360 * PositionFactor, 0, 5);
-    }
-
-    // TODO Find values for the interpolation of our feedforward and feedback values
-    // I think it is linear for FF, PID may be a different form
-    // If needed we could totallllly find out the lagrange
-    private void interpolateConstants(double pivotAngleDeg) {
-        elevatorPIDController.setPID(
-            0, 
-            0, 
-            0
-            );
-        FeedForwardKs = 0.0 * pivotAngleDeg;
-        FeedForwardKv = 0.0 * pivotAngleDeg;
-        FeedForwardKg = 0.0 * pivotAngleDeg;
-        FeedForwardKa = 0.0 * pivotAngleDeg;
-    }
-
-    //Manually calculate elevator feedforward
-    private double calculateElevatorFeedforward(double velocity, double acceleration) {
-        return FeedForwardKs * Math.signum(velocity) + FeedForwardKg + FeedForwardKv * velocity + FeedForwardKa * acceleration;
-      }
 
     @Override
     public void updateInputs(ElevatorIOInputs inputs) {
@@ -84,6 +43,54 @@ public class ElevatorIOReal implements ElevatorIO {
         inputs.elevatorAtGoal = elevatorPIDController.atGoal();
         inputs.elevatorGoalPosition = elevatorPIDController.getGoal().position;
         inputs.elevatorOpenLoopStatus = openLoopStatus;
+    }
+
+    /** Returns, in degrees, the position of the elevator motor relative to its starting position. */
+    private double getMotorRotation() {
+        return motor.getPosition().getValueAsDouble() * 360;
+    }
+
+    /** Returns (in rotations per second) the current velocity of the motor */
+    private double getMotorVelocity() {
+        return motor.getVelocity().getValueAsDouble();
+    }
+
+    /** Returns (in meters per second) the current velocity of the elevator */
+    private double getElevatorVelocity() {
+        return motor.getVelocity().getValueAsDouble() * 360 * PositionFactor;
+    }
+
+    /** Returns (in meters) the position of the elevator relative to the start position */
+    private double getElevatorPosition() {
+    // TODO Before merge, make a way to get and set the absolute vertical position of the elevator
+        return clamp(motor.getPosition().getValueAsDouble() * 360 * PositionFactor, 0, 5);
+    }
+
+    /**
+     * Manually calculates our feedforward values.
+     * @param velocity Current velocity of our elevator in meters per second.
+     * @param acceleration Current acceleration of our elevator in meters per second squared.
+     * @return Our feedforward values.
+     */
+    private double calculateElevatorFeedforward(double velocity, double acceleration) {
+        return FeedForwardKs * Math.signum(velocity) + FeedForwardKg + FeedForwardKv * velocity + FeedForwardKa * acceleration;
+      }
+
+
+    // TODO Find values for the interpolation of our feedforward and feedback values
+    /**
+     * Interpolates our elevator PID and feedforward constants.
+     * @param pivotAngleDeg Current angle of our pivot in degrees.
+     */
+    private void interpolateConstants(double pivotAngleDeg) {
+        elevatorPIDController.setPID(
+            0, 
+            0, 
+            0);
+        FeedForwardKs = 0.0 * pivotAngleDeg;
+        FeedForwardKv = 0.0 * pivotAngleDeg;
+        FeedForwardKg = 0.0 * pivotAngleDeg;
+        FeedForwardKa = 0.0 * pivotAngleDeg;
     }
 
     @Override

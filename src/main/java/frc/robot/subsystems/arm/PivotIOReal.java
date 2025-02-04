@@ -12,7 +12,6 @@ import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 
 public class PivotIOReal implements PivotIO {
@@ -48,9 +47,10 @@ public class PivotIOReal implements PivotIO {
         followingMotor.setControl(new Follower(pivotLeftMotorID, true));
 
         //TODO set proper tolerance value for our PID controller
-        pivotPIDController.setTolerance(0.1, 0.1);
+        pivotPIDController.setTolerance(2, 0.1);
     }
 
+    @Override
     public void updateInputs(PivotIOInputs inputs) {
         inputs.pivotAbsolutePosition = getAbsoluteEncoderPosition();
         inputs.pivotAppliedVolts = leadingMotor.getMotorVoltage().getValueAsDouble();
@@ -59,12 +59,74 @@ public class PivotIOReal implements PivotIO {
                                                 followingMotor.getStatorCurrent().getValueAsDouble()};
         inputs.pivotGoalPosition = Units.radiansToDegrees(pivotPIDController.getGoal().position);
         inputs.pivotSetpointPosition = Units.radiansToDegrees(pivotPIDController.getSetpoint().position);
-        inputs.pivotSetpointVelocity = pivotPIDController.getSetpoint().velocity;
+        inputs.pivotSetpointVelocity = Units.radiansToRotations(pivotPIDController.getSetpoint().velocity);
 
         inputs.pivotAtGoal = pivotPIDController.atGoal();
 
         inputs.pivotOpenLoopStatus = pivotOpenLoop;
     }   
+
+    /**
+     * Calculates our pivot feedforward values.
+     * @param positionDeg Position of our pivot in degrees.
+     * @param velocityDegPerSec Velocity of our pivot in degrees per second.
+     * @param accelDegPerSecSquared Acceleration of our pivot in degrees per second squared.
+     * @return Our pivot feedforward values.
+     */
+    private double calculatePivotFeedforward(
+        double positionDeg, double velocityDegPerSec, double accelDegPerSecSquared) {
+      return FeedForwardKs * Math.signum(Units.degreesToRadians(velocityDegPerSec))
+          + FeedForwardKg * Math.cos(Units.degreesToRadians(positionDeg))
+          + FeedForwardKv * Units.degreesToRadians(velocityDegPerSec)
+          + FeedForwardKa * Units.degreesToRadians(accelDegPerSecSquared);
+    }
+
+    /**
+     * Gets the absolute encoder position of the pivot in degrees.
+     * @return Returns the absolute encoder position of the pivot in degrees.
+     */
+    private double getAbsoluteEncoderPosition() {
+        return (pivotEncoder.get() * 360) - pivotEncoderPositionOffset;
+    }
+
+    /**
+     * Gets the pivot's velocity in degrees per second.
+     * @return Returns the pivot's velocity in degrees per second.
+     */
+    private double getPivotVelocity() {
+        return (leadingMotor.getVelocity().getValueAsDouble() * 360);
+    }
+
+    /**
+     * Sets the motor voltage of our pivot and clamps it between our min and max angle.
+     * @param volts Amount of volts sent to our pivot motors.
+     */
+    private void setMotorVoltage(double volts) {
+        if (getAbsoluteEncoderPosition() < pivotMinAngle) {
+            volts = clamp(volts, -Double.MAX_VALUE, 0);
+        }
+        if (getAbsoluteEncoderPosition() > pivotMaxAngle) {
+            volts = clamp(volts, 0, Double.MAX_VALUE);
+        }
+        leadingMotor.setVoltage(volts);
+    }
+
+    // TODO Find values for the interpolation of our feedforward and feedback values
+    /**
+     * Interpolates our pivot feedforward and PID constants.
+     * @param elevatorPositionMet Current position of the elevator in meters.
+     */
+    private void interpolateConstants(double elevatorPositionMet) {
+        pivotPIDController.setPID(
+            0, 
+            0, 
+            0
+            );
+        FeedForwardKs = 0.0 * elevatorPositionMet;
+        FeedForwardKv = 0.0 * elevatorPositionMet;
+        FeedForwardKg = 0.0 * elevatorPositionMet;
+        FeedForwardKa = 0.0 * elevatorPositionMet;
+    }
 
     @Override
     public void setAngle(double goalAngleDeg, double elevatorPositionMet) {
@@ -105,45 +167,6 @@ public class PivotIOReal implements PivotIO {
         setMotorVoltage(volts);
     }
 
-    private double getAbsoluteEncoderPosition() {
-        return (pivotEncoder.get() * 360) - pivotEncoderPositionOffset;
-    }
-
-    private double getPivotVelocity() {
-        return (leadingMotor.getVelocity().getValueAsDouble() * 360);
-    }
-
-    public double calculatePivotFeedforward(
-        double positionDeg, double velocityDegPerSec, double accelDegPerSecSquared) {
-      return FeedForwardKs * Math.signum(Units.degreesToRadians(velocityDegPerSec))
-          + FeedForwardKg * Math.cos(Units.degreesToRadians(positionDeg))
-          + FeedForwardKv * Units.degreesToRadians(velocityDegPerSec)
-          + FeedForwardKa * Units.degreesToRadians(accelDegPerSecSquared);
-    }
-
-    private void setMotorVoltage(double volts) {
-        if (getAbsoluteEncoderPosition() < pivotMinAngle) {
-            volts = clamp(volts, -Double.MAX_VALUE, 0);
-        }
-        if (getAbsoluteEncoderPosition() > pivotMaxAngle) {
-            volts = clamp(volts, 0, Double.MAX_VALUE);
-        }
-
-        leadingMotor.setVoltage(volts);
-    }
-
-    // TODO Find values for the interpolation of our feedforward and feedback values
-    private void interpolateConstants(double elevatorPositionMet) {
-        pivotPIDController.setPID(
-            0, 
-            0, 
-            0
-            );
-        FeedForwardKs = 0.0 * elevatorPositionMet;
-        FeedForwardKv = 0.0 * elevatorPositionMet;
-        FeedForwardKg = 0.0 * elevatorPositionMet;
-        FeedForwardKa = 0.0 * elevatorPositionMet;
-    }
 
     @Override
     public void pivotResetProfile() {

@@ -7,7 +7,6 @@ package frc.robot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Constants.ElevatorConstants;
 import frc.robot.subsystems.arm.Arm;
 
 public class RobotContainer {
@@ -36,7 +35,7 @@ public class RobotContainer {
     primaryController.povUp()
     .and
     (primaryController.povDown()
-    .whileFalse(arm.pivotSetPositionCommand(() -> 0)));
+    .whileFalse(arm.pivotChangeGoalPosition(0.0)));
 
 // change elevator goal manually
     primaryController
@@ -47,14 +46,18 @@ public class RobotContainer {
     .leftTrigger(0.25d)
     .whileTrue(arm.elevatorChangeGoal(-0.2))
     .onFalse(arm.elevatorChangeGoal(0.0));
-    primaryController.a().whileTrue(arm.elevatorSetGoal(() -> 2));
 
     primaryController.rightBumper().whileTrue(arm.wristMoveClockwise());
     primaryController.leftBumper().whileTrue(arm.wristMoveCounterclockwise());
     primaryController.rightBumper()
-    .and
-    (primaryController.leftBumper()
-    .whileFalse(arm.wristSetPositionCommand(() -> 180)));
+    .and(primaryController.leftBumper()
+    .whileFalse(arm.wristChangeGoalPosition(0.0)));
+
+    primaryController.a().whileTrue(
+      Commands.sequence(
+      arm.elevatorSetGoal(() -> 2),
+      arm.wristSetPositionCommand(() -> 90),
+      arm.pivotSetPositionCommand(() -> 45)));
 
     // characterization commands
     primaryController.x().whileTrue(arm.runPivotCharacterization());

@@ -86,7 +86,7 @@ public class Arm extends SubsystemBase {
                 Volts.of(4), //prevent burnout of motor
                 Seconds.of(10), //needs atleast 3-4 seconds of data for each test
                 (state) -> SignalLogger.writeString("Wrist/SysIdState", state.toString())),
-            new SysIdRoutine.Mechanism((voltage) -> wrist.setCharacterizationVoltage(voltage.in(Volts)), null, this));
+            new SysIdRoutine.Mechanism((voltage) -> wrist.setVoltage(voltage.in(Volts)), null, this));
     }
 
     @Override
@@ -148,7 +148,7 @@ public class Arm extends SubsystemBase {
     }
 
     public Command wristStopCommand() {
-        return runOnce (() -> wrist.setCharacterizationVoltage(0));
+        return runOnce (() -> wrist.setVoltage(0));
     }
     /**
      * Command to set the voltage of the elevator. Note that it will remain at this voltage until it is told otherwise.
@@ -246,7 +246,7 @@ public class Arm extends SubsystemBase {
      * @return A {@link RunCommand} to change the wrist setpoint by velocityDegPerSec.
      * Resets the wrist dampening profile after completion.
      */
-    public Command changeWristGoalPosition(double velocityDegPerSec) {
+    public Command wristChangeGoalPosition(double velocityDegPerSec) {
         return wristSetPositionCommand(() -> wristInputs.wristGoal + (velocityDegPerSec * UPDATE_PERIOD))
             .finallyDo(wrist::wristResetProfile);
     }

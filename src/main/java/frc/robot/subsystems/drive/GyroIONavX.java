@@ -54,9 +54,9 @@ public class GyroIONavX implements GyroIO {
                 (Double value) ->
                     Rotation2d.fromDegrees(
                         switch (currentRobot) {
-                          case BUNNYBOT ->
+                          case DORY ->
                               -value; // According to last years code, clef NavX is inverted
-                          case LIGHTCYCLE -> -value;
+                          case NAUTILUS -> -value;
                         }))
             .toArray(Rotation2d[]::new);
     yawTimestampQueue.clear();

@@ -114,35 +114,36 @@ public final class Constants {
       NORMAL
     }
 
-    public final class LightcycleCameras {
-      public static final String frontCamName = "front";
-      public static final Transform3d frontCamToRobot =
+    public final class NautilusCameras { // TODO Get actual Nautilus camera offsets
+      public static final String frontLeftName = "front-left";
+      public static final Transform3d frontLeftFromRobot =
           new Transform3d(
               new Translation3d(
-                  Units.inchesToMeters(11.32),
-                  Units.inchesToMeters(7.08),
-                  Units.inchesToMeters(7.8)),
+                  Units.inchesToMeters(11), Units.inchesToMeters(7), Units.inchesToMeters(4)),
               new Rotation3d(Units.degreesToRadians(180), Units.degreesToRadians(-30), 0.0));
 
-      public static final String leftCamName = "left";
-      public static final Transform3d leftCamToRobot =
+      public static final String frontRightName = "front-right";
+      public static final Transform3d frontRightFromRobot =
           new Transform3d(
               new Translation3d(
-                  Units.inchesToMeters(-12.01),
-                  Units.inchesToMeters(11.65),
-                  Units.inchesToMeters(10.58)),
+                  Units.inchesToMeters(11), Units.inchesToMeters(-7), Units.inchesToMeters(4)),
+              new Rotation3d(Units.degreesToRadians(180), Units.degreesToRadians(-30), 0.0));
+
+      public static final String backLeftName = "back-left";
+      public static final Transform3d backLeftFromRobot =
+          new Transform3d(
+              new Translation3d(
+                  Units.inchesToMeters(-11), Units.inchesToMeters(11.5), Units.inchesToMeters(6)),
               new Rotation3d(
                   Units.degreesToRadians(180),
                   Units.degreesToRadians(-23.5),
                   Units.degreesToRadians(147)));
 
-      public static final String rightCamName = "right";
-      public static final Transform3d rightCamToRobot =
+      public static final String backRightName = "back-right";
+      public static final Transform3d backRightFromRobot =
           new Transform3d(
               new Translation3d(
-                  Units.inchesToMeters(-12.01),
-                  Units.inchesToMeters(-11.65),
-                  Units.inchesToMeters(10.58)),
+                  Units.inchesToMeters(-11), Units.inchesToMeters(-11.5), Units.inchesToMeters(6)),
               new Rotation3d(
                   Units.degreesToRadians(180),
                   Units.degreesToRadians(-23.5),

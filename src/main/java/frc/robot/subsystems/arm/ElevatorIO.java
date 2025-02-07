@@ -7,16 +7,22 @@ public interface ElevatorIO {
     public static class ElevatorIOInputs {
         /** Whether the elevator is at goal posiiton or not */
         public boolean elevatorAtGoal = true;
-        /** Elevator motor rotation in degrees per second */
-        public double elevatorMotorRotation = 0.0;
+        /** Whether the elevator is at the setpoint posiiton or not */
+        public boolean elevatorAtSetpoint = true;
+
+        /** Elevator motor rotation in degrees */
+        public double elevatorMotorRotationDeg = 0.0;
         /** Current elevator voltage */
         public double elevatorVoltage = 0.0;
-        /** Current elevator velocity in rotations per second */
-        public double elevatorVelocity = 0.0;
+        /** Current elevator velocity in degrees per second */
+        public double elevatorMotorVelocityDegrees = 0.0;
+
+        public double elevatorVelocityMeters = 0.0;
+
         /** Current elevator position in meters */
-        public double elevatorPosition = 0.0;
+        public double elevatorPositionMet = 0.0;
         /** Current elevator goal position in meters */
-        public double elevatorGoalPosition = 0.0;
+        public double elevatorGoalPositionMet = 0.0;
         /** Whether the elevator is running open loop or not */
         public boolean elevatorOpenLoopStatus = false;
     }

@@ -31,7 +31,9 @@ public class Arm extends SubsystemBase {
     private final SysIdRoutine elevatorRoutine;
     private final SysIdRoutine pivotRoutine;
     private final SysIdRoutine wristRoutine;
-
+// TODO Characterize ALL factors of interpolation for all arm systems AND ALL our PID and FF Values and
+// tolerance values for BOTH Nautilus AND Dory (Nautilus first?) Also elevator position factor
+// Also check routine values because the tests may not be accurate
     public Arm() {
         switch (currentMode) {
             case REAL: {
@@ -64,9 +66,9 @@ public class Arm extends SubsystemBase {
     elevatorRoutine =
         new SysIdRoutine(
             new SysIdRoutine.Config(
-                Volts.of(0.2).per(Second), //TODO check if all routine values are enough
-                Volts.of(4), //prevent burnout of motor
-                Seconds.of(10), //needs atleast 3-4 seconds of data for each test
+                Volts.of(0.4).per(Second),
+                Volts.of(6), //prevent burnout of motor
+                Seconds.of(3), //needs atleast 3-4 seconds of data for each test
                 (state) -> SignalLogger.writeString("Elevator/SysIdState", state.toString())),
             new SysIdRoutine.Mechanism((voltage) -> elevator.setVoltage(voltage.in(Volts)), null, this));
 
@@ -74,18 +76,18 @@ public class Arm extends SubsystemBase {
         new SysIdRoutine(
             new SysIdRoutine.Config(
                 Volts.of(0.2).per(Second),
-                Volts.of(4), //prevent burnout of motor
-                Seconds.of(10), //needs atleast 3-4 seconds of data for each test
+                Volts.of(6), //prevent burnout of motor
+                Seconds.of(3), //needs atleast 3-4 seconds of data for each test
                 (state) -> SignalLogger.writeString("Pivot/SysIdState", state.toString())),
             new SysIdRoutine.Mechanism((voltage) -> pivot.setVoltage(voltage.in(Volts)), null, this));
 
     wristRoutine =
         new SysIdRoutine(
             new SysIdRoutine.Config(
-                Volts.of(0.2).per(Second),
-                Volts.of(4), //prevent burnout of motor
-                Seconds.of(10), //needs atleast 3-4 seconds of data for each test
-                (state) -> SignalLogger.writeString("Wrist/SysIdState", state.toString())),
+                Volts.of(0.4).per(Second),
+                Volts.of(6), //prevent burnout of motor
+                Seconds.of(5), //needs atleast 3-4 seconds of data for each test
+                (state) -> Logger.recordOutput("Wrist/SysIdState", state.toString())),
             new SysIdRoutine.Mechanism((voltage) -> wrist.setVoltage(voltage.in(Volts)), null, this));
     }
 
@@ -106,7 +108,11 @@ public class Arm extends SubsystemBase {
      * @return A {@link RunCommand} to set the pivot setpoint to posDeg.
      */
     public Command pivotSetPositionCommand(DoubleSupplier posDeg) {
-        return run(() -> pivot.setAngle(posDeg.getAsDouble(), elevatorInputs.elevatorPosition));
+        return run(() -> pivotRunPosition(posDeg.getAsDouble()));
+    }
+
+    private void pivotRunPosition(double posDeg) {
+        pivot.setAngle(posDeg, elevatorInputs.elevatorPositionMet);
     }
 
     /**
@@ -127,7 +133,7 @@ public class Arm extends SubsystemBase {
      * This runs continously until the command ends.
      */
     public Command pivotMoveUp() {
-        return new RunCommand(() -> pivot.setAngle(pivotInputs.pivotAbsolutePosition + 0.01, elevatorInputs.elevatorPosition));
+        return run(() -> pivot.setAngle(pivotInputs.pivotAbsolutePosition + 0.01, elevatorInputs.elevatorPositionMet));
     }
 
     /**
@@ -136,7 +142,7 @@ public class Arm extends SubsystemBase {
      * This runs continously until the command ends.
      */
     public Command pivotMoveDown() {
-        return new RunCommand(() -> pivot.setAngle(pivotInputs.pivotAbsolutePosition - 0.01, elevatorInputs.elevatorPosition));
+        return run(() -> pivot.setAngle(pivotInputs.pivotAbsolutePosition - 0.01, elevatorInputs.elevatorPositionMet));
     }
 
     public Command elevatorStopCommand() {
@@ -177,8 +183,18 @@ public class Arm extends SubsystemBase {
         return run(() -> elevatorRunPosition(goalMet.getAsDouble()));
     }
 
+    /**
+     * Private method accessible by !!!!ONLY!!!! other commands to send elevator target goal down.
+     * @param goalMet Target goal (in meters) of the elevator
+     */
+    private void elevatorRunPosition(double goalMet) {
+        Logger.recordOutput("Elevator/goalMeters", goalMet);
+        elevator.setGoalPosition(goalMet, pivotInputs.pivotAbsolutePosition);
+    }
+
+    
     public Command elevatorChangeGoal(double velocityMetPerSec) {
-        return elevatorSetGoal(() -> elevatorInputs.elevatorGoalPosition + (velocityMetPerSec * UPDATE_PERIOD))
+        return elevatorSetGoal(() -> elevatorInputs.elevatorGoalPositionMet + (velocityMetPerSec * UPDATE_PERIOD))
         .finallyDo(elevator::elevatorResetProfile);
     }
 
@@ -195,7 +211,7 @@ public class Arm extends SubsystemBase {
      * @return  Command to set pivot goal to the default.
      */
     public Command pivotGetDefault() {
-        return pivotSetPositionCommand(() -> 0);
+        return pivotSetPositionCommand(() -> 45);
     }
 
     /**
@@ -203,16 +219,7 @@ public class Arm extends SubsystemBase {
      * @return  Command to set wrist goal to the default.
      */
     public Command wristGetDefault() {
-        return wristSetPositionCommand(() -> 0);
-    }
-
-    /**
-     * Private method accessible by !!!!ONLY!!!! other commands to send elevator target goal down.
-     * @param goalMet Target goal (in meters) of the elevator
-     */
-    private void elevatorRunPosition(double goalMet) {
-        Logger.recordOutput("Elevator/goalMeters", goalMet);
-        elevator.setGoalPosition(goalMet, pivotInputs.pivotAbsolutePosition);
+        return wristSetPositionCommand(() -> 90);
     }
 
     /**
@@ -220,7 +227,7 @@ public class Arm extends SubsystemBase {
      * This runs continously until the command ends.
      */
     public Command wristMoveClockwise() {
-        return new RunCommand(() -> wrist.setAngle(wristInputs.wristAbsAngle - 1.0d, elevatorInputs.elevatorPosition, pivotInputs.pivotAbsolutePosition));
+        return run(() -> wrist.setAngle(wristInputs.wristAbsAngle - 1.0d, elevatorInputs.elevatorPositionMet, pivotInputs.pivotAbsolutePosition));
     }
 
     /**
@@ -228,7 +235,7 @@ public class Arm extends SubsystemBase {
      * This runs continously until the command ends.
      */
     public Command wristMoveCounterclockwise() {
-        return new RunCommand(() -> wrist.setAngle(wristInputs.wristAbsAngle + 1.0d, elevatorInputs.elevatorPosition, pivotInputs.pivotAbsolutePosition));
+        return run(() -> wrist.setAngle(wristInputs.wristAbsAngle + 1.0d, elevatorInputs.elevatorPositionMet, pivotInputs.pivotAbsolutePosition));
     }
 
         /**
@@ -237,7 +244,11 @@ public class Arm extends SubsystemBase {
      * @return A {@link RunCommand} to set the wrist setpoint to posDeg.
      */
     public Command wristSetPositionCommand(DoubleSupplier posDeg) {
-        return run(() -> wrist.setAngle(posDeg.getAsDouble(), elevatorInputs.elevatorPosition, pivotInputs.pivotAbsolutePosition));
+        return run(() -> wristRunPositionCommand(posDeg.getAsDouble()));
+    }
+
+    private void wristRunPositionCommand(double posDeg) {
+        wrist.setAngle(posDeg, elevatorInputs.elevatorPositionMet, pivotInputs.pivotAbsolutePosition);
     }
 
     /**

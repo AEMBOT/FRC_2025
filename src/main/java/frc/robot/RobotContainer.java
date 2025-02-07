@@ -30,12 +30,14 @@ public class RobotContainer {
       )
     );
     // Temporary arm bindings for testing
-    primaryController.povUp().whileTrue(arm.pivotMoveUp());
-    primaryController.povDown().whileTrue(arm.pivotMoveDown());
-    primaryController.povUp()
-    .and
-    (primaryController.povDown()
-    .whileFalse(arm.pivotChangeGoalPosition(0.0)));
+    primaryController
+    .povUp()
+    .whileTrue(arm.pivotChangeGoalPosition(0.1))
+    .onFalse(arm.pivotChangeGoalPosition(0.0));
+    primaryController
+    .povDown()
+    .whileTrue(arm.pivotChangeGoalPosition(-0.1))
+    .onFalse(arm.pivotChangeGoalPosition(0.0));
 
 // change elevator goal manually
     primaryController
@@ -47,22 +49,26 @@ public class RobotContainer {
     .whileTrue(arm.elevatorChangeGoal(-0.2))
     .onFalse(arm.elevatorChangeGoal(0.0));
 
-    primaryController.rightBumper().whileTrue(arm.wristMoveClockwise());
-    primaryController.leftBumper().whileTrue(arm.wristMoveCounterclockwise());
-    primaryController.rightBumper()
-    .and(primaryController.leftBumper()
-    .whileFalse(arm.wristChangeGoalPosition(0.0)));
+    primaryController
+    .rightBumper()
+    .onTrue(arm.wristSetPositionCommand(() -> 360));
+    primaryController
+    .leftBumper()
+    .onTrue(arm.wristSetPositionCommand(() -> -360));
+    //primaryController.rightBumper()
+    //.and(primaryController.leftBumper()
+    //.whileFalse(arm.wristChangeGoalPosition(0.0)));
 
-    primaryController.a().whileTrue(
+    primaryController.b().whileTrue(
       Commands.sequence(
-      arm.elevatorSetGoal(() -> 2),
-      arm.wristSetPositionCommand(() -> 90),
-      arm.pivotSetPositionCommand(() -> 45)));
+      arm.pivotSetPositionCommand(() -> 45), //degrees
+      arm.elevatorSetGoal(() -> 2), //meters
+      arm.wristSetPositionCommand(() -> 90))); //degrees
 
     // characterization commands
     primaryController.x().whileTrue(arm.runPivotCharacterization());
     primaryController.y().whileTrue(arm.runElevatorCharacterization());
-    primaryController.b().whileTrue(arm.runWristCharacterization());
+    primaryController.a().whileTrue(arm.runWristCharacterization());
   }
 
   public Command getAutonomousCommand() {

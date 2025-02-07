@@ -4,6 +4,10 @@
 
 package frc.robot;
 
+import java.io.File;
+
+import com.ctre.phoenix6.SignalLogger;
+
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
@@ -19,9 +23,14 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void robotInit() {
-
-    Logger.addDataReceiver(new WPILOGWriter("U/logs"));
+    String LOG_DIRECTORY = "/home/lvuser/logs";
+    var directory = new File(LOG_DIRECTORY);
+    if (!directory.exists()) {
+      directory.mkdir();
+    }
+    Logger.addDataReceiver(new WPILOGWriter(LOG_DIRECTORY));
     Logger.addDataReceiver(new NT4Publisher());
+    SignalLogger.setPath(LOG_DIRECTORY);
 
     Logger.start();
 

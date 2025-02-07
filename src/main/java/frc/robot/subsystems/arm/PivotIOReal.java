@@ -23,11 +23,10 @@ public class PivotIOReal implements PivotIO {
     private double lastTime;
     private double lastVelocity;
 
-        //elevator FF values because built in class doesn't work
-    private double FeedForwardKs = 0.35;
-    private double FeedForwardKg = 0.35;
-    private double FeedForwardKv = 1.79;
-    private double FeedForwardKa = 0.3;
+    private double FeedForwardKs = pivotFFValues[0];
+    private double FeedForwardKg = pivotFFValues[1];
+    private double FeedForwardKv = pivotFFValues[2];
+    private double FeedForwardKa = pivotFFValues[3];
 
 
     public PivotIOReal() {
@@ -46,39 +45,39 @@ public class PivotIOReal implements PivotIO {
 
         followingMotor.setControl(new Follower(pivotLeftMotorID, true));
 
-        //TODO set proper tolerance value for our PID controller
-        pivotPIDController.setTolerance(2, 0.1);
+        pivotPIDController.setTolerance(pivotAngleToleranceDeg, pivotVelocityToleranceDegPerSec);
     }
 
     @Override
     public void updateInputs(PivotIOInputs inputs) {
         inputs.pivotAbsolutePosition = getAbsoluteEncoderPosition();
         inputs.pivotAppliedVolts = leadingMotor.getMotorVoltage().getValueAsDouble();
-        inputs.pivotVelocity = leadingMotor.getVelocity().getValueAsDouble();
+        inputs.pivotVelocity = getPivotVelocity();
         inputs.pivotCurrentAmps = new double[] {leadingMotor.getStatorCurrent().getValueAsDouble(), 
                                                 followingMotor.getStatorCurrent().getValueAsDouble()};
         inputs.pivotGoalPosition = Units.radiansToDegrees(pivotPIDController.getGoal().position);
         inputs.pivotSetpointPosition = Units.radiansToDegrees(pivotPIDController.getSetpoint().position);
-        inputs.pivotSetpointVelocity = Units.radiansToRotations(pivotPIDController.getSetpoint().velocity);
+        inputs.pivotSetpointVelocity = Units.radiansToDegrees(pivotPIDController.getSetpoint().velocity);
 
         inputs.pivotAtGoal = pivotPIDController.atGoal();
+        inputs.pivotAtSetpoint = pivotPIDController.atSetpoint();
 
         inputs.pivotOpenLoopStatus = pivotOpenLoop;
     }   
 
     /**
      * Calculates our pivot feedforward values.
-     * @param positionDeg Position of our pivot in degrees.
-     * @param velocityDegPerSec Velocity of our pivot in degrees per second.
-     * @param accelDegPerSecSquared Acceleration of our pivot in degrees per second squared.
+     * @param positionRad Setpoint position of our pivot in radians.
+     * @param velocityRadPerSec Setpoint velocity of our pivot in radians per second.
+     * @param accelRadPerSecSquared Setpoint acceleration of our pivot in radians per second squared.
      * @return Our pivot feedforward values.
      */
     private double calculatePivotFeedforward(
-        double positionDeg, double velocityDegPerSec, double accelDegPerSecSquared) {
-      return FeedForwardKs * Math.signum(Units.degreesToRadians(velocityDegPerSec))
-          + FeedForwardKg * Math.cos(Units.degreesToRadians(positionDeg))
-          + FeedForwardKv * Units.degreesToRadians(velocityDegPerSec)
-          + FeedForwardKa * Units.degreesToRadians(accelDegPerSecSquared);
+        double positionRad, double velocityRadPerSec, double accelRadPerSecSquared) {
+      return FeedForwardKs * Math.signum(velocityRadPerSec)
+          + FeedForwardKg * Math.cos(positionRad)
+          + FeedForwardKv * (velocityRadPerSec)
+          + FeedForwardKa * (accelRadPerSecSquared);
     }
 
     /**
@@ -86,7 +85,7 @@ public class PivotIOReal implements PivotIO {
      * @return Returns the absolute encoder position of the pivot in degrees.
      */
     private double getAbsoluteEncoderPosition() {
-        return (pivotEncoder.get() * 360) - pivotEncoderPositionOffset;
+        return Units.rotationsToDegrees(pivotEncoder.get() - pivotEncoderPositionOffset);
     }
 
     /**
@@ -94,7 +93,7 @@ public class PivotIOReal implements PivotIO {
      * @return Returns the pivot's velocity in degrees per second.
      */
     private double getPivotVelocity() {
-        return (leadingMotor.getVelocity().getValueAsDouble() * 360);
+        return Units.rotationsToDegrees(leadingMotor.getVelocity().getValueAsDouble());
     }
 
     /**
@@ -104,56 +103,54 @@ public class PivotIOReal implements PivotIO {
     private void setMotorVoltage(double volts) {
         if (getAbsoluteEncoderPosition() < pivotMinAngle) {
             volts = clamp(volts, -Double.MAX_VALUE, 0);
-        }
+        } //volts need to be characterized to be enough to beat static friction right?
         if (getAbsoluteEncoderPosition() > pivotMaxAngle) {
             volts = clamp(volts, 0, Double.MAX_VALUE);
         }
         leadingMotor.setVoltage(volts);
     }
 
-    // TODO Find values for the interpolation of our feedforward and feedback values
     /**
      * Interpolates our pivot feedforward and PID constants.
      * @param elevatorPositionMet Current position of the elevator in meters.
      */
     private void interpolateConstants(double elevatorPositionMet) {
-        pivotPIDController.setPID(
-            0, 
-            0, 
-            0
-            );
-        FeedForwardKs = 0.0 * elevatorPositionMet;
-        FeedForwardKv = 0.0 * elevatorPositionMet;
-        FeedForwardKg = 0.0 * elevatorPositionMet;
-        FeedForwardKa = 0.0 * elevatorPositionMet;
+        //pivotPIDController.setPID(
+        //    0 * PivotPIDFactor, 
+        //    0 * PivotPIDFactor, 
+        //    0 * PivotPIDFactor);
+        //FeedForwardKs = 0.0 * elevatorPositionMet * PivotFFactor;
+        //FeedForwardKv = 0.0 * elevatorPositionMet * PivotFFactor;
+        //FeedForwardKg = 0.0 * elevatorPositionMet * PivotFFactor;
+        //FeedForwardKa = 0.0 * elevatorPositionMet * PivotFFactor;
     }
 
     @Override
     public void setAngle(double goalAngleDeg, double elevatorPositionMet) {
         pivotOpenLoop = false;
+
         interpolateConstants(elevatorPositionMet);
+
         goalAngleDeg = clamp(goalAngleDeg, pivotMinAngle, pivotMaxAngle);
 
-        double pidOutput = pivotPIDController.calculate(
-            getAbsoluteEncoderPosition(), 
-            goalAngleDeg);
-        double acceleration = (pivotPIDController.getSetpoint().velocity - lastVelocity) / (Timer.getFPGATimestamp() - lastTime);
-        double feedForward = calculatePivotFeedforward(
+        double pidOutput = pivotPIDController.calculate( //convert to radians for our FF equation
+            Units.degreesToRadians(getAbsoluteEncoderPosition()), 
+            Units.degreesToRadians(goalAngleDeg));
+
+        double acceleration = ( //acceleration in radians
+            pivotPIDController.getSetpoint().velocity - lastVelocity) 
+            / (Timer.getFPGATimestamp() - lastTime);
+
+        double feedForward = calculatePivotFeedforward( //feedforward in radians
             pivotPIDController.getSetpoint().position,
             pivotPIDController.getSetpoint().velocity, 
             acceleration);
-        
-        setVoltage(
-            pidOutput
-            + feedForward);
-        lastVelocity = pivotPIDController.getSetpoint().velocity;
-        lastTime = Timer.getFPGATimestamp();   
 
         Logger.recordOutput("Pivot/CalculatedFFVolts", feedForward);
-        Logger.recordOutput("Pivot/PIDCommandVolts", pidOutput);
-
-        Logger.recordOutput("Pivot/VelocityError", pivotPIDController.getVelocityError());
-        Logger.recordOutput("Pivot/PositionError", pivotPIDController.getPositionError());
+        Logger.recordOutput("Pivot/PIDFeedbackVolts", pidOutput);
+        //convert back to degrees
+        Logger.recordOutput("Pivot/VelocityErrorDeg", Units.radiansToDegrees(pivotPIDController.getVelocityError()));
+        Logger.recordOutput("Pivot/PositionErrorDeg", Units.radiansToDegrees(pivotPIDController.getPositionError()));
         
         setMotorVoltage(feedForward + pidOutput);
 
@@ -170,6 +167,6 @@ public class PivotIOReal implements PivotIO {
 
     @Override
     public void pivotResetProfile() {
-        pivotPIDController.reset(getAbsoluteEncoderPosition(), getPivotVelocity());
+        pivotPIDController.reset(Units.degreesToRadians(getAbsoluteEncoderPosition()), 0);
     }
 }

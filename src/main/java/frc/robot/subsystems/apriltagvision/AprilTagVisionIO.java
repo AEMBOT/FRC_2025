@@ -141,6 +141,8 @@ public interface AprilTagVisionIO {
             latencyArray[index] = Timer.getFPGATimestamp() - camResult.get().getTimestampSeconds();
           },
           () -> {
+            // Set pose values to NaN if no AprilTags are seen.
+            // Pose estimation will discard the pose while having vision logs look nice.
             poseArray[index] =
                 new Pose3d(
                     Double.NaN,

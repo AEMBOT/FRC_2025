@@ -14,7 +14,7 @@ import frc.robot.Constants;
 import frc.robot.Constants.AprilTagConstants;
 import frc.robot.Constants.AprilTagConstants.CameraResolution;
 import frc.robot.Constants.AprilTagConstants.DoryCameras;
-import frc.robot.Constants.AprilTagConstants.LightcycleCameras;
+import frc.robot.Constants.AprilTagConstants.NautilusCameras;
 import frc.robot.subsystems.apriltagvision.AprilTagVisionIO.CameraPoseEstimator;
 import java.util.Arrays;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -38,26 +38,31 @@ public class AprilTagVision extends SubsystemBase {
   public AprilTagVision(SwerveDrivePoseEstimator swerveDrivePoseEstimator) {
     CameraPoseEstimator[] visionPoseEstimators = {};
     switch (currentRobot) {
-      case LIGHTCYCLE:
+      case NAUTILUS:
         visionPoseEstimators =
             new CameraPoseEstimator[] {
               new CameraPoseEstimator(
-                  new PhotonCamera(LightcycleCameras.frontCamName),
-                  LightcycleCameras.frontCamToRobot,
+                  new PhotonCamera(NautilusCameras.frontLeftName),
+                  NautilusCameras.frontLeftFromRobot,
                   AprilTagConstants.poseStrategy,
                   CameraResolution.HIGH_RES),
               new CameraPoseEstimator(
-                  new PhotonCamera(LightcycleCameras.leftCamName),
-                  LightcycleCameras.leftCamToRobot,
+                  new PhotonCamera(NautilusCameras.frontRightName),
+                  NautilusCameras.frontRightFromRobot,
                   AprilTagConstants.poseStrategy,
                   CameraResolution.HIGH_RES),
               new CameraPoseEstimator(
-                  new PhotonCamera(LightcycleCameras.rightCamName),
-                  LightcycleCameras.rightCamToRobot,
+                  new PhotonCamera(NautilusCameras.backLeftName),
+                  NautilusCameras.backLeftFromRobot,
+                  AprilTagConstants.poseStrategy,
+                  CameraResolution.HIGH_RES),
+              new CameraPoseEstimator(
+                  new PhotonCamera(NautilusCameras.backRightName),
+                  NautilusCameras.backRightFromRobot,
                   AprilTagConstants.poseStrategy,
                   CameraResolution.HIGH_RES)
             };
-      case BUNNYBOT:
+      case DORY:
         visionPoseEstimators =
             new CameraPoseEstimator[] {
               new CameraPoseEstimator(
@@ -69,17 +74,17 @@ public class AprilTagVision extends SubsystemBase {
                   new PhotonCamera(DoryCameras.frontRightName),
                   DoryCameras.frontRightFromRobot,
                   AprilTagConstants.poseStrategy,
-                  CameraResolution.HIGH_RES),
+                  CameraResolution.NORMAL),
               new CameraPoseEstimator(
                   new PhotonCamera(DoryCameras.backLeftName),
                   DoryCameras.backLeftFromRobot,
                   AprilTagConstants.poseStrategy,
-                  CameraResolution.HIGH_RES),
+                  CameraResolution.NORMAL),
               new CameraPoseEstimator(
                   new PhotonCamera(DoryCameras.backRightName),
                   DoryCameras.backRightFromRobot,
                   AprilTagConstants.poseStrategy,
-                  CameraResolution.HIGH_RES),
+                  CameraResolution.NORMAL),
             };
     }
 

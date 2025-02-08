@@ -67,7 +67,7 @@ public final class Constants {
       public static final int TALON_CANCODER_3 = 23;
 
       public static final double WHEEL_RADIUS = Units.inchesToMeters(1.906);
-      public static final double ODOMETRY_FREQUENCY = 200.0; // default 250, limited to 200 by NavX
+      public static final int ODOMETRY_FREQUENCY = 200; // default 250, limited to 200 by NavX
 
       public static final Rotation2d[] absoluteEncoderOffset =
           switch (currentRobot) {

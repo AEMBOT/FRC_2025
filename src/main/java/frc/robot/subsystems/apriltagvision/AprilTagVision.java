@@ -38,7 +38,7 @@ public class AprilTagVision extends SubsystemBase {
   public AprilTagVision(SwerveDrivePoseEstimator swerveDrivePoseEstimator) {
     CameraPoseEstimator[] visionPoseEstimators = {};
     switch (currentRobot) {
-      case LIGHTCYCLE:
+      case NAUTILUS:
         visionPoseEstimators =
             new CameraPoseEstimator[] {
               new CameraPoseEstimator(
@@ -62,7 +62,7 @@ public class AprilTagVision extends SubsystemBase {
                   AprilTagConstants.poseStrategy,
                   CameraResolution.HIGH_RES)
             };
-      case BUNNYBOT:
+      case DORY:
         visionPoseEstimators =
             new CameraPoseEstimator[] {
               new CameraPoseEstimator(

@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.subsystems.apriltagvision.AprilTagVision;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.locks.Lock;
@@ -53,6 +54,8 @@ public class Drive extends SubsystemBase {
   private final Module[] modules = new Module[4]; // FL, FR, BL, BR
   private final SysIdRoutine moduleSteerRoutine;
   private final SysIdRoutine driveRoutine;
+
+  private AprilTagVision aprilTagVision = new AprilTagVision(poseEstimator);
 
   public Drive(
       GyroIO gyroIO,

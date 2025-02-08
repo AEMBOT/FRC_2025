@@ -19,7 +19,7 @@ public class PathGenerator {
    * @param startingPosition The starting position of the path, usually the current position of the
    *     robot.
    * @param targetPosition The target position of the path.
-   * @param constraints PathConstraints to follow.
+   * @param constraints {@link PathConstraints} to follow.
    * @return A command to follow the generated path.
    */
   public static Command generateSimplePath(

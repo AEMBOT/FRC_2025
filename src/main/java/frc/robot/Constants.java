@@ -36,21 +36,21 @@ public final class Constants {
 
     public static final class PivotConstants { 
     /** Maximum angle for the pivot to move to, in degrees */
-    public static final double pivotMaxAngle = 170;
+    public static final double pivotMaxAngle = 45;
     /** Minimum angle for the pivot to move to, in degrees */
-    public static final double pivotMinAngle = 50;
+    public static final double pivotMinAngle = 0;
     /** ID of the left pivot sparkmax */
     public static final int pivotLeftMotorID = 10;
     /**  */
-    public static final boolean pivotLeftMotorInverted = false;
+    public static final boolean pivotLeftMotorInverted = true;
     /**  */
-    public static final int pivotLeftMotorCurrentLimit = 10;
+    public static final int pivotLeftMotorCurrentLimit = 5;
     /** ID of the right pivot sparkmax */
     public static final int pivotRightMotorID = 11;
     /**  */
     public static final boolean pivotRightMotorInverted = false;
     /**  */
-    public static final int pivotRightMotorCurrentLimit = 10;
+    public static final int pivotRightMotorCurrentLimit = 5;
     /**  */
     public static final DutyCycleEncoder pivotEncoder = new DutyCycleEncoder(1);
     /**  */
@@ -59,13 +59,13 @@ public final class Constants {
     public static final double gearRatio = 93.3333333;
     /**  */
     public static final ArmFeedforward pivotFFModel = new ArmFeedforward(
-      0.35, 
-      0.35, 
-      1.79, 
-      0.3);
+      0.1, 
+      0.1, 
+      0.5, 
+      0.1);
     /**  */
     public static final PIDController pivotPIDController = new PIDController(
-      12, 
+      6, 
       0, 
       0.00);
     /**  */

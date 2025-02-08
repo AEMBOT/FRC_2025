@@ -7,6 +7,9 @@ public interface ElevatorIO {
     public static class ElevatorIOInputs {
         public double elevatorMotorRotation = 0.0;
         public double elevatorVoltage = 0.0;
+        public double elevatorCurrentDraw = 0.0;
+        public double elevatorMaxPos = 0.0;
+        public double elevatorMinPos = 0.0;
     }
 
     public default void updateInputs(ElevatorIOInputs inputs) {}

@@ -50,8 +50,8 @@ public class PivotIOReal implements PivotIO {
         inputs.pivotAppliedVolts = leadingMotor.getMotorVoltage().getValueAsDouble();
         inputs.pivotCurrentAmps = new double[] {leadingMotor.getStatorCurrent().getValueAsDouble(), 
                                                 followingMotor.getStatorCurrent().getValueAsDouble()};
-        inputs.pivotGoalPosition = Units.radiansToDegrees(pivotGoal.position);
-        inputs.pivotSetpointPosition = Units.radiansToDegrees(pivotSetpoint.position);
+        inputs.pivotGoalPosition = pivotGoal.position;
+        inputs.pivotSetpointPosition = pivotSetpoint.position;
         inputs.pivotSetpointVelocity = pivotSetpoint.velocity;
         inputs.openLoopStatus = openLoop;
     }   
@@ -62,7 +62,7 @@ public class PivotIOReal implements PivotIO {
 
         angle = clamp(angle, pivotMinAngle, pivotMaxAngle);
 
-        pivotGoal = new TrapezoidProfile.State(Units.degreesToRadians(angle), 0);
+        pivotGoal = new TrapezoidProfile.State(angle, 0);
 
         pivotSetpoint = 
             pivotProfile.calculate(
@@ -76,7 +76,7 @@ public class PivotIOReal implements PivotIO {
             pivotGoal.position, 
             0);
         double pidOutput = pivotPIDController.calculate(
-                Units.degreesToRadians(getAbsoluteEncoderPosition()), 
+                getAbsoluteEncoderPosition(), 
                 pivotGoal.position);
 
         Logger.recordOutput("Pivot/CalculatedFFVolts", feedForward);

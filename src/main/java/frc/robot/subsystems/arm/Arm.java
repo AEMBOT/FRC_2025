@@ -10,6 +10,8 @@ import static frc.robot.Constants.currentMode;
 
 import java.util.function.DoubleSupplier;
 
+import org.littletonrobotics.junction.Logger;
+
 public class Arm extends SubsystemBase {
     ElevatorIO elevator;
     PivotIO pivot;
@@ -18,28 +20,19 @@ public class Arm extends SubsystemBase {
     private final PivotIOInputsAutoLogged pivotInputs = new PivotIOInputsAutoLogged();
     private final WristIOInputsAutoLogged wristInputs = new WristIOInputsAutoLogged();
 
-    public Arm() {
-        switch (currentMode) {
-            case REAL: {
-                elevator = new ElevatorIOReal() {};
-                pivot = new PivotIOReal() {};
-                wrist = new WristIOReal() {};
-            }
-            case REPLAY: {
-                elevator = new ElevatorIO() {};
-                pivot = new PivotIO() {};
-                wrist = new WristIO() {};
-            }
-            case SIM: {
-                elevator = new ElevatorIO() {};
-                pivot = new PivotIO() {};
-                wrist = new WristIO() {};
-            }
-        }
+    public Arm(ElevatorIO elevatorIO,
+                PivotIO pivotIO,
+                WristIO wristio) {
+        elevator = elevatorIO;
+        pivot = pivotIO;
+        wrist = wristio;
+
     }
 
     public void periodic() {
+        Logger.processInputs("Pivot", pivotInputs);
         pivot.updateInputs(pivotInputs);
+        Logger.processInputs("Elevator", elevatorInputs);
         elevator.updateInputs(elevatorInputs);
         wrist.updateInputs(wristInputs);
     }

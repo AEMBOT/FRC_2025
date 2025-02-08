@@ -3,7 +3,8 @@ package frc.robot;
 import com.ctre.phoenix6.hardware.CANcoder;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.controller.PIDController;
+
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -16,7 +17,7 @@ import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 public final class Constants {
     public static final DigitalInput robotJumper = new DigitalInput(0);
     public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : Mode.REPLAY;
-    public static final Robot currentRobot = robotJumper.get() ? Robot.NAUTILIUS : Robot.DORY; // TODO: Confirm robotJumber works, we may have two jumpers on Nautilus
+    public static final Robot currentRobot = robotJumper.get() ? Robot.NAUTILUS : Robot.DORY; // TODO: Confirm robotJumber works, we may have two jumpers on Nautilus
 
     public enum Mode {
         /** Running on a real robot. */
@@ -28,7 +29,7 @@ public final class Constants {
     }
 
     public enum Robot {
-        NAUTILIUS,
+        NAUTILUS,
         DORY
     }
     
@@ -38,7 +39,7 @@ public final class Constants {
     /** Maximum angle for the pivot to move to, in degrees */
     public static final double pivotMaxAngle = 170;
     /** Minimum angle for the pivot to move to, in degrees */
-    public static final double pivotMinAngle = 50;
+    public static final double pivotMinAngle = 45;
     /** ID of the left pivot sparkmax */
     public static final int pivotLeftMotorID = 10;
     /**  */
@@ -58,29 +59,57 @@ public final class Constants {
     /**  */
     public static final double gearRatio = 93.3333333;
     /**  */
-    public static final ArmFeedforward pivotFFModel = new ArmFeedforward(
-      0.35, 
-      0.35, 
-      1.79, 
-      0.3);
-    /**  */
-    public static final PIDController pivotPIDController = new PIDController(
-      12, 
-      0, 
-      0.00);
-    /**  */
-    public static final TrapezoidProfile pivotProfile = new TrapezoidProfile(new TrapezoidProfile.Constraints(
-      2,
-      5));
-    /** Ramp Rate of the pivot System ID in volts per second */
-    public static final double pivotSysIdRampRate = 0.2;
-    /** Setp Voltage of the pivot System ID in volts */
-    public static final double pivotSysIdStepVolt = 7;
-    /** Timeout of the pivot System ID in volts */
-    public static final double pivotSysIdTimeout = 30;
+
+    public static final TrapezoidProfile.Constraints pivotConstraints = 
+      new TrapezoidProfile.Constraints(
+        Units.radiansToDegrees(2), 
+        Units.radiansToDegrees(5));
+
+    public static final ProfiledPIDController pivotPIDController = 
+      switch (currentRobot) {
+        case DORY ->
+        new ProfiledPIDController(
+          10, 
+          0, 
+          0, 
+          pivotConstraints);
+        case NAUTILUS ->
+        new ProfiledPIDController(
+          0.0, 
+          0.0, 
+          0.0, 
+          pivotConstraints);
+        };
+
+        public static final double[] pivotFFValues = //in radians
+          switch (currentRobot) {
+            case DORY -> new double[]
+              {0.0, 0.0, 0.0, 0.0};
+            case NAUTILUS -> new double[]
+              {0.0, 0.16, 4.15, 0.01};  //ks kg kv ka
+          };
+                
+        public static final double PivotPIDFactor =
+        switch (currentRobot) {
+          case DORY ->
+            0.0;
+          case NAUTILUS ->
+            0.0;
+        };
+
+        public static final double PivotFFactor =
+        switch (currentRobot) {
+          case DORY ->
+            0.0;
+          case NAUTILUS ->
+            0.0;
+        };
+
     /** How many degrees the pivot can be off its goal position for it to be sufficient */
-    public static final double pivotAngleAllowedDeviance = 1.15;
+    public static final double pivotAngleToleranceDeg = 3.0;
     /**  */
+    public static final double pivotVelocityToleranceDegPerSec = 0.5;
+
     public static final Translation3d pivotTranslationFromRobot = new Translation3d(-0.2, 0, 0.255);
     /**  */
     public static final double pivotDefaultAngle = 90;
@@ -101,8 +130,56 @@ public final class Constants {
   }
 
     public static final class ElevatorConstants {
-        public static double moveVoltage = 5.0;
+        public static final TrapezoidProfile.Constraints elevatorConstraints =
+          new TrapezoidProfile.Constraints(
+            Units.radiansToDegrees(2), 
+            Units.radiansToDegrees(5));
 
+        // Built in PID class works
+        public static final ProfiledPIDController elevatorPIDController =
+          switch (currentRobot) {
+            case DORY -> new ProfiledPIDController(
+              0, 
+              0, 
+              0, 
+              elevatorConstraints);
+            case NAUTILUS -> new ProfiledPIDController(
+              0,
+              0,
+              0,
+              elevatorConstraints);
+          };
+          
+        public static final double[] elevatorFFValues = //in meters
+          switch (currentRobot) { 
+            case DORY -> new double[]
+              {0.0, 0.0, 0.0, 0.0};
+            case NAUTILUS -> new double[]
+              {0.0, 0.14, 3.11, 0.02}; //ks, kg, kv, ka
+          };
+
+        public static final double PositionFactor = 0.7112; //gear ratio is 6
+        public static final double elevatorPositionToleranceMet = 0.1;
+        public static final double elevatorVelocityToleranceMetPerSec = 0.1;
+        
+        public static final double ElevatorPIDFactor =
+        switch (currentRobot) {
+          case DORY ->
+            10;
+          case NAUTILUS ->
+            20;
+        };
+
+        public static final double ElevatorFFactor =
+        switch (currentRobot) {
+          case DORY ->
+            10;
+          case NAUTILUS ->
+            20;
+        };
+
+        public static double moveVoltage = 5.0;
+        
         /* Device IDs */
         public static final int motorID = 12;
     }
@@ -111,26 +188,57 @@ public final class Constants {
         public static final double encoderOffset = 0;
         public static final double wristMaxAngle = 90;
         public static final double wristMinAngle = -90;
-        public static final double deadzone = 5.0;
+        public static final double wristAngleToleranceDeg = 1.0;
+        public static final double wristVelocityTolerangeDegPerSec = 0.5;
 
         /* Device IDs */
         public static final int motorID = 13;
         public static final DutyCycleEncoder wristEncoder = new DutyCycleEncoder(2);
 
-        public static final TrapezoidProfile wristProfile = new TrapezoidProfile(new TrapezoidProfile.Constraints(
-          2,
-          5));
+        public static final TrapezoidProfile.Constraints wristConstraints = 
+          new TrapezoidProfile.Constraints(
+            1, 
+            3.5);
 
-        public static final ArmFeedforward wristFFModel = new ArmFeedforward(
-          0.35, 
-          0.35, 
-          1.79, 
-          0.3);
+        public static final ProfiledPIDController wristPIDController = 
+        switch (currentRobot) {
+        case DORY ->
+          new ProfiledPIDController( 
+            0.075499, 
+            0, 
+            0.00,
+            wristConstraints);
+        case NAUTILUS ->
+          new ProfiledPIDController(
+            0.075499, 
+            0, 
+            0.00,
+            wristConstraints);        
+        };
 
-        public static final PIDController wristPIDController = new PIDController(
-          12, 
-          0, 
-          0.00);
+        public static final double[] wristFFValues = //in deg
+          switch (currentRobot) {
+            case DORY -> new double[]
+              {0.33149, 0.077915, 0.0042737};
+            case NAUTILUS -> new double[]
+              {0.0, 0.0, 0.0}; //ks, kv, ka 
+          };
+
+        public static final double WristPIDFactor =
+        switch (currentRobot) {
+          case DORY ->
+            0.0;
+          case NAUTILUS ->
+            0.0;
+        };
+
+        public static final double WristFFactor =
+        switch (currentRobot) {
+          case DORY ->
+            0.0;
+          case NAUTILUS ->
+            0.0;
+        };
 
         public static final double wristMotorCurrentLimit = 5;
     }

@@ -25,7 +25,8 @@ public final class ReefTargetsTest {
       }
 
       if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
-        //difference between red/blue reef centers (offsets test x to be in the same position relative to red reef)
+        // difference between red/blue reef centers (offsets test x to be in the same position
+        // relative to red reef)
         offset = 8.361553;
       }
     } else {
@@ -121,6 +122,18 @@ public final class ReefTargetsTest {
           11,
           testCase.findClosestReef(new Pose2d(1 + offset, 5, new Rotation2d(0))),
           "target = 11");
+    } catch (AssertionError e) {
+      System.out.println(e.getMessage());
+    }
+
+    // check if reef# ==> target position calculations are accurate
+    // target position should route back to the same closest reef
+    try {
+      assertEquals(
+          0,
+          testCase.findClosestReef(
+              testCase.findTarget(new Pose2d(1 + offset, 3, new Rotation2d(0)))),
+          "testing correct target calculations");
     } catch (AssertionError e) {
       System.out.println(e.getMessage());
     }

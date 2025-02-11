@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
  */
 public final class Constants {
   public static final DigitalInput robotJumper = new DigitalInput(0);
-  public static final Robot currentRobot = Robot.BUNNYBOT;
+  public static final Robot currentRobot = Robot.DORY;
   public static final Mode currentMode = Mode.REAL;
 
   public static enum Mode {
@@ -29,8 +29,8 @@ public final class Constants {
   }
 
   public enum Robot {
-    BUNNYBOT,
-    LIGHTCYCLE
+    DORY,
+    NAUTILUS
   }
 
   public static final double UPDATE_PERIOD = 0.02;
@@ -71,14 +71,14 @@ public final class Constants {
 
       public static final Rotation2d[] absoluteEncoderOffset =
           switch (currentRobot) {
-            case BUNNYBOT ->
+            case DORY ->
                 new Rotation2d[] {
                   Rotation2d.fromRadians(2.291767297101148), // FL
                   Rotation2d.fromRadians(2.409883817768342 + Math.PI), // FR
                   Rotation2d.fromRadians(1.928213850372251), // BL
                   Rotation2d.fromRadians(1.73493227109866 + Math.PI) // BR
                 };
-            case LIGHTCYCLE ->
+            case NAUTILUS ->
                 new Rotation2d[] { // This is not currently correct
                   Rotation2d.fromRadians(2.6599226861937018), // FL
                   Rotation2d.fromRadians(-2.9206994201342606 + Math.PI), // FR

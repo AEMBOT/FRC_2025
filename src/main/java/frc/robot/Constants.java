@@ -89,10 +89,10 @@ public final class Constants {
     }
 
     public static final class reefTargetConstants {
-      // Defines new variables for the x/y translations for the target positions (currently at
-      // placeholders)
-      public static final double targetX = 0.5;
-      public static final double targetY = 0.75;
+      // Defines new variables for the x/y translations for the target positions (x at placeholder,
+      // y at first guess from cad)
+      public static final double targetX = .5;
+      public static final double targetY = .3286;
       public static final double targetAngle = 0;
 
       // Define reef centerpoints (blue alliance)

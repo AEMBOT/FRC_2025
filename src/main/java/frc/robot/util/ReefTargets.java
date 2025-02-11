@@ -25,9 +25,9 @@ public final class ReefTargets {
     Rotation2d targetThetaR = new Rotation2d(reefTargetConstants.targetAngle);
     Rotation2d targetThetaL = new Rotation2d(-reefTargetConstants.targetAngle);
     Transform2d targetR =
-        new Transform2d(reefTargetConstants.targetX, reefTargetConstants.targetY, targetThetaR);
+        new Transform2d(reefTargetConstants.targetX, -reefTargetConstants.targetY, targetThetaR);
     Transform2d targetL =
-        new Transform2d(reefTargetConstants.targetX, -reefTargetConstants.targetY, targetThetaL);
+        new Transform2d(reefTargetConstants.targetX, reefTargetConstants.targetY, targetThetaL);
 
     // Defines each target position based upon the transformation vector and appropriate apriltag
     // 17 -> 1,2; 18 -> 0,11; 19 -> 9,10; 20 -> 7,8; 21 -> 5,6; 22 -> 3,4

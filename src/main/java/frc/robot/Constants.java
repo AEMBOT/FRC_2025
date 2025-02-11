@@ -96,8 +96,10 @@ public final class Constants {
       public static final double targetAngle = 0;
 
       // Define reef centerpoints (blue alliance)
-      public static final double reefCenterX = 4.489323;
-      public static final double reefCenterY = 4.0259;
+      public static final double bReefCenterX = 4.489323;
+      public static final double bReefCenterY = 4.0259;
+      public static final double rReefCenterX = 12.850876;
+      public static final double rReefCenterY = 4.0259;
     }
   }
 }

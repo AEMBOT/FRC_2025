@@ -23,9 +23,13 @@ public class PivotIOReal implements PivotIO {
     private TrapezoidProfile.State pivotGoal;
     private TrapezoidProfile.State pivotSetpoint;
     private double lastTime;
+    private double TheotreticalVoltage;
 
 
     public PivotIOReal() {
+
+
+        TheotreticalVoltage = 0.0;
 
         TalonFXConfiguration leftMotorConfig = new TalonFXConfiguration();
         TalonFXConfiguration rightMotorConfig = new TalonFXConfiguration();
@@ -36,6 +40,9 @@ public class PivotIOReal implements PivotIO {
         rightMotorConfig.CurrentLimits.StatorCurrentLimit = pivotRightMotorCurrentLimit;
         rightMotorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
 
+        leadingMotor.getConfigurator().apply(leftMotorConfig);
+        followingMotor.getConfigurator().apply(rightMotorConfig);
+;
         leadingMotor.setNeutralMode(NeutralModeValue.Brake);
         followingMotor.setNeutralMode(NeutralModeValue.Brake);
 
@@ -54,6 +61,8 @@ public class PivotIOReal implements PivotIO {
         inputs.pivotSetpointPosition = pivotSetpoint.position;
         inputs.pivotSetpointVelocity = pivotSetpoint.velocity;
         inputs.openLoopStatus = openLoop;
+        inputs.rawEncoderValue = pivotEncoder.get();
+        inputs.TheotreticalVoltage = TheotreticalVoltage;
     }   
 
     @Override
@@ -63,7 +72,7 @@ public class PivotIOReal implements PivotIO {
         angle = clamp(angle, pivotMinAngle, pivotMaxAngle);
 
         pivotGoal = new TrapezoidProfile.State(angle, 0);
-
+        
         pivotSetpoint = 
             pivotProfile.calculate(
             (Timer.getFPGATimestamp() - lastTime > 0.25)
@@ -71,7 +80,7 @@ public class PivotIOReal implements PivotIO {
                 : 0.02,
             pivotSetpoint,
             pivotGoal);
-
+        
         double feedForward = pivotFFModel.calculate(
             pivotGoal.position, 
             0);
@@ -83,7 +92,10 @@ public class PivotIOReal implements PivotIO {
         Logger.recordOutput("Pivot/PIDCommandVolts", pidOutput);
 
                 
-        setMotorVoltage(feedForward - pidOutput);
+        setMotorVoltage(feedForward + pidOutput);
+        
+
+
 
         lastTime = Timer.getFPGATimestamp();
     }
@@ -95,18 +107,23 @@ public class PivotIOReal implements PivotIO {
     }
 
     private double getAbsoluteEncoderPosition() {
-        return (pivotEncoder.get() * 360) - pivotEncoderPositionOffset;
+        return (pivotEncoder.get() * 360) + pivotEncoderPositionOffset;
     }
 
     private void setMotorVoltage(double volts) {
+
+        TheotreticalVoltage = volts;
+
         if (getAbsoluteEncoderPosition() < pivotMinAngle) {
-            volts = clamp(volts, -Double.MAX_VALUE, 0);
-        }
-        if (getAbsoluteEncoderPosition() > pivotMaxAngle) {
             volts = clamp(volts, 0, Double.MAX_VALUE);
         }
+        if (getAbsoluteEncoderPosition() > pivotMaxAngle) {
+            volts = clamp(volts, -Double.MAX_VALUE, 0);
+        }   
 
-        leadingMotor.setVoltage(volts);
+
+
+        leadingMotor.setVoltage(-volts);
     }
 
     @Override

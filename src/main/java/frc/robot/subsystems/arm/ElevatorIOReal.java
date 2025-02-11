@@ -1,21 +1,26 @@
 package frc.robot.subsystems.arm;
 
-import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
-import frc.robot.Constants.ElevatorConstants;
+import static frc.robot.Constants.ElevatorConstants.*;
 
 public class ElevatorIOReal implements ElevatorIO { 
     // TODO Before merge, make a way to get and set the absolute vertical position of the elevator
     private double motorMax = 20000;
     private double motorMin = 0;
-    private final TalonFX motor = new TalonFX(ElevatorConstants.motorID);
+    private final TalonFX motor = new TalonFX(motorID);
+    private boolean isHoming = false;
+    private double encoderOffset = 0;
 
     public ElevatorIOReal() {
 
-        var motorConfig = new MotorOutputConfigs();
-        motorConfig.NeutralMode = NeutralModeValue.Brake;
+        var motorConfig = new TalonFXConfiguration();
+        motorConfig.CurrentLimits.StatorCurrentLimit = elevatorCurrentLimit;
+        motorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+
+        motor.setNeutralMode(NeutralModeValue.Brake);
 
         motor.getConfigurator().apply(motorConfig);
     }
@@ -32,6 +37,7 @@ public class ElevatorIOReal implements ElevatorIO {
         inputs.elevatorCurrentDraw = motor.getStatorCurrent().getValueAsDouble();
         inputs.elevatorMaxPos = motorMax;
         inputs.elevatorMinPos = motorMin;
+        inputs.isHoming = isHoming;
     }
 
     @Override
@@ -52,5 +58,22 @@ public class ElevatorIOReal implements ElevatorIO {
         } else {
             motor.setVoltage(voltage);
         }
+    }
+
+    @Override
+    public boolean atMinimum() {
+
+    return (Math.round(getMotorRotation() / 10) * 10 == Math.round(getMotorRotation() / 10) * 10) ? false : true;
+
+    }
+
+    @Override
+    public void setHoming(boolean homingValue) {
+        isHoming = homingValue;
+    }
+
+    @Override
+    public void setEncoder(double encoderValue) {
+        
     }
 }

@@ -8,11 +8,13 @@ public interface WristIO {
         public double wristAbsAngle = 0.0;
         public double wristAbsVelocity = 0.0;
 
-        public double wristGoal = 0.0;
-        public double wristSetpoint = 0.0;
+        public double wristGoal = 180;
+        public double wristSetpoint = 180;
 
         public double wristAppliedVoltage = 0.0;
         public double wristCurrentAmps = 0.0;
+
+        public double wristTheoreticalVolts = 0.0;
     }
 
     public default void periodic() {}

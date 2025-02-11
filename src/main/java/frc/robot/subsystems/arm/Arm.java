@@ -3,6 +3,7 @@ package frc.robot.subsystems.arm;
 import static frc.robot.Constants.UPDATE_PERIOD;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -16,16 +17,20 @@ public class Arm extends SubsystemBase {
     ElevatorIO elevator;
     PivotIO pivot;
     WristIO wrist;
+    IntakeIO intake;
     private final ElevatorIOInputsAutoLogged elevatorInputs = new ElevatorIOInputsAutoLogged();
     private final PivotIOInputsAutoLogged pivotInputs = new PivotIOInputsAutoLogged();
     private final WristIOInputsAutoLogged wristInputs = new WristIOInputsAutoLogged();
+    private final IntakeIOInputsAutoLogged intakeInputs = new IntakeIOInputsAutoLogged();
 
     public Arm(ElevatorIO elevatorIO,
                 PivotIO pivotIO,
-                WristIO wristio) {
-        elevator = elevatorIO;
-        pivot = pivotIO;
-        wrist = wristio;
+                WristIO wristio,
+                IntakeIO intakeIO) {
+        this.elevator = elevatorIO;
+        this.pivot = pivotIO;
+        this.wrist = wristio;
+        this.intake = intakeIO;
 
     }
 
@@ -34,7 +39,10 @@ public class Arm extends SubsystemBase {
         pivot.updateInputs(pivotInputs);
         Logger.processInputs("Elevator", elevatorInputs);
         elevator.updateInputs(elevatorInputs);
+        Logger.processInputs("Wrist", wristInputs);
         wrist.updateInputs(wristInputs);
+        Logger.processInputs("Intake", intakeInputs);
+        intake.updateInputs(intakeInputs);
     }
 
 
@@ -54,8 +62,8 @@ public class Arm extends SubsystemBase {
      * Resets the pivot dampening profile after completion.
      */
     public Command changePivotGoalPosition(double velocityDegPerSec) {
-        return setPivotPositionCommand(() -> pivotInputs.pivotGoalPosition + (velocityDegPerSec * UPDATE_PERIOD))
-            .finallyDo(pivot::resetProfile);
+        return setPivotPositionCommand(() -> pivotInputs.pivotGoalPosition + (velocityDegPerSec * UPDATE_PERIOD));
+    //        .finallyDo(pivot::resetProfile);
     }
 
     
@@ -130,4 +138,17 @@ public class Arm extends SubsystemBase {
         return setWristPositionCommand(() -> wristInputs.wristGoal + (velocityDegPerSec * UPDATE_PERIOD))
             .finallyDo(wrist::resetProfile);
     }
+
+    public Command runIntakeCommand(DoubleSupplier volts) {
+        return run(() -> intake.setVoltage(volts.getAsDouble()));
+    }
+   /** 
+    public Command zeroElevator() {
+        return Commands.sequence(
+            runOnce(() -> elevator.setHoming(true)),
+            elevator.setVoltage(-1).
+            until(elevator::elevator.atMinimum()).
+            finallyDo(elevator.setVoltage(0)));
+    }
+    */
 }

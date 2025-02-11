@@ -1,6 +1,7 @@
 package frc.robot.subsystems.arm;
 
 import static edu.wpi.first.math.MathUtil.clamp;
+import static edu.wpi.first.wpilibj.Timer.delay;
 import static frc.robot.Constants.UPDATE_PERIOD;
 import static frc.robot.Constants.WristConstants.*;
 
@@ -15,15 +16,20 @@ public class WristIOReal implements WristIO {
     private final TalonFX motor = new TalonFX(motorID);
     private TrapezoidProfile.State wristGoal;
     private TrapezoidProfile.State wristSetpoint;
+    private double theoreticalVolts;
 
     public WristIOReal() {
 
         TalonFXConfiguration motorConfig = new TalonFXConfiguration();
         motorConfig.CurrentLimits.StatorCurrentLimit = wristMotorCurrentLimit;
         motorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+        motor.getConfigurator().apply(motorConfig);
 
         motor.setNeutralMode(NeutralModeValue.Brake);
 
+
+        delay(0.5);
+        
         wristGoal = new TrapezoidProfile.State(getAbsoluteAngle(), 0);
         wristSetpoint = new TrapezoidProfile.State(getAbsoluteAngle(), 0);
     }
@@ -31,17 +37,21 @@ public class WristIOReal implements WristIO {
     @Override
     public void updateInputs(WristIOInputs inputs) {
         inputs.wristAbsAngle = getAbsoluteAngle();
-        inputs.wristGoal = Units.radiansToDegrees(wristGoal.position);
-        inputs.wristSetpoint = Units.radiansToDegrees(wristSetpoint.position);
+        inputs.wristAbsVelocity = motor.getVelocity().getValueAsDouble() * 360 / 45;
+        inputs.wristGoal = wristGoal.position;
+        inputs.wristSetpoint = wristSetpoint.position;
         inputs.wristAppliedVoltage = motor.getMotorVoltage().getValueAsDouble();
         inputs.wristCurrentAmps = motor.getStatorCurrent().getValueAsDouble();
+        inputs.wristTheoreticalVolts = theoreticalVolts;
     }
     
     @Override
     public void setAngle(Double angle) {
         angle = clamp(angle, wristMinAngle, wristMaxAngle);
 
-        wristGoal = new TrapezoidProfile.State(Units.degreesToRadians(angle), 0);
+        
+
+        wristGoal = new TrapezoidProfile.State(angle, 0);
 
         wristSetpoint = 
             wristProfile.calculate(
@@ -49,14 +59,16 @@ public class WristIOReal implements WristIO {
             wristSetpoint,
             wristGoal);
 
+        theoreticalVolts = wristSetpoint.position;
+
         double feedForward = wristFFModel.calculate(
             wristGoal.position, 
             0);
         double pidOutput = wristPIDController.calculate(
-                Units.degreesToRadians(getAbsoluteAngle()), 
+                getAbsoluteAngle(), 
                 wristGoal.position);
 
-        setVoltage(feedForward - pidOutput);
+        setVoltage(feedForward + pidOutput);
 
     }
 
@@ -66,20 +78,22 @@ public class WristIOReal implements WristIO {
      */
     private void setVoltage(double volts) {
         if (getAbsoluteAngle() < wristMinAngle) {
-            volts = clamp(volts, -Double.MAX_VALUE, 0);
-        }
-        if (getAbsoluteAngle() > wristMaxAngle) {
             volts = clamp(volts, 0, Double.MAX_VALUE);
         }
+        if (getAbsoluteAngle() > wristMaxAngle) {
+            volts = clamp(volts, -Double.MAX_VALUE, 0);
+        }
 
-        motor.setVoltage(volts);
+        
+
+        motor.setVoltage(-volts);
     }
 
     /**
      * @return the current rotation of the wrist, measured in degrees.
      */
     private double getAbsoluteAngle() {
-        return (wristEncoder.get() * 360) - encoderOffset;
+        return (wristEncoder.get() * 360) + encoderOffset;
     }
 
     @Override

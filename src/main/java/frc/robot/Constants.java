@@ -36,25 +36,25 @@ public final class Constants {
 
     public static final class PivotConstants { 
     /** Maximum angle for the pivot to move to, in degrees */
-    public static final double pivotMaxAngle = 45;
+    public static final double pivotMaxAngle = 100;
     /** Minimum angle for the pivot to move to, in degrees */
-    public static final double pivotMinAngle = 0;
+    public static final double pivotMinAngle = 50;
     /** ID of the left pivot sparkmax */
     public static final int pivotLeftMotorID = 10;
     /**  */
-    public static final boolean pivotLeftMotorInverted = true;
+    public static final boolean pivotLeftMotorInverted = false;
     /**  */
-    public static final int pivotLeftMotorCurrentLimit = 5;
+    public static final int pivotLeftMotorCurrentLimit = 50;
     /** ID of the right pivot sparkmax */
     public static final int pivotRightMotorID = 11;
     /**  */
     public static final boolean pivotRightMotorInverted = false;
     /**  */
-    public static final int pivotRightMotorCurrentLimit = 5;
+    public static final int pivotRightMotorCurrentLimit = 50;
     /**  */
     public static final DutyCycleEncoder pivotEncoder = new DutyCycleEncoder(1);
     /**  */
-    public static final double pivotEncoderPositionOffset = 0.25;
+    public static final double pivotEncoderPositionOffset = -156.67488616687214;
     /**  */
     public static final double gearRatio = 93.3333333;
     /**  */
@@ -65,7 +65,7 @@ public final class Constants {
       0.1);
     /**  */
     public static final PIDController pivotPIDController = new PIDController(
-      6, 
+      2, 
       0, 
       0.00);
     /**  */
@@ -101,20 +101,32 @@ public final class Constants {
   }
 
     public static final class ElevatorConstants {
-        public static double moveVoltage = 5.0;
+
+      /* Absolute highest point from the base the elevator can reach in inches*/
+      public static final double absoluteMaxExtension = 6;
+
+      public static final TrapezoidProfile elevatorProfile = new TrapezoidProfile(new TrapezoidProfile.Constraints(
+      1,
+      2));
+
+      public static final double elevatorCurrentLimit = 3;
+
+      public static final double moveVoltage = 5.0;
 
         /* Device IDs */
-        public static final int motorID = 12;
+      public static final int motorID = 12;
+
+      public static final double rotToInMultFactor = 1;
     }
 
     public static final class WristConstants {
-        public static final double encoderOffset = 0;
-        public static final double wristMaxAngle = 90;
-        public static final double wristMinAngle = -90;
+        public static final double encoderOffset = -211.87278529681961;
+        public static final double wristMaxAngle = -90;
+        public static final double wristMinAngle = 90;
         public static final double deadzone = 5.0;
 
         /* Device IDs */
-        public static final int motorID = 13;
+        public static final int motorID = 14;
         public static final DutyCycleEncoder wristEncoder = new DutyCycleEncoder(2);
 
         public static final TrapezoidProfile wristProfile = new TrapezoidProfile(new TrapezoidProfile.Constraints(
@@ -122,16 +134,25 @@ public final class Constants {
           5));
 
         public static final ArmFeedforward wristFFModel = new ArmFeedforward(
-          0.35, 
-          0.35, 
-          1.79, 
-          0.3);
+          0.1, 
+          0.1, 
+          0.5, 
+          0.1);
 
         public static final PIDController wristPIDController = new PIDController(
-          12, 
+          2, 
           0, 
           0.00);
 
-        public static final double wristMotorCurrentLimit = 5;
+        public static final double wristMotorCurrentLimit = 0.25;
+    }
+
+    public static final class IntakeConstants {
+
+      public static final int intakeMotorID = 15;
+
+      public static final double intakeMotorCurrentLimit = 5;
+
+
     }
 }

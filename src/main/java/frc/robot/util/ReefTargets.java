@@ -9,6 +9,7 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.Constants.DriveConstants.reefTargetConstants;
 
 public final class ReefTargets {
@@ -30,18 +31,55 @@ public final class ReefTargets {
 
     // Defines each target position based upon the transformation vector and appropriate apriltag
     // 17 -> 1,2; 18 -> 0,11; 19 -> 9,10; 20 -> 7,8; 21 -> 5,6; 22 -> 3,4
-    targets[0] = aprilTagFieldLayout.getTagPose(18).get().toPose2d().transformBy(targetL);
-    targets[1] = aprilTagFieldLayout.getTagPose(17).get().toPose2d().transformBy(targetR);
-    targets[2] = aprilTagFieldLayout.getTagPose(17).get().toPose2d().transformBy(targetL);
-    targets[3] = aprilTagFieldLayout.getTagPose(22).get().toPose2d().transformBy(targetR);
-    targets[4] = aprilTagFieldLayout.getTagPose(22).get().toPose2d().transformBy(targetL);
-    targets[5] = aprilTagFieldLayout.getTagPose(21).get().toPose2d().transformBy(targetR);
-    targets[6] = aprilTagFieldLayout.getTagPose(21).get().toPose2d().transformBy(targetL);
-    targets[7] = aprilTagFieldLayout.getTagPose(20).get().toPose2d().transformBy(targetR);
-    targets[8] = aprilTagFieldLayout.getTagPose(20).get().toPose2d().transformBy(targetL);
-    targets[9] = aprilTagFieldLayout.getTagPose(19).get().toPose2d().transformBy(targetR);
-    targets[10] = aprilTagFieldLayout.getTagPose(19).get().toPose2d().transformBy(targetL);
-    targets[11] = aprilTagFieldLayout.getTagPose(18).get().toPose2d().transformBy(targetR);
+
+    if (DriverStation.getAlliance().isPresent()) {
+
+      if (DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
+        // check if blue alliance
+        targets[0] = aprilTagFieldLayout.getTagPose(18).get().toPose2d().transformBy(targetL);
+        targets[1] = aprilTagFieldLayout.getTagPose(17).get().toPose2d().transformBy(targetR);
+        targets[2] = aprilTagFieldLayout.getTagPose(17).get().toPose2d().transformBy(targetL);
+        targets[3] = aprilTagFieldLayout.getTagPose(22).get().toPose2d().transformBy(targetR);
+        targets[4] = aprilTagFieldLayout.getTagPose(22).get().toPose2d().transformBy(targetL);
+        targets[5] = aprilTagFieldLayout.getTagPose(21).get().toPose2d().transformBy(targetR);
+        targets[6] = aprilTagFieldLayout.getTagPose(21).get().toPose2d().transformBy(targetL);
+        targets[7] = aprilTagFieldLayout.getTagPose(20).get().toPose2d().transformBy(targetR);
+        targets[8] = aprilTagFieldLayout.getTagPose(20).get().toPose2d().transformBy(targetL);
+        targets[9] = aprilTagFieldLayout.getTagPose(19).get().toPose2d().transformBy(targetR);
+        targets[10] = aprilTagFieldLayout.getTagPose(19).get().toPose2d().transformBy(targetL);
+        targets[11] = aprilTagFieldLayout.getTagPose(18).get().toPose2d().transformBy(targetR);
+      }
+      if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
+        // check if red alliance
+        targets[0] = aprilTagFieldLayout.getTagPose(10).get().toPose2d().transformBy(targetL);
+        targets[1] = aprilTagFieldLayout.getTagPose(11).get().toPose2d().transformBy(targetR);
+        targets[2] = aprilTagFieldLayout.getTagPose(11).get().toPose2d().transformBy(targetL);
+        targets[3] = aprilTagFieldLayout.getTagPose(6).get().toPose2d().transformBy(targetR);
+        targets[4] = aprilTagFieldLayout.getTagPose(6).get().toPose2d().transformBy(targetL);
+        targets[5] = aprilTagFieldLayout.getTagPose(7).get().toPose2d().transformBy(targetR);
+        targets[6] = aprilTagFieldLayout.getTagPose(7).get().toPose2d().transformBy(targetL);
+        targets[7] = aprilTagFieldLayout.getTagPose(8).get().toPose2d().transformBy(targetR);
+        targets[8] = aprilTagFieldLayout.getTagPose(8).get().toPose2d().transformBy(targetL);
+        targets[9] = aprilTagFieldLayout.getTagPose(9).get().toPose2d().transformBy(targetR);
+        targets[10] = aprilTagFieldLayout.getTagPose(9).get().toPose2d().transformBy(targetL);
+        targets[11] = aprilTagFieldLayout.getTagPose(10).get().toPose2d().transformBy(targetR);
+      }
+
+    } else {
+      // defaults to blue alliance
+      targets[0] = aprilTagFieldLayout.getTagPose(18).get().toPose2d().transformBy(targetL);
+      targets[1] = aprilTagFieldLayout.getTagPose(17).get().toPose2d().transformBy(targetR);
+      targets[2] = aprilTagFieldLayout.getTagPose(17).get().toPose2d().transformBy(targetL);
+      targets[3] = aprilTagFieldLayout.getTagPose(22).get().toPose2d().transformBy(targetR);
+      targets[4] = aprilTagFieldLayout.getTagPose(22).get().toPose2d().transformBy(targetL);
+      targets[5] = aprilTagFieldLayout.getTagPose(21).get().toPose2d().transformBy(targetR);
+      targets[6] = aprilTagFieldLayout.getTagPose(21).get().toPose2d().transformBy(targetL);
+      targets[7] = aprilTagFieldLayout.getTagPose(20).get().toPose2d().transformBy(targetR);
+      targets[8] = aprilTagFieldLayout.getTagPose(20).get().toPose2d().transformBy(targetL);
+      targets[9] = aprilTagFieldLayout.getTagPose(19).get().toPose2d().transformBy(targetR);
+      targets[10] = aprilTagFieldLayout.getTagPose(19).get().toPose2d().transformBy(targetL);
+      targets[11] = aprilTagFieldLayout.getTagPose(18).get().toPose2d().transformBy(targetR);
+    }
   }
 
   public int findClosestReef(Pose2d robotCurrentPosition) {
@@ -51,9 +89,30 @@ public final class ReefTargets {
     double robotY = robotCurrentPosition.getY();
 
     // Find robot angle to reef and convert to a discrete "zone" value
-    double reefAngle =
-        Math.atan2(
-            robotY - reefTargetConstants.reefCenterY, robotX - reefTargetConstants.reefCenterX);
+
+    double reefAngle = 0;
+
+    if (DriverStation.getAlliance().isPresent()) {
+      if (DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
+        reefAngle =
+            Math.atan2(
+                robotY - reefTargetConstants.bReefCenterY,
+                robotX - reefTargetConstants.bReefCenterX);
+      }
+
+      if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
+        reefAngle =
+            Math.atan2(
+                robotY - reefTargetConstants.rReefCenterY,
+                robotX - reefTargetConstants.rReefCenterX);
+      }
+    } else {
+      // defaults to blue alliance
+      reefAngle =
+          Math.atan2(
+              robotY - reefTargetConstants.bReefCenterY, robotX - reefTargetConstants.bReefCenterX);
+    }
+
     int reefZone = (int) Math.floor(reefAngle / (Math.PI / 6)) + 6;
     return reefZone;
   }

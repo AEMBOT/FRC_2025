@@ -135,8 +135,8 @@ public final class Constants {
       /** Our target pose for interfacing with the right source, relative to driverStation */
       public static final Pose2d rightSourceWaypoint =
           new Pose2d(
-              1.291,
-              1.163,
+              1.407,
+              1.539,
               Rotation2d.fromDegrees(
                   -125)); // TODO get a proper value for this. This value is for testing purposes
       // and will probably be dynamically generated later.

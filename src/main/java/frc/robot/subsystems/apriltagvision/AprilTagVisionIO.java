@@ -150,6 +150,8 @@ public interface AprilTagVisionIO {
                     Double.NaN,
                     new Rotation3d(Double.NaN, Double.NaN, Double.NaN));
             timestampArray[index] = 0.0;
+            Matrix<N3, N1> stdDevs = VecBuilder.fill(Double.NaN, Double.NaN, Double.NaN);
+            System.arraycopy(stdDevs.getData(), 0, visionStdArray, index * 3, 3);
             if (currentMode == Mode.SIM) {
               return;
             } // Don't update latency if in sim.

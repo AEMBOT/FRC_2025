@@ -207,15 +207,15 @@ public final class Constants {
       public static final Transform3d frontLeftFromRobot =
           new Transform3d(
               new Translation3d(
-                  Units.inchesToMeters(11), Units.inchesToMeters(7), Units.inchesToMeters(4)),
-              new Rotation3d(Units.degreesToRadians(180), Units.degreesToRadians(-30), 0.0));
+                  Units.inchesToMeters(11), Units.inchesToMeters(-7), Units.inchesToMeters(4)),
+              new Rotation3d(Units.degreesToRadians(180), Units.degreesToRadians(-15), 0.0));
 
       public static final String frontRightName = "front-right";
       public static final Transform3d frontRightFromRobot =
           new Transform3d(
               new Translation3d(
-                  Units.inchesToMeters(11), Units.inchesToMeters(-7), Units.inchesToMeters(4)),
-              new Rotation3d(Units.degreesToRadians(180), Units.degreesToRadians(-30), 0.0));
+                  Units.inchesToMeters(11), Units.inchesToMeters(7), Units.inchesToMeters(4)),
+              new Rotation3d(Units.degreesToRadians(180), Units.degreesToRadians(-15), 0.0));
 
       public static final String backLeftName = "back-left";
       public static final Transform3d backLeftFromRobot =
@@ -223,7 +223,7 @@ public final class Constants {
               new Translation3d(
                   Units.inchesToMeters(-11), Units.inchesToMeters(11.5), Units.inchesToMeters(6)),
               new Rotation3d(
-                  Units.degreesToRadians(180),
+                  Units.degreesToRadians(0),
                   Units.degreesToRadians(-23.5),
                   Units.degreesToRadians(147)));
 
@@ -233,7 +233,7 @@ public final class Constants {
               new Translation3d(
                   Units.inchesToMeters(-11), Units.inchesToMeters(-11.5), Units.inchesToMeters(6)),
               new Rotation3d(
-                  Units.degreesToRadians(180),
+                  Units.degreesToRadians(0),
                   Units.degreesToRadians(-23.5),
                   Units.degreesToRadians(-147)));
     }

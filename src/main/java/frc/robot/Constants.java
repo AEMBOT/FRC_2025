@@ -14,7 +14,12 @@ import edu.wpi.first.wpilibj.DigitalInput;
  */
 public final class Constants {
   public static final DigitalInput robotJumper = new DigitalInput(0);
-  public static final Robot currentRobot = Robot.DORY;
+
+  public static final Robot currentRobot =
+      robotJumper.get()
+          ? Robot.NAUTILUS
+          : Robot.DORY; // Minor todo, make this not tenery for clarity
+
   public static final Mode currentMode = Mode.REAL;
 
   public static enum Mode {
@@ -80,10 +85,10 @@ public final class Constants {
                 };
             case NAUTILUS ->
                 new Rotation2d[] { // This is not currently correct
-                  Rotation2d.fromRadians(3.057223710256083), // FL
-                  Rotation2d.fromRadians(-0.9648739155800683), // FR
-                  Rotation2d.fromRadians(1.8346410223112268), // BL
-                  Rotation2d.fromRadians(1.787087617886772) // BR
+                  Rotation2d.fromRadians(0.7884661249732196), // FL
+                  Rotation2d.fromRadians(-0.2500388684253595), // FR
+                  Rotation2d.fromRadians(-0.11351457830353745), // BL
+                  Rotation2d.fromRadians(-3.087903326013796) // BR
                 };
           };
     }

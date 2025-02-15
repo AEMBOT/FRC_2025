@@ -119,21 +119,23 @@ public final class Constants {
       public static final Transform3d frontLeftFromRobot =
           new Transform3d(
               new Translation3d(
-                  Units.inchesToMeters(11), Units.inchesToMeters(7), Units.inchesToMeters(4)),
+                  Units.inchesToMeters(9), Units.inchesToMeters(8.25), Units.inchesToMeters(7.5)),
               new Rotation3d(Units.degreesToRadians(180), Units.degreesToRadians(-30), 0.0));
 
       public static final String frontRightName = "front-right";
       public static final Transform3d frontRightFromRobot =
           new Transform3d(
               new Translation3d(
-                  Units.inchesToMeters(11), Units.inchesToMeters(-7), Units.inchesToMeters(4)),
+                  Units.inchesToMeters(9), Units.inchesToMeters(-8.25), Units.inchesToMeters(7.5)),
               new Rotation3d(Units.degreesToRadians(180), Units.degreesToRadians(-30), 0.0));
 
       public static final String backLeftName = "back-left";
       public static final Transform3d backLeftFromRobot =
           new Transform3d(
               new Translation3d(
-                  Units.inchesToMeters(-11), Units.inchesToMeters(11.5), Units.inchesToMeters(6)),
+                  Units.inchesToMeters(-12.375),
+                  Units.inchesToMeters(8),
+                  Units.inchesToMeters(10.5)),
               new Rotation3d(
                   Units.degreesToRadians(180),
                   Units.degreesToRadians(-23.5),
@@ -143,7 +145,9 @@ public final class Constants {
       public static final Transform3d backRightFromRobot =
           new Transform3d(
               new Translation3d(
-                  Units.inchesToMeters(-11), Units.inchesToMeters(-11.5), Units.inchesToMeters(6)),
+                  Units.inchesToMeters(-12.375),
+                  Units.inchesToMeters(8),
+                  Units.inchesToMeters(10.5)),
               new Rotation3d(
                   Units.degreesToRadians(180),
                   Units.degreesToRadians(-23.5),

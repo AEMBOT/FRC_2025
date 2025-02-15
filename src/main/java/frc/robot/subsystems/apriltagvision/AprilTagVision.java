@@ -62,6 +62,7 @@ public class AprilTagVision extends SubsystemBase {
                   AprilTagConstants.poseStrategy,
                   CameraResolution.HIGH_RES)
             };
+        break;
       case DORY:
         visionPoseEstimators =
             new CameraPoseEstimator[] {
@@ -86,6 +87,7 @@ public class AprilTagVision extends SubsystemBase {
                   AprilTagConstants.poseStrategy,
                   CameraResolution.NORMAL),
             };
+        break;
     }
 
     switch (Constants.currentMode) {

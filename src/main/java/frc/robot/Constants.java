@@ -91,6 +91,42 @@ public final class Constants {
                   Rotation2d.fromRadians(-3.087903326013796) // BR
                 };
           };
+
+      public static final Boolean[] turnMotorInversion =
+          switch(currentRobot) {
+            case DORY ->
+              new Boolean[] {
+                true,
+                true,
+                false,
+                true,
+              };
+            case NAUTILUS ->
+              new Boolean[] {
+                true,
+                true,
+                true,
+                true,
+              };
+          };
+
+          public static final Boolean[] driveMotorInversion =
+          switch(currentRobot) {
+            case DORY ->
+              new Boolean[] {
+                true,
+                true,
+                true,
+                false,
+              };
+            case NAUTILUS ->
+              new Boolean[] {
+                true,
+                true,
+                true,
+                false,
+              };
+          };
     }
 
     public static final class reefTargetConstants {

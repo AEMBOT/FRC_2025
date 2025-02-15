@@ -85,47 +85,35 @@ public final class Constants {
                 };
             case NAUTILUS ->
                 new Rotation2d[] { // This is not currently correct
-                  Rotation2d.fromRadians(0.7884661249732196), // FL
-                  Rotation2d.fromRadians(-0.2500388684253595), // FR
-                  Rotation2d.fromRadians(-0.11351457830353745), // BL
-                  Rotation2d.fromRadians(-3.087903326013796) // BR
+                  Rotation2d.fromRadians(0.7915340865489908 * -1), // FL
+                  Rotation2d.fromRadians((-0.23316507975861744 + Math.PI) * -1), // FR
+                  Rotation2d.fromRadians(-0.09050486648525283 * -1), // BL
+                  Rotation2d.fromRadians(-3.0802334220743677 * -1) // BR
                 };
           };
 
       public static final Boolean[] turnMotorInversion =
-          switch(currentRobot) {
+          switch (currentRobot) {
             case DORY ->
-              new Boolean[] {
-                true,
-                true,
-                false,
-                true,
-              };
+                new Boolean[] {
+                  true, true, false, true,
+                };
             case NAUTILUS ->
-              new Boolean[] {
-                true,
-                true,
-                true,
-                true,
-              };
+                new Boolean[] {
+                  true, true, true, true,
+                };
           };
 
-          public static final Boolean[] driveMotorInversion =
-          switch(currentRobot) {
+      public static final Boolean[] driveMotorInversion =
+          switch (currentRobot) {
             case DORY ->
-              new Boolean[] {
-                true,
-                true,
-                true,
-                false,
-              };
+                new Boolean[] {
+                  true, true, true, false,
+                };
             case NAUTILUS ->
-              new Boolean[] {
-                true,
-                true,
-                true,
-                false,
-              };
+                new Boolean[] {
+                  true, true, true, false,
+                };
           };
     }
 

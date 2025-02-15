@@ -141,7 +141,7 @@ public final class Constants {
     /** Constraints for the majority of driver-assist and auto paths. */
     public static final PathConstraints generalPathConstraints =
         new PathConstraints(
-            1, 4, Radians.convertFrom(360, Degrees), Radians.convertFrom(360, Degrees));
+            2, 4, Radians.convertFrom(360, Degrees), Radians.convertFrom(360, Degrees));
 
     public static final class Targets {
       /** Our target pose for interfacing with the right source, relative to driverStation */
@@ -150,7 +150,8 @@ public final class Constants {
               1.407,
               1.539,
               Rotation2d.fromDegrees(
-                  -125)); // TODO get a proper value for this. This value is for testing purposes
+                  -125 + 180)); // TODO get a proper value for this. This value is for testing
+      // purposes
       // and will probably be dynamically generated later.
     }
   }

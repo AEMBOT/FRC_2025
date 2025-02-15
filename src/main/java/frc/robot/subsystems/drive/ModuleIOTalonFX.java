@@ -110,7 +110,7 @@ public class ModuleIOTalonFX implements ModuleIO {
         cancoder = new CANcoder(DriveConstants.Module.TALON_CANCODER_2, "*");
         absoluteEncoderOffset = DriveConstants.Module.absoluteEncoderOffset[2];
         isDriveMotorInverted = true;
-        isTurnMotorInverted = false;
+        isTurnMotorInverted = true;
         break;
       case 3:
         driveTalon = new TalonFX(DriveConstants.Module.TALON_DRIVE_MOTOR_3, "*");

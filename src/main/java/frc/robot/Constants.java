@@ -80,10 +80,10 @@ public final class Constants {
                 };
             case NAUTILUS ->
                 new Rotation2d[] { // This is not currently correct
-                  Rotation2d.fromRadians(2.6599226861937018), // FL
-                  Rotation2d.fromRadians(-2.9206994201342606 + Math.PI), // FR
-                  Rotation2d.fromRadians(1.064582666792635), // BL
-                  Rotation2d.fromRadians(-2.406815856192571 + Math.PI) // BR
+                  Rotation2d.fromRadians(3.057223710256083), // FL
+                  Rotation2d.fromRadians(-0.9648739155800683), // FR
+                  Rotation2d.fromRadians(1.8346410223112268), // BL
+                  Rotation2d.fromRadians(1.787087617886772) // BR
                 };
           };
     }

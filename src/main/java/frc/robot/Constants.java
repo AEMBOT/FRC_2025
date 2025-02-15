@@ -14,7 +14,12 @@ import edu.wpi.first.wpilibj.DigitalInput;
  */
 public final class Constants {
   public static final DigitalInput robotJumper = new DigitalInput(0);
-  public static final Robot currentRobot = Robot.DORY;
+
+  public static final Robot currentRobot =
+      robotJumper.get()
+          ? Robot.NAUTILUS
+          : Robot.DORY; // Minor todo, make this not tenery for clarity
+
   public static final Mode currentMode = Mode.REAL;
 
   public static enum Mode {
@@ -80,10 +85,34 @@ public final class Constants {
                 };
             case NAUTILUS ->
                 new Rotation2d[] { // This is not currently correct
-                  Rotation2d.fromRadians(2.6599226861937018), // FL
-                  Rotation2d.fromRadians(-2.9206994201342606 + Math.PI), // FR
-                  Rotation2d.fromRadians(1.064582666792635), // BL
-                  Rotation2d.fromRadians(-2.406815856192571 + Math.PI) // BR
+                  Rotation2d.fromRadians(0.7915340865489908 * -1), // FL
+                  Rotation2d.fromRadians((-0.23316507975861744 + Math.PI) * -1), // FR
+                  Rotation2d.fromRadians(-0.09050486648525283 * -1), // BL
+                  Rotation2d.fromRadians(-3.0802334220743677 * -1) // BR
+                };
+          };
+
+      public static final Boolean[] turnMotorInversion =
+          switch (currentRobot) {
+            case DORY ->
+                new Boolean[] {
+                  true, true, false, true,
+                };
+            case NAUTILUS ->
+                new Boolean[] {
+                  true, true, true, true,
+                };
+          };
+
+      public static final Boolean[] driveMotorInversion =
+          switch (currentRobot) {
+            case DORY ->
+                new Boolean[] {
+                  true, true, true, false,
+                };
+            case NAUTILUS ->
+                new Boolean[] {
+                  true, true, true, false,
                 };
           };
     }

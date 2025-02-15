@@ -32,7 +32,12 @@ import org.photonvision.PhotonPoseEstimator.PoseStrategy;
  */
 public final class Constants {
   public static final DigitalInput robotJumper = new DigitalInput(0);
-  public static final Robot currentRobot = Robot.DORY;
+
+  public static final Robot currentRobot =
+      robotJumper.get()
+          ? Robot.NAUTILUS
+          : Robot.DORY; // Minor todo, make this not tenery for clarity
+
   public static final Mode currentMode =
       RobotBase.isReal()
           ? Mode.REAL
@@ -101,10 +106,34 @@ public final class Constants {
                 };
             case NAUTILUS ->
                 new Rotation2d[] { // This is not currently correct
-                  Rotation2d.fromRadians(2.6599226861937018), // FL
-                  Rotation2d.fromRadians(-2.9206994201342606 + Math.PI), // FR
-                  Rotation2d.fromRadians(1.064582666792635), // BL
-                  Rotation2d.fromRadians(-2.406815856192571 + Math.PI) // BR
+                  Rotation2d.fromRadians(0.7915340865489908 * -1), // FL
+                  Rotation2d.fromRadians((-0.23316507975861744 + Math.PI) * -1), // FR
+                  Rotation2d.fromRadians(-0.09050486648525283 * -1), // BL
+                  Rotation2d.fromRadians(-3.0802334220743677 * -1) // BR
+                };
+          };
+
+      public static final Boolean[] turnMotorInversion =
+          switch (currentRobot) {
+            case DORY ->
+                new Boolean[] {
+                  true, true, false, true,
+                };
+            case NAUTILUS ->
+                new Boolean[] {
+                  true, true, true, true,
+                };
+          };
+
+      public static final Boolean[] driveMotorInversion =
+          switch (currentRobot) {
+            case DORY ->
+                new Boolean[] {
+                  true, true, true, false,
+                };
+            case NAUTILUS ->
+                new Boolean[] {
+                  true, true, true, false,
                 };
           };
     }
@@ -172,21 +201,23 @@ public final class Constants {
       public static final Transform3d frontLeftFromRobot =
           new Transform3d(
               new Translation3d(
-                  Units.inchesToMeters(11), Units.inchesToMeters(7), Units.inchesToMeters(4)),
+                  Units.inchesToMeters(9), Units.inchesToMeters(8.25), Units.inchesToMeters(7.5)),
               new Rotation3d(Units.degreesToRadians(180), Units.degreesToRadians(-30), 0.0));
 
       public static final String frontRightName = "front-right";
       public static final Transform3d frontRightFromRobot =
           new Transform3d(
               new Translation3d(
-                  Units.inchesToMeters(11), Units.inchesToMeters(-7), Units.inchesToMeters(4)),
+                  Units.inchesToMeters(9), Units.inchesToMeters(-8.25), Units.inchesToMeters(7.5)),
               new Rotation3d(Units.degreesToRadians(180), Units.degreesToRadians(-30), 0.0));
 
       public static final String backLeftName = "back-left";
       public static final Transform3d backLeftFromRobot =
           new Transform3d(
               new Translation3d(
-                  Units.inchesToMeters(-11), Units.inchesToMeters(11.5), Units.inchesToMeters(6)),
+                  Units.inchesToMeters(-12.375),
+                  Units.inchesToMeters(8),
+                  Units.inchesToMeters(10.5)),
               new Rotation3d(
                   Units.degreesToRadians(180),
                   Units.degreesToRadians(-23.5),
@@ -196,7 +227,9 @@ public final class Constants {
       public static final Transform3d backRightFromRobot =
           new Transform3d(
               new Translation3d(
-                  Units.inchesToMeters(-11), Units.inchesToMeters(-11.5), Units.inchesToMeters(6)),
+                  Units.inchesToMeters(-12.375),
+                  Units.inchesToMeters(-8),
+                  Units.inchesToMeters(10.5)),
               new Rotation3d(
                   Units.degreesToRadians(180),
                   Units.degreesToRadians(-23.5),

@@ -17,6 +17,7 @@ import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.util.PathGenerator;
 import java.util.Set;
+import org.littletonrobotics.junction.Logger;
 
 public class RobotContainer {
 
@@ -61,6 +62,9 @@ public class RobotContainer {
                 new ModuleIO() {});
         break;
     }
+
+    Logger.recordOutput("currentRobot", Constants.currentRobot.ordinal());
+    System.out.println("Running on robot: " + Constants.currentRobot);
 
     configureBindings();
   }

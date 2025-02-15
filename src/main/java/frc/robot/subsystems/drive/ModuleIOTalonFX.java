@@ -15,6 +15,8 @@ package frc.robot.subsystems.drive;
 
 import static edu.wpi.first.wpilibj.Timer.delay;
 import static frc.robot.Constants.DriveConstants.Module.WHEEL_RADIUS;
+import static frc.robot.Constants.DriveConstants.Module.driveMotorInversion;
+import static frc.robot.Constants.DriveConstants.Module.turnMotorInversion;
 import static java.lang.Math.abs;
 
 import com.ctre.phoenix6.BaseStatusSignal;
@@ -93,32 +95,32 @@ public class ModuleIOTalonFX implements ModuleIO {
         turnTalon = new TalonFX(DriveConstants.Module.TALON_TURN_MOTOR_0, "*");
         cancoder = new CANcoder(DriveConstants.Module.TALON_CANCODER_0, "*");
         absoluteEncoderOffset = DriveConstants.Module.absoluteEncoderOffset[0];
-        isDriveMotorInverted = true;
-        isTurnMotorInverted = true;
+        isDriveMotorInverted = driveMotorInversion[0];
+        isTurnMotorInverted = turnMotorInversion[0];
         break;
       case 1:
         driveTalon = new TalonFX(DriveConstants.Module.TALON_DRIVE_MOTOR_1, "*");
         turnTalon = new TalonFX(DriveConstants.Module.TALON_TURN_MOTOR_1, "*");
         cancoder = new CANcoder(DriveConstants.Module.TALON_CANCODER_1, "*");
         absoluteEncoderOffset = DriveConstants.Module.absoluteEncoderOffset[1];
-        isDriveMotorInverted = true;
-        isTurnMotorInverted = true;
+        isDriveMotorInverted = driveMotorInversion[1];
+        isTurnMotorInverted = turnMotorInversion[1];
         break;
       case 2:
         driveTalon = new TalonFX(DriveConstants.Module.TALON_DRIVE_MOTOR_2, "*");
         turnTalon = new TalonFX(DriveConstants.Module.TALON_TURN_MOTOR_2, "*");
         cancoder = new CANcoder(DriveConstants.Module.TALON_CANCODER_2, "*");
         absoluteEncoderOffset = DriveConstants.Module.absoluteEncoderOffset[2];
-        isDriveMotorInverted = true;
-        isTurnMotorInverted = false;
+        isDriveMotorInverted = driveMotorInversion[2];
+        isTurnMotorInverted = turnMotorInversion[2];
         break;
       case 3:
         driveTalon = new TalonFX(DriveConstants.Module.TALON_DRIVE_MOTOR_3, "*");
         turnTalon = new TalonFX(DriveConstants.Module.TALON_TURN_MOTOR_3, "*");
         cancoder = new CANcoder(DriveConstants.Module.TALON_CANCODER_3, "*");
         absoluteEncoderOffset = DriveConstants.Module.absoluteEncoderOffset[3];
-        isDriveMotorInverted = false;
-        isTurnMotorInverted = true;
+        isDriveMotorInverted = driveMotorInversion[3];
+        isTurnMotorInverted = turnMotorInversion[3];
         break;
       default:
         throw new RuntimeException("Invalid module index");

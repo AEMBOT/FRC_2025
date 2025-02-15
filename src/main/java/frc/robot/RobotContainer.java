@@ -13,6 +13,7 @@ import frc.robot.subsystems.drive.GyroIONavX;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
+import org.littletonrobotics.junction.Logger;
 
 public class RobotContainer {
 
@@ -57,6 +58,9 @@ public class RobotContainer {
                 new ModuleIO() {});
         break;
     }
+
+    Logger.recordOutput("currentRobot", Constants.currentRobot.ordinal());
+    System.out.println("Running on robot: " + Constants.currentRobot);
 
     configureBindings();
   }

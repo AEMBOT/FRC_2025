@@ -141,9 +141,13 @@ public final class Constants {
     public static final class reefTargetConstants {
       // Defines new variables for the x/y translations for the target positions (currently at
       // placeholders)
-      public static final double targetX = 0.5;
-      public static final double targetY = 0.75;
-      public static final double targetAngle = 0;
+      public static final double targetX1 = 0.5;
+      public static final double targetX2 = 0.5;
+      public static final double targetX3 = 0.5;
+
+      public static final double targetY = 0.1793875;
+
+      public static final double targetAngle = Radians.convertFrom(180, Degrees);
 
       // Define reef centerpoints (blue alliance)
       public static final double reefCenterX = 4.489323;
@@ -170,7 +174,7 @@ public final class Constants {
     /** Constraints for the majority of driver-assist and auto paths. */
     public static final PathConstraints generalPathConstraints =
         new PathConstraints(
-            2, 4, Radians.convertFrom(360, Degrees), Radians.convertFrom(360, Degrees));
+            1, 4, Radians.convertFrom(360, Degrees), Radians.convertFrom(360, Degrees));
 
     public static final class Targets {
       /** Our target pose for interfacing with the right source, relative to driverStation */

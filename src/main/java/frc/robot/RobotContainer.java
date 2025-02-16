@@ -124,7 +124,7 @@ public class RobotContainer {
     ReefTargets reefTargets = new ReefTargets();
 
     controller
-        .leftBumper()
+        .x()
         .whileTrue(
             new DeferredCommand(
                 () ->
@@ -133,7 +133,7 @@ public class RobotContainer {
                 Set.of(drive)));
 
     controller
-        .rightBumper()
+        .a()
         .whileTrue(
             new DeferredCommand(
                 () ->

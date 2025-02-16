@@ -26,9 +26,10 @@ public class WristIOReal implements WristIO {
         motor.getConfigurator().apply(motorConfig);
 
         motor.setNeutralMode(NeutralModeValue.Brake);
-
-
-        delay(0.5);
+        
+        while (getAbsoluteAngle() < -90 || getAbsoluteAngle() > 90) {
+            delay(1);
+        }
         
         wristGoal = new TrapezoidProfile.State(getAbsoluteAngle(), 0);
         wristSetpoint = new TrapezoidProfile.State(getAbsoluteAngle(), 0);

@@ -2,6 +2,7 @@ package frc.robot.subsystems.arm;
 
 import static frc.robot.Constants.PivotConstants.*;
 import static edu.wpi.first.math.MathUtil.clamp;
+import static edu.wpi.first.wpilibj.Timer.delay;
 
 import edu.wpi.first.wpilibj.Timer;
 
@@ -42,11 +43,15 @@ public class PivotIOReal implements PivotIO {
 
         leadingMotor.getConfigurator().apply(leftMotorConfig);
         followingMotor.getConfigurator().apply(rightMotorConfig);
-;
+
         leadingMotor.setNeutralMode(NeutralModeValue.Brake);
         followingMotor.setNeutralMode(NeutralModeValue.Brake);
 
         followingMotor.setControl(new Follower(pivotLeftMotorID, true));
+
+        while (getAbsoluteEncoderPosition() < 0.1 || getAbsoluteEncoderPosition() > 135) {
+            delay(1);
+        }
 
         pivotGoal = new TrapezoidProfile.State(getAbsoluteEncoderPosition(), 0);
         pivotSetpoint = new TrapezoidProfile.State(getAbsoluteEncoderPosition(), 0);
@@ -90,7 +95,7 @@ public class PivotIOReal implements PivotIO {
 
         Logger.recordOutput("Pivot/CalculatedFFVolts", feedForward);
         Logger.recordOutput("Pivot/PIDCommandVolts", pidOutput);
-
+        Logger.recordOutput("Pivot/Angle", angle);
                 
         setMotorVoltage(feedForward + pidOutput);
         
@@ -123,7 +128,7 @@ public class PivotIOReal implements PivotIO {
 
 
 
-        leadingMotor.setVoltage(-volts);
+        leadingMotor.setVoltage(-volts/4);
     }
 
     @Override

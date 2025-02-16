@@ -38,7 +38,7 @@ public final class Constants {
     /** Maximum angle for the pivot to move to, in degrees */
     public static final double pivotMaxAngle = 100;
     /** Minimum angle for the pivot to move to, in degrees */
-    public static final double pivotMinAngle = 50;
+    public static final double pivotMinAngle = 30;
     /** ID of the left pivot sparkmax */
     public static final int pivotLeftMotorID = 10;
     /**  */

@@ -170,7 +170,7 @@ public class ModuleIOTalonFX implements ModuleIO {
     turnConfig.Slot0.kA = 0.0;
     turnConfig.Slot0.kS = 0.16677;
     turnConfig.Slot0.kP = 75;
-    turnConfig.Slot0.kD = 0;
+    turnConfig.Slot0.kD = 1.0;
 
     turnConfig.ClosedLoopGeneral.ContinuousWrap = true;
 

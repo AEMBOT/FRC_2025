@@ -10,6 +10,8 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -17,39 +19,30 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
- * constants. This class should not be used for any other purpose. All constants should be declared
- * globally (i.e. public static). Do not put anything functional in this class.
- *
- * <p>It is advised to statically import this class (or one of its inner classes) wherever the
- * constants are needed, to reduce verbosity.
+ * constants. This class should not be used for any other purpose.
  */
 public final class Constants {
   public static final DigitalInput robotJumper = new DigitalInput(0);
 
-  public static final Robot currentRobot =
-      robotJumper.get()
-          ? Robot.NAUTILUS
-          : Robot.DORY; // Minor todo, make this not tenery for clarity
+  public static final Robot currentRobot = robotJumper.get() ? Robot.NAUTILUS : Robot.DORY;
+  public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : Mode.SIM;
 
-  public static final Mode currentMode =
-      RobotBase.isReal()
-          ? Mode.REAL
-          : Mode.SIM; // You need to manually switch betweeen SIM and REPLAY.
-
-  public static enum Mode {
+  public enum Mode {
     /** Running on a real robot. */
     REAL,
-
     /** Running a physics simulator. */
     SIM,
-
     /** Replaying from a log file. */
     REPLAY
   }
@@ -139,7 +132,7 @@ public final class Constants {
     }
 
     public static final class reefTargetConstants {
-      // Defines new variables for the x/y translations for the target positions (currently at
+      // Defines new variables for the x/y translations for the target positions (currently
       // placeholders)
       public static final double targetX1 = 0.5;
       public static final double targetX2 = 0.5;
@@ -161,7 +154,7 @@ public final class Constants {
     static {
       try {
         robotConfig =
-            RobotConfig.fromGUISettings(); // TODO Set up this configuration in PathPlanner GUI
+            RobotConfig.fromGUISettings(); // TODO: Set up this configuration in PathPlanner GUI
       } catch (Exception e) {
         throw new RuntimeException("Failed to initialize RobotConfig for PathPlanner", e);
       }
@@ -170,7 +163,7 @@ public final class Constants {
     public static final PIDConstants translationPIDConstants = new PIDConstants(5.0);
     public static final PIDConstants rotationPIDConstants = new PIDConstants(5.0);
 
-    // TODO Constraints are placeholder. Figure out reasonable values.
+    // TODO: Constraints are placeholder. Figure out reasonable values.
     /** Constraints for the majority of driver-assist and auto paths. */
     public static final PathConstraints generalPathConstraints =
         new PathConstraints(
@@ -183,9 +176,7 @@ public final class Constants {
               1.407,
               1.539,
               Rotation2d.fromDegrees(
-                  -125 + 180)); // TODO get a proper value for this. This value is for testing
-      // purposes
-      // and will probably be dynamically generated later.
+                  -125 + 180)); // TODO: Get a proper value for this (for testing purposes)
     }
   }
 
@@ -200,7 +191,7 @@ public final class Constants {
       NORMAL
     }
 
-    public final class NautilusCameras { // TODO Get actual Nautilus camera offsets
+    public final class NautilusCameras { // TODO: Get actual Nautilus camera offsets
       public static final String frontLeftName = "front-left";
       public static final Transform3d frontLeftFromRobot =
           new Transform3d(
@@ -283,5 +274,124 @@ public final class Constants {
     public static final Matrix<N3, N1> highResMultiTagStdDev = VecBuilder.fill(0.2, 0.2, 3);
     public static final Matrix<N3, N1> normalMultiTagStdDev =
         VecBuilder.fill(0.5, 0.5, Double.MAX_VALUE);
+  }
+
+  public static final class PivotConstants {
+    /** Maximum angle for the pivot to move to, in degrees */
+    public static final double pivotMaxAngle = 100;
+
+    /** Minimum angle for the pivot to move to, in degrees */
+    public static final double pivotMinAngle = 30;
+
+    /** ID of the left pivot sparkmax */
+    public static final int pivotLeftMotorID = 10;
+
+    /** */
+    public static final boolean pivotLeftMotorInverted = false;
+
+    /** */
+    public static final int pivotLeftMotorCurrentLimit = 50;
+
+    /** ID of the right pivot sparkmax */
+    public static final int pivotRightMotorID = 11;
+
+    /** */
+    public static final boolean pivotRightMotorInverted = false;
+
+    /** */
+    public static final int pivotRightMotorCurrentLimit = 50;
+
+    /** */
+    public static final DutyCycleEncoder pivotEncoder = new DutyCycleEncoder(1);
+
+    /** */
+    public static final double pivotEncoderPositionOffset = -156.67488616687214;
+
+    /** */
+    public static final double gearRatio = 93.3333333;
+
+    /** */
+    public static final ArmFeedforward pivotFFModel = new ArmFeedforward(0.1, 0.1, 0.5, 0.1);
+
+    /** */
+    public static final PIDController pivotPIDController = new PIDController(2, 0, 0.00);
+
+    /** */
+    public static final TrapezoidProfile pivotProfile =
+        new TrapezoidProfile(new TrapezoidProfile.Constraints(2, 5));
+
+    /** Ramp Rate of the pivot System ID in volts per second */
+    public static final double pivotSysIdRampRate = 0.2;
+
+    /** Step Voltage of the pivot System ID in volts */
+    public static final double pivotSysIdStepVolt = 7;
+
+    /** Timeout of the pivot System ID in volts */
+    public static final double pivotSysIdTimeout = 30;
+
+    /** How many degrees the pivot can be off its goal position for it to be sufficient */
+    public static final double pivotAngleAllowedDeviance = 1.15;
+
+    /** */
+    public static final Translation3d pivotTranslationFromRobot = new Translation3d(-0.2, 0, 0.255);
+
+    /** */
+    public static final double pivotDefaultAngle = 90;
+
+    /** */
+    public static final double pivotSimGoalPosition = 1.05;
+
+    /** */
+    public static final double pivotSimSetpointPosition = 1.05;
+
+    /** */
+    public static final SingleJointedArmSim pivotSim =
+        new SingleJointedArmSim(
+            DCMotor.getNEO(2),
+            300,
+            0.17,
+            0.500,
+            Units.degreesToRadians(pivotMinAngle),
+            Units.degreesToRadians(pivotMaxAngle),
+            true,
+            Units.degreesToRadians(45));
+  }
+
+  public static final class ElevatorConstants {
+    /* Absolute highest point from the base the elevator can reach in inches */
+    public static final double absoluteMaxExtension = 6;
+
+    public static final TrapezoidProfile elevatorProfile =
+        new TrapezoidProfile(new TrapezoidProfile.Constraints(1, 2));
+
+    public static final double elevatorCurrentLimit = 3;
+    public static final double moveVoltage = 5.0;
+
+    /* Device IDs */
+    public static final int motorID = 12;
+    public static final double rotToInMultFactor = 1;
+  }
+
+  public static final class WristConstants {
+    public static final double encoderOffset = -211.87278529681961;
+    public static final double wristMaxAngle = -90;
+    public static final double wristMinAngle = 90;
+    public static final double deadzone = 5.0;
+
+    /* Device IDs */
+    public static final int motorID = 14;
+    public static final DutyCycleEncoder wristEncoder = new DutyCycleEncoder(2);
+
+    public static final TrapezoidProfile wristProfile =
+        new TrapezoidProfile(new TrapezoidProfile.Constraints(2, 5));
+
+    public static final ArmFeedforward wristFFModel = new ArmFeedforward(0.1, 0.1, 0.5, 0.1);
+    public static final PIDController wristPIDController = new PIDController(2, 0, 0.00);
+    public static final double wristMotorCurrentLimit = 0.25;
+  }
+
+  public static final class IntakeConstants {
+    public static final int intakeMotorID = 15;
+    public static final double intakeMotorCurrentLimit = 5;
   }
 }

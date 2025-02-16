@@ -8,6 +8,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Constants.ElevatorConstants;
+import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.arm.ElevatorIOReal;
+import frc.robot.subsystems.arm.IntakeIOReal;
+import frc.robot.subsystems.arm.PivotIOReal;
+import frc.robot.subsystems.arm.WristIOReal;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONavX;
@@ -20,8 +26,8 @@ import java.util.Set;
 import org.littletonrobotics.junction.Logger;
 
 public class RobotContainer {
-
   // Subsystems
+  private final Arm arm;
   private final Drive drive;
 
   // Controllers
@@ -29,6 +35,12 @@ public class RobotContainer {
   private final CommandXboxController backupController = new CommandXboxController(1);
 
   public RobotContainer() {
+    arm =
+        new Arm( // TODO Setup modes
+            new ElevatorIOReal() {},
+            new PivotIOReal() {},
+            new WristIOReal() {},
+            new IntakeIOReal() {});
 
     switch (Constants.currentMode) {
       case REAL:
@@ -70,6 +82,34 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
+    // Temporary arm bindings for testing
+    controller
+        .povUp()
+        .whileTrue(arm.changePivotGoalPosition(-15))
+        .onFalse(arm.changePivotGoalPosition(0));
+    controller
+        .povDown()
+        .whileTrue(arm.changePivotGoalPosition(15))
+        .onFalse(arm.changePivotGoalPosition(0));
+    controller.povLeft().onTrue(arm.setPivotPositionCommand(() -> 90));
+
+    controller.rightTrigger(0.25d).whileTrue(arm.elevatorMoveWithVoltage(controller.getRightY()));
+    controller
+        .leftTrigger(0.25d)
+        .whileTrue(arm.elevatorMoveWithVoltage(ElevatorConstants.moveVoltage));
+
+    controller
+        .rightBumper()
+        .whileTrue(arm.changeWristGoalPosition(15))
+        .onFalse(arm.changeWristGoalPosition(0));
+    controller
+        .leftBumper()
+        .whileTrue(arm.changeWristGoalPosition(-15))
+        .onFalse(arm.changeWristGoalPosition(0));
+
+    controller.b().whileTrue(arm.runIntakeCommand(() -> -6)).onFalse(arm.runIntakeCommand(() -> 0));
+    controller.y().whileTrue(arm.runIntakeCommand(() -> 2)).onFalse(arm.runIntakeCommand(() -> 0));
+
     drive.setDefaultCommand(
         drive.joystickDrive(
             drive,

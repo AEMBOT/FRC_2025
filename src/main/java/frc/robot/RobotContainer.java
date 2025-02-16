@@ -43,8 +43,9 @@ public class RobotContainer {
       .onFalse(arm.changePivotGoalPosition(0));
     primaryController.povDown()
       .whileTrue(arm.changePivotGoalPosition(15))
-      .onFalse(arm.changePivotGoalPosition(0));;
-
+      .onFalse(arm.changePivotGoalPosition(0));
+    primaryController.povLeft()
+      .onTrue(arm.setPivotPositionCommand(() -> 90));
 
     primaryController.rightTrigger(0.25d).whileTrue(arm.elevatorMoveWithVoltage(primaryController.getRightY()));
     primaryController.leftTrigger(0.25d).whileTrue(arm.elevatorMoveWithVoltage(ElevatorConstants.moveVoltage));
@@ -61,7 +62,7 @@ public class RobotContainer {
     .onFalse(arm.runIntakeCommand(() -> 0));
     primaryController.y()
     .whileTrue(arm.runIntakeCommand(() -> 2))
-    .onFalse(arm.runIntakeCommand(() -> 0));;
+    .onFalse(arm.runIntakeCommand(() -> 0));
   }
 
   public Command getAutonomousCommand() {

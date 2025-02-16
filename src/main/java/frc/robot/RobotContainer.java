@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Constants.ElevatorConstants;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ElevatorIOReal;
 import frc.robot.subsystems.arm.IntakeIOReal;
@@ -94,9 +93,9 @@ public class RobotContainer {
     controller.povLeft().onTrue(arm.setPivotPositionCommand(() -> 90));
 
     controller.rightTrigger(0.25d).whileTrue(arm.elevatorMoveWithVoltage(controller.getRightY()));
-    controller
-        .leftTrigger(0.25d)
-        .whileTrue(arm.elevatorMoveWithVoltage(ElevatorConstants.moveVoltage));
+    // controller // TODO find new binding for elevator
+    //    .leftTrigger(0.25d)
+    //    .whileTrue(arm.elevatorMoveWithVoltage(ElevatorConstants.moveVoltage));
 
     controller
         .rightBumper()

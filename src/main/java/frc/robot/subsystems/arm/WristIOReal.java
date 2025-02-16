@@ -25,7 +25,10 @@ public class WristIOReal implements WristIO {
 
     motor.setNeutralMode(NeutralModeValue.Brake);
 
-    while (getAbsoluteAngle() < -90 || getAbsoluteAngle() > 90) {
+    while (getAbsoluteAngle() < -90
+        || getAbsoluteAngle() > 90) { // TODO Get a better solution for this
+      System.out.println(
+          "Wrist in busyloop! Put in valid position! Current angle: " + getAbsoluteAngle());
       delay(1);
     }
 
@@ -68,9 +71,11 @@ public class WristIOReal implements WristIO {
   private void setVoltage(double volts) {
     if (getAbsoluteAngle() < wristMinAngle) {
       volts = clamp(volts, 0, Double.MAX_VALUE);
+      System.out.println("Wrist is less than min angle");
     }
     if (getAbsoluteAngle() > wristMaxAngle) {
       volts = clamp(volts, -Double.MAX_VALUE, 0);
+      System.out.println("Wrist is more than max angle.");
     }
 
     motor.setVoltage(-volts);

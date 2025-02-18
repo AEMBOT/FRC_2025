@@ -155,7 +155,7 @@ public final class Constants {
       NORMAL
     }
 
-    public final class NautilusCameras { // TODO Get actual Nautilus camera offsets
+    public final class NautilusCameras {
       public static final String frontLeftName = "front-left";
       public static final Transform3d frontLeftFromRobot =
           new Transform3d(
@@ -196,6 +196,10 @@ public final class Constants {
     }
 
     public final class DoryCameras {
+      /*
+      TODO The coordinates of Dory's front camera offsets seem to be inverted along the Y axis
+      compared to Dory's back and all of Nautilus' cameras.
+      It'd be good to figure out why this happens. */
       public static final String frontLeftName = "front-left";
       public static final Transform3d frontLeftFromRobot =
           new Transform3d(

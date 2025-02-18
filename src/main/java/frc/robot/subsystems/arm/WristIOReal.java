@@ -27,7 +27,9 @@ public class WristIOReal implements WristIO {
 
         motor.setNeutralMode(NeutralModeValue.Brake);
         
-        while (getAbsoluteAngle() < -90 || getAbsoluteAngle() > 90) {
+        while (getAbsoluteAngle() < -90 || getAbsoluteAngle() > 90) { 
+            // TODO Look into better solutions for invalid encoder initial pose
+            System.out.println("ERROR: Busyloop because wrist position invalid! Put in valid position! Current angle: " + getAbsoluteAngle());
             delay(1);
         }
         

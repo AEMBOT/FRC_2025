@@ -50,6 +50,8 @@ public class PivotIOReal implements PivotIO {
         followingMotor.setControl(new Follower(pivotLeftMotorID, true));
 
         while (getAbsoluteEncoderPosition() < 0.1 || getAbsoluteEncoderPosition() > 135) {
+            // TODO Look into better solutions for invalid encoder initial pose
+            System.out.println("ERROR: Busyloop because pivot position invalid! Is the encoder plugged in?");
             delay(1);
         }
 

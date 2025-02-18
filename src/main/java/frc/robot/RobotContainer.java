@@ -47,8 +47,9 @@ public class RobotContainer {
     primaryController.povLeft()
       .onTrue(arm.setPivotPositionCommand(() -> 90));
 
-    primaryController.rightTrigger(0.25d).whileTrue(arm.elevatorMoveWithVoltage(primaryController.getRightY()));
-    primaryController.leftTrigger(0.25d).whileTrue(arm.elevatorMoveWithVoltage(ElevatorConstants.moveVoltage));
+    operatorController.rightTrigger(0.25d).whileTrue(arm.elevatorMoveWithVoltage(primaryController.getRightY()));
+    // FIXME Resolve binding conflict between elevator down and drive slow mode
+    operatorController.leftTrigger(0.25d).whileTrue(arm.elevatorMoveWithVoltage(ElevatorConstants.moveVoltage));
 
     primaryController.rightBumper()
       .whileTrue(arm.changeWristGoalPosition(15))

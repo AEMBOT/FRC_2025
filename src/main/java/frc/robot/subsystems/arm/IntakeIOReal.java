@@ -6,29 +6,23 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
-import frc.robot.subsystems.arm.PivotIO.PivotIOInputs;
-
 public class IntakeIOReal implements IntakeIO {
 
-    private final TalonFX motor = new TalonFX(intakeMotorID);
-  
-    public IntakeIOReal() {
-        TalonFXConfiguration motorConfig = new TalonFXConfiguration();
-        motorConfig.CurrentLimits.StatorCurrentLimit = intakeMotorCurrentLimit;
-        motorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-        motor.setNeutralMode(NeutralModeValue.Brake);
-    }
-    
-    public void updateInputs(IntakeIOInputs inputs) {
-        inputs.intakeAppliedVolts = motor.getMotorVoltage().getValueAsDouble();
-    }
+  private final TalonFX motor = new TalonFX(intakeMotorID);
 
-    @Override
-    public void setVoltage(double volts) {
-        motor.setVoltage(volts);
-    }
+  public IntakeIOReal() {
+    TalonFXConfiguration motorConfig = new TalonFXConfiguration();
+    motorConfig.CurrentLimits.StatorCurrentLimit = intakeMotorCurrentLimit;
+    motorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+    motor.setNeutralMode(NeutralModeValue.Brake);
+  }
 
+  public void updateInputs(IntakeIOInputs inputs) {
+    inputs.intakeAppliedVolts = motor.getMotorVoltage().getValueAsDouble();
+  }
 
+  @Override
+  public void setVoltage(double volts) {
+    motor.setVoltage(volts);
+  }
 }
-
-

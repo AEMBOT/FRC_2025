@@ -120,7 +120,7 @@ public final class Constants {
     }
 
     public static final class WristConstants {
-        public static final double encoderOffset = -211.87278529681961;
+        public static final double encoderOffset = 194.10106985252673 * -1;        
         public static final double wristMaxAngle = -90;
         public static final double wristMinAngle = 90;
         public static final double deadzone = 5.0;

@@ -2,6 +2,7 @@ package frc.robot.subsystems.drive;
 
 import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kForward;
 import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kReverse;
+import static frc.robot.Constants.currentMode;
 import static java.lang.Math.min;
 
 import com.ctre.phoenix6.SignalLogger;
@@ -24,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.Mode;
 import frc.robot.subsystems.apriltagvision.AprilTagVision;
 import java.util.Arrays;
 import java.util.Optional;
@@ -63,6 +65,10 @@ public class Drive extends SubsystemBase {
       ModuleIO frModuleIO,
       ModuleIO blModuleIO,
       ModuleIO brModuleIO) {
+    if (currentMode == Mode.SIM) { // Have the robot be next to the reef in sim.
+      poseEstimator.resetPose(new Pose2d(2.83, 4.51, new Rotation2d()));
+    }
+
     this.gyroIO = gyroIO;
     modules[0] = new Module(flModuleIO, 0);
     modules[1] = new Module(frModuleIO, 1);
@@ -177,7 +183,9 @@ public class Drive extends SubsystemBase {
         "Drive/Running Command",
         Optional.ofNullable(this.getCurrentCommand()).map(Command::getName).orElse("None"));
 
-    aprilTagVision.updatePose(getPose());
+    aprilTagVision.updatePose(
+        getPose()); // This is kinda funky because vision affects our PoseEstimator. This is a
+    // feedback loop.
   }
 
   /**

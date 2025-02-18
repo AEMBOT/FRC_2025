@@ -1,6 +1,5 @@
 package frc.robot.subsystems.apriltagvision;
 
-import static edu.wpi.first.units.Units.Radians;
 import static frc.robot.Constants.AprilTagConstants.aprilTagFieldLayout;
 import static frc.robot.Constants.currentRobot;
 import static org.littletonrobotics.junction.Logger.getTimestamp;
@@ -8,7 +7,6 @@ import static org.littletonrobotics.junction.Logger.getTimestamp;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.AprilTagConstants;
@@ -102,11 +100,11 @@ public class AprilTagVision extends SubsystemBase {
         break;
     }
 
-    // For sim. If we do a full drivetrain sim move this there so it'll update as the simulated
-    // robot moves.
-    io.updatePose(new Pose2d(1.06, 2.50, new Rotation2d(Radians.convertFrom(-114.0, Radians))));
-
     this.drivePoseEstimator = swerveDrivePoseEstimator;
+  }
+
+  public void updatePose(Pose2d pose) {
+    io.updatePose(pose);
   }
 
   @Override

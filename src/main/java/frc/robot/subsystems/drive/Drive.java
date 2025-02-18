@@ -176,6 +176,8 @@ public class Drive extends SubsystemBase {
     Logger.recordOutput(
         "Drive/Running Command",
         Optional.ofNullable(this.getCurrentCommand()).map(Command::getName).orElse("None"));
+
+    aprilTagVision.updatePose(getPose());
   }
 
   /**

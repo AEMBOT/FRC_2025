@@ -31,7 +31,7 @@ public class AprilTagVisionIOSim implements AprilTagVisionIO {
   private Pose3d[] poseArray = new Pose3d[4];
   private double[] timestampArray = new double[4];
   private double[] visionStdArray = new double[4 * 3];
-  private double[] latencyArray;
+  private double[] latencyArray = new double[4];
 
   public AprilTagVisionIOSim() {
     PhotonCamera frontLeft = new PhotonCamera(DoryCameras.frontLeftName);

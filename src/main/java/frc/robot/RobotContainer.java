@@ -9,9 +9,13 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.arm.ElevatorIO;
 import frc.robot.subsystems.arm.ElevatorIOReal;
+import frc.robot.subsystems.arm.IntakeIO;
 import frc.robot.subsystems.arm.IntakeIOReal;
+import frc.robot.subsystems.arm.PivotIO;
 import frc.robot.subsystems.arm.PivotIOReal;
+import frc.robot.subsystems.arm.WristIO;
 import frc.robot.subsystems.arm.WristIOReal;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -32,13 +36,6 @@ public class RobotContainer {
   private final CommandXboxController backupController = new CommandXboxController(1);
 
   public RobotContainer() {
-    arm =
-        new Arm(
-            new ElevatorIOReal() {},
-            new PivotIOReal() {},
-            new WristIOReal() {},
-            new IntakeIOReal() {});
-
     switch (Constants.currentMode) {
       case REAL:
         drive =
@@ -48,6 +45,8 @@ public class RobotContainer {
                 new ModuleIOTalonFX(1),
                 new ModuleIOTalonFX(2),
                 new ModuleIOTalonFX(3));
+        arm =
+            new Arm(new ElevatorIOReal(), new PivotIOReal(), new WristIOReal(), new IntakeIOReal());
         break;
 
       case SIM:
@@ -58,6 +57,7 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim(),
                 new ModuleIOSim());
+        arm = new Arm(new ElevatorIO() {}, new PivotIO() {}, new WristIO() {}, new IntakeIO() {});
         break;
 
       default:
@@ -69,6 +69,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
+        arm = new Arm(new ElevatorIO() {}, new PivotIO() {}, new WristIO() {}, new IntakeIO() {});
         break;
     }
 

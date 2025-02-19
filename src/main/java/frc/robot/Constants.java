@@ -1,5 +1,7 @@
 package frc.robot;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -48,6 +50,13 @@ public final class Constants {
   }
 
   public static final double UPDATE_PERIOD = 0.02;
+
+  /**
+   * The layout of the april tags on the field. Comps in PNW should use welded, and the differences
+   * between welded and AndyMark are very small.
+   */
+  public static final AprilTagFieldLayout aprilTagLayout =
+      AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
 
   public static final class DriveConstants {
     // May need tweaking

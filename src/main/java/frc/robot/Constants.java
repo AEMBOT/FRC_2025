@@ -15,9 +15,9 @@ import edu.wpi.first.wpilibj.DigitalInput;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  // TODO Make it more clear/easier that we need to switch this per comp.
   /**
-   * The layout of the april tags on the field. This must be updated depending on the comp we're on.
+   * The layout of the april tags on the field. Comps in PNW should use welded, and the differences
+   * between welded and AndyMark are very small.
    */
   public static final AprilTagFieldLayout aprilTagLayout =
       AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);

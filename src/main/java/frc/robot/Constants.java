@@ -13,12 +13,21 @@ import edu.wpi.first.wpilibj.DigitalInput;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+  /**
+   * A jumper that identifies what robot we're currently running on. It outputs high voltage on
+   * Nautilus and low voltage on Dory. If there is no jumper, it'll default to high/true
+   */
   public static final DigitalInput robotJumper = new DigitalInput(0);
 
-  public static final Robot currentRobot =
-      robotJumper.get()
-          ? Robot.NAUTILUS
-          : Robot.DORY; // Minor todo, make this not tenery for clarity
+  public static final Robot currentRobot;
+
+  static {
+    if (robotJumper.get()) {
+      currentRobot = Robot.NAUTILUS;
+    } else {
+      currentRobot = Robot.DORY;
+    }
+  }
 
   public static final Mode currentMode = Mode.REAL;
 

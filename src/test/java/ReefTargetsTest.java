@@ -91,6 +91,5 @@ public final class ReefTargetsTest {
     } catch (AssertionError e) {
       System.out.println(e.getMessage());
     }
-
   }
 }

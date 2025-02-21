@@ -132,13 +132,13 @@ public interface AprilTagVisionIO {
             Matrix<N3, N1> stdDevs =
                 getEstimationStdDevs(estimatedRobotPose, poseEstimators[index].resolution);
             System.arraycopy(stdDevs.getData(), 0, visionStdArray, index * 3, 3);
-            if (currentMode
-                == Mode
-                    .SIM) { // Don't update latency if in sim. It doesn't work for some reason. TODO
-              // fix that
-              return; // Note this is in a lambda. Essentially equivalent to saying continue.
+            if (currentMode == Mode.SIM) {
+              // Report zero latency in sim. Sim latency doesn't work for some reason. TODO fix that
+              latencyArray[index] = 0.0;
+            } else {
+              latencyArray[index] =
+                  Timer.getFPGATimestamp() - camResult.get().getTimestampSeconds();
             }
-            latencyArray[index] = Timer.getFPGATimestamp() - camResult.get().getTimestampSeconds();
           },
           () -> {
             // Set pose values to NaN if no AprilTags are seen.

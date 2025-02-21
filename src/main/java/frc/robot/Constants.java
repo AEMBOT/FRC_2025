@@ -31,12 +31,21 @@ import org.photonvision.PhotonPoseEstimator.PoseStrategy;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+  /**
+   * A jumper that identifies what robot we're currently running on. It outputs high voltage on
+   * Nautilus and low voltage on Dory. If there is no jumper, it'll default to high/true
+   */
   public static final DigitalInput robotJumper = new DigitalInput(0);
 
-  public static final Robot currentRobot =
-      robotJumper.get()
-          ? Robot.NAUTILUS
-          : Robot.DORY; // Minor todo, make this not tenery for clarity
+  public static final Robot currentRobot;
+
+  static {
+    if (robotJumper.get()) {
+      currentRobot = Robot.NAUTILUS;
+    } else {
+      currentRobot = Robot.DORY;
+    }
+  }
 
   public static final Mode currentMode =
       RobotBase.isReal()
@@ -190,8 +199,12 @@ public final class Constants {
   }
 
   public static final class AprilTagConstants {
+    /**
+     * The layout of the april tags on the field. Comps in PNW should use welded, and the
+     * differences between welded and AndyMark are very small.
+     */
     public static final AprilTagFieldLayout aprilTagFieldLayout =
-        AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+        AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
 
     public static PoseStrategy poseStrategy = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
 
@@ -200,7 +213,7 @@ public final class Constants {
       NORMAL
     }
 
-    public final class NautilusCameras { // TODO Get actual Nautilus camera offsets
+    public final class NautilusCameras {
       public static final String frontLeftName = "front-left";
       public static final Transform3d frontLeftFromRobot =
           new Transform3d(
@@ -241,6 +254,10 @@ public final class Constants {
     }
 
     public final class DoryCameras {
+      /*
+      TODO The coordinates of Dory's front camera offsets seem to be inverted along the Y axis
+      compared to Dory's back and all of Nautilus' cameras.
+      It'd be good to figure out why this happens. */
       public static final String frontLeftName = "front-left";
       public static final Transform3d frontLeftFromRobot =
           new Transform3d(

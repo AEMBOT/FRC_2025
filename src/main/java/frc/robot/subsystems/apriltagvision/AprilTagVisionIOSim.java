@@ -5,7 +5,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.Constants.AprilTagConstants;
 import frc.robot.Constants.AprilTagConstants.CameraResolution;
-import frc.robot.Constants.AprilTagConstants.DoryCameras;
+import frc.robot.Constants.AprilTagConstants.NautilusCameras;
 import org.photonvision.PhotonCamera;
 import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.SimCameraProperties;
@@ -31,36 +31,36 @@ public class AprilTagVisionIOSim implements AprilTagVisionIO {
   private Pose3d[] poseArray = new Pose3d[4];
   private double[] timestampArray = new double[4];
   private double[] visionStdArray = new double[4 * 3];
-  private double[] latencyArray;
+  private double[] latencyArray = new double[4];
 
   public AprilTagVisionIOSim() {
-    PhotonCamera frontLeft = new PhotonCamera(DoryCameras.frontLeftName);
-    PhotonCamera frontRight = new PhotonCamera(DoryCameras.frontRightName);
-    PhotonCamera backLeft = new PhotonCamera(DoryCameras.backLeftName);
-    PhotonCamera backRight = new PhotonCamera(DoryCameras.backRightName);
+    PhotonCamera frontLeft = new PhotonCamera(NautilusCameras.frontLeftName);
+    PhotonCamera frontRight = new PhotonCamera(NautilusCameras.frontRightName);
+    PhotonCamera backLeft = new PhotonCamera(NautilusCameras.backLeftName);
+    PhotonCamera backRight = new PhotonCamera(NautilusCameras.backRightName);
 
     frontLeftPose =
         new CameraPoseEstimator(
             frontLeft,
-            DoryCameras.frontLeftFromRobot,
+            NautilusCameras.frontLeftFromRobot,
             AprilTagConstants.poseStrategy,
             CameraResolution.HIGH_RES);
     frontRightPose =
         new CameraPoseEstimator(
             frontRight,
-            DoryCameras.frontRightFromRobot,
+            NautilusCameras.frontRightFromRobot,
             AprilTagConstants.poseStrategy,
             CameraResolution.HIGH_RES);
     backLeftPose =
         new CameraPoseEstimator(
             backLeft,
-            DoryCameras.backLeftFromRobot,
+            NautilusCameras.backLeftFromRobot,
             AprilTagConstants.poseStrategy,
             CameraResolution.HIGH_RES);
     backRightPose =
         new CameraPoseEstimator(
             backRight,
-            DoryCameras.backRightFromRobot,
+            NautilusCameras.backRightFromRobot,
             AprilTagConstants.poseStrategy,
             CameraResolution.HIGH_RES);
 
@@ -82,10 +82,10 @@ public class AprilTagVisionIOSim implements AprilTagVisionIO {
     backLeftSim = new PhotonCameraSim(backLeft, cameraProps);
     backRightSim = new PhotonCameraSim(backRight, cameraProps);
 
-    visionSim.addCamera(frontLeftSim, DoryCameras.frontLeftFromRobot);
-    visionSim.addCamera(frontRightSim, DoryCameras.frontRightFromRobot);
-    visionSim.addCamera(backLeftSim, DoryCameras.backLeftFromRobot);
-    visionSim.addCamera(backRightSim, DoryCameras.backRightFromRobot);
+    visionSim.addCamera(frontLeftSim, NautilusCameras.frontLeftFromRobot);
+    visionSim.addCamera(frontRightSim, NautilusCameras.frontRightFromRobot);
+    visionSim.addCamera(backLeftSim, NautilusCameras.backLeftFromRobot);
+    visionSim.addCamera(backRightSim, NautilusCameras.backRightFromRobot);
 
     frontLeftSim.enableDrawWireframe(true);
     frontRightSim.enableDrawWireframe(true);

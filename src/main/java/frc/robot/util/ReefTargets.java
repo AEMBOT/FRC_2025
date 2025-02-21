@@ -4,17 +4,14 @@
 
 package frc.robot.util;
 
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
+import static frc.robot.Constants.AprilTagConstants.aprilTagFieldLayout;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import frc.robot.Constants.DriveConstants.reefTargetConstants;
 
 public final class ReefTargets {
-  // Define AprilTag layout
-  final AprilTagFieldLayout aprilTagFieldLayout =
-      AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
   final Pose2d[] tagPoses;
   final Pose2d[] targetsL1Right = new Pose2d[6];
   final Pose2d[] targetsL1Left = new Pose2d[6];

@@ -166,10 +166,10 @@ public class ModuleIOTalonFX implements ModuleIO {
     turnConfig.Feedback.FeedbackRotorOffset =
         0.0; // Is this right? I think CANcoder config handles this
 
-    turnConfig.Slot0.kV = 2.5678;
-    turnConfig.Slot0.kA = 0.0;
-    turnConfig.Slot0.kS = 0.16677;
-    turnConfig.Slot0.kP = 75;
+    turnConfig.Slot0.kV = 0.37367;
+    turnConfig.Slot0.kA = 0.012333;
+    turnConfig.Slot0.kS = 0.2699;
+    turnConfig.Slot0.kP = 0.028813;
     turnConfig.Slot0.kD = 0;
 
     turnConfig.ClosedLoopGeneral.ContinuousWrap = true;

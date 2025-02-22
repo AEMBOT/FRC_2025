@@ -8,7 +8,6 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
-
 import org.littletonrobotics.junction.Logger;
 
 public class ElevatorIOReal implements ElevatorIO {
@@ -134,41 +133,38 @@ public class ElevatorIOReal implements ElevatorIO {
     }
   }
 
-    @Override
-    public void setGoalPosition(double goalPosMet, double pivotAngleDeg) {
-        openLoopStatus = false;
-        interpolateConstants(pivotAngleDeg);
+  @Override
+  public void setGoalPosition(double goalPosMet, double pivotAngleDeg) {
+    openLoopStatus = false;
+    interpolateConstants(pivotAngleDeg);
 
-        double pidOutput = elevatorPIDController.calculate(
-            getElevatorPosition(), 
-            goalPosMet);
+    double pidOutput = elevatorPIDController.calculate(getElevatorPosition(), goalPosMet);
 
-        double acceleration = (
-            elevatorPIDController.getSetpoint().velocity - lastVelocity)  //in meters
+    double acceleration =
+        (elevatorPIDController.getSetpoint().velocity - lastVelocity) // in meters
             / (Timer.getFPGATimestamp() - lastTime);
 
-        double feedForward = calculateElevatorFeedforward( // in meters
-            elevatorPIDController.getSetpoint().velocity, 
-            acceleration);
+    double feedForward =
+        calculateElevatorFeedforward( // in meters
+            elevatorPIDController.getSetpoint().velocity, acceleration);
 
-        Logger.recordOutput("Elevator/FeedForwardVolts", feedForward);
-        Logger.recordOutput("Elevator/FeedBackVolts", pidOutput);
-    
-        Logger.recordOutput("Elevator/VelocityErrorMetersPerSec", elevatorPIDController.getVelocityError());
-        Logger.recordOutput("Elevator/PositionErrorMeters", elevatorPIDController.getPositionError());
+    Logger.recordOutput("Elevator/FeedForwardVolts", feedForward);
+    Logger.recordOutput("Elevator/FeedBackVolts", pidOutput);
 
-        motor.setVoltage(
-            pidOutput
-            + feedForward);
+    Logger.recordOutput(
+        "Elevator/VelocityErrorMetersPerSec", elevatorPIDController.getVelocityError());
+    Logger.recordOutput("Elevator/PositionErrorMeters", elevatorPIDController.getPositionError());
 
-        lastVelocity = elevatorPIDController.getSetpoint().velocity;
-        lastTime = Timer.getFPGATimestamp();        
-    }
+    motor.setVoltage(pidOutput + feedForward);
 
-    @Override
-    public void elevatorResetProfile() {
-        elevatorPIDController.reset(getElevatorPosition(), 0);
-    }
+    lastVelocity = elevatorPIDController.getSetpoint().velocity;
+    lastTime = Timer.getFPGATimestamp();
+  }
+
+  @Override
+  public void elevatorResetProfile() {
+    elevatorPIDController.reset(getElevatorPosition(), 0);
+  }
 
   @Override
   public boolean atMinimum() {

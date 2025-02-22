@@ -1,11 +1,9 @@
 package frc.robot.subsystems.arm;
 
-import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.Constants.UPDATE_PERIOD;
 
-import com.ctre.phoenix6.SignalLogger;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;

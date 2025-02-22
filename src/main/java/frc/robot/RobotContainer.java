@@ -45,11 +45,7 @@ public class RobotContainer {
                 new ModuleIOTalonFX(2),
                 new ModuleIOTalonFX(3));
         arm =
-            new Arm(
-                new ElevatorIOReal(), 
-                new PivotIOReal(), 
-                new WristIOReal(), 
-                new IntakeIOReal());
+            new Arm(new ElevatorIOReal(), new PivotIOReal(), new WristIOReal(), new IntakeIOReal());
         break;
 
       case SIM:
@@ -60,12 +56,7 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim(),
                 new ModuleIOSim());
-        arm = 
-            new Arm(
-                new ElevatorIO() {}, 
-                new PivotIO() {}, 
-                new WristIO() {}, 
-                new IntakeIO() {});
+        arm = new Arm(new ElevatorIO() {}, new PivotIO() {}, new WristIO() {}, new IntakeIO() {});
         break;
 
       default:
@@ -77,12 +68,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
-        arm = 
-            new Arm(
-                new ElevatorIO() {}, 
-                new PivotIO() {}, 
-                new WristIO() {}, 
-                new IntakeIO() {});
+        arm = new Arm(new ElevatorIO() {}, new PivotIO() {}, new WristIO() {}, new IntakeIO() {});
         break;
     }
 
@@ -104,9 +90,7 @@ public class RobotContainer {
                 controller.getLeftTriggerAxis()
                     > 0.5)); // Trigger locks make trigger boolean, rather than analog.
     arm.setDefaultCommand(
-        Commands.sequence(arm.elevatorGetDefault(), 
-                          arm.pivotGetDefault(), 
-                          arm.wristGetDefault()));
+        Commands.sequence(arm.elevatorGetDefault(), arm.pivotGetDefault(), arm.wristGetDefault()));
 
     // Temporary arm bindings for testing
     controller

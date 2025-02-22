@@ -36,7 +36,7 @@ public class WristIOReal implements WristIO {
 
     motor.setNeutralMode(NeutralModeValue.Brake);
 
-    while (getAbsoluteAngleDeg() < -90|| getAbsoluteAngleDeg() > 90) {
+    while (getAbsoluteAngleDeg() < -90 || getAbsoluteAngleDeg() > 90) {
       // TODO Look into better solutions for invalid encoder initial pose
       // TODO change min and max
       System.out.println(
@@ -124,7 +124,7 @@ public class WristIOReal implements WristIO {
    * @return Our calculated arm feedforward values
    */
   private double calculateWristFeedForward(
-    double positionRad, double velocityRadPerSec, double accelRadPerSecSquared) {
+      double positionRad, double velocityRadPerSec, double accelRadPerSecSquared) {
     return FeedForwardKs * Math.signum(velocityRadPerSec)
         + FeedForwardKg * Math.cos(positionRad)
         + FeedForwardKv * (velocityRadPerSec)
@@ -148,14 +148,16 @@ public class WristIOReal implements WristIO {
     double feedForward =
         calculateWristFeedForward( // in radians
             wristPIDController.getSetpoint().position,
-            wristPIDController.getSetpoint().velocity, 
+            wristPIDController.getSetpoint().velocity,
             acceleration);
 
     Logger.recordOutput("Wrist/CalculatedFFVolts", feedForward);
     Logger.recordOutput("Wrist/PIDFeedbackVolts", pidOutput);
 
-    Logger.recordOutput("Wrist/VelocityErrorDeg", Units.radiansToDegrees(wristPIDController.getVelocityError()));
-    Logger.recordOutput("Wrist/PositionErrorDeg", Units.radiansToDegrees(wristPIDController.getPositionError()));
+    Logger.recordOutput(
+        "Wrist/VelocityErrorDeg", Units.radiansToDegrees(wristPIDController.getVelocityError()));
+    Logger.recordOutput(
+        "Wrist/PositionErrorDeg", Units.radiansToDegrees(wristPIDController.getPositionError()));
 
     setVoltage(feedForward + pidOutput);
 

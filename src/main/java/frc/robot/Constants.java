@@ -2,8 +2,6 @@ package frc.robot;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -189,56 +187,39 @@ public final class Constants {
 
     /** */
     public static final double gearRatio = 93.3333333;
-    /**  */
 
-    public static final TrapezoidProfile.Constraints pivotConstraints = 
-      new TrapezoidProfile.Constraints(
-        Units.radiansToDegrees(2), 
-        Units.radiansToDegrees(5));
+    /** */
+    public static final TrapezoidProfile.Constraints pivotConstraints =
+        new TrapezoidProfile.Constraints(Units.radiansToDegrees(2), Units.radiansToDegrees(5));
 
-    public static final ProfiledPIDController pivotPIDController = 
-      switch (currentRobot) {
-        case DORY ->
-        new ProfiledPIDController(
-          10, 
-          0, 
-          0, 
-          pivotConstraints);
-        case NAUTILUS ->
-        new ProfiledPIDController(
-          0.0, 
-          0.0, 
-          0.0, 
-          pivotConstraints);
+    public static final ProfiledPIDController pivotPIDController =
+        switch (currentRobot) {
+          case DORY -> new ProfiledPIDController(10, 0, 0, pivotConstraints);
+          case NAUTILUS -> new ProfiledPIDController(0.0, 0.0, 0.0, pivotConstraints);
         };
 
-        public static final double[] pivotFFValues = //in radians
-          switch (currentRobot) {
-            case DORY -> new double[]
-              {0.0, 0.0, 0.0, 0.0};
-            case NAUTILUS -> new double[]
-              {0.0, 0.16, 4.15, 0.01};  //ks kg kv ka
-          };
-                
-        public static final double PivotPIDFactor =
+    public static final double[] pivotFFValues = // in radians
         switch (currentRobot) {
-          case DORY ->
-            0.0;
-          case NAUTILUS ->
-            0.0;
+          case DORY -> new double[] {0.0, 0.0, 0.0, 0.0};
+          case NAUTILUS -> new double[] {0.0, 0.16, 4.15, 0.01}; // ks kg kv ka
         };
 
-        public static final double PivotFFactor =
+    public static final double PivotPIDFactor =
         switch (currentRobot) {
-          case DORY ->
-            0.0;
-          case NAUTILUS ->
-            0.0;
+          case DORY -> 0.0;
+          case NAUTILUS -> 0.0;
+        };
+
+    public static final double PivotFFactor =
+        switch (currentRobot) {
+          case DORY -> 0.0;
+          case NAUTILUS -> 0.0;
         };
 
     /** How many degrees the pivot can be off its goal position for it to be sufficient */
     public static final double pivotAngleToleranceDeg = 1.15;
-    /**  */
+
+    /** */
     public static final double pivotVelocityToleranceDegPerSec = 1.15;
 
     public static final Translation3d pivotTranslationFromRobot = new Translation3d(-0.2, 0, 0.255);
@@ -265,63 +246,47 @@ public final class Constants {
             Units.degreesToRadians(45));
   }
 
-    public static final class ElevatorConstants {
-        public static final TrapezoidProfile.Constraints elevatorConstraints =
-          new TrapezoidProfile.Constraints(
-            Units.radiansToDegrees(2), 
-            Units.radiansToDegrees(5));
+  public static final class ElevatorConstants {
+    public static final TrapezoidProfile.Constraints elevatorConstraints =
+        new TrapezoidProfile.Constraints(Units.radiansToDegrees(2), Units.radiansToDegrees(5));
 
-        // Built in PID class works
-        public static final ProfiledPIDController elevatorPIDController =
-          switch (currentRobot) {
-            case DORY -> new ProfiledPIDController(
-              0, 
-              0, 
-              0, 
-              elevatorConstraints);
-            case NAUTILUS -> new ProfiledPIDController(
-              0,
-              0,
-              0,
-              elevatorConstraints);
-          };
-              /* Absolute highest point from the base the elevator can reach in inches*/
-        public static final double absoluteMaxExtension = 6;
-        public static final double elevatorCurrentLimit = 3;
-          
-        public static final double[] elevatorFFValues = //in meters
-          switch (currentRobot) { 
-            case DORY -> new double[]
-              {0.0, 0.0, 0.0, 0.0};
-            case NAUTILUS -> new double[]
-              {0.0, 0.14, 3.11, 0.02}; //ks, kg, kv, ka
-          };
-
-        public static final double PositionFactor = 0.7112; //gear ratio is 6
-        public static final double elevatorPositionToleranceMet = 0.1;
-        public static final double elevatorVelocityToleranceMetPerSec = 0.1;
-        
-        public static final double ElevatorPIDFactor =
+    // Built in PID class works
+    public static final ProfiledPIDController elevatorPIDController =
         switch (currentRobot) {
-          case DORY ->
-            10;
-          case NAUTILUS ->
-            20;
+          case DORY -> new ProfiledPIDController(0, 0, 0, elevatorConstraints);
+          case NAUTILUS -> new ProfiledPIDController(0, 0, 0, elevatorConstraints);
+        };
+    /* Absolute highest point from the base the elevator can reach in inches*/
+    public static final double absoluteMaxExtension = 6;
+    public static final double elevatorCurrentLimit = 3;
+
+    public static final double[] elevatorFFValues = // in meters
+        switch (currentRobot) {
+          case DORY -> new double[] {0.0, 0.0, 0.0, 0.0};
+          case NAUTILUS -> new double[] {0.0, 0.14, 3.11, 0.02}; // ks, kg, kv, ka
         };
 
-        public static final double ElevatorFFactor =
+    public static final double PositionFactor = 0.7112; // gear ratio is 6
+    public static final double elevatorPositionToleranceMet = 0.1;
+    public static final double elevatorVelocityToleranceMetPerSec = 0.1;
+
+    public static final double ElevatorPIDFactor =
         switch (currentRobot) {
-          case DORY ->
-            10;
-          case NAUTILUS ->
-            20;
+          case DORY -> 10;
+          case NAUTILUS -> 20;
         };
 
-        public static double moveVoltage = 5.0;
-        
-        /* Device IDs */
-        public static final int motorID = 12;
-    }
+    public static final double ElevatorFFactor =
+        switch (currentRobot) {
+          case DORY -> 10;
+          case NAUTILUS -> 20;
+        };
+
+    public static double moveVoltage = 5.0;
+
+    /* Device IDs */
+    public static final int motorID = 12;
+  }
 
   public static final class WristConstants {
     public static final double encoderOffset = 194.10106985252673 * -1;
@@ -335,56 +300,39 @@ public final class Constants {
     public static final int motorID = 14;
     public static final DutyCycleEncoder wristEncoder = new DutyCycleEncoder(2);
 
-        public static final TrapezoidProfile.Constraints wristConstraints = 
-          new TrapezoidProfile.Constraints(
-            1, 
-            3.5);
+    public static final TrapezoidProfile.Constraints wristConstraints =
+        new TrapezoidProfile.Constraints(1, 3.5);
 
-        public static final ProfiledPIDController wristPIDController = 
+    public static final ProfiledPIDController wristPIDController =
         switch (currentRobot) {
-        case DORY ->
-          new ProfiledPIDController( 
-            0.075499, 
-            0, 
-            0.00,
-            wristConstraints);
-        case NAUTILUS ->
-          new ProfiledPIDController(
-            0.075499, 
-            0, 
-            0.00,
-            wristConstraints);        
+          case DORY -> new ProfiledPIDController(0.075499, 0, 0.00, wristConstraints);
+          case NAUTILUS -> new ProfiledPIDController(0.075499, 0, 0.00, wristConstraints);
         };
 
-        public static final double[] wristFFValues = //in deg
-          switch (currentRobot) {
-            case DORY -> new double[]
-              {0.33149, 0.077915, 0.0042737};
-            case NAUTILUS -> new double[]
-              {0.0, 0.0, 0.0}; //ks, kv, ka 
-          };
-
-        public static final double WristPIDFactor =
+    public static final double[] wristFFValues = // in deg
         switch (currentRobot) {
-          case DORY ->
-            0.0;
-          case NAUTILUS ->
-            0.0;
+          case DORY -> new double[] {0.33149, 0.077915, 0.0042737};
+          case NAUTILUS -> new double[] {0.0, 0.0, 0.0}; // ks, kv, ka
         };
-        public static final double wristMotorCurrentLimit = 0.25;
-        
-        public static final double WristFFactor =
+
+    public static final double WristPIDFactor =
         switch (currentRobot) {
-          case DORY ->
-            0.0;
-          case NAUTILUS ->
-            0.0;
+          case DORY -> 0.0;
+          case NAUTILUS -> 0.0;
         };
-        public static final class IntakeConstants {
+    public static final double wristMotorCurrentLimit = 0.25;
 
-          public static final int intakeMotorID = 15;
-
-          public static final double intakeMotorCurrentLimit = 5;
+    public static final double WristFFactor =
+        switch (currentRobot) {
+          case DORY -> 0.0;
+          case NAUTILUS -> 0.0;
+        };
   }
-}
+
+  public static final class IntakeConstants {
+
+    public static final int intakeMotorID = 15;
+
+    public static final double intakeMotorCurrentLimit = 5;
+  }
 }

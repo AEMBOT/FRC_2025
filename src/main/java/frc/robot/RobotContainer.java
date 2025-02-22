@@ -7,7 +7,6 @@ package frc.robot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Constants.ElevatorConstants;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ElevatorIO;
 import frc.robot.subsystems.arm.ElevatorIOReal;
@@ -46,7 +45,11 @@ public class RobotContainer {
                 new ModuleIOTalonFX(2),
                 new ModuleIOTalonFX(3));
         arm =
-            new Arm(new ElevatorIOReal(), new PivotIOReal(), new WristIOReal(), new IntakeIOReal());
+            new Arm(
+                new ElevatorIOReal(), 
+                new PivotIOReal(), 
+                new WristIOReal(), 
+                new IntakeIOReal());
         break;
 
       case SIM:
@@ -57,7 +60,12 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim(),
                 new ModuleIOSim());
-        arm = new Arm(new ElevatorIO() {}, new PivotIO() {}, new WristIO() {}, new IntakeIO() {});
+        arm = 
+            new Arm(
+                new ElevatorIO() {}, 
+                new PivotIO() {}, 
+                new WristIO() {}, 
+                new IntakeIO() {});
         break;
 
       default:
@@ -69,7 +77,12 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
-        arm = new Arm(new ElevatorIO() {}, new PivotIO() {}, new WristIO() {}, new IntakeIO() {});
+        arm = 
+            new Arm(
+                new ElevatorIO() {}, 
+                new PivotIO() {}, 
+                new WristIO() {}, 
+                new IntakeIO() {});
         break;
     }
 
@@ -91,48 +104,43 @@ public class RobotContainer {
                 controller.getLeftTriggerAxis()
                     > 0.5)); // Trigger locks make trigger boolean, rather than analog.
     arm.setDefaultCommand(
-      Commands.sequence(
-        arm.elevatorGetDefault(),
-        arm.pivotGetDefault(),
-        arm.wristGetDefault()
-      )
-    );
+        Commands.sequence(arm.elevatorGetDefault(), 
+                          arm.pivotGetDefault(), 
+                          arm.wristGetDefault()));
 
     // Temporary arm bindings for testing
     controller
-    .povUp()
-    .whileTrue(arm.pivotChangeGoalPosition(0.1))
-    .onFalse(arm.pivotChangeGoalPosition(0.0));
+        .povUp()
+        .whileTrue(arm.pivotChangeGoalPosition(0.1))
+        .onFalse(arm.pivotChangeGoalPosition(0.0));
     controller
-    .povDown()
-    .whileTrue(arm.pivotChangeGoalPosition(-0.1))
-    .onFalse(arm.pivotChangeGoalPosition(0.0));
+        .povDown()
+        .whileTrue(arm.pivotChangeGoalPosition(-0.1))
+        .onFalse(arm.pivotChangeGoalPosition(0.0));
 
-// change elevator goal manually
+    // change elevator goal manually
     controller
-    .rightTrigger(0.25d)
-    .whileTrue(arm.elevatorChangeGoal(0.2))
-    .onFalse(arm.elevatorChangeGoal(0.0));
+        .rightTrigger(0.25d)
+        .whileTrue(arm.elevatorChangeGoal(0.2))
+        .onFalse(arm.elevatorChangeGoal(0.0));
     controller
-    .leftTrigger(0.25d)
-    .whileTrue(arm.elevatorChangeGoal(-0.2))
-    .onFalse(arm.elevatorChangeGoal(0.0));
+        .leftTrigger(0.25d)
+        .whileTrue(arm.elevatorChangeGoal(-0.2))
+        .onFalse(arm.elevatorChangeGoal(0.0));
+
+    controller.rightBumper().onTrue(arm.wristSetPositionCommand(() -> 360));
+    controller.leftBumper().onTrue(arm.wristSetPositionCommand(() -> -360));
+    // primaryController.rightBumper()
+    // .and(primaryController.leftBumper()
+    // .whileFalse(arm.wristChangeGoalPosition(0.0)));
 
     controller
-    .rightBumper()
-    .onTrue(arm.wristSetPositionCommand(() -> 360));
-    controller
-    .leftBumper()
-    .onTrue(arm.wristSetPositionCommand(() -> -360));
-    //primaryController.rightBumper()
-    //.and(primaryController.leftBumper()
-    //.whileFalse(arm.wristChangeGoalPosition(0.0)));
-
-    controller.b().whileTrue(
-      Commands.sequence(
-      arm.pivotSetPositionCommand(() -> 45), //degrees
-      arm.elevatorSetGoal(() -> 2), //meters
-      arm.wristSetPositionCommand(() -> 90))); //degrees
+        .b()
+        .whileTrue(
+            Commands.sequence(
+                arm.pivotSetPositionCommand(() -> 45), // degrees
+                arm.elevatorSetGoal(() -> 2), // meters
+                arm.wristSetPositionCommand(() -> 90))); // degrees
 
     // characterization commands
     controller.x().whileTrue(arm.runPivotCharacterization());

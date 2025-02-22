@@ -1,36 +1,29 @@
 package frc.robot.subsystems.arm;
 
+import static edu.wpi.first.math.MathUtil.clamp;
 import static frc.robot.Constants.ElevatorConstants.*;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
-import org.littletonrobotics.junction.Logger;
-
-import edu.wpi.first.wpilibj.Timer;
-
-import static edu.wpi.first.math.MathUtil.clamp;
-import static frc.robot.Constants.ElevatorConstants.*;
-
 import edu.wpi.first.math.util.Units;
 
-public class ElevatorIOReal implements ElevatorIO { 
-    private final TalonFX motor = new TalonFX(motorID);
-    private double motorMax = 20000;
-    private double motorMin = 0;
-    private boolean isHoming = false;
-    private double encoderOffset = 0;
+public class ElevatorIOReal implements ElevatorIO {
+  private final TalonFX motor = new TalonFX(motorID);
+  private double motorMax = 20000;
+  private double motorMin = 0;
+  private boolean isHoming = false;
+  private double encoderOffset = 0;
 
-    private double lastTime;
-    private double lastVelocity;
-    private boolean openLoopStatus = true;
+  private double lastTime;
+  private double lastVelocity;
+  private boolean openLoopStatus = true;
 
-    //elevator FF values because built in class doesn't work
-    private double FeedForwardKs = elevatorFFValues[0];
-    private double FeedForwardKg = elevatorFFValues[1];
-    private double FeedForwardKv = elevatorFFValues[2];
-    private double FeedForwardKa = elevatorFFValues[3];
+  // elevator FF values because built in class doesn't work
+  private double FeedForwardKs = elevatorFFValues[0];
+  private double FeedForwardKg = elevatorFFValues[1];
+  private double FeedForwardKv = elevatorFFValues[2];
+  private double FeedForwardKa = elevatorFFValues[3];
 
   public ElevatorIOReal() {
 
@@ -40,77 +33,80 @@ public class ElevatorIOReal implements ElevatorIO {
 
     motor.setNeutralMode(NeutralModeValue.Brake);
 
-        motor.getConfigurator().apply(motorConfig);
+    motor.getConfigurator().apply(motorConfig);
 
-        elevatorPIDController.setTolerance(elevatorPositionToleranceMet, elevatorVelocityToleranceMetPerSec);
-    }
+    elevatorPIDController.setTolerance(
+        elevatorPositionToleranceMet, elevatorVelocityToleranceMetPerSec);
+  }
 
-    @Override
-    public void updateInputs(ElevatorIOInputs inputs) {
-        inputs.elevatorMotorRotationDeg = getMotorRotation();
-        inputs.elevatorVoltage = motor.getMotorVoltage().getValueAsDouble();
-        inputs.elevatorMotorVelocityDegrees = getMotorVelocity();
-        inputs.elevatorVelocityMeters = getElevatorVelocity();
-        inputs.elevatorPositionMet = getElevatorPosition();
-        inputs.elevatorAtGoal = elevatorPIDController.atGoal();
-        inputs.elevatorAtSetpoint = elevatorPIDController.atSetpoint();
-        inputs.elevatorGoalPositionMet = elevatorPIDController.getGoal().position;
-        inputs.elevatorOpenLoopStatus = openLoopStatus;
-        inputs.elevatorCurrentDraw = motor.getStatorCurrent().getValueAsDouble();
-        inputs.elevatorMaxPos = motorMax;
-        inputs.elevatorMinPos = motorMin;
-        inputs.isHoming = isHoming;
-    }
+  @Override
+  public void updateInputs(ElevatorIOInputs inputs) {
+    inputs.elevatorMotorRotationDeg = getMotorRotation();
+    inputs.elevatorVoltage = motor.getMotorVoltage().getValueAsDouble();
+    inputs.elevatorMotorVelocityDegrees = getMotorVelocity();
+    inputs.elevatorVelocityMeters = getElevatorVelocity();
+    inputs.elevatorPositionMet = getElevatorPosition();
+    inputs.elevatorAtGoal = elevatorPIDController.atGoal();
+    inputs.elevatorAtSetpoint = elevatorPIDController.atSetpoint();
+    inputs.elevatorGoalPositionMet = elevatorPIDController.getGoal().position;
+    inputs.elevatorOpenLoopStatus = openLoopStatus;
+    inputs.elevatorCurrentDraw = motor.getStatorCurrent().getValueAsDouble();
+    inputs.elevatorMaxPos = motorMax;
+    inputs.elevatorMinPos = motorMin;
+    inputs.isHoming = isHoming;
+  }
 
-    /** Returns, in degrees, the position of the elevator motor relative to its starting position. */
-    private double getMotorRotation() {
-        return Units.rotationsToDegrees(motor.getPosition().getValueAsDouble());
-    }
+  /** Returns, in degrees, the position of the elevator motor relative to its starting position. */
+  private double getMotorRotation() {
+    return Units.rotationsToDegrees(motor.getPosition().getValueAsDouble());
+  }
 
-    /** Returns (in degrees per second) the current velocity of the motor */
-    private double getMotorVelocity() {
-        return Units.rotationsToDegrees(motor.getVelocity().getValueAsDouble());
-    }
+  /** Returns (in degrees per second) the current velocity of the motor */
+  private double getMotorVelocity() {
+    return Units.rotationsToDegrees(motor.getVelocity().getValueAsDouble());
+  }
 
-    /** Returns (in meters per second) the current velocity of the elevator */
-    private double getElevatorVelocity() {
-        return Units.rotationsToDegrees(motor.getVelocity().getValueAsDouble()) * PositionFactor;
-    }
+  /** Returns (in meters per second) the current velocity of the elevator */
+  private double getElevatorVelocity() {
+    return Units.rotationsToDegrees(motor.getVelocity().getValueAsDouble()) * PositionFactor;
+  }
 
-    /** Returns (in meters) the position of the elevator relative to the start position */
-    private double getElevatorPosition() {
+  /** Returns (in meters) the position of the elevator relative to the start position */
+  private double getElevatorPosition() {
     // TODO Before merge, make a way to get and set the absolute vertical position of the elevator
-        return clamp(Units.rotationsToDegrees(motor.getPosition().getValueAsDouble()) * PositionFactor, 0, 5);
-    }
+    return clamp(
+        Units.rotationsToDegrees(motor.getPosition().getValueAsDouble()) * PositionFactor, 0, 5);
+  }
 
-    /**
-     * Manually calculates our feedforward values.
-     * @param velocity Current velocity of our elevator in meters per second.
-     * @param acceleration Current acceleration of our elevator in meters per second squared.
-     * @return Our feedforward values.
-     */
-    private double calculateElevatorFeedforward(double velocity, double acceleration) {
-        return FeedForwardKs * Math.signum(velocity)
-         + FeedForwardKg
-          + FeedForwardKv * velocity
-           + FeedForwardKa * acceleration;
-      }
+  /**
+   * Manually calculates our feedforward values.
+   *
+   * @param velocity Current velocity of our elevator in meters per second.
+   * @param acceleration Current acceleration of our elevator in meters per second squared.
+   * @return Our feedforward values.
+   */
+  private double calculateElevatorFeedforward(double velocity, double acceleration) {
+    return FeedForwardKs * Math.signum(velocity)
+        + FeedForwardKg
+        + FeedForwardKv * velocity
+        + FeedForwardKa * acceleration;
+  }
 
-
-    /**
-     * Interpolates our elevator PID and feedforward constants.
-     * @param pivotAngleDeg Current angle of our pivot in degrees.
-     */
-    private void interpolateConstants(double pivotAngleDeg) {
-        //elevatorPIDController.setPID(
-        //    0 * ElevatorPIDFactor, 
-        //    0 * ElevatorPIDFactor, 
-        //    0 * ElevatorPIDFactor);
-        //FeedForwardKs = 0.0 * pivotAngleDeg * ElevatorFFactor;
-        //FeedForwardKv = 0.0 * pivotAngleDeg * ElevatorFFactor;
-        //FeedForwardKg = 0.0 * pivotAngleDeg * ElevatorFFactor;
-        //FeedForwardKa = 0.0 * pivotAngleDeg * ElevatorFFactor;
-    }
+  /**
+   * Interpolates our elevator PID and feedforward constants.
+   *
+   * @param pivotAngleDeg Current angle of our pivot in degrees.
+   */
+  private void interpolateConstants(double pivotAngleDeg) {
+    // elevatorPIDController.setPID(
+    //    0 * ElevatorPIDFactor,
+    //    0 * ElevatorPIDFactor,
+    //    0 * ElevatorPIDFactor);
+    // FeedForwardKs = 0.0 * pivotAngleDeg * ElevatorFFactor;
+    // FeedForwardKv = 0.0 * pivotAngleDeg * ElevatorFFactor;
+    // FeedForwardKg = 0.0 * pivotAngleDeg * ElevatorFFactor;
+    // FeedForwardKa = 0.0 * pivotAngleDeg * ElevatorFFactor;
+  }
 
   @Override
   public void setVoltage(double voltage) {

@@ -6,7 +6,6 @@ import static java.lang.Math.min;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -29,7 +28,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.PathingConstants;
-
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.locks.Lock;
@@ -109,7 +107,8 @@ public class Drive extends SubsystemBase {
         this::setPose,
         () -> kinematics.toChassisSpeeds(getModuleStates()),
         (speed, feedforwards) -> runVelocity(speed),
-        new PPHolonomicDriveController(PathingConstants.translationPIDConstants, PathingConstants.rotationPIDConstants),
+        new PPHolonomicDriveController(
+            PathingConstants.translationPIDConstants, PathingConstants.rotationPIDConstants),
         PathingConstants.robotConfig,
         (BooleanSupplier)
             () ->

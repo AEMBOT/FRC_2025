@@ -76,12 +76,11 @@ public class Drive extends SubsystemBase {
         new SysIdRoutine(
             new SysIdRoutine.Config(
                 null, // Default ramp rate is acceptable
-                Units.Volts.of(8),
-                null, // Default timeout is acceptable
-                // Log state with Phoenix SignalLogger class
-                (state) -> SignalLogger.writeString("state", state.toString())),
+                Units.Volts.of(6),
+                Units.Seconds.of(3.5), // Default timeout is acceptable
+                (state) -> Logger.recordOutput("Sys/SteerSysIdState", state.toString())),
             new SysIdRoutine.Mechanism(
-                (Voltage volts) -> modules[0].runSteerCharacterization(volts.in(Units.Volts)),
+                (Voltage volts) -> modules[3].runSteerCharacterization(volts.in(Units.Volts)),
                 null,
                 this));
     driveRoutine =
@@ -89,9 +88,8 @@ public class Drive extends SubsystemBase {
             new SysIdRoutine.Config(
                 null, // Default ramp rate is acceptable
                 Units.Volts.of(6), // Reduce dynamic voltage to 6 to prevent motor brownout
-                Units.Seconds.of(20),
-                // Log state with Phoenix SignalLogger class
-                (state) -> SignalLogger.writeString("state", state.toString())),
+                Units.Seconds.of(5),
+                (state) -> Logger.recordOutput("Sys/DriveSysIdState", state.toString())),
             new SysIdRoutine.Mechanism(
                 (Voltage volts) -> runDriveCharacterizationVolts(volts.in(Units.Volts)),
                 null,
@@ -351,17 +349,12 @@ public class Drive extends SubsystemBase {
   }
 
   /** Command to run module steering characterization */
-  public Command runModuleSteerCharacterizationCmd() {
-    return Commands.sequence(
-        this.runOnce(SignalLogger::start),
-        moduleSteerRoutine.quasistatic(kForward),
-        this.stopCommand().withTimeout(2.0),
-        moduleSteerRoutine.quasistatic(kReverse),
-        this.stopCommand().withTimeout(2.0),
-        moduleSteerRoutine.dynamic(kForward),
-        this.stopCommand().withTimeout(2.0),
-        moduleSteerRoutine.dynamic(kReverse),
-        this.runOnce(SignalLogger::stop));
+  public Command runModuleSteerCharacterizationQuasiCmd(SysIdRoutine.Direction direction) {
+    return Commands.run(() -> moduleSteerRoutine.quasistatic(direction));
+  }
+
+  public Command runModuleSteerCharacterizationDynaCmd(SysIdRoutine.Direction direction) {
+    return run(() -> moduleSteerRoutine.dynamic(direction));
   }
 
   /** Command to run drive characterization */
@@ -376,6 +369,17 @@ public class Drive extends SubsystemBase {
         this.stopCommand().withTimeout(2.0),
         driveRoutine.dynamic(kReverse),
         this.runOnce(SignalLogger::stop));
+  }
+
+  public Command runModuleSteerCharacterizationCmd() { // TODO Timing on this seems sus
+    return Commands.sequence(
+        moduleSteerRoutine.quasistatic(kForward),
+        this.stopCommand().withTimeout(5.0),
+        moduleSteerRoutine.quasistatic(kReverse),
+        this.stopCommand().withTimeout(5.0),
+        moduleSteerRoutine.dynamic(kForward),
+        this.stopCommand().withTimeout(5.0),
+        moduleSteerRoutine.dynamic(kReverse));
   }
 
   /**

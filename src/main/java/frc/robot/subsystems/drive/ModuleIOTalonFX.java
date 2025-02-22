@@ -24,6 +24,8 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
@@ -87,6 +89,7 @@ public class ModuleIOTalonFX implements ModuleIO {
   private final VoltageOut turnVoltage = new VoltageOut(0.0).withEnableFOC(true);
   private final VelocityVoltage drivePIDF = new VelocityVoltage(0.0).withEnableFOC(true);
   private final PositionVoltage turnPID = new PositionVoltage(0.0).withEnableFOC(true);
+  private final MotionMagicExpoVoltage turnMotionMagicVoltage = new MotionMagicExpoVoltage(0.0);
 
   public ModuleIOTalonFX(int index) {
     switch (index) {
@@ -171,6 +174,11 @@ public class ModuleIOTalonFX implements ModuleIO {
     turnConfig.Slot0.kS = 0.2699;
     turnConfig.Slot0.kP = 0.028813;
     turnConfig.Slot0.kD = 0;
+
+    turnConfig.MotionMagic.MotionMagicCruiseVelocity = 100.0 / TURN_GEAR_RATIO;
+    turnConfig.MotionMagic.MotionMagicAcceleration = turnConfig.MotionMagic.MotionMagicCruiseVelocity / 0.100;
+    turnConfig.MotionMagic.MotionMagicExpo_kV = 0.12 * TURN_GEAR_RATIO;
+    turnConfig.MotionMagic.MotionMagicExpo_kA = 0.1;
 
     turnConfig.ClosedLoopGeneral.ContinuousWrap = true;
 

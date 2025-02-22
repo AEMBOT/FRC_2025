@@ -14,11 +14,11 @@ public interface WristIO {
     public double wristAbsAngle = 0.0;
 
     // wrist angle in rotations
-    public double wristRelativeAngle = 0.0;
+    public double wristRelativeMotorAngle = 0.0;
     public double wristAbsVelocity = 0.0;
 
     /** checks the current wrist velocity in degrees */
-    public double wristVelocity = 0.0;
+    public double wristMotorVelocity = 0.0;
 
     /** Checks the end goal wrist position in degrees. */
     public double wristGoal = 0.0;

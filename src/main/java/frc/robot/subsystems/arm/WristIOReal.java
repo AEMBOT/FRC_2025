@@ -21,8 +21,9 @@ public class WristIOReal implements WristIO {
 
   // Wrist FF variables
   private double FeedForwardKs = wristFFValues[0];
-  private double FeedForwardKv = wristFFValues[1];
-  private double FeedForwardKa = wristFFValues[2];
+  private double FeedForwardKg = wristFFValues[1];
+  private double FeedForwardKv = wristFFValues[2];
+  private double FeedForwardKa = wristFFValues[3];
 
   private double theoreticalVolts;
 
@@ -35,8 +36,9 @@ public class WristIOReal implements WristIO {
 
     motor.setNeutralMode(NeutralModeValue.Brake);
 
-    while (getAbsoluteAngleDeg() < -90 || getAbsoluteAngleDeg() > 90) {
+    while (getAbsoluteAngleDeg() < -90|| getAbsoluteAngleDeg() > 90) {
       // TODO Look into better solutions for invalid encoder initial pose
+      // TODO change min and max
       System.out.println(
           "ERROR: Busyloop because wrist position invalid! Put in valid position! Current angle: "
               + getAbsoluteAngleDeg());
@@ -49,8 +51,8 @@ public class WristIOReal implements WristIO {
   @Override
   public void updateInputs(WristIOInputs inputs) {
     inputs.wristAbsAngle = getAbsoluteAngleDeg();
-    inputs.wristRelativeAngle = getRelativeAngleDeg();
-    inputs.wristVelocity = getWristVelocityDeg();
+    inputs.wristRelativeMotorAngle = getRelativeMotorAngleDeg();
+    inputs.wristMotorVelocity = getWristMotorVelocityDeg();
     inputs.wristGoal = wristPIDController.getGoal().position;
     inputs.wristSetpoint = wristPIDController.getSetpoint().position;
     inputs.wristAppliedVoltage = motor.getMotorVoltage().getValueAsDouble();
@@ -95,7 +97,6 @@ public class WristIOReal implements WristIO {
     //    FeedForwardKv = 0.0 * pivotAngleDeg * elevatorPosMet * WristFFactor;
     //    FeedForwardKa = 0.0 * pivotAngleDeg * elevatorPosMet * WristFFactor;
   }
-  ;
 
   /**
    * @return the current rotation of the wrist, measured in degrees.
@@ -105,26 +106,29 @@ public class WristIOReal implements WristIO {
         wristEncoder.get() - encoderOffset); // encoder offset in rotations
   }
 
-  private double getRelativeAngleDeg() {
+  private double getRelativeMotorAngleDeg() {
     return Units.rotationsToDegrees(motor.getPosition().getValueAsDouble());
   }
 
   /**
    * @return the current velocity of the wrist in degrees
    */
-  private double getWristVelocityDeg() {
+  private double getWristMotorVelocityDeg() {
     return Units.rotationsToDegrees(motor.getVelocity().getValueAsDouble());
   }
 
   /**
-   * @param velocity Current velocity of wrist in degrees per second
-   * @param acceleration Current acceleration of wrist in degrees per second squared
-   * @return Our calculated simple feedforward values
+   * @param positionRad Current position of wrist encoder in radians
+   * @param velocityRadPerSec Current velocity of wrist in radians per second
+   * @param accelerationRadPerSecSquared Current acceleration of wrist in radians per second squared
+   * @return Our calculated arm feedforward values
    */
-  private double calculateWristFeedForward(double velocity, double acceleration) {
-    return FeedForwardKs * Math.signum(velocity)
-        + FeedForwardKv * velocity
-        + FeedForwardKa * acceleration;
+  private double calculateWristFeedForward(
+    double positionRad, double velocityRadPerSec, double accelRadPerSecSquared) {
+    return FeedForwardKs * Math.signum(velocityRadPerSec)
+        + FeedForwardKg * Math.cos(positionRad)
+        + FeedForwardKv * (velocityRadPerSec)
+        + FeedForwardKa * (accelRadPerSecSquared);
   }
 
   @Override
@@ -133,23 +137,25 @@ public class WristIOReal implements WristIO {
     interpolateConstants(elevatorPosMet, pivotAngleDeg);
 
     double pidOutput =
-        wristPIDController.calculate( // in degrees
-            getAbsoluteAngleDeg(), goalAngleDeg);
+        wristPIDController.calculate( // in radians
+            Units.degreesToRadians(getAbsoluteAngleDeg()), Units.degreesToRadians(goalAngleDeg));
 
     double acceleration =
-        ( // in degrees
+        ( // in radians
             wristPIDController.getSetpoint().velocity - lastVelocity)
             / (Timer.getFPGATimestamp() - lastTime);
 
     double feedForward =
-        calculateWristFeedForward( // in degrees
-            wristPIDController.getSetpoint().velocity, acceleration);
+        calculateWristFeedForward( // in radians
+            wristPIDController.getSetpoint().position,
+            wristPIDController.getSetpoint().velocity, 
+            acceleration);
 
     Logger.recordOutput("Wrist/CalculatedFFVolts", feedForward);
     Logger.recordOutput("Wrist/PIDFeedbackVolts", pidOutput);
 
-    Logger.recordOutput("Wrist/VelocityErrorDeg", wristPIDController.getVelocityError());
-    Logger.recordOutput("Wrist/PositionErrorDeg", wristPIDController.getPositionError());
+    Logger.recordOutput("Wrist/VelocityErrorDeg", Units.radiansToDegrees(wristPIDController.getVelocityError()));
+    Logger.recordOutput("Wrist/PositionErrorDeg", Units.radiansToDegrees(wristPIDController.getPositionError()));
 
     setVoltage(feedForward + pidOutput);
 
@@ -165,6 +171,6 @@ public class WristIOReal implements WristIO {
 
   @Override
   public void wristResetProfile() {
-    wristPIDController.reset(getAbsoluteAngleDeg(), 0);
+    wristPIDController.reset(Units.degreesToRadians(getAbsoluteAngleDeg()), 0);
   }
 }

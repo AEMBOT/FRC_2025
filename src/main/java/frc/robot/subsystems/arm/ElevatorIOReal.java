@@ -7,6 +7,9 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.Timer;
+
+import org.littletonrobotics.junction.Logger;
 
 public class ElevatorIOReal implements ElevatorIO {
   private final TalonFX motor = new TalonFX(motorID);
@@ -130,6 +133,42 @@ public class ElevatorIOReal implements ElevatorIO {
       motor.setVoltage(voltage);
     }
   }
+
+    @Override
+    public void setGoalPosition(double goalPosMet, double pivotAngleDeg) {
+        openLoopStatus = false;
+        interpolateConstants(pivotAngleDeg);
+
+        double pidOutput = elevatorPIDController.calculate(
+            getElevatorPosition(), 
+            goalPosMet);
+
+        double acceleration = (
+            elevatorPIDController.getSetpoint().velocity - lastVelocity)  //in meters
+            / (Timer.getFPGATimestamp() - lastTime);
+
+        double feedForward = calculateElevatorFeedforward( // in meters
+            elevatorPIDController.getSetpoint().velocity, 
+            acceleration);
+
+        Logger.recordOutput("Elevator/FeedForwardVolts", feedForward);
+        Logger.recordOutput("Elevator/FeedBackVolts", pidOutput);
+    
+        Logger.recordOutput("Elevator/VelocityErrorMetersPerSec", elevatorPIDController.getVelocityError());
+        Logger.recordOutput("Elevator/PositionErrorMeters", elevatorPIDController.getPositionError());
+
+        motor.setVoltage(
+            pidOutput
+            + feedForward);
+
+        lastVelocity = elevatorPIDController.getSetpoint().velocity;
+        lastTime = Timer.getFPGATimestamp();        
+    }
+
+    @Override
+    public void elevatorResetProfile() {
+        elevatorPIDController.reset(getElevatorPosition(), 0);
+    }
 
   @Override
   public boolean atMinimum() {

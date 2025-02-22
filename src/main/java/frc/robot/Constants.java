@@ -311,8 +311,8 @@ public final class Constants {
 
     public static final double[] wristFFValues = // in deg
         switch (currentRobot) {
-          case DORY -> new double[] {0.33149, 0.077915, 0.0042737};
-          case NAUTILUS -> new double[] {0.0, 0.0, 0.0}; // ks, kv, ka
+          case DORY -> new double[] {0.33149, 0.077915, 0.0042737, 0.0};
+          case NAUTILUS -> new double[] {0.0, 0.0, 0.0, 0.0}; // ks, kg, kv, ka
         };
 
     public static final double WristPIDFactor =

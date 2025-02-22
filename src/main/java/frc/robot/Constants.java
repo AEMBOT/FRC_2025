@@ -1,5 +1,7 @@
 package frc.robot;
 
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -146,5 +148,21 @@ public final class Constants {
       public static final double reefCenterX = 4.489323;
       public static final double reefCenterY = 4.0259;
     }
+  }
+
+  public static final class PathingConstants {
+    public static final RobotConfig robotConfig;
+
+    static {
+      try {
+        robotConfig =
+            RobotConfig.fromGUISettings(); // TODO Set up this configuration in PathPlanner GUI
+      } catch (Exception e) {
+        throw new RuntimeException("Failed to initialize RobotConfig for PathPlanner", e);
+      }
+    }
+
+    public static final PIDConstants translationPIDConstants = new PIDConstants(5.0);
+    public static final PIDConstants rotationPIDConstants = new PIDConstants(5.0);
   }
 }

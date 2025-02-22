@@ -1,18 +1,18 @@
 package frc.robot.subsystems.arm;
 
-import static frc.robot.Constants.PivotConstants.*;
 import static edu.wpi.first.math.MathUtil.clamp;
-
-import edu.wpi.first.wpilibj.Timer;
-
-import org.littletonrobotics.junction.Logger;
+import static edu.wpi.first.wpilibj.Timer.delay;
+import static frc.robot.Constants.PivotConstants.*;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.Timer;
+import org.littletonrobotics.junction.Logger;
 
 public class PivotIOReal implements PivotIO {
     
@@ -28,22 +28,36 @@ public class PivotIOReal implements PivotIO {
     private double FeedForwardKv = pivotFFValues[2];
     private double FeedForwardKa = pivotFFValues[3];
 
+    private double TheotreticalVoltage;
 
-    public PivotIOReal() {
 
-        TalonFXConfiguration leftMotorConfig = new TalonFXConfiguration();
-        TalonFXConfiguration rightMotorConfig = new TalonFXConfiguration();
+  public PivotIOReal() {
 
-        leftMotorConfig.CurrentLimits.StatorCurrentLimit = pivotLeftMotorCurrentLimit;
-        leftMotorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+    TheotreticalVoltage = 0.0;
 
-        rightMotorConfig.CurrentLimits.StatorCurrentLimit = pivotRightMotorCurrentLimit;
-        rightMotorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+    TalonFXConfiguration leftMotorConfig = new TalonFXConfiguration();
+    TalonFXConfiguration rightMotorConfig = new TalonFXConfiguration();
 
-        leadingMotor.setNeutralMode(NeutralModeValue.Brake);
-        followingMotor.setNeutralMode(NeutralModeValue.Brake);
+    leftMotorConfig.CurrentLimits.StatorCurrentLimit = pivotLeftMotorCurrentLimit;
+    leftMotorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
 
-        followingMotor.setControl(new Follower(pivotLeftMotorID, true));
+    rightMotorConfig.CurrentLimits.StatorCurrentLimit = pivotRightMotorCurrentLimit;
+    rightMotorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+
+    leadingMotor.getConfigurator().apply(leftMotorConfig);
+    followingMotor.getConfigurator().apply(rightMotorConfig);
+
+    leadingMotor.setNeutralMode(NeutralModeValue.Brake);
+    followingMotor.setNeutralMode(NeutralModeValue.Brake);
+
+    followingMotor.setControl(new Follower(pivotLeftMotorID, true));
+
+    while (getAbsoluteEncoderPosition() < 0.1 || getAbsoluteEncoderPosition() > 135) {
+      // TODO Look into better solutions for invalid encoder initial pose
+      System.out.println(
+          "ERROR: Busyloop because pivot position invalid! Is the encoder plugged in?");
+      delay(1);
+    }
 
         pivotPIDController.setTolerance(pivotAngleToleranceDeg, pivotVelocityToleranceDegPerSec);
     }
@@ -63,6 +77,8 @@ public class PivotIOReal implements PivotIO {
         inputs.pivotAtSetpoint = pivotPIDController.atSetpoint();
 
         inputs.pivotOpenLoopStatus = pivotOpenLoop;
+        inputs.rawEncoderValue = pivotEncoder.get();
+        inputs.TheotreticalVoltage = TheotreticalVoltage;
     }   
 
     /**
@@ -101,13 +117,17 @@ public class PivotIOReal implements PivotIO {
      * @param volts Amount of volts sent to our pivot motors.
      */
     private void setMotorVoltage(double volts) {
-        if (getAbsoluteEncoderPosition() < pivotMinAngle) {
-            volts = clamp(volts, -Double.MAX_VALUE, 0);
-        } //volts need to be characterized to be enough to beat static friction right?
-        if (getAbsoluteEncoderPosition() > pivotMaxAngle) {
-            volts = clamp(volts, 0, Double.MAX_VALUE);
-        }
-        leadingMotor.setVoltage(volts);
+
+      TheotreticalVoltage = volts;
+  
+      if (getAbsoluteEncoderPosition() < pivotMinAngle) {
+        volts = clamp(volts, 0, Double.MAX_VALUE);
+      }
+      if (getAbsoluteEncoderPosition() > pivotMaxAngle) {
+        volts = clamp(volts, -Double.MAX_VALUE, 0);
+      }
+  
+      leadingMotor.setVoltage(-volts / 4);
     }
 
     /**

@@ -6,14 +6,15 @@ public interface WristIO {
     @AutoLog
     public static class WristIOInputs {
         /** Checks if the wrist has made our end goal position */
-        public boolean wristAtGoal = true;
+        public boolean wristAtGoal = false;
 
-        public boolean wristAtSetpoint = true;
+        public boolean wristAtSetpoint = false;
 
         /** Checks our current wrist absolute angle in degrees. */
         public double wristAbsAngle = 0.0;
         //wrist angle in rotations
         public double wristRelativeAngle = 0.0;
+        public double wristAbsVelocity = 0.0;
 
         /** checks the current wrist velocity in degrees */
         public double wristVelocity = 0.0;
@@ -25,12 +26,14 @@ public interface WristIO {
         public double wristAppliedVoltage = 0.0;
         /** Check current amps applied to the wrist */
         public double wristCurrentAmps = 0.0;
+
+        public double wristTheoreticalVolts = 0.0;
         /** Checks if wrist is in open loop */
         public boolean wristOpenLoopStatus = false;
     }
 
-    /** Updates the set of loggable inputs. */
-    public default void updateInputs(WristIOInputs inputs) {}
+  /** Updates the set of loggable inputs. */
+  public default void updateInputs(WristIOInputs inputs) {}
 
     /**
      * Sets our wrist angle/position.

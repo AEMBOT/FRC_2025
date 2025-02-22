@@ -1,6 +1,8 @@
 package frc.robot.subsystems.arm;
 
 import static edu.wpi.first.math.MathUtil.clamp;
+import static edu.wpi.first.wpilibj.Timer.delay;
+import static frc.robot.Constants.UPDATE_PERIOD;
 import static frc.robot.Constants.WristConstants.*;
 
 import org.littletonrobotics.junction.Logger;
@@ -9,6 +11,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 
@@ -25,13 +28,24 @@ public class WristIOReal implements WristIO {
     private double FeedForwardKv = wristFFValues[1];
     private double FeedForwardKa = wristFFValues[2];
 
-    public WristIOReal() {
+  private double theoreticalVolts;
 
-        TalonFXConfiguration motorConfig = new TalonFXConfiguration();
-        motorConfig.CurrentLimits.StatorCurrentLimit = wristMotorCurrentLimit;
-        motorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+  public WristIOReal() {
 
-        motor.setNeutralMode(NeutralModeValue.Brake);
+    TalonFXConfiguration motorConfig = new TalonFXConfiguration();
+    motorConfig.CurrentLimits.StatorCurrentLimit = wristMotorCurrentLimit;
+    motorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+    motor.getConfigurator().apply(motorConfig);
+
+    motor.setNeutralMode(NeutralModeValue.Brake);
+
+    while (getAbsoluteAngle() < -90 || getAbsoluteAngle() > 90) {
+      // TODO Look into better solutions for invalid encoder initial pose
+      System.out.println(
+          "ERROR: Busyloop because wrist position invalid! Put in valid position! Current angle: "
+              + getAbsoluteAngle());
+      delay(1);
+    }
 
         wristPIDController.setTolerance(wristAngleToleranceDeg, wristVelocityTolerangeDegPerSec);
     }
@@ -49,23 +63,26 @@ public class WristIOReal implements WristIO {
         inputs.wristOpenLoopStatus = OpenLoopStatus;
         inputs.wristAtGoal = wristPIDController.atGoal();
         inputs.wristAtSetpoint = wristPIDController.atSetpoint();
+
+        inputs.wristTheoreticalVolts = theoreticalVolts;
     }
 
-    /**
-     * Sets the voltage of the wrist motor.
-     * @param volts The voltage to set.
-     */
-    private void setMotorVoltage(double volts) {
-        OpenLoopStatus = true;
-        if (getAbsoluteAngleDeg() < wristMinAngle) {
-            volts = clamp(volts, -Double.MAX_VALUE, 0);
-        }
-        if (getAbsoluteAngleDeg() > wristMaxAngle) {
-            volts = clamp(volts, 0, Double.MAX_VALUE);
-        }
-
-        motor.setVoltage(volts);
+  /**
+   * Sets the voltage of the wrist motor.
+   *
+   * @param volts The voltage to set.
+   */
+  private void setMotorVoltage(double volts) {
+    OpenLoopStatus = true;
+    if (getAbsoluteAngle() < wristMinAngle) {
+      volts = clamp(volts, 0, Double.MAX_VALUE);
     }
+    if (getAbsoluteAngle() > wristMaxAngle) {
+      volts = clamp(volts, -Double.MAX_VALUE, 0);
+    }
+
+    motor.setVoltage(-volts);
+  }
 
     /**
      * Interpolates our PID and feedforward constants and sets them.

@@ -1,6 +1,8 @@
 package frc.robot.subsystems.arm;
 
-import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import static frc.robot.Constants.ElevatorConstants.*;
+
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
@@ -15,6 +17,10 @@ import edu.wpi.first.math.util.Units;
 
 public class ElevatorIOReal implements ElevatorIO { 
     private final TalonFX motor = new TalonFX(motorID);
+    private double motorMax = 20000;
+    private double motorMin = 0;
+    private boolean isHoming = false;
+    private double encoderOffset = 0;
 
     private double lastTime;
     private double lastVelocity;
@@ -26,9 +32,13 @@ public class ElevatorIOReal implements ElevatorIO {
     private double FeedForwardKv = elevatorFFValues[2];
     private double FeedForwardKa = elevatorFFValues[3];
 
-    public ElevatorIOReal() {
-        var motorConfig = new MotorOutputConfigs();
-        motorConfig.NeutralMode = NeutralModeValue.Brake;
+  public ElevatorIOReal() {
+
+    var motorConfig = new TalonFXConfiguration();
+    motorConfig.CurrentLimits.StatorCurrentLimit = elevatorCurrentLimit;
+    motorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+
+    motor.setNeutralMode(NeutralModeValue.Brake);
 
         motor.getConfigurator().apply(motorConfig);
 
@@ -46,6 +56,10 @@ public class ElevatorIOReal implements ElevatorIO {
         inputs.elevatorAtSetpoint = elevatorPIDController.atSetpoint();
         inputs.elevatorGoalPositionMet = elevatorPIDController.getGoal().position;
         inputs.elevatorOpenLoopStatus = openLoopStatus;
+        inputs.elevatorCurrentDraw = motor.getStatorCurrent().getValueAsDouble();
+        inputs.elevatorMaxPos = motorMax;
+        inputs.elevatorMinPos = motorMin;
+        inputs.isHoming = isHoming;
     }
 
     /** Returns, in degrees, the position of the elevator motor relative to its starting position. */
@@ -98,45 +112,42 @@ public class ElevatorIOReal implements ElevatorIO {
         //FeedForwardKa = 0.0 * pivotAngleDeg * ElevatorFFactor;
     }
 
-    @Override
-    public void setVoltage(double voltage) {
-        openLoopStatus = true;
-        motor.setVoltage(voltage);
+  @Override
+  public void setVoltage(double voltage) {
+    openLoopStatus = true;
+
+    if (motor.getStatorCurrent().getValueAsDouble() > 100) {
+      if (voltage > 0) {
+        motorMax = getMotorRotation();
+      } else if (voltage != 0) {
+        motorMin = getMotorRotation();
+      }
     }
 
-    @Override
-    public void setGoalPosition(double goalPosMet, double pivotAngleDeg) {
-        openLoopStatus = false;
-        interpolateConstants(pivotAngleDeg);
-
-        double pidOutput = elevatorPIDController.calculate(
-            getElevatorPosition(), 
-            goalPosMet);
-
-        double acceleration = (
-            elevatorPIDController.getSetpoint().velocity - lastVelocity)  //in meters
-            / (Timer.getFPGATimestamp() - lastTime);
-
-        double feedForward = calculateElevatorFeedforward( // in meters
-            elevatorPIDController.getSetpoint().velocity, 
-            acceleration);
-
-        Logger.recordOutput("Elevator/FeedForwardVolts", feedForward);
-        Logger.recordOutput("Elevator/FeedBackVolts", pidOutput);
-    
-        Logger.recordOutput("Elevator/VelocityErrorMetersPerSec", elevatorPIDController.getVelocityError());
-        Logger.recordOutput("Elevator/PositionErrorMeters", elevatorPIDController.getPositionError());
-
-        motor.setVoltage(
-            pidOutput
-            + feedForward);
-
-        lastVelocity = elevatorPIDController.getSetpoint().velocity;
-        lastTime = Timer.getFPGATimestamp();        
+    if (Math.abs(getMotorRotation() - motorMax) <= 250 && voltage > 0) {
+      motor.setVoltage(0);
+      openLoopStatus = false;
+    } else if (Math.abs(getMotorRotation() - motorMin) <= 250 && voltage < 0) {
+      motor.setVoltage(0);
+      openLoopStatus = false;
+    } else {
+      motor.setVoltage(voltage);
     }
+  }
 
-    @Override
-    public void elevatorResetProfile() {
-        elevatorPIDController.reset(getElevatorPosition(), 0);
-    }
+  @Override
+  public boolean atMinimum() {
+
+    return (Math.round(getMotorRotation() / 10) * 10 == Math.round(getMotorRotation() / 10) * 10)
+        ? false
+        : true;
+  }
+
+  @Override
+  public void setHoming(boolean homingValue) {
+    isHoming = homingValue;
+  }
+
+  @Override
+  public void setEncoder(double encoderValue) {}
 }

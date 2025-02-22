@@ -19,45 +19,31 @@ import static edu.wpi.first.units.Units.Seconds;
 import static frc.robot.Constants.currentMode;
 
 import java.util.function.DoubleSupplier;
+import org.littletonrobotics.junction.Logger;
 
 public class Arm extends SubsystemBase {
-    ElevatorIO elevator;
-    PivotIO pivot;
-    WristIO wrist;
-    private final ElevatorIOInputsAutoLogged elevatorInputs = new ElevatorIOInputsAutoLogged();
-    private final PivotIOInputsAutoLogged pivotInputs = new PivotIOInputsAutoLogged();
-    private final WristIOInputsAutoLogged wristInputs = new WristIOInputsAutoLogged();
+  ElevatorIO elevator;
+  PivotIO pivot;
+  WristIO wrist;
+  IntakeIO intake;
+  private final ElevatorIOInputsAutoLogged elevatorInputs = new ElevatorIOInputsAutoLogged();
+  private final PivotIOInputsAutoLogged pivotInputs = new PivotIOInputsAutoLogged();
+  private final WristIOInputsAutoLogged wristInputs = new WristIOInputsAutoLogged();
+  private final IntakeIOInputsAutoLogged intakeInputs = new IntakeIOInputsAutoLogged();
 
-    private final SysIdRoutine elevatorRoutine;
-    private final SysIdRoutine pivotRoutine;
-    private final SysIdRoutine wristRoutine;
+  private final SysIdRoutine elevatorRoutine;
+  private final SysIdRoutine pivotRoutine;
+  private final SysIdRoutine wristRoutine;
 // TODO Characterize ALL factors of interpolation for all arm systems AND ALL our PID and FF Values and
 // tolerance values for BOTH Nautilus AND Dory (Nautilus first?) Also elevator position factor
 // Also check routine values because the tests may not be accurate
-    public Arm() {
-        switch (currentMode) {
-            case REAL: {
-                elevator = new ElevatorIO() {};
-                pivot = new PivotIOReal() {};
-                wrist = new WristIOReal() {};
-                break;
-            }
-            case REPLAY: {
-                elevator = new ElevatorIO() {};
-                pivot = new PivotIO() {};
-                wrist = new WristIO() {};
-                break;
-            }
-            case SIM: {
-                elevator = new ElevatorIO() {};
-                pivot = new PivotIO() {};
-                wrist = new WristIO() {};
-                break;
-            }
-            default: {
-                break;
-            }
-        }
+
+  public Arm(ElevatorIO elevatorIO, PivotIO pivotIO, WristIO wristio, IntakeIO intakeIO) {
+    this.elevator = elevatorIO;
+    this.pivot = pivotIO;
+    this.wrist = wristio;
+    this.intake = intakeIO;
+  }
 
     new Trigger(() -> elevatorInputs.elevatorOpenLoopStatus).onFalse(runOnce(elevator::elevatorResetProfile));
     new Trigger(() -> pivotInputs.pivotOpenLoopStatus).onFalse(runOnce(pivot::pivotResetProfile));
@@ -91,16 +77,17 @@ public class Arm extends SubsystemBase {
             new SysIdRoutine.Mechanism((voltage) -> wrist.setVoltage(voltage.in(Volts)), null, this));
     }
 
-    @Override
+  @Override
     public void periodic() {
-        pivot.updateInputs(pivotInputs);
-        elevator.updateInputs(elevatorInputs);
-        wrist.updateInputs(wristInputs);
         Logger.processInputs("Pivot", pivotInputs);
         Logger.processInputs("Elevator", elevatorInputs);
         Logger.processInputs("Wrist", wristInputs);
-    }
-
+        Logger.processInputs("Intake", intakeInputs);
+        pivot.updateInputs(pivotInputs);
+        elevator.updateInputs(elevatorInputs);
+        wrist.updateInputs(wristInputs);
+        intake.updateInputs(intakeInputs);
+  }
 
     /**
      * Sets the setpoint of the pivot to a certain degree.

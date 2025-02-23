@@ -3,6 +3,7 @@ package frc.robot;
 import com.ctre.phoenix6.hardware.CANcoder;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -35,72 +36,143 @@ public final class Constants {
     public static final double UPDATE_PERIOD = 0.02;
 
     public static final class PivotConstants { 
-    /** Maximum angle for the pivot to move to, in degrees */
-    public static final double pivotMaxAngle = 100;
-    /** Minimum angle for the pivot to move to, in degrees */
-    public static final double pivotMinAngle = 30;
-    /** ID of the left pivot sparkmax */
-    public static final int pivotLeftMotorID = 10;
-    /**  */
-    public static final boolean pivotLeftMotorInverted = false;
-    /**  */
-    public static final int pivotLeftMotorCurrentLimit = 50;
-    /** ID of the right pivot sparkmax */
-    public static final int pivotRightMotorID = 11;
-    /**  */
-    public static final boolean pivotRightMotorInverted = false;
-    /**  */
-    public static final int pivotRightMotorCurrentLimit = 50;
-    /**  */
-    public static final DutyCycleEncoder pivotEncoder = new DutyCycleEncoder(1);
-    /**  */
-    public static final double pivotEncoderPositionOffset = -156.67488616687214;
-    /**  */
-    public static final double gearRatio = 93.3333333;
-    /**  */
-    public static final ArmFeedforward pivotFFModel = new ArmFeedforward(
-      0.1, 
-      0.1, 
-      0.5, 
-      0.1);
-    /**  */
-    public static final PIDController pivotPIDController = new PIDController(
-      2, 
-      0, 
-      0.00);
-    /**  */
-    public static final TrapezoidProfile pivotProfile = new TrapezoidProfile(new TrapezoidProfile.Constraints(
-      2,
-      5));
-    /** Ramp Rate of the pivot System ID in volts per second */
-    public static final double pivotSysIdRampRate = 0.2;
-    /** Setp Voltage of the pivot System ID in volts */
-    public static final double pivotSysIdStepVolt = 7;
-    /** Timeout of the pivot System ID in volts */
-    public static final double pivotSysIdTimeout = 30;
-    /** How many degrees the pivot can be off its goal position for it to be sufficient */
-    public static final double pivotAngleAllowedDeviance = 1.15;
-    /**  */
-    public static final Translation3d pivotTranslationFromRobot = new Translation3d(-0.2, 0, 0.255);
-    /**  */
-    public static final double pivotDefaultAngle = 90;
-    /**  */
-    public static final double pivotSimGoalPosition = 1.05;
-    /**  */
-    public static final double pivotSimSetpointPosition = 1.05;
-    /**  */
-    public static final SingleJointedArmSim pivotSim = new SingleJointedArmSim(
-      DCMotor.getNEO(2), 
-      300, 
-      0.17, 
-      0.500, 
-      Units.degreesToRadians(pivotMinAngle), 
-      Units.degreesToRadians(pivotMaxAngle), 
-      true, 
-      Units.degreesToRadians(45));
+      /** Maximum angle for the pivot to move to, in degrees */
+      public static final double MAX_ANGLE = 175;
+      /** Minimum angle for the pivot to move to, in degrees */
+      public static final double MIN_ANGLE = 3;
+      /**  */
+      public static final float VOLTAGE_LIMIT = 5;
+      /** ID of the left pivot sparkmax */
+      public static final int LEFT_MOTOR_ID = 10;
+      /**  */
+      public static final boolean LEFT_MOTOR_INVERTED = false;
+      /**  */
+      public static final int LEFT_MOTOR_CURRENT_LIMIT = 50;
+
+      /** ID of the right pivot sparkmax */
+      public static final int RIGHT_MOTOR_ID = 11;
+      /**  */
+      public static final boolean RIGHT_MOTOR_INVERTED = false;
+      /**  */
+      public static final int RIGHT_MOTOR_CURRENT_LIMIT = 50;
+      /**  */
+      public static final DutyCycleEncoder ENCODER = new DutyCycleEncoder(1);
+      /**  */
+      public static final double ENCODER_POSITION_OFFSET = -156.67488616687214;
+      /**  */
+      public static final double GEAR_RATIO = 93.3333333;
+      /**  */
+      public static final ArmFeedforward FF_MODEL = new ArmFeedforward(
+        0.11164, 
+        0.0090459, 
+        0.11954, 
+        0.0090459);
+      /**  */
+      public static final PIDController PID_CONTROLLER = new PIDController(
+        .09361, 
+        0, 
+        0);
+      /**  */
+      public static final TrapezoidProfile TRAPEZOID_PROFILE = new TrapezoidProfile(new TrapezoidProfile.Constraints(
+        1,
+        2));
+      /** Ramp Rate of the pivot System ID in volts per second */
+      public static final double SYS_ID_RAMP_RATE = 1;
+      /** Setp Voltage of the pivot System ID in volts */
+      public static final double SYS_ID_STEP_VALUE = 7;
+      /** Timeout of the pivot System ID in volts */
+      public static final double SYS_ID_TIMEOUT = 30;
+      /** How many degrees the pivot can be off its goal position for it to be sufficient */
+      public static final double ALLOWED_DEVIANCE = 1.15;
+      /**  */
+      public static final Translation3d TRANSLATION_FROM_ROBOT = new Translation3d(-0.2, 0, 0.255);
+      /**  */
+      public static final double DEFAULT_ANGLE = 90;
+      /**  */
+      public static final double SIM_GOAL_POSITION = 1.05;
+      /**  */
+      public static final double SIM_SETPOINT_POSITION = 1.05;
+      /**  */
+      public static final SingleJointedArmSim SIM = new SingleJointedArmSim(
+        DCMotor.getNEO(2), 
+        300, 
+        0.17, 
+        0.500, 
+        Units.degreesToRadians(MIN_ANGLE), 
+        Units.degreesToRadians(MAX_ANGLE), 
+        true, 
+        Units.degreesToRadians(45));
   }
 
     public static final class ElevatorConstants {
+
+            /** Maximum height for the elevator to move to, in inches */
+            public static final double MAX_HEIGHT = 175;
+            /** Minimum height for the elevator to move to, in inches */
+            public static final double MIN_HEIGHT = 3;
+            /**  */
+            public static final float VOLTAGE_LIMIT = 5;
+            /** ID of the bottom elevator kraken */
+            public static final int BOTTOM_MOTOR_ID = 10;
+            /**  */
+            public static final boolean BOTTOM_MOTOR_INVERTED = false;
+            /**  */
+            public static final int BOTTOM_MOTOR_CURRENT_LIMIT = 50;
+      
+            /** ID of the right pivot kraken */
+            public static final int TOP_MOTOR_ID = 11;
+            /**  */
+            public static final boolean TOP_MOTOR_INVERTED = false;
+            /**  */
+            public static final int TOP_MOTOR_CURRENT_LIMIT = 50;
+            /**  */
+            public static final DutyCycleEncoder ENCODER = new DutyCycleEncoder(1);
+            /**  */
+            public static final double ENCODER_POSITION_OFFSET = -156.67488616687214;
+            /**  */
+            public static final double GEAR_RATIO = 93.3333333;
+            /**  */
+            public static final ElevatorFeedforward FF_MODEL = new ElevatorFeedforward(
+              0.11164,
+              0.21209, 
+              0.11954, 
+              0.0090459);
+            /**  */
+            public static final PIDController PID_CONTROLLER = new PIDController(
+              0.09361, 
+              0, 
+              0);
+            /**  */
+            public static final TrapezoidProfile TRAPEZOID_PROFILE = new TrapezoidProfile(new TrapezoidProfile.Constraints(
+              1,
+              2));
+            /** Ramp Rate of the elevator System ID in volts per second */
+            public static final double SYS_ID_RAMP_RATE = 0.2;
+            /** Setp Voltage of the elevator System ID in volts */
+            public static final double SYS_ID_STEP_VALUE = 7;
+            /** Timeout of the elevator System ID in volts */
+            public static final double SYS_ID_TIMEOUT = 30;
+            /** How many degrees the elevator can be off its goal position for it to be sufficient */
+            public static final double ALLOWED_DEVIANCE = 1.15;
+            /**  */
+            public static final Translation3d TRANSLATION_FROM_ROBOT = new Translation3d(-0.2, 0, 0.255);
+            /**  */
+            public static final double DEFAULT_HEIGHT = 90;
+            /**  */
+            public static final double SIM_GOAL_POSITION = 1.05;
+            /**  */
+            public static final double SIM_SETPOINT_POSITION = 1.05;
+            /**  */
+            public static final SingleJointedArmSim SIM = new SingleJointedArmSim(
+              DCMotor.getNEO(2), 
+              300, 
+              0.17, 
+              0.500, 
+              Units.degreesToRadians(MIN_HEIGHT), 
+              Units.degreesToRadians(MAX_HEIGHT), 
+              true, 
+              Units.degreesToRadians(45));
+
 
       /* Absolute highest point from the base the elevator can reach in inches*/
       public static final double absoluteMaxExtension = 6;
@@ -120,31 +192,66 @@ public final class Constants {
     }
 
     public static final class WristConstants {
-        public static final double encoderOffset = 194.10106985252673 * -1;        
-        public static final double wristMaxAngle = -90;
-        public static final double wristMinAngle = 90;
-        public static final double deadzone = 5.0;
 
-        /* Device IDs */
-        public static final int motorID = 14;
-        public static final DutyCycleEncoder wristEncoder = new DutyCycleEncoder(2);
-
-        public static final TrapezoidProfile wristProfile = new TrapezoidProfile(new TrapezoidProfile.Constraints(
-          2,
-          5));
-
-        public static final ArmFeedforward wristFFModel = new ArmFeedforward(
-          0.1, 
-          0.1, 
-          0.5, 
-          0.1);
-
-        public static final PIDController wristPIDController = new PIDController(
-          2, 
-          0, 
-          0.00);
-
-        public static final double wristMotorCurrentLimit = 0.25;
+            /** Maximum angle for the wrist to move to, in degrees */
+            public static final double MAX_ANGLE = 175;
+            /** Minimum angle for the wrist to move to, in degrees */
+            public static final double MIN_ANGLE = 3;
+            /**  */
+            public static final float VOLTAGE_LIMIT = 5;
+            /** ID of the wrist sparkmax */
+            public static final int MOTOR_ID = 14;
+            /**  */
+            public static final boolean MOTOR_INVERTED = false;
+            /**  */
+            public static final int MOTOR_CURRENT_LIMIT = 10;
+            /**  */
+            public static final DutyCycleEncoder ENCODER = new DutyCycleEncoder(2);
+            /**  */
+            public static final double ENCODER_POSITION_OFFSET = 0;
+            /**  */
+            public static final double GEAR_RATIO = 93.3333333;
+            /**  */
+            public static final ArmFeedforward FF_MODEL = new ArmFeedforward(
+              0, 
+              0, 
+              0, 
+              0);
+            /**  */
+            public static final PIDController PID_CONTROLLER = new PIDController(
+              0, 
+              0, 
+              0);
+            /**  */
+            public static final TrapezoidProfile TRAPEZOID_PROFILE = new TrapezoidProfile(new TrapezoidProfile.Constraints(
+              1,
+              2));
+            /** Ramp Rate of the wrist System ID in volts per second */
+            public static final double SYS_ID_RAMP_RATE = 1;
+            /** Setp Voltage of the wrist System ID in volts */
+            public static final double SYS_ID_STEP_VALUE = 7;
+            /** Timeout of the wrist System ID in volts */
+            public static final double SYS_ID_TIMEOUT = 30;
+            /** How many degrees the wrist can be off its goal position for it to be sufficient */
+            public static final double ALLOWED_DEVIANCE = 1.15;
+            /**  */
+            public static final Translation3d TRANSLATION_FROM_ROBOT = new Translation3d(-0.2, 0, 0.255);
+            /**  */
+            public static final double DEFAULT_ANGLE = 0;
+            /**  */
+            public static final double SIM_GOAL_POSITION = 1.05;
+            /**  */
+            public static final double SIM_SETPOINT_POSITION = 1.05;
+            /**  */
+            public static final SingleJointedArmSim SIM = new SingleJointedArmSim(
+              DCMotor.getNEO(2), 
+              300, 
+              0.17, 
+              0.500, 
+              Units.degreesToRadians(MIN_ANGLE), 
+              Units.degreesToRadians(MAX_ANGLE), 
+              true, 
+              Units.degreesToRadians(45));
     }
 
     public static final class IntakeConstants {

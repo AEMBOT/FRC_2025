@@ -22,10 +22,6 @@ public interface PivotIO {
         public double pivotSetpointVelocity = 0.0;
         /** Whether the pivot subsystem is running in an openloop */
         public boolean openLoopStatus = false;
-
-        public double rawEncoderValue = 0.0;
-
-        public double TheotreticalVoltage = 0.0;
     }
 
     /** Updates the set of loggable inputs. */

@@ -1,11 +1,11 @@
-package frc.robot.subsystems.pivot;
+package frc.robot.subsystems.wrist;
 
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.Constants.UPDATE_PERIOD;
-import static frc.robot.Constants.PivotConstants.SYS_ID_RAMP_RATE;
-import static frc.robot.Constants.PivotConstants.SYS_ID_STEP_VALUE;
-import static frc.robot.Constants.PivotConstants.SYS_ID_TIMEOUT;
+import static frc.robot.Constants.WristConstants.SYS_ID_RAMP_RATE;
+import static frc.robot.Constants.WristConstants.SYS_ID_STEP_VALUE;
+import static frc.robot.Constants.WristConstants.SYS_ID_TIMEOUT;
 
 import java.util.function.DoubleSupplier;
 
@@ -14,17 +14,18 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.subsystems.wrist.WristIO.WristIOInputs;
 
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.AutoLogOutput;
 
-public class Pivot extends SubsystemBase{
+public class Wrist extends SubsystemBase{
     
-    PivotIO io;
-    private final PivotIOInputsAutoLogged inputs = new PivotIOInputsAutoLogged();
+    WristIO io;
+    private final WristIOInputsAutoLogged inputs = new WristIOInputsAutoLogged();
     private final SysIdRoutine sysId;
 
-    public Pivot(PivotIO io) {
+ public Wrist(WristIO io) {
         this.io = io;
 
         sysId = 
@@ -45,57 +46,57 @@ public class Pivot extends SubsystemBase{
     }
 
     /**
-     * Sets the setpoint of the pivot to a certain degree.
-     * @param posDeg Position in degrees to set the pivot to.
-     * @return A {@link RunCommand} to set the pivot setpoint to posDeg.
+     * Sets the setpoint of the wrist to a certain degree.
+     * @param posDeg Position in degrees to set the wrist to.
+     * @return A {@link RunCommand} to set the wrist setpoint to posDeg.
      */
     public Command setAngleDeg(DoubleSupplier posDeg) {
         return run(() -> io.setAngle(posDeg.getAsDouble()));
     }
 
     /**
-     * Applies an increasing voltage to the pivot and logs the sysId state.
+     * Applies an increasing voltage to the wrist and logs the sysId state.
      * @param direction Direction to run the sysId, needs to be either kForward or kReverse
-     * @return A {@link RunCommand} to run the quasistaic pivot sysId test.
+     * @return A {@link RunCommand} to run the quasistaic wrist sysId test.
      */
     public Command sysIdQuastistatic(SysIdRoutine.Direction direction) {
         return sysId.quasistatic(direction);
     }
 
     /**
-     * Applies a constant voltage to the pivot and logs the sysId state.
+     * Applies a constant voltage to the wrist and logs the sysId state.
      * @param direction Direction to run the sysId, needs to be either kForward or kReverse
-     * @return A {@link RunCommand} to run the dynamic pivot sysId test.
+     * @return A {@link RunCommand} to run the dynamic wrist sysId test.
      */
     public Command sysIdDynamic(SysIdRoutine.Direction direction) {
         return sysId.dynamic(direction);
     }
 
     /**
-     * Directly sets the voltage of the pivot, used for SysId.
-     * @param volts Voltage to apply to the pivot.
+     * Directly sets the voltage of the wrist, used for SysId.
+     * @param volts Voltage to apply to the wrist.
      */
     public void setVoltage(double volts) {
         io.setVoltage(volts);
     }
 
     /**
-     * Sets the setpoint of the pivot to a certain degree.
-     * @param posDeg Position in degrees to set the pivot to.
-     * @return A {@link RunCommand} to set the pivot setpoint to posDeg.
+     * Sets the setpoint of the wrist to a certain degree.
+     * @param posDeg Position in degrees to set the wrist to.
+     * @return A {@link RunCommand} to set the wrist setpoint to posDeg.
      */
     public Command setGoalPosition(DoubleSupplier posDeg) {
         return run(() -> io.setAngle(posDeg.getAsDouble()));
     }
 
     /**
-     * Changes the setpoint of the pivot by a certain amount per second.
-     * @param velocityDegPerSec Speed to move the pivot in degrees per second.
-     * @return A {@link RunCommand} to change the pivot setpoint by velocityDegPerSec.
-     * Resets the pivot dampening profile after completion.
+     * Changes the setpoint of the wrist by a certain amount per second.
+     * @param velocityDegPerSec Speed to move the wrist in degrees per second.
+     * @return A {@link RunCommand} to change the wrist setpoint by velocityDegPerSec.
+     * Resets the wrist dampening profile after completion.
      */
     public Command changeGoalPosition(double velocityDegPerSec) {
-        return setGoalPosition(() -> inputs.pivotGoalPosition + (velocityDegPerSec * UPDATE_PERIOD))
+        return setGoalPosition(() -> inputs.wristGoalPosition + (velocityDegPerSec * UPDATE_PERIOD))
             .finallyDo(io::resetProfile);
     }
 }

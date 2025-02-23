@@ -14,30 +14,27 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 
 public class PivotIOReal implements PivotIO {
     
     private boolean openLoop = true;
-    private final TalonFX leadingMotor = new TalonFX(pivotLeftMotorID);
-    private final TalonFX followingMotor = new TalonFX(pivotRightMotorID);
+    private final TalonFX leadingMotor = new TalonFX(LEFT_MOTOR_ID);
+    private final TalonFX followingMotor = new TalonFX(RIGHT_MOTOR_ID);
     private TrapezoidProfile.State pivotGoal;
     private TrapezoidProfile.State pivotSetpoint;
     private double lastTime;
-    private double TheotreticalVoltage;
 
 
     public PivotIOReal() {
 
-
-        TheotreticalVoltage = 0.0;
-
         TalonFXConfiguration leftMotorConfig = new TalonFXConfiguration();
         TalonFXConfiguration rightMotorConfig = new TalonFXConfiguration();
 
-        leftMotorConfig.CurrentLimits.StatorCurrentLimit = pivotLeftMotorCurrentLimit;
+        leftMotorConfig.CurrentLimits.StatorCurrentLimit = LEFT_MOTOR_CURRENT_LIMIT;
         leftMotorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
 
-        rightMotorConfig.CurrentLimits.StatorCurrentLimit = pivotRightMotorCurrentLimit;
+        rightMotorConfig.CurrentLimits.StatorCurrentLimit = RIGHT_MOTOR_CURRENT_LIMIT;
         rightMotorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
 
         leadingMotor.getConfigurator().apply(leftMotorConfig);
@@ -46,13 +43,15 @@ public class PivotIOReal implements PivotIO {
         leadingMotor.setNeutralMode(NeutralModeValue.Brake);
         followingMotor.setNeutralMode(NeutralModeValue.Brake);
 
-        followingMotor.setControl(new Follower(pivotLeftMotorID, true));
+        followingMotor.setControl(new Follower(LEFT_MOTOR_ID, true));
 
-        while (getAbsoluteEncoderPosition() < 0.1 || getAbsoluteEncoderPosition() > 135) {
+        /** 
+        while (getAbsoluteEncoderPosition() < MIN_ANGLE || getAbsoluteEncoderPosition() > MAX_ANGLE) {
             // TODO Look into better solutions for invalid encoder initial pose
             System.out.println("ERROR: Busyloop because pivot position invalid! Is the encoder plugged in?");
             delay(1);
         }
+        */
 
         pivotGoal = new TrapezoidProfile.State(getAbsoluteEncoderPosition(), 0);
         pivotSetpoint = new TrapezoidProfile.State(getAbsoluteEncoderPosition(), 0);
@@ -60,6 +59,7 @@ public class PivotIOReal implements PivotIO {
 
     public void updateInputs(PivotIOInputs inputs) {
         inputs.pivotAbsolutePosition = getAbsoluteEncoderPosition();
+        inputs.pivotAbsoluteVelocity = leadingMotor.getVelocity().getValueAsDouble();
         inputs.pivotAppliedVolts = leadingMotor.getMotorVoltage().getValueAsDouble();
         inputs.pivotCurrentAmps = new double[] {leadingMotor.getStatorCurrent().getValueAsDouble(), 
                                                 followingMotor.getStatorCurrent().getValueAsDouble()};
@@ -67,30 +67,28 @@ public class PivotIOReal implements PivotIO {
         inputs.pivotSetpointPosition = pivotSetpoint.position;
         inputs.pivotSetpointVelocity = pivotSetpoint.velocity;
         inputs.openLoopStatus = openLoop;
-        inputs.rawEncoderValue = pivotEncoder.get();
-        inputs.TheotreticalVoltage = TheotreticalVoltage;
     }   
 
     @Override
     public void setAngle(double angle) {
         openLoop = false;
 
-        angle = clamp(angle, pivotMinAngle, pivotMaxAngle);
+        angle = clamp(angle, MIN_ANGLE, MAX_ANGLE);
 
         pivotGoal = new TrapezoidProfile.State(angle, 0);
         
         pivotSetpoint = 
-            pivotProfile.calculate(
+            TRAPEZOID_PROFILE.calculate(
             (Timer.getFPGATimestamp() - lastTime > 0.25)
                 ? (Timer.getFPGATimestamp() - lastTime)
                 : 0.02,
             pivotSetpoint,
             pivotGoal);
         
-        double feedForward = pivotFFModel.calculate(
-            pivotGoal.position, 
+        double feedForward = FF_MODEL.calculate(
+            Units.degreesToRadians(pivotGoal.position), 
             0);
-        double pidOutput = pivotPIDController.calculate(
+        double pidOutput = PID_CONTROLLER.calculate(
                 getAbsoluteEncoderPosition(), 
                 pivotGoal.position);
 
@@ -113,23 +111,21 @@ public class PivotIOReal implements PivotIO {
     }
 
     private double getAbsoluteEncoderPosition() {
-        return (pivotEncoder.get() * 360) + pivotEncoderPositionOffset;
+        return (ENCODER.get() * 360) + ENCODER_POSITION_OFFSET;
     }
 
     private void setMotorVoltage(double volts) {
 
-        TheotreticalVoltage = volts;
-
-        if (getAbsoluteEncoderPosition() < pivotMinAngle) {
+        if (getAbsoluteEncoderPosition() < MIN_ANGLE) {
             volts = clamp(volts, 0, Double.MAX_VALUE);
         }
-        if (getAbsoluteEncoderPosition() > pivotMaxAngle) {
+        if (getAbsoluteEncoderPosition() > MAX_ANGLE) {
             volts = clamp(volts, -Double.MAX_VALUE, 0);
         }   
 
 
 
-        leadingMotor.setVoltage(-volts/4);
+        leadingMotor.setVoltage(-volts);
     }
 
     @Override

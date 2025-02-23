@@ -25,8 +25,6 @@ public class WristIOReal implements WristIO {
   private double FeedForwardKv = wristFFValues[2];
   private double FeedForwardKa = wristFFValues[3];
 
-  private double theoreticalVolts;
-
   public WristIOReal() {
 
     TalonFXConfiguration motorConfig = new TalonFXConfiguration();
@@ -36,7 +34,7 @@ public class WristIOReal implements WristIO {
 
     motor.setNeutralMode(NeutralModeValue.Brake);
 
-    while (getAbsoluteAngleDeg() < -90 || getAbsoluteAngleDeg() > 90) {
+    while (getAbsoluteAngleDeg() < -120 || getAbsoluteAngleDeg() > 120) {
       // TODO Look into better solutions for invalid encoder initial pose
       // TODO change min and max
       System.out.println(
@@ -44,7 +42,7 @@ public class WristIOReal implements WristIO {
               + getAbsoluteAngleDeg());
       delay(1);
     }
-
+// for our at GOAL and at SETPOINT booleans
     wristPIDController.setTolerance(wristAngleToleranceDeg, wristVelocityTolerangeDegPerSec);
   }
 
@@ -61,8 +59,6 @@ public class WristIOReal implements WristIO {
     inputs.wristOpenLoopStatus = OpenLoopStatus;
     inputs.wristAtGoal = wristPIDController.atGoal();
     inputs.wristAtSetpoint = wristPIDController.atSetpoint();
-
-    inputs.wristTheoreticalVolts = theoreticalVolts;
   }
 
   /**
@@ -79,7 +75,7 @@ public class WristIOReal implements WristIO {
       volts = clamp(volts, -Double.MAX_VALUE, 0);
     }
 
-    motor.setVoltage(-volts);
+    motor.setVoltage(volts);
   }
 
   /**

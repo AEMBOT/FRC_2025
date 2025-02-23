@@ -52,7 +52,7 @@ public class PivotIOReal implements PivotIO {
     while (getAbsoluteEncoderPosition() < 0.1 || getAbsoluteEncoderPosition() > 135) {
       // TODO Look into better solutions for invalid encoder initial pose
       System.out.println(
-          "ERROR: Busyloop because pivot position invalid! Is the encoder plugged in?"
+          "ERROR: Busyloop because pivot position invalid! Is the encoder plugged in? Current encoder position: "
               + getAbsoluteEncoderPosition());
       delay(1);
     }
@@ -119,7 +119,7 @@ public class PivotIOReal implements PivotIO {
   }
 
   /**
-   * Sets the motor voltage zof our pivot and clamps it between our min and max angle.
+   * Sets the motor voltage of our pivot and clamps it between our min and max angle.
    *
    * @param volts Amount of volts sent to our pivot motors.
    */
@@ -134,7 +134,7 @@ public class PivotIOReal implements PivotIO {
       volts = clamp(volts, -Double.MAX_VALUE, 0);
     }
 
-    leadingMotor.setVoltage(-volts / 4);
+    leadingMotor.setVoltage(-volts);
   }
 
   /**

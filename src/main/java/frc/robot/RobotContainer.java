@@ -10,6 +10,7 @@ import static frc.robot.constants.GeneralConstants.currentRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ElevatorIO;
 import frc.robot.subsystems.arm.ElevatorIOReal;
@@ -120,6 +121,30 @@ public class RobotContainer {
      * <p>// characterization commands controller.x().whileTrue(arm.runPivotCharacterization());
      * controller.y().whileTrue(arm.runElevatorCharacterization());
      * controller.a().whileTrue(arm.runWristCharacterization());
+     */
+
+    /**
+     * Characterization command basico
+    controller
+        .x()
+        .onTrue(arm.startSignalLoggerCommand())
+        .whileTrue(arm.runWristCharacterizationQuasi(SysIdRoutine.Direction.kForward))
+        .onFalse(arm.stopSignalLoggerCommand());
+    controller
+        .y()
+        .onTrue(arm.startSignalLoggerCommand())
+        .whileTrue(arm.runWristCharacterizationQuasi(SysIdRoutine.Direction.kReverse))
+        .onFalse(arm.stopSignalLoggerCommand());
+    controller
+        .a()
+        .onTrue(arm.startSignalLoggerCommand())
+        .whileTrue(arm.runWristCharacterizationDyna(SysIdRoutine.Direction.kForward))
+        .onFalse(arm.stopSignalLoggerCommand());
+    controller
+        .b()
+        .onTrue(arm.startSignalLoggerCommand())
+        .whileTrue(arm.runWristCharacterizationDyna(SysIdRoutine.Direction.kReverse))
+        .onFalse(arm.stopSignalLoggerCommand());
      */
   }
 

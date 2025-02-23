@@ -32,8 +32,6 @@ public interface WristIO {
     /** Check current amps applied to the wrist */
     public double wristCurrentAmps = 0.0;
 
-    public double wristTheoreticalVolts = 0.0;
-
     /** Checks if wrist is in open loop */
     public boolean wristOpenLoopStatus = false;
   }

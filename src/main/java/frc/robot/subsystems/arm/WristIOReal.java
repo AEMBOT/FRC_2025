@@ -42,7 +42,7 @@ public class WristIOReal implements WristIO {
               + getAbsoluteAngleDeg());
       delay(1);
     }
-// for our at GOAL and at SETPOINT booleans
+    // for our at GOAL and at SETPOINT booleans
     wristPIDController.setTolerance(wristAngleToleranceDeg, wristVelocityTolerangeDegPerSec);
   }
 

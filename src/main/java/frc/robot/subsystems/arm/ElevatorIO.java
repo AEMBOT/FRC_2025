@@ -12,13 +12,19 @@ public interface ElevatorIO {
     public boolean elevatorAtSetpoint = true;
 
     /** Elevator motor rotation in degrees */
-    public double elevatorMotorRotationDeg = 0.0;
+    public double elevatorLeftMotorRotationDeg = 0.0;
+
+    public double elevatorRightMotorRotationDeg = 0.0;
 
     /** Current elevator voltage */
-    public double elevatorVoltage = 0.0;
+    public double elevatorLeftVoltage = 0.0;
+
+    public double elevatorRightVoltage = 0.0;
 
     /** Current elevator velocity in degrees per second */
-    public double elevatorMotorVelocityDegrees = 0.0;
+    public double elevatorLeftMotorVelocityDegrees = 0.0;
+
+    public double elevatorRightMotorVelocityDegrees = 0.0;
 
     public double elevatorVelocityMeters = 0.0;
 

@@ -5,7 +5,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 
 public class WristConstants {
-  //TODO offset gets changed when wrist gets bumped too hard?
+  // TODO offset gets changed when wrist gets bumped too hard?
   public static final double encoderOffset = (194.10106985252673 - 84 + 123.1) * -1;
   public static final double wristMaxAngle = -90;
   public static final double wristMinAngle = 90;

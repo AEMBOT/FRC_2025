@@ -8,8 +8,8 @@ public final class ElevatorConstants {
   /* Absolute highest point from the base the elevator can reach in meters*/
   public static final double absoluteMaxExtension = 1;
 
-//   public static final double elevatorMinPosMet = 0;
-//   public static final double elevatorMaxPosMet = 2;
+  //   public static final double elevatorMinPosMet = 0;
+  //   public static final double elevatorMaxPosMet = 2;
 
   public static final double elevatorCurrentLimit = 3;
 
@@ -29,7 +29,7 @@ public final class ElevatorConstants {
         case NAUTILUS ->
             new double[] {0.1, 0.27, 3.11, 0.03}; // ks, kg, kv, ka, WHEN PIVOT is straight up
       };
-//TODO find elevator factor of gear to position of elevator in meters
+  // TODO find elevator factor of gear to position of elevator in meters
   public static final double PositionFactor = 0.7; // gear ratio is 6?
   public static final double elevatorPositionToleranceMet = 0.07;
   public static final double elevatorVelocityToleranceMetPerSec = 0.07;

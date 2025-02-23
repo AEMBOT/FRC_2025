@@ -7,7 +7,6 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
@@ -38,11 +37,10 @@ public class ElevatorIOReal implements ElevatorIO {
     leaderMotorTalonConfig.CurrentLimits.StatorCurrentLimit = elevatorCurrentLimit;
     leaderMotorTalonConfig.CurrentLimits.StatorCurrentLimitEnable = true;
 
-    //leaderMotorOutputConfig.Inverted = InvertedValue.CounterClockwise_Positive;
+    // leaderMotorOutputConfig.Inverted = InvertedValue.CounterClockwise_Positive;
 
     leaderMotor.setNeutralMode(NeutralModeValue.Brake);
     leaderMotor.getConfigurator().apply(leaderMotorTalonConfig);
-
 
     // var followerMotorTalonConfig = new TalonFXConfiguration();
     // followerMotorTalonConfig.CurrentLimits.StatorCurrentLimit = elevatorCurrentLimit;
@@ -52,7 +50,6 @@ public class ElevatorIOReal implements ElevatorIO {
     followerMotor.getConfigurator().apply(leaderMotorTalonConfig);
     followerMotor.setControl(new Follower(leftMotorID, true));
 
-
     elevatorPIDController.setTolerance(
         elevatorPositionToleranceMet, elevatorVelocityToleranceMetPerSec);
   }
@@ -60,11 +57,13 @@ public class ElevatorIOReal implements ElevatorIO {
   @Override
   public void updateInputs(ElevatorIOInputs inputs) {
     inputs.elevatorLeftMotorRotationDeg = getLeaderMotorRotation();
-    inputs.elevatorRightMotorRotationDeg = Units.rotationsToDegrees(followerMotor.getPosition().getValueAsDouble());
+    inputs.elevatorRightMotorRotationDeg =
+        Units.rotationsToDegrees(followerMotor.getPosition().getValueAsDouble());
     inputs.elevatorLeftVoltage = leaderMotor.getMotorVoltage().getValueAsDouble();
     inputs.elevatorRightVoltage = followerMotor.getMotorVoltage().getValueAsDouble();
     inputs.elevatorLeftMotorVelocityDegrees = getLeaderMotorVelocity();
-    inputs.elevatorRightMotorVelocityDegrees = Units.rotationsToDegrees(followerMotor.getVelocity().getValueAsDouble());
+    inputs.elevatorRightMotorVelocityDegrees =
+        Units.rotationsToDegrees(followerMotor.getVelocity().getValueAsDouble());
     inputs.elevatorVelocityMeters = getElevatorVelocity();
     inputs.elevatorPositionMet = getElevatorPosition();
     inputs.elevatorAtGoal = elevatorPIDController.atGoal();
@@ -77,7 +76,10 @@ public class ElevatorIOReal implements ElevatorIO {
     inputs.isHoming = isHoming;
   }
 
-  /** Returns, in degrees, the position of the elevator leaderMotor relative to its starting position. */
+  /**
+   * Returns, in degrees, the position of the elevator leaderMotor relative to its starting
+   * position.
+   */
   private double getLeaderMotorRotation() {
     return Units.rotationsToDegrees(leaderMotor.getPosition().getValueAsDouble());
   }
@@ -96,7 +98,9 @@ public class ElevatorIOReal implements ElevatorIO {
   // TODO Before merge, make a way to get and set the absolute vertical position of the elevator
   private double getElevatorPosition() {
     return clamp(
-        Units.rotationsToDegrees(leaderMotor.getPosition().getValueAsDouble()) * PositionFactor, 0, 5);
+        Units.rotationsToDegrees(leaderMotor.getPosition().getValueAsDouble()) * PositionFactor,
+        0,
+        5);
   }
 
   /**
@@ -194,8 +198,9 @@ public class ElevatorIOReal implements ElevatorIO {
 
   @Override
   public boolean atMinimum() {
-// what is this
-    return (Math.round(getLeaderMotorRotation() / 10) * 10 == Math.round(getLeaderMotorRotation() / 10) * 10)
+    // what is this
+    return (Math.round(getLeaderMotorRotation() / 10) * 10
+            == Math.round(getLeaderMotorRotation() / 10) * 10)
         ? false
         : true;
   }

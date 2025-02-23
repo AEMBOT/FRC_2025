@@ -14,9 +14,9 @@
 package frc.robot.subsystems.drive;
 
 import static edu.wpi.first.wpilibj.Timer.delay;
-import static frc.robot.Constants.DriveConstants.Module.WHEEL_RADIUS;
-import static frc.robot.Constants.DriveConstants.Module.driveMotorInversion;
-import static frc.robot.Constants.DriveConstants.Module.turnMotorInversion;
+import static frc.robot.constants.DriveConstants.Module.WHEEL_RADIUS;
+import static frc.robot.constants.DriveConstants.Module.driveMotorInversion;
+import static frc.robot.constants.DriveConstants.Module.turnMotorInversion;
 import static java.lang.Math.abs;
 
 import com.ctre.phoenix6.BaseStatusSignal;
@@ -38,7 +38,7 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
-import frc.robot.Constants.DriveConstants;
+import frc.robot.constants.DriveConstants;
 import java.util.Queue;
 
 /**
@@ -142,11 +142,11 @@ public class ModuleIOTalonFX implements ModuleIO {
     driveConfig.Feedback.SensorToMechanismRatio =
         (DRIVE_GEAR_RATIO) * (1.0 / (WHEEL_RADIUS * 2 * Math.PI));
 
-    driveConfig.Slot0.kV = 2.28;
-    driveConfig.Slot0.kA = 0.08;
-    driveConfig.Slot0.kS = 0.25;
-    driveConfig.Slot0.kP = 7.5; // TODO hand tune
-    driveConfig.Slot0.kD = 0.005;
+    driveConfig.Slot0.kV = 0.37914;
+    driveConfig.Slot0.kA = 0.013797;
+    driveConfig.Slot0.kS = 0.3715;
+    driveConfig.Slot0.kP = 0.54716; // TODO hand tune
+    driveConfig.Slot0.kD = 0.0;
 
     driveTalon.getConfigurator().apply(driveConfig);
     delay(0.1);

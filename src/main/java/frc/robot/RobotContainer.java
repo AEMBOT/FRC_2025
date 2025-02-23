@@ -4,10 +4,12 @@
 
 package frc.robot;
 
+import static frc.robot.constants.GeneralConstants.currentMode;
+import static frc.robot.constants.GeneralConstants.currentRobot;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Constants.ElevatorConstants;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ElevatorIO;
 import frc.robot.subsystems.arm.ElevatorIOReal;
@@ -36,7 +38,7 @@ public class RobotContainer {
   private final CommandXboxController backupController = new CommandXboxController(1);
 
   public RobotContainer() {
-    switch (Constants.currentMode) {
+    switch (currentMode) {
       case REAL:
         drive =
             new Drive(
@@ -73,54 +75,102 @@ public class RobotContainer {
         break;
     }
 
-    Logger.recordOutput("currentRobot", Constants.currentRobot.ordinal());
-    System.out.println("Running on robot: " + Constants.currentRobot);
+    Logger.recordOutput("currentRobot", currentRobot.ordinal());
+    System.out.println("Running on robot: " + currentRobot);
 
     configureBindings();
   }
 
   private void configureBindings() {
 
-    drive.setDefaultCommand(
-        drive.joystickDrive(
-            drive,
-            () -> -controller.getLeftY(),
-            () -> -controller.getLeftX(),
-            () -> -controller.getRightX(),
-            () ->
-                controller.getLeftTriggerAxis()
-                    > 0.5)); // Trigger locks make trigger boolean, rather than analog.
-
+    // drive.setDefaultCommand(
+    //     drive.joystickDrive(
+    //         drive,
+    //         () -> -controller.getLeftY(),
+    //         () -> -controller.getLeftX(),
+    //         () -> -controller.getRightX(),
+    //         () ->
+    //             controller.getLeftTriggerAxis()
+    //                 > 0.5)); // Trigger locks make trigger boolean, rather than analog.
+    /**
+     * arm.setDefaultCommand( Commands.sequence(arm.elevatorGetDefault(), arm.pivotGetDefault(),
+     * arm.wristGetDefault()));
+     */
     // Temporary arm bindings for testing
-    controller
-        .povUp()
-        .whileTrue(arm.changePivotGoalPosition(-15))
-        .onFalse(arm.changePivotGoalPosition(0));
+    controller.povUp().whileTrue(arm.elevatorChangeGoal(0.4)).onFalse(arm.elevatorChangeGoal(0.0));
     controller
         .povDown()
-        .whileTrue(arm.changePivotGoalPosition(15))
-        .onFalse(arm.changePivotGoalPosition(0));
-    controller.povLeft().onTrue(arm.setPivotPositionCommand(() -> 90));
+        .whileTrue(arm.elevatorChangeGoal(-0.4))
+        .onFalse(arm.elevatorChangeGoal(0.0));
 
-    backupController
+    // change elevator goal manually
+
+    controller
         .rightTrigger(0.25d)
-        .whileTrue(arm.elevatorMoveWithVoltage(controller.getRightY()));
-    // FIXME Resolve binding conflict between elevator down and drive slow mode
-    backupController
+        .whileTrue(arm.elevatorSetGoal(() -> 0.75))
+        .onFalse(arm.elevatorSetGoal(() -> 0.0));
+
+    controller
         .leftTrigger(0.25d)
-        .whileTrue(arm.elevatorMoveWithVoltage(ElevatorConstants.moveVoltage));
+        .whileTrue(arm.pivotSetPositionCommand(() -> 90))
+        .onFalse(arm.pivotSetPositionCommand(() -> 0));
 
     controller
         .rightBumper()
-        .whileTrue(arm.changeWristGoalPosition(15))
-        .onFalse(arm.changeWristGoalPosition(0));
+        .whileTrue(arm.wristSetPositionCommand(() -> 60))
+        .onFalse(arm.wristSetPositionCommand(() -> 0.0));
+
     controller
         .leftBumper()
-        .whileTrue(arm.changeWristGoalPosition(-15))
-        .onFalse(arm.changeWristGoalPosition(0));
+        .whileTrue(arm.intakeSetVoltage(() -> 1))
+        .onFalse(arm.intakeSetVoltage(() -> 0.0));
 
-    controller.b().whileTrue(arm.runIntakeCommand(() -> -6)).onFalse(arm.runIntakeCommand(() -> 0));
-    controller.y().whileTrue(arm.runIntakeCommand(() -> 2)).onFalse(arm.runIntakeCommand(() -> 0));
+    controller
+        .x()
+        .whileTrue(arm.wristChangeBangBangCommand(1))
+        .onFalse(arm.wristChangeBangBangCommand(0));
+    controller
+        .y()
+        .whileTrue(arm.wristChangeBangBangCommand(-1))
+        .onFalse(arm.wristChangeBangBangCommand(0));
+
+    /**
+     * // primaryController.rightBumper() // .and(primaryController.leftBumper() //
+     * .whileFalse(arm.wristChangeGoalPosition(0.0)));
+     *
+     * <p>controller .b() .whileTrue( Commands.sequence( arm.pivotSetPositionCommand(() -> 45), //
+     * degrees arm.elevatorSetGoal(() -> 2), // meters arm.wristSetPositionCommand(() -> 90))); //
+     * degrees
+     *
+     * <p>// characterization commands controller.x().whileTrue(arm.runPivotCharacterization());
+     * controller.y().whileTrue(arm.runElevatorCharacterization());
+     * controller.a().whileTrue(arm.runWristCharacterization());
+     */
+
+    // Characterization command basico
+    //   controller // HOLD FOR WHOLE TEST
+    //       .x()
+    //       // .onTrue(arm.startSignalLoggerCommand())
+    //       .whileTrue(arm.runElevatorCharacterizationQuasi(SysIdRoutine.Direction.kForward));
+    //   // .onFalse(arm.stopSignalLoggerCommand());
+
+    //   controller
+    //       .y() // HOLD FOR WHOLE TEST
+    //       // .onTrue(arm.startSignalLoggerCommand())
+    //       .whileTrue(arm.runElevatorCharacterizationQuasi(SysIdRoutine.Direction.kReverse));
+    //   // .onFalse(arm.stopSignalLoggerCommand());
+
+    //   controller
+    //       .a() // HOLD FOR 1.5-2 SEC
+    //       // .onTrue(arm.startSignalLoggerCommand())
+    //       .whileTrue(arm.runElevatorCharacterizationDyna(SysIdRoutine.Direction.kForward));
+    //   // .onFalse(arm.stopSignalLoggerCommand());
+
+    //   controller
+    //       .b() // HOLD FOR 1.5-2 SEC
+    //       // .onTrue(arm.startSignalLoggerCommand())
+    //       .whileTrue(arm.runElevatorCharacterizationDyna(SysIdRoutine.Direction.kReverse));
+    //   // .onFalse(arm.stopSignalLoggerCommand());
   }
 
   public Command getAutonomousCommand() {

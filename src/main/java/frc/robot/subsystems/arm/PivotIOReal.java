@@ -2,7 +2,7 @@ package frc.robot.subsystems.arm;
 
 import static edu.wpi.first.math.MathUtil.clamp;
 import static edu.wpi.first.wpilibj.Timer.delay;
-import static frc.robot.Constants.PivotConstants.*;
+import static frc.robot.constants.PivotConstants.*;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
@@ -52,7 +52,8 @@ public class PivotIOReal implements PivotIO {
     while (getAbsoluteEncoderPosition() < 0.1 || getAbsoluteEncoderPosition() > 135) {
       // TODO Look into better solutions for invalid encoder initial pose
       System.out.println(
-          "ERROR: Busyloop because pivot position invalid! Is the encoder plugged in?");
+          "ERROR: Busyloop because pivot position invalid! Is the encoder plugged in?"
+              + getAbsoluteEncoderPosition());
       delay(1);
     }
 
@@ -105,7 +106,7 @@ public class PivotIOReal implements PivotIO {
    * @return Returns the absolute encoder position of the pivot in degrees.
    */
   private double getAbsoluteEncoderPosition() {
-    return Units.rotationsToDegrees(pivotEncoder.get() - pivotEncoderPositionOffset);
+    return (pivotEncoder.get() * 360) + pivotEncoderPositionOffset;
   }
 
   /**
@@ -118,7 +119,7 @@ public class PivotIOReal implements PivotIO {
   }
 
   /**
-   * Sets the motor voltage of our pivot and clamps it between our min and max angle.
+   * Sets the motor voltage zof our pivot and clamps it between our min and max angle.
    *
    * @param volts Amount of volts sent to our pivot motors.
    */

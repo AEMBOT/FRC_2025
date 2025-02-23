@@ -2,7 +2,7 @@ package frc.robot.subsystems.arm;
 
 import static edu.wpi.first.math.MathUtil.clamp;
 import static edu.wpi.first.wpilibj.Timer.delay;
-import static frc.robot.Constants.WristConstants.*;
+import static frc.robot.constants.WristConstants.*;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -102,8 +102,7 @@ public class WristIOReal implements WristIO {
    * @return the current rotation of the wrist, measured in degrees.
    */
   private double getAbsoluteAngleDeg() {
-    return Units.rotationsToDegrees(
-        wristEncoder.get() - encoderOffset); // encoder offset in rotations
+    return (wristEncoder.get() * 360) + encoderOffset;
   }
 
   private double getRelativeMotorAngleDeg() {

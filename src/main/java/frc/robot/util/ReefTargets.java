@@ -4,12 +4,12 @@
 
 package frc.robot.util;
 
-import static frc.robot.Constants.aprilTagLayout;
+import static frc.robot.constants.GeneralConstants.aprilTagLayout;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
-import frc.robot.Constants.DriveConstants.reefTargetConstants;
+import frc.robot.constants.ReefTargetConstants;
 
 public final class ReefTargets {
 
@@ -18,12 +18,12 @@ public final class ReefTargets {
   public ReefTargets() {
 
     // Defines the transformation vector for a target position
-    Rotation2d targetThetaR = new Rotation2d(reefTargetConstants.targetAngle);
-    Rotation2d targetThetaL = new Rotation2d(-reefTargetConstants.targetAngle);
+    Rotation2d targetThetaR = new Rotation2d(ReefTargetConstants.targetAngle);
+    Rotation2d targetThetaL = new Rotation2d(-ReefTargetConstants.targetAngle);
     Transform2d targetR =
-        new Transform2d(reefTargetConstants.targetX, reefTargetConstants.targetY, targetThetaR);
+        new Transform2d(ReefTargetConstants.targetX, ReefTargetConstants.targetY, targetThetaR);
     Transform2d targetL =
-        new Transform2d(reefTargetConstants.targetX, -reefTargetConstants.targetY, targetThetaL);
+        new Transform2d(ReefTargetConstants.targetX, -ReefTargetConstants.targetY, targetThetaL);
 
     // Defines each target position based upon the transformation vector and appropriate apriltag
     // 17 -> 1,2; 18 -> 0,11; 19 -> 9,10; 20 -> 7,8; 21 -> 5,6; 22 -> 3,4
@@ -50,7 +50,7 @@ public final class ReefTargets {
     // Find robot angle to reef and convert to a discrete "zone" value
     double reefAngle =
         Math.atan2(
-            robotY - reefTargetConstants.reefCenterY, robotX - reefTargetConstants.reefCenterX);
+            robotY - ReefTargetConstants.reefCenterY, robotX - ReefTargetConstants.reefCenterX);
     int reefZone = (int) Math.floor(reefAngle / (Math.PI / 6)) + 6;
     return reefZone;
   }

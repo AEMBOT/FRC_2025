@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import static frc.robot.constants.GeneralConstants.currentMode;
+import static frc.robot.constants.GeneralConstants.currentRobot;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -35,7 +38,7 @@ public class RobotContainer {
   private final CommandXboxController backupController = new CommandXboxController(1);
 
   public RobotContainer() {
-    switch (Constants.currentMode) {
+    switch (currentMode) {
       case REAL:
         drive =
             new Drive(
@@ -72,8 +75,8 @@ public class RobotContainer {
         break;
     }
 
-    Logger.recordOutput("currentRobot", Constants.currentRobot.ordinal());
-    System.out.println("Running on robot: " + Constants.currentRobot);
+    Logger.recordOutput("currentRobot", currentRobot.ordinal());
+    System.out.println("Running on robot: " + currentRobot);
 
     configureBindings();
   }
@@ -89,47 +92,35 @@ public class RobotContainer {
             () ->
                 controller.getLeftTriggerAxis()
                     > 0.5)); // Trigger locks make trigger boolean, rather than analog.
-    arm.setDefaultCommand(
-        Commands.sequence(arm.elevatorGetDefault(), arm.pivotGetDefault(), arm.wristGetDefault()));
-
+    /**
+     * arm.setDefaultCommand( Commands.sequence(arm.elevatorGetDefault(), arm.pivotGetDefault(),
+     * arm.wristGetDefault()));
+     */
     // Temporary arm bindings for testing
-    controller
-        .povUp()
-        .whileTrue(arm.pivotChangeGoalPosition(0.1))
-        .onFalse(arm.pivotChangeGoalPosition(0.0));
-    controller
-        .povDown()
-        .whileTrue(arm.pivotChangeGoalPosition(-0.1))
-        .onFalse(arm.pivotChangeGoalPosition(0.0));
+    controller.povUp().whileTrue(arm.elevatorChangeGoal(1)).onFalse(arm.elevatorChangeGoal(0.0));
+    controller.povDown().whileTrue(arm.elevatorChangeGoal(-1)).onFalse(arm.elevatorChangeGoal(0.0));
 
     // change elevator goal manually
-    controller
-        .rightTrigger(0.25d)
-        .whileTrue(arm.elevatorChangeGoal(0.2))
-        .onFalse(arm.elevatorChangeGoal(0.0));
-    controller
-        .leftTrigger(0.25d)
-        .whileTrue(arm.elevatorChangeGoal(-0.2))
-        .onFalse(arm.elevatorChangeGoal(0.0));
+    /**
+     * controller .rightTrigger(0.25d) .whileTrue(arm.elevatorChangeGoal(0.2))
+     * .onFalse(arm.elevatorChangeGoal(0.0)); controller .leftTrigger(0.25d)
+     * .whileTrue(arm.elevatorChangeGoal(-0.2)) .onFalse(arm.elevatorChangeGoal(0.0));
+     */
 
-    controller.rightBumper().onTrue(arm.wristSetPositionCommand(() -> 360));
-    controller.leftBumper().onTrue(arm.wristSetPositionCommand(() -> -360));
-    // primaryController.rightBumper()
-    // .and(primaryController.leftBumper()
-    // .whileFalse(arm.wristChangeGoalPosition(0.0)));
-
-    controller
-        .b()
-        .whileTrue(
-            Commands.sequence(
-                arm.pivotSetPositionCommand(() -> 45), // degrees
-                arm.elevatorSetGoal(() -> 2), // meters
-                arm.wristSetPositionCommand(() -> 90))); // degrees
-
-    // characterization commands
-    controller.x().whileTrue(arm.runPivotCharacterization());
-    controller.y().whileTrue(arm.runElevatorCharacterization());
-    controller.a().whileTrue(arm.runWristCharacterization());
+    /**
+     * controller.rightBumper().onTrue(arm.wristSetPositionCommand(() -> 360));
+     * controller.leftBumper().onTrue(arm.wristSetPositionCommand(() -> -360)); //
+     * primaryController.rightBumper() // .and(primaryController.leftBumper() //
+     * .whileFalse(arm.wristChangeGoalPosition(0.0)));
+     *
+     * <p>controller .b() .whileTrue( Commands.sequence( arm.pivotSetPositionCommand(() -> 45), //
+     * degrees arm.elevatorSetGoal(() -> 2), // meters arm.wristSetPositionCommand(() -> 90))); //
+     * degrees
+     *
+     * <p>// characterization commands controller.x().whileTrue(arm.runPivotCharacterization());
+     * controller.y().whileTrue(arm.runElevatorCharacterization());
+     * controller.a().whileTrue(arm.runWristCharacterization());
+     */
   }
 
   public Command getAutonomousCommand() {

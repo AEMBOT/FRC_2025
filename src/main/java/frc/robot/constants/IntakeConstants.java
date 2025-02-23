@@ -1,0 +1,8 @@
+package frc.robot.constants;
+
+public final class IntakeConstants {
+
+  public static final int intakeMotorID = 15;
+
+  public static final double intakeMotorCurrentLimit = 5;
+}

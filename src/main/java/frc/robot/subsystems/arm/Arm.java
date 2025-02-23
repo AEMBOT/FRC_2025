@@ -2,7 +2,7 @@ package frc.robot.subsystems.arm;
 
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
-import static frc.robot.Constants.UPDATE_PERIOD;
+import static frc.robot.constants.GeneralConstants.UPDATE_PERIOD;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -310,5 +310,29 @@ public class Arm extends SubsystemBase {
         wristRoutine.dynamic(SysIdRoutine.Direction.kForward),
         wristStopCommand().withTimeout(5.0),
         wristRoutine.dynamic(SysIdRoutine.Direction.kReverse));
+  }
+
+  public Command runWristCharacterizationDyna(SysIdRoutine.Direction direction) {
+    return wristRoutine.dynamic(direction);
+  }
+
+  public Command runWristCharacterizationQuasi(SysIdRoutine.Direction direction) {
+    return wristRoutine.quasistatic(direction);
+  }
+
+  public Command runPivotCharacterizationDyna(SysIdRoutine.Direction direction) {
+    return pivotRoutine.dynamic(direction);
+  }
+
+  public Command runPivotCharacterizationQuasi(SysIdRoutine.Direction direction) {
+    return pivotRoutine.quasistatic(direction);
+  }
+
+  public Command runElevatorCharacterizationDyna(SysIdRoutine.Direction direction) {
+    return elevatorRoutine.dynamic(direction);
+  }
+
+  public Command runElevatorCharacterizationQuasi(SysIdRoutine.Direction direction) {
+    return elevatorRoutine.quasistatic(direction);
   }
 }

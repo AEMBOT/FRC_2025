@@ -1,7 +1,7 @@
 package frc.robot.subsystems.arm;
 
 import static edu.wpi.first.math.MathUtil.clamp;
-import static frc.robot.Constants.ElevatorConstants.*;
+import static frc.robot.constants.ElevatorConstants.*;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -74,8 +74,8 @@ public class ElevatorIOReal implements ElevatorIO {
   }
 
   /** Returns (in meters) the position of the elevator relative to the start position */
+  // TODO Before merge, make a way to get and set the absolute vertical position of the elevator
   private double getElevatorPosition() {
-    // TODO Before merge, make a way to get and set the absolute vertical position of the elevator
     return clamp(
         Units.rotationsToDegrees(motor.getPosition().getValueAsDouble()) * PositionFactor, 0, 5);
   }

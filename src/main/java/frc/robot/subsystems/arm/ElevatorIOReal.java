@@ -1,6 +1,6 @@
 package frc.robot.subsystems.arm;
 
-import static edu.wpi.first.math.MathUtil.clamp;
+import static edu.wpi.first.wpilibj.Timer.delay;
 import static frc.robot.constants.ElevatorConstants.*;
 
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
@@ -34,34 +34,38 @@ public class ElevatorIOReal implements ElevatorIO {
 
     var leaderMotorOutputConfig = new MotorOutputConfigs();
     var leaderMotorTalonConfig = new TalonFXConfiguration();
-    leaderMotorTalonConfig.CurrentLimits.StatorCurrentLimit = elevatorCurrentLimit;
+    leaderMotorTalonConfig.CurrentLimits.StatorCurrentLimit = 20;
+    // elevatorCurrentLimit;
     leaderMotorTalonConfig.CurrentLimits.StatorCurrentLimitEnable = true;
 
-    // leaderMotorOutputConfig.Inverted = InvertedValue.CounterClockwise_Positive;
-
-    leaderMotor.setNeutralMode(NeutralModeValue.Brake);
     leaderMotor.getConfigurator().apply(leaderMotorTalonConfig);
 
     // var followerMotorTalonConfig = new TalonFXConfiguration();
     // followerMotorTalonConfig.CurrentLimits.StatorCurrentLimit = elevatorCurrentLimit;
     // followerMotorTalonConfig.CurrentLimits.StatorCurrentLimitEnable = true;;
 
-    followerMotor.setNeutralMode(NeutralModeValue.Brake);
     followerMotor.getConfigurator().apply(leaderMotorTalonConfig);
-    followerMotor.setControl(new Follower(leftMotorID, true));
+
+    leaderMotor.setNeutralMode(NeutralModeValue.Brake);
+    followerMotor.setNeutralMode(NeutralModeValue.Brake);
+
+    followerMotor.setControl(new Follower(leftMotorID, false));
 
     elevatorPIDController.setTolerance(
         elevatorPositionToleranceMet, elevatorVelocityToleranceMetPerSec);
+
+    delay(1);
+
+    encoderOffset = -getElevatorPosition();
   }
 
   @Override
   public void updateInputs(ElevatorIOInputs inputs) {
-    inputs.elevatorLeftMotorRotationDeg = getLeaderMotorRotation();
-    inputs.elevatorRightMotorRotationDeg =
-        Units.rotationsToDegrees(followerMotor.getPosition().getValueAsDouble());
+    inputs.elevatorLeftMotorRotationDeg = Units.degreesToRotations(getLeaderMotorRotation());
+    inputs.elevatorRightMotorRotationDeg = followerMotor.getPosition().getValueAsDouble();
     inputs.elevatorLeftVoltage = leaderMotor.getMotorVoltage().getValueAsDouble();
     inputs.elevatorRightVoltage = followerMotor.getMotorVoltage().getValueAsDouble();
-    inputs.elevatorLeftMotorVelocityDegrees = getLeaderMotorVelocity();
+    inputs.elevatorLeftMotorVelocityDegrees = Units.degreesToRotations(getLeaderMotorVelocity());
     inputs.elevatorRightMotorVelocityDegrees =
         Units.rotationsToDegrees(followerMotor.getVelocity().getValueAsDouble());
     inputs.elevatorVelocityMeters = getElevatorVelocity();
@@ -91,16 +95,13 @@ public class ElevatorIOReal implements ElevatorIO {
 
   /** Returns (in meters per second) the current velocity of the elevator */
   private double getElevatorVelocity() {
-    return Units.rotationsToDegrees(leaderMotor.getVelocity().getValueAsDouble()) * PositionFactor;
+    return leaderMotor.getVelocity().getValueAsDouble() * PositionFactor;
   }
 
   /** Returns (in meters) the position of the elevator relative to the start position */
   // TODO Before merge, make a way to get and set the absolute vertical position of the elevator
   private double getElevatorPosition() {
-    return clamp(
-        Units.rotationsToDegrees(leaderMotor.getPosition().getValueAsDouble()) * PositionFactor,
-        0,
-        5);
+    return (leaderMotor.getPosition().getValueAsDouble() * PositionFactor) + encoderOffset;
   }
 
   /**
@@ -131,6 +132,11 @@ public class ElevatorIOReal implements ElevatorIO {
     // FeedForwardKv = 0.0 * pivotAngleDeg * ElevatorFFactor;
     // FeedForwardKg = 0.0 * pivotAngleDeg * ElevatorFFactor;
     // FeedForwardKa = 0.0 * pivotAngleDeg * ElevatorFFactor;
+  }
+
+  @Override
+  public void runCharacterizationVolts(double voltage) {
+    leaderMotor.setVoltage(voltage);
   }
 
   @Override

@@ -50,6 +50,8 @@ public interface ElevatorIO {
   /** Sets the voltage of the elevator motor. */
   public default void setVoltage(double voltage) {}
 
+  public default void runCharacterizationVolts(double voltage) {}
+
   public default void elevatorResetProfile() {}
 
   public default boolean atMinimum() {

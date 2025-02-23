@@ -83,34 +83,59 @@ public class RobotContainer {
 
   private void configureBindings() {
 
-    drive.setDefaultCommand(
-        drive.joystickDrive(
-            drive,
-            () -> -controller.getLeftY(),
-            () -> -controller.getLeftX(),
-            () -> -controller.getRightX(),
-            () ->
-                controller.getLeftTriggerAxis()
-                    > 0.5)); // Trigger locks make trigger boolean, rather than analog.
+    // drive.setDefaultCommand(
+    //     drive.joystickDrive(
+    //         drive,
+    //         () -> -controller.getLeftY(),
+    //         () -> -controller.getLeftX(),
+    //         () -> -controller.getRightX(),
+    //         () ->
+    //             controller.getLeftTriggerAxis()
+    //                 > 0.5)); // Trigger locks make trigger boolean, rather than analog.
     /**
      * arm.setDefaultCommand( Commands.sequence(arm.elevatorGetDefault(), arm.pivotGetDefault(),
      * arm.wristGetDefault()));
      */
     // Temporary arm bindings for testing
-    controller.povUp().whileTrue(arm.elevatorChangeGoal(1)).onFalse(arm.elevatorChangeGoal(0.0));
-    controller.povDown().whileTrue(arm.elevatorChangeGoal(-1)).onFalse(arm.elevatorChangeGoal(0.0));
+    controller.povUp().whileTrue(arm.elevatorChangeGoal(0.4)).onFalse(arm.elevatorChangeGoal(0.0));
+    controller
+        .povDown()
+        .whileTrue(arm.elevatorChangeGoal(-0.4))
+        .onFalse(arm.elevatorChangeGoal(0.0));
 
     // change elevator goal manually
-    /**
-     * controller .rightTrigger(0.25d) .whileTrue(arm.elevatorChangeGoal(0.2))
-     * .onFalse(arm.elevatorChangeGoal(0.0)); controller .leftTrigger(0.25d)
-     * .whileTrue(arm.elevatorChangeGoal(-0.2)) .onFalse(arm.elevatorChangeGoal(0.0));
-     */
+
+    controller
+        .rightTrigger(0.25d)
+        .whileTrue(arm.elevatorSetGoal(() -> 0.75))
+        .onFalse(arm.elevatorSetGoal(() -> 0.0));
+
+    controller
+        .leftTrigger(0.25d)
+        .whileTrue(arm.pivotSetPositionCommand(() -> 90))
+        .onFalse(arm.pivotSetPositionCommand(() -> 0));
+
+    controller
+        .rightBumper()
+        .whileTrue(arm.wristSetPositionCommand(() -> 60))
+        .onFalse(arm.wristSetPositionCommand(() -> 0.0));
+
+    controller
+        .leftBumper()
+        .whileTrue(arm.intakeSetVoltage(() -> 1))
+        .onFalse(arm.intakeSetVoltage(() -> 0.0));
+
+    controller
+        .x()
+        .whileTrue(arm.wristChangeBangBangCommand(1))
+        .onFalse(arm.wristChangeBangBangCommand(0));
+    controller
+        .y()
+        .whileTrue(arm.wristChangeBangBangCommand(-1))
+        .onFalse(arm.wristChangeBangBangCommand(0));
 
     /**
-     * controller.rightBumper().onTrue(arm.wristSetPositionCommand(() -> 360));
-     * controller.leftBumper().onTrue(arm.wristSetPositionCommand(() -> -360)); //
-     * primaryController.rightBumper() // .and(primaryController.leftBumper() //
+     * // primaryController.rightBumper() // .and(primaryController.leftBumper() //
      * .whileFalse(arm.wristChangeGoalPosition(0.0)));
      *
      * <p>controller .b() .whileTrue( Commands.sequence( arm.pivotSetPositionCommand(() -> 45), //
@@ -122,20 +147,30 @@ public class RobotContainer {
      * controller.a().whileTrue(arm.runWristCharacterization());
      */
 
-    /**
-     * Characterization command basico controller .x() .onTrue(arm.startSignalLoggerCommand())
-     * .whileTrue(arm.runWristCharacterizationQuasi(SysIdRoutine.Direction.kForward))
-     * .onFalse(arm.stopSignalLoggerCommand()); controller .y()
-     * .onTrue(arm.startSignalLoggerCommand())
-     * .whileTrue(arm.runWristCharacterizationQuasi(SysIdRoutine.Direction.kReverse))
-     * .onFalse(arm.stopSignalLoggerCommand()); controller .a()
-     * .onTrue(arm.startSignalLoggerCommand())
-     * .whileTrue(arm.runWristCharacterizationDyna(SysIdRoutine.Direction.kForward))
-     * .onFalse(arm.stopSignalLoggerCommand()); controller .b()
-     * .onTrue(arm.startSignalLoggerCommand())
-     * .whileTrue(arm.runWristCharacterizationDyna(SysIdRoutine.Direction.kReverse))
-     * .onFalse(arm.stopSignalLoggerCommand());
-     */
+    // Characterization command basico
+    //   controller // HOLD FOR WHOLE TEST
+    //       .x()
+    //       // .onTrue(arm.startSignalLoggerCommand())
+    //       .whileTrue(arm.runElevatorCharacterizationQuasi(SysIdRoutine.Direction.kForward));
+    //   // .onFalse(arm.stopSignalLoggerCommand());
+
+    //   controller
+    //       .y() // HOLD FOR WHOLE TEST
+    //       // .onTrue(arm.startSignalLoggerCommand())
+    //       .whileTrue(arm.runElevatorCharacterizationQuasi(SysIdRoutine.Direction.kReverse));
+    //   // .onFalse(arm.stopSignalLoggerCommand());
+
+    //   controller
+    //       .a() // HOLD FOR 1.5-2 SEC
+    //       // .onTrue(arm.startSignalLoggerCommand())
+    //       .whileTrue(arm.runElevatorCharacterizationDyna(SysIdRoutine.Direction.kForward));
+    //   // .onFalse(arm.stopSignalLoggerCommand());
+
+    //   controller
+    //       .b() // HOLD FOR 1.5-2 SEC
+    //       // .onTrue(arm.startSignalLoggerCommand())
+    //       .whileTrue(arm.runElevatorCharacterizationDyna(SysIdRoutine.Direction.kReverse));
+    //   // .onFalse(arm.stopSignalLoggerCommand());
   }
 
   public Command getAutonomousCommand() {

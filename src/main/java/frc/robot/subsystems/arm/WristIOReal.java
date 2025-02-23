@@ -28,13 +28,14 @@ public class WristIOReal implements WristIO {
   public WristIOReal() {
 
     TalonFXConfiguration motorConfig = new TalonFXConfiguration();
-    motorConfig.CurrentLimits.StatorCurrentLimit = wristMotorCurrentLimit;
+    motorConfig.CurrentLimits.StatorCurrentLimit = 80;
+    // wristMotorCurrentLimit;
     motorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
     motor.getConfigurator().apply(motorConfig);
 
-    motor.setNeutralMode(NeutralModeValue.Brake);
+    motor.setNeutralMode(NeutralModeValue.Coast);
 
-    while (getAbsoluteAngleDeg() < -120 || getAbsoluteAngleDeg() > 120) {
+    while (getAbsoluteAngleDeg() < -120 || getAbsoluteAngleDeg() > 180) {
       // TODO Look into better solutions for invalid encoder initial pose
       // TODO change min and max
       System.out.println(
@@ -98,7 +99,7 @@ public class WristIOReal implements WristIO {
    * @return the current rotation of the wrist, measured in degrees.
    */
   private double getAbsoluteAngleDeg() {
-    return (wristEncoder.get() * 360) + encoderOffset;
+    return Units.rotationsToDegrees(wristEncoder.get()) + encoderOffset;
   }
 
   private double getRelativeMotorAngleDeg() {
@@ -124,6 +125,10 @@ public class WristIOReal implements WristIO {
         + FeedForwardKg * Math.cos(positionRad)
         + FeedForwardKv * (velocityRadPerSec)
         + FeedForwardKa * (accelRadPerSecSquared);
+  }
+
+  private double getError(double targetAngle) {
+    return getAbsoluteAngleDeg() - targetAngle;
   }
 
   @Override
@@ -164,6 +169,24 @@ public class WristIOReal implements WristIO {
   public void setVoltage(double volts) {
     OpenLoopStatus = true;
     setMotorVoltage(volts);
+  }
+
+  @Override
+  public void bangBangTarget(double angle) {
+    double error = getError(angle);
+
+    if (error > wristAngleToleranceDeg) {
+      motor.setVoltage(5);
+    } else if (error < -wristAngleToleranceDeg) {
+      motor.setVoltage(-5);
+    } else {
+      motor.setVoltage(0);
+    }
+  }
+
+  @Override
+  public void runCharacterizationVolts(double volts) {
+    motor.setVoltage(volts);
   }
 
   @Override

@@ -49,18 +49,18 @@ public class Arm extends SubsystemBase {
             new SysIdRoutine.Config(
                 null,
                 Volts.of(6), // prevent burnout of motor
-                Seconds.of(3.5), // needs atleast 3-4 seconds of data for each test
-                (state) -> SignalLogger.writeString("Elevator/SysIdState", state.toString())),
+                Seconds.of(4), // needs atleast 3-4 seconds of data for each test
+                (state) -> Logger.recordOutput("Sys/ElevatorSysIdState", state.toString())),
             new SysIdRoutine.Mechanism(
-                (voltage) -> elevator.setVoltage(voltage.in(Volts)), null, this));
+                (voltage) -> elevator.runCharacterizationVolts(voltage.in(Volts)), null, this));
 
     pivotRoutine =
         new SysIdRoutine(
             new SysIdRoutine.Config(
                 null,
                 Volts.of(6), // prevent burnout of motor
-                Seconds.of(3.5), // needs atleast 3-4 seconds of data for each test
-                (state) -> SignalLogger.writeString("Pivot/SysIdState", state.toString())),
+                Seconds.of(4), // needs atleast 3-4 seconds of data for each test
+                (state) -> Logger.recordOutput("Sys/PivotSysIdState", state.toString())),
             new SysIdRoutine.Mechanism(
                 (voltage) -> pivot.setVoltage(voltage.in(Volts)), null, this));
 
@@ -68,11 +68,11 @@ public class Arm extends SubsystemBase {
         new SysIdRoutine(
             new SysIdRoutine.Config(
                 null,
-                Volts.of(6), // prevent burnout of motor
-                Seconds.of(3.5), // needs atleast 3-4 seconds of data for each test
-                (state) -> SignalLogger.writeString("Wrist/SysIdState", state.toString())),
+                Volts.of(4), // prevent burnout of motor
+                Seconds.of(4), // needs atleast 3-4 seconds of data for each test
+                (state) -> Logger.recordOutput("Sys/WristSysIdState", state.toString())),
             new SysIdRoutine.Mechanism(
-                (voltage) -> wrist.setVoltage(voltage.in(Volts)), null, this));
+                (voltage) -> wrist.runCharacterizationVolts(voltage.in(Volts)), null, this));
   }
 
   @Override
@@ -140,6 +140,10 @@ public class Arm extends SubsystemBase {
                 pivotInputs.pivotAbsolutePosition - 0.01, elevatorInputs.elevatorPositionMet));
   }
 
+  public Command intakeSetVoltage(DoubleSupplier voltage) {
+    return run(() -> intake.setVoltage(voltage.getAsDouble()));
+  }
+
   public Command elevatorStopCommand() {
     return runOnce(() -> elevator.setVoltage(0));
   }
@@ -150,6 +154,14 @@ public class Arm extends SubsystemBase {
 
   public Command wristStopCommand() {
     return runOnce(() -> wrist.setVoltage(0));
+  }
+
+  public Command wristRunBangBangCommand(double targetAngle) {
+    return run(() -> wrist.bangBangTarget(targetAngle));
+  }
+
+  public Command wristChangeBangBangCommand(double velocityDegPerSec) {
+    return run(() -> wristRunBangBangCommand(velocityDegPerSec * UPDATE_PERIOD));
   }
 
   /**
@@ -288,45 +300,27 @@ public class Arm extends SubsystemBase {
   }
 
   public Command runWristCharacterizationDyna(SysIdRoutine.Direction direction) {
-    return Commands.sequence(
-        this.runOnce(SignalLogger::start),
-        wristRoutine.dynamic(direction),
-        this.runOnce(SignalLogger::stop));
+    return wristRoutine.dynamic(direction);
   }
 
   public Command runWristCharacterizationQuasi(SysIdRoutine.Direction direction) {
-    return Commands.sequence(
-        this.runOnce(SignalLogger::start),
-        wristRoutine.quasistatic(direction),
-        this.runOnce(SignalLogger::stop));
+    return wristRoutine.quasistatic(direction);
   }
 
   public Command runPivotCharacterizationDyna(SysIdRoutine.Direction direction) {
-    return Commands.sequence(
-        this.runOnce(SignalLogger::start),
-        pivotRoutine.dynamic(direction),
-        this.runOnce(SignalLogger::stop));
+    return pivotRoutine.dynamic(direction);
   }
 
   public Command runPivotCharacterizationQuasi(SysIdRoutine.Direction direction) {
-    return Commands.sequence(
-        this.runOnce(SignalLogger::start),
-        pivotRoutine.quasistatic(direction),
-        this.runOnce(SignalLogger::stop));
+    return pivotRoutine.quasistatic(direction);
   }
 
   public Command runElevatorCharacterizationDyna(SysIdRoutine.Direction direction) {
-    return Commands.sequence(
-        this.runOnce(SignalLogger::start),
-        elevatorRoutine.dynamic(direction),
-        this.runOnce(SignalLogger::stop));
+    return elevatorRoutine.dynamic(direction);
   }
 
   public Command runElevatorCharacterizationQuasi(SysIdRoutine.Direction direction) {
-    return Commands.sequence(
-        this.runOnce(SignalLogger::start),
-        elevatorRoutine.quasistatic(direction),
-        this.runOnce(SignalLogger::stop));
+    return elevatorRoutine.quasistatic(direction);
   }
 
   public Command startSignalLoggerCommand() {

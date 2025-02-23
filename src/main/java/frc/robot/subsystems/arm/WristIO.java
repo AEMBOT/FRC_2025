@@ -53,4 +53,8 @@ public interface WristIO {
 
   /** Sets voltage of our wrist. */
   public default void setVoltage(double volts) {}
+
+  public default void bangBangTarget(double angle) {}
+
+  public default void runCharacterizationVolts(double volts) {}
 }

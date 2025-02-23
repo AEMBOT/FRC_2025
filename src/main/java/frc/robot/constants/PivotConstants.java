@@ -44,19 +44,21 @@ public final class PivotConstants {
 
   /** */
   public static final TrapezoidProfile.Constraints pivotConstraints =
-      new TrapezoidProfile.Constraints(2, 5); // radians
+      new TrapezoidProfile.Constraints(1, 3); // radians
 
   public static final ProfiledPIDController pivotPIDController =
       switch (GeneralConstants.currentRobot) {
         case DORY -> new ProfiledPIDController(0, 0, 0, pivotConstraints);
-        case NAUTILUS -> new ProfiledPIDController(0.0, 0.0, 0.0, pivotConstraints);
+        case NAUTILUS -> new ProfiledPIDController(0.09361, 0.0, 0.0, pivotConstraints);
       };
 
   public static final double[] pivotFFValues = // in radians
       switch (GeneralConstants.currentRobot) {
         case DORY -> new double[] {0.0, 0.0, 0.0, 0.0};
         case NAUTILUS ->
-            new double[] {0.1, 0.20, 1.98, 0.01}; // ks kg kv ka, when elevator is 0 meters
+            new double[] {
+              0.11164, 0.21209, 0.11954, 0.0090459
+            }; // ks kg kv ka, when elevator is 0 meters
       };
 
   public static final double PivotPIDFactor =

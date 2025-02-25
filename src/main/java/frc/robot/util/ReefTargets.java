@@ -4,7 +4,7 @@
 
 package frc.robot.util;
 
-import static frc.robot.Constants.aprilTagLayout;
+import static frc.robot.Constants.AprilTagConstants.aprilTagFieldLayout;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -27,18 +27,18 @@ public final class ReefTargets {
 
     // Defines each target position based upon the transformation vector and appropriate apriltag
     // 17 -> 1,2; 18 -> 0,11; 19 -> 9,10; 20 -> 7,8; 21 -> 5,6; 22 -> 3,4
-    targets[0] = aprilTagLayout.getTagPose(18).get().toPose2d().transformBy(targetL);
-    targets[1] = aprilTagLayout.getTagPose(17).get().toPose2d().transformBy(targetR);
-    targets[2] = aprilTagLayout.getTagPose(17).get().toPose2d().transformBy(targetL);
-    targets[3] = aprilTagLayout.getTagPose(22).get().toPose2d().transformBy(targetR);
-    targets[4] = aprilTagLayout.getTagPose(22).get().toPose2d().transformBy(targetL);
-    targets[5] = aprilTagLayout.getTagPose(21).get().toPose2d().transformBy(targetR);
-    targets[6] = aprilTagLayout.getTagPose(21).get().toPose2d().transformBy(targetL);
-    targets[7] = aprilTagLayout.getTagPose(20).get().toPose2d().transformBy(targetR);
-    targets[8] = aprilTagLayout.getTagPose(20).get().toPose2d().transformBy(targetL);
-    targets[9] = aprilTagLayout.getTagPose(19).get().toPose2d().transformBy(targetR);
-    targets[10] = aprilTagLayout.getTagPose(19).get().toPose2d().transformBy(targetL);
-    targets[11] = aprilTagLayout.getTagPose(18).get().toPose2d().transformBy(targetR);
+    targets[0] = aprilTagFieldLayout.getTagPose(18).get().toPose2d().transformBy(targetL);
+    targets[1] = aprilTagFieldLayout.getTagPose(17).get().toPose2d().transformBy(targetR);
+    targets[2] = aprilTagFieldLayout.getTagPose(17).get().toPose2d().transformBy(targetL);
+    targets[3] = aprilTagFieldLayout.getTagPose(22).get().toPose2d().transformBy(targetR);
+    targets[4] = aprilTagFieldLayout.getTagPose(22).get().toPose2d().transformBy(targetL);
+    targets[5] = aprilTagFieldLayout.getTagPose(21).get().toPose2d().transformBy(targetR);
+    targets[6] = aprilTagFieldLayout.getTagPose(21).get().toPose2d().transformBy(targetL);
+    targets[7] = aprilTagFieldLayout.getTagPose(20).get().toPose2d().transformBy(targetR);
+    targets[8] = aprilTagFieldLayout.getTagPose(20).get().toPose2d().transformBy(targetL);
+    targets[9] = aprilTagFieldLayout.getTagPose(19).get().toPose2d().transformBy(targetR);
+    targets[10] = aprilTagFieldLayout.getTagPose(19).get().toPose2d().transformBy(targetL);
+    targets[11] = aprilTagFieldLayout.getTagPose(18).get().toPose2d().transformBy(targetR);
   }
 
   public int findClosestReef(Pose2d robotCurrentPosition) {

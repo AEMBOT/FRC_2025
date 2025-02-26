@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.Timer;
 
 import org.littletonrobotics.junction.Logger;
 
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
@@ -17,6 +18,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
@@ -56,6 +58,25 @@ public class PivotIOReal implements PivotIO {
         Logger.recordOutput("Pivot/reverseCalculatedPosition", ((rotorOffset + leadingMotor.getPosition().getValueAsDouble()) / 210 ) * 360);
 
         leftMotorConfig.Feedback.RotorToSensorRatio = 210;
+
+        //Integrating CANcoder
+        /* Configure CANcoder to zero the magnet appropriately */
+
+        // CANcoderConfiguration cc_cfg = new CANcoderConfiguration();
+
+        // cc_cfg.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
+
+        // cc_cfg.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
+
+        // cc_cfg.MagnetSensor.MagnetOffset = 0.4;
+
+        // m_cc.getConfigurator().apply(cc_cfg); Dont know what m_cc is but hey its here
+
+        // Apply cancoder to feedback motor config
+        // leftMotorConfig.Feedback.FeedbackRemoteSensorID = 1;
+        // leftMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+        // leftMotorConfig.Feedback.RotorToSensorRatio = 210;
+        // leftMotorConfig.Feedback.FeedbackRotorOffset = 0;
         
         
         //leftMotorConfig.Slot0.kG = -0.3;

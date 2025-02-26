@@ -4,9 +4,14 @@
 
 package frc.robot;
 
+import static frc.robot.Constants.currentMode;
+import static frc.robot.Constants.useKeyboard;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Constants.Mode;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONavX;
@@ -23,6 +28,8 @@ public class RobotContainer {
   // Controllers
   private final CommandXboxController controller = new CommandXboxController(0);
   private final CommandXboxController backupController = new CommandXboxController(1);
+  // * Keyboard controller to be used in SIM */
+  private final CommandGenericHID keyboardController = new CommandGenericHID(2);
 
   public RobotContainer() {
 
@@ -62,11 +69,14 @@ public class RobotContainer {
     Logger.recordOutput("currentRobot", Constants.currentRobot.ordinal());
     System.out.println("Running on robot: " + Constants.currentRobot);
 
-    configureBindings();
+    if (currentMode == Mode.SIM && useKeyboard) {
+      configureKeyboardBindings();
+    } else {
+      configureBindings();
+    }
   }
 
   private void configureBindings() {
-
     drive.setDefaultCommand(
         drive.joystickDrive(
             drive,
@@ -76,6 +86,16 @@ public class RobotContainer {
             () ->
                 controller.getLeftTriggerAxis()
                     > 0.5)); // Trigger locks make trigger boolean, rather than analog.
+  }
+
+  private void configureKeyboardBindings() {
+    drive.setDefaultCommand(
+        drive.joystickDrive(
+            drive,
+            () -> -keyboardController.getRawAxis(1),
+            () -> -keyboardController.getRawAxis(0),
+            () -> -keyboardController.getRawAxis(4),
+            () -> keyboardController.getRawAxis(2) > 0.5));
   }
 
   public Command getAutonomousCommand() {

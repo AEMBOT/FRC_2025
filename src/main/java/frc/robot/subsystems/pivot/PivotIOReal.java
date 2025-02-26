@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.Timer;
 
 import org.littletonrobotics.junction.Logger;
 
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
@@ -19,6 +20,7 @@ import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
@@ -50,15 +52,41 @@ public class PivotIOReal implements PivotIO {
         rightMotorConfig.CurrentLimits.StatorCurrentLimit = RIGHT_MOTOR_CURRENT_LIMIT;
         rightMotorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
         
-        leftMotorConfig.MotorOutput.Inverted = LEFT_MOTOR_INVERTED ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
+        leftMotorConfig.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
+        leftMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
+        Logger.recordOutput("Pivot/StartingAbsEncoderValue", getAbsoluteEncoderPosition());
+        double rotorOffset = (210 * getAbsoluteEncoderPosition() / 360) - leadingMotor.getPosition().getValueAsDouble();
+        leftMotorConfig.Feedback.FeedbackRotorOffset = rotorOffset;
+        Logger.recordOutput("Pivot/rotorOffset", rotorOffset);
+        Logger.recordOutput("Pivot/reverseCalculatedPosition", ((rotorOffset + leadingMotor.getPosition().getValueAsDouble()) / 210 ) * 360);
 
-        rotorOffset = (210 * getAbsoluteEncoderPosition() / 360) - leadingMotor.getPosition().getValueAsDouble();
-         
-        leftMotorConfig.Slot0.kG = 0; //-0.3
-        leftMotorConfig.Slot0.kS = 0; //-1
-        leftMotorConfig.Slot0.kV = 0;
-        leftMotorConfig.Slot0.kA = 0;
-        leftMotorConfig.Slot0.kP = 5;
+        leftMotorConfig.Feedback.RotorToSensorRatio = 210;
+        
+        
+        //Integrating CANcoder
+        /* Configure CANcoder to zero the magnet appropriately */
+
+        // CANcoderConfiguration cc_cfg = new CANcoderConfiguration();
+
+        // cc_cfg.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
+
+        // cc_cfg.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
+
+        // cc_cfg.MagnetSensor.MagnetOffset = 0.4;
+
+        // m_cc.getConfigurator().apply(cc_cfg); Dont know what m_cc is but hey its here
+
+        // Apply cancoder to feedback motor config
+        // leftMotorConfig.Feedback.FeedbackRemoteSensorID = 1;
+        // leftMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+        // leftMotorConfig.Feedback.RotorToSensorRatio = 210;
+        // leftMotorConfig.Feedback.FeedbackRotorOffset = 0;
+        
+        //leftMotorConfig.Slot0.kG = -0.3;
+        //leftMotorConfig.Slot0.kS = -1;
+        //leftMotorConfig.Slot0.kV = 0;
+        //leftMotorConfig.Slot0.kA = 0;
+        leftMotorConfig.Slot0.kP = 0;
         leftMotorConfig.Slot0.kI = 0;
         leftMotorConfig.Slot0.kD = 0;
 

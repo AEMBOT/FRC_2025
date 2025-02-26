@@ -62,6 +62,13 @@ public class RobotContainer {
     .whileTrue(pivot.changePosition(-10))
     .onFalse(pivot.changePosition(0));
 
+    primaryController.povRight()
+    .whileTrue(elevator.changePosition(0.25))
+    .onFalse(elevator.changePosition(0));
+    primaryController.povLeft()
+    .whileTrue(elevator.changePosition(-0.25))
+    .onFalse(elevator.changePosition(0));
+
     primaryController.y().whileTrue(wrist.sysIdDynamic(kForward));
     primaryController.x().whileTrue(wrist.sysIdDynamic(kReverse));
 

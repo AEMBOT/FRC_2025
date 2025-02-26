@@ -12,10 +12,12 @@ import org.littletonrobotics.junction.Logger;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.MusicTone;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -31,6 +33,7 @@ public class PivotIOReal implements PivotIO {
     private double lastTime;
     private TalonFXConfiguration leftMotorConfig = new TalonFXConfiguration();
     private DutyCycleEncoder ENCODER;
+    private double rotorOffset;
 
 
     public PivotIOReal() {
@@ -47,28 +50,21 @@ public class PivotIOReal implements PivotIO {
         rightMotorConfig.CurrentLimits.StatorCurrentLimit = RIGHT_MOTOR_CURRENT_LIMIT;
         rightMotorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
         
-        leftMotorConfig.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
-        leftMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
-        Logger.recordOutput("Pivot/StartingAbsEncoderValue", getAbsoluteEncoderPosition());
-        double rotorOffset = (210 * getAbsoluteEncoderPosition() / 360) - leadingMotor.getPosition().getValueAsDouble();
-        leftMotorConfig.Feedback.FeedbackRotorOffset = rotorOffset;
-        Logger.recordOutput("Pivot/rotorOffset", rotorOffset);
-        Logger.recordOutput("Pivot/reverseCalculatedPosition", ((rotorOffset + leadingMotor.getPosition().getValueAsDouble()) / 210 ) * 360);
+        leftMotorConfig.MotorOutput.Inverted = LEFT_MOTOR_INVERTED ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
 
-        leftMotorConfig.Feedback.RotorToSensorRatio = 210;
-        
-        
-        //leftMotorConfig.Slot0.kG = -0.3;
-        //leftMotorConfig.Slot0.kS = -1;
-        //leftMotorConfig.Slot0.kV = 0;
-        //leftMotorConfig.Slot0.kA = 0;
-        leftMotorConfig.Slot0.kP = 0;
+        rotorOffset = (210 * getAbsoluteEncoderPosition() / 360) - leadingMotor.getPosition().getValueAsDouble();
+         
+        leftMotorConfig.Slot0.kG = 0; //-0.3
+        leftMotorConfig.Slot0.kS = 0; //-1
+        leftMotorConfig.Slot0.kV = 0;
+        leftMotorConfig.Slot0.kA = 0;
+        leftMotorConfig.Slot0.kP = 5;
         leftMotorConfig.Slot0.kI = 0;
         leftMotorConfig.Slot0.kD = 0;
 
-        leftMotorConfig.MotionMagic.MotionMagicCruiseVelocity = 45 / 360;
-        leftMotorConfig.MotionMagic.MotionMagicAcceleration = 45 / 360;
-        leftMotorConfig.MotionMagic.MotionMagicJerk = 0 / 360;
+        leftMotorConfig.MotionMagic.MotionMagicCruiseVelocity = 25;
+        leftMotorConfig.MotionMagic.MotionMagicAcceleration = 50;
+        leftMotorConfig.MotionMagic.MotionMagicJerk = 0;
 
         leadingMotor.getConfigurator().apply(leftMotorConfig);
         followingMotor.getConfigurator().apply(rightMotorConfig);
@@ -85,8 +81,6 @@ public class PivotIOReal implements PivotIO {
             delay(1);
         }
         */
-
-
 
         pivotGoal = getAbsoluteEncoderPosition();
         pivotSetpoint = new TrapezoidProfile.State(getAbsoluteEncoderPosition(), 0);
@@ -106,8 +100,11 @@ public class PivotIOReal implements PivotIO {
 
     @Override
     public void setAngle(double angle) {
+
+        angle = clamp(angle, MIN_ANGLE, MAX_ANGLE);
+
         pivotGoal = angle;
-        final VoltageOut request = new VoltageOut((angle - ENCODER_POSITION_OFFSET) / 360);
+        final MotionMagicVoltage request = new MotionMagicVoltage((210 * ((angle) / 360)) - rotorOffset);
         leadingMotor.setControl(request);
     }
 

@@ -45,7 +45,7 @@ public final class Constants {
       /** ID of the left pivot sparkmax */
       public static final int LEFT_MOTOR_ID = 10;
       /**  */
-      public static final boolean LEFT_MOTOR_INVERTED = false;
+      public static final boolean LEFT_MOTOR_INVERTED = true;
       /**  */
       public static final int LEFT_MOTOR_CURRENT_LIMIT = 80;
 
@@ -107,7 +107,7 @@ public final class Constants {
     public static final class ElevatorConstants {
 
             /** Maximum height for the elevator to move to, in meters */
-            public static final double MAX_HEIGHT = 1.25;
+            public static final double MAX_HEIGHT = 1;
             /** Minimum height for the elevator to move to, in meters */
             public static final double MIN_HEIGHT = 0;
             /**  */

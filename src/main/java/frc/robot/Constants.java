@@ -45,6 +45,9 @@ public final class Constants {
           ? Mode.REAL
           : Mode.SIM; // You need to manually switch betweeen SIM and REPLAY.
 
+  /** If true and in sim, use keyboard bindings instead of XBox controller. */
+  public static final Boolean useKeyboard = true;
+
   public static enum Mode {
     /** Running on a real robot. */
     REAL,

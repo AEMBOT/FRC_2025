@@ -53,12 +53,14 @@ public class RobotContainer {
     // FIXME Resolve binding conflict between elevator down and drive slow mode
     //operatorController.leftTrigger(0.25d).whileTrue(arm.elevatorMoveWithVoltage(ElevatorConstants.moveVoltage));
 
+    primaryController.rightBumper().onTrue(pivot.setPosition(() -> 60));
+
     primaryController.povUp()
-    .whileTrue(wrist.changeGoalPosition(10))
-    .onFalse(wrist.changeGoalPosition(0));
+    .whileTrue(pivot.changePosition(10))
+    .onFalse(pivot.changePosition(0));
     primaryController.povDown()
-    .whileTrue(wrist.changeGoalPosition(-10))
-    .onFalse(wrist.changeGoalPosition(0));
+    .whileTrue(pivot.changePosition(-10))
+    .onFalse(pivot.changePosition(0));
 
     primaryController.y().whileTrue(wrist.sysIdDynamic(kForward));
     primaryController.x().whileTrue(wrist.sysIdDynamic(kReverse));

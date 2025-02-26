@@ -80,9 +80,9 @@ public class Elevator extends SubsystemBase {
      * @param posIn Position in inches to set the elevator to.
      * @return A {@link RunCommand} to set the elevator setpoint to posIn.
      */
-    //public Command setGoalPosition(DoubleSupplier posIn) {
-    //    return run(() -> io.setAngle(posIn.getAsDouble()));
-    //}
+    public Command setPosition(DoubleSupplier posMet) {
+        return run(() -> io.setHeight(posMet.getAsDouble()));
+    }
 
     /**
      * Changes the setpoint of the elevator by a certain amount per second.
@@ -90,8 +90,8 @@ public class Elevator extends SubsystemBase {
      * @return A {@link RunCommand} to change the elevator setpoint by velocityDegPerSec.
      * Resets the elevator dampening profile after completion.
      */
-    //public Command changeGoalPosition(double velocityDegPerSec) {
-    //    return setGoalPosition(() -> inputs.pivotGoalPosition + (velocityDegPerSec * UPDATE_PERIOD))
-    //        .finallyDo(io::resetProfile);
-    //}
+    public Command changePosition(double velocityMetPerSec) {
+        return setPosition(() -> inputs.elevatorGoalPosition + (velocityMetPerSec * UPDATE_PERIOD))
+            .finallyDo(io::resetProfile);
+    }
 }

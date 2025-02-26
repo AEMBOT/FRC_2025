@@ -10,6 +10,8 @@ import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
@@ -21,9 +23,11 @@ public class ElevatorIOReal implements ElevatorIO {
     private boolean openLoop = true;
     private final TalonFX leadingMotor = new TalonFX(TOP_MOTOR_ID);
     private final TalonFX followingMotor = new TalonFX(BOTTOM_MOTOR_ID);
-    private TrapezoidProfile.State elevatorGoal;
+    private double elevatorGoal;
     private TrapezoidProfile.State elevatorSetpoint;
     private double lastTime;
+    private final MotionMagicVoltage m_request;
+    private double motorOffset;
 
 
     public ElevatorIOReal() {
@@ -32,10 +36,22 @@ public class ElevatorIOReal implements ElevatorIO {
         TalonFXConfiguration rightMotorConfig = new TalonFXConfiguration();
 
         leftMotorConfig.CurrentLimits.StatorCurrentLimit = TOP_MOTOR_CURRENT_LIMIT;
-        leftMotorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+        leftMotorConfig.CurrentLimits.StatorCurrentLimitEnable = false;
 
         rightMotorConfig.CurrentLimits.StatorCurrentLimit = BOTTOM_MOTOR_CURRENT_LIMIT;
-        rightMotorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+        rightMotorConfig.CurrentLimits.StatorCurrentLimitEnable = false;
+
+        leftMotorConfig.Slot0.kG = 0.35;
+        leftMotorConfig.Slot0.kS = 0.15;
+        leftMotorConfig.Slot0.kV = 0;
+        leftMotorConfig.Slot0.kA = 0;
+        leftMotorConfig.Slot0.kP = 5;
+        leftMotorConfig.Slot0.kI = 0;
+        leftMotorConfig.Slot0.kD = 0;
+
+        leftMotorConfig.MotionMagic.MotionMagicCruiseVelocity = 0.5 / rotToMetMultFactor;
+        leftMotorConfig.MotionMagic.MotionMagicAcceleration = 1 / rotToMetMultFactor;
+        leftMotorConfig.MotionMagic.MotionMagicJerk = 0 / rotToMetMultFactor;
 
         leadingMotor.getConfigurator().apply(leftMotorConfig);
         followingMotor.getConfigurator().apply(rightMotorConfig);
@@ -43,7 +59,7 @@ public class ElevatorIOReal implements ElevatorIO {
         leadingMotor.setNeutralMode(NeutralModeValue.Brake);
         followingMotor.setNeutralMode(NeutralModeValue.Brake);
 
-        followingMotor.setControl(new Follower(TOP_MOTOR_ID, true));
+        followingMotor.setControl(new Follower(TOP_MOTOR_ID, false));
 
         /** 
         while (getAbsoluteEncoderPosition() < MIN_HEIGHT || getAbsoluteEncoderPosition() > MAX_HEIGHT) {
@@ -53,8 +69,14 @@ public class ElevatorIOReal implements ElevatorIO {
         }
         */
 
-        elevatorGoal = new TrapezoidProfile.State(getAbsoluteEncoderPosition(), 0);
+        elevatorGoal = 0;
         elevatorSetpoint = new TrapezoidProfile.State(getAbsoluteEncoderPosition(), 0);
+
+        m_request = new MotionMagicVoltage(0).withSlot(0);
+
+        delay(1);
+
+        motorOffset = -getAbsoluteEncoderPosition();
     }
 
     public void updateInputs(ElevatorIOInputs inputs) {
@@ -63,7 +85,7 @@ public class ElevatorIOReal implements ElevatorIO {
         inputs.elevatorAppliedVolts = leadingMotor.getMotorVoltage().getValueAsDouble();
         inputs.elevatorCurrentAmps = new double[] {leadingMotor.getStatorCurrent().getValueAsDouble(), 
                                                 followingMotor.getStatorCurrent().getValueAsDouble()};
-        inputs.elevatorGoalPosition = elevatorGoal.position;
+        inputs.elevatorGoalPosition = elevatorGoal;
         inputs.elevatorSetpointPosition = elevatorSetpoint.position;
         inputs.elevatorSetpointVelocity = elevatorSetpoint.velocity;
         inputs.openLoopStatus = openLoop;
@@ -71,37 +93,9 @@ public class ElevatorIOReal implements ElevatorIO {
 
     @Override
     public void setHeight(double height) {
-        openLoop = false;
-
-        height = clamp(height, MIN_HEIGHT, MAX_HEIGHT);
-
-        elevatorGoal = new TrapezoidProfile.State(height, 0);
-        
-        elevatorSetpoint = 
-            TRAPEZOID_PROFILE.calculate(
-            (Timer.getFPGATimestamp() - lastTime > 0.25)
-                ? (Timer.getFPGATimestamp() - lastTime)
-                : 0.02,
-            elevatorSetpoint,
-            elevatorGoal);
-        
-        double feedForward = FF_MODEL.calculate(
-            Units.degreesToRadians(elevatorGoal.position), 
-            0);
-        double pidOutput = PID_CONTROLLER.calculate(
-                getAbsoluteEncoderPosition(), 
-                elevatorGoal.position);
-
-        Logger.recordOutput("Elevator/CalculatedFFVolts", feedForward);
-        Logger.recordOutput("Elevator/PIDCommandVolts", pidOutput);
-        Logger.recordOutput("Elevator/Height", height);
-                
-        setMotorVoltage(feedForward + pidOutput);
-        
-
-
-
-        lastTime = Timer.getFPGATimestamp();
+        elevatorGoal = height;
+        final MotionMagicVoltage request = new MotionMagicVoltage((height - motorOffset) / rotToMetMultFactor);
+        leadingMotor.setControl(request);
     }
 
     @Override
@@ -111,7 +105,7 @@ public class ElevatorIOReal implements ElevatorIO {
     }
 
     private double getAbsoluteEncoderPosition() {
-        return (ENCODER.get() * 360) + ENCODER_POSITION_OFFSET;
+        return (leadingMotor.getPosition().getValueAsDouble() * rotToMetMultFactor) + motorOffset;
     }
 
     private void setMotorVoltage(double volts) {
@@ -130,7 +124,7 @@ public class ElevatorIOReal implements ElevatorIO {
 
     @Override
     public void resetProfile() {
-        elevatorGoal = new TrapezoidProfile.State(getAbsoluteEncoderPosition(), 0);
+        elevatorGoal = getAbsoluteEncoderPosition();
         elevatorSetpoint = new TrapezoidProfile.State(getAbsoluteEncoderPosition(), 0);
     }
 }

@@ -84,7 +84,7 @@ public class Pivot extends SubsystemBase{
      * @param posDeg Position in degrees to set the pivot to.
      * @return A {@link RunCommand} to set the pivot setpoint to posDeg.
      */
-    public Command setGoalPosition(DoubleSupplier posDeg) {
+    public Command setPosition(DoubleSupplier posDeg) {
         return run(() -> io.setAngle(posDeg.getAsDouble()));
     }
 
@@ -94,8 +94,8 @@ public class Pivot extends SubsystemBase{
      * @return A {@link RunCommand} to change the pivot setpoint by velocityDegPerSec.
      * Resets the pivot dampening profile after completion.
      */
-    public Command changeGoalPosition(double velocityDegPerSec) {
-        return setGoalPosition(() -> inputs.pivotGoalPosition + (velocityDegPerSec * UPDATE_PERIOD))
+    public Command changePosition(double velocityDegPerSec) {
+        return setPosition(() -> inputs.pivotPosition + (velocityDegPerSec * UPDATE_PERIOD))
             .finallyDo(io::resetProfile);
     }
 }

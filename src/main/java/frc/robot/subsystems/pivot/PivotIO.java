@@ -15,7 +15,7 @@ public interface PivotIO {
         /** Currents amps applied to each motor. Both motors are logged indivually to better find issues. */
         public double[] pivotCurrentAmps = new double[] {};
         /** Goal position of the pivot in degrees */
-        public double pivotGoalPosition = 45;
+        public double pivotPosition = 45;
         /** Setpoint position of the pivot in degrees */
         public double pivotSetpointPosition = 45;
         /** Setpoint position of the pivot in rotations per second TODO confirm that this is in rpm and not radpersec */

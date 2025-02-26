@@ -27,8 +27,8 @@ public interface ElevatorIO {
     /** Updates the set of loggable inputs. */
     public default void updateInputs(ElevatorIOInputs inputs) {}
 
-    /** Sets the angle of elevator, in inches */
-    public default void setHeight(double angle) {}
+    /** Sets the angle of elevator, in meters */
+    public default void setHeight(double height) {}
 
     /** Run open loop at the specified voltage. */
     public default void setVoltage(double volts) {}

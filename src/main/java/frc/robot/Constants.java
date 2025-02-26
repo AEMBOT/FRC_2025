@@ -47,16 +47,16 @@ public final class Constants {
       /**  */
       public static final boolean LEFT_MOTOR_INVERTED = false;
       /**  */
-      public static final int LEFT_MOTOR_CURRENT_LIMIT = 50;
+      public static final int LEFT_MOTOR_CURRENT_LIMIT = 80;
 
       /** ID of the right pivot sparkmax */
       public static final int RIGHT_MOTOR_ID = 11;
       /**  */
       public static final boolean RIGHT_MOTOR_INVERTED = false;
       /**  */
-      public static final int RIGHT_MOTOR_CURRENT_LIMIT = 50;
+      public static final int RIGHT_MOTOR_CURRENT_LIMIT = 80;
       /**  */
-      public static final DutyCycleEncoder ENCODER = new DutyCycleEncoder(1);
+      public static final int ENCODER_ID = 1;
       /**  */
       public static final double ENCODER_POSITION_OFFSET = -156.67488616687214;
       /**  */
@@ -106,40 +106,35 @@ public final class Constants {
 
     public static final class ElevatorConstants {
 
-            /** Maximum height for the elevator to move to, in inches */
-            public static final double MAX_HEIGHT = 175;
-            /** Minimum height for the elevator to move to, in inches */
-            public static final double MIN_HEIGHT = 3;
+            /** Maximum height for the elevator to move to, in meters */
+            public static final double MAX_HEIGHT = 1.25;
+            /** Minimum height for the elevator to move to, in meters */
+            public static final double MIN_HEIGHT = 0;
             /**  */
             public static final float VOLTAGE_LIMIT = 5;
             /** ID of the bottom elevator kraken */
-            public static final int BOTTOM_MOTOR_ID = 10;
+            public static final int BOTTOM_MOTOR_ID = 12;
             /**  */
             public static final boolean BOTTOM_MOTOR_INVERTED = false;
             /**  */
             public static final int BOTTOM_MOTOR_CURRENT_LIMIT = 50;
       
             /** ID of the right pivot kraken */
-            public static final int TOP_MOTOR_ID = 11;
+            public static final int TOP_MOTOR_ID = 13;
             /**  */
             public static final boolean TOP_MOTOR_INVERTED = false;
             /**  */
             public static final int TOP_MOTOR_CURRENT_LIMIT = 50;
             /**  */
-            public static final DutyCycleEncoder ENCODER = new DutyCycleEncoder(1);
-            /**  */
-            public static final double ENCODER_POSITION_OFFSET = -156.67488616687214;
-            /**  */
-            public static final double GEAR_RATIO = 93.3333333;
             /**  */
             public static final ElevatorFeedforward FF_MODEL = new ElevatorFeedforward(
-              0.11164,
-              0.21209, 
-              0.11954, 
-              0.0090459);
+              1,
+              1, 
+              1, 
+              1);
             /**  */
             public static final PIDController PID_CONTROLLER = new PIDController(
-              0.09361, 
+              1, 
               0, 
               0);
             /**  */
@@ -188,7 +183,7 @@ public final class Constants {
         /* Device IDs */
       public static final int motorID = 12;
 
-      public static final double rotToInMultFactor = 1;
+      public static final double rotToMetMultFactor = 1.25/42.5;
     }
 
     public static final class WristConstants {

@@ -149,9 +149,9 @@ public final class Constants {
     public static final class reefTargetConstants {
       // Defines new variables for the x/y translations for the target positions (currently at
       // placeholders)
-      public static final double targetX1 = 0.5;
-      public static final double targetX2 = 0.5;
-      public static final double targetX3 = 0.5;
+      public static final double targetX1 = 1.0;
+      public static final double targetX2 = 1.0;
+      public static final double targetX3 = 1.0;
 
       public static final double targetY = 0.1793875;
 

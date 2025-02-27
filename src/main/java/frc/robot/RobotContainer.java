@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -13,6 +14,9 @@ import frc.robot.subsystems.drive.GyroIONavX;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
+import frc.robot.util.PathGenerator;
+import frc.robot.util.ReefTargets;
+import java.util.Set;
 import org.littletonrobotics.junction.Logger;
 
 public class RobotContainer {
@@ -66,7 +70,6 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-
     drive.setDefaultCommand(
         drive.joystickDrive(
             drive,
@@ -76,6 +79,29 @@ public class RobotContainer {
             () ->
                 controller.getLeftTriggerAxis()
                     > 0.5)); // Trigger locks make trigger boolean, rather than analog.
+
+    // Path controller bindings
+    ReefTargets reefTargets = new ReefTargets();
+
+    controller
+        .x()
+        .whileTrue(
+            new DeferredCommand(
+                () ->
+                    PathGenerator.generateSimplePath(
+                        drive.getPose(), reefTargets.findTargetLeft(drive.getPose(), 1)),
+                Set.of(drive)));
+
+    controller
+        .a()
+        .whileTrue(
+            new DeferredCommand(
+                () ->
+                    PathGenerator.generateSimplePath(
+                        drive.getPose(),
+                        reefTargets.findTargetRight(
+                            drive.getPose(), 1)), // TODO Give driver way to select level
+                Set.of(drive)));
   }
 
   public Command getAutonomousCommand() {

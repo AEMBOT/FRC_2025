@@ -161,7 +161,12 @@ public final class Constants {
     public static final AprilTagFieldLayout aprilTagFieldLayout =
         AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
 
-    public static PoseStrategy poseStrategy = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
+    /** The vision pose strategy that will be used when a camera sees multiple tags */
+    public static PoseStrategy primaryPoseStrategy =
+        PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR; // TODO Set up multi-tag on PV GUI
+
+    /** The vision pose strategy that will be used when a camera sees only one tag */
+    public static PoseStrategy fallbackPoseStrategy = PoseStrategy.CLOSEST_TO_REFERENCE_POSE;
 
     public static enum CameraResolution {
       HIGH_RES,

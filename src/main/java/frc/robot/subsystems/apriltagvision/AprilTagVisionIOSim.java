@@ -43,25 +43,29 @@ public class AprilTagVisionIOSim implements AprilTagVisionIO {
         new CameraPoseEstimator(
             frontLeft,
             NautilusCameras.frontLeftFromRobot,
-            AprilTagConstants.poseStrategy,
+            AprilTagConstants.primaryPoseStrategy,
+            AprilTagConstants.fallbackPoseStrategy,
             CameraResolution.HIGH_RES);
     frontRightPose =
         new CameraPoseEstimator(
             frontRight,
             NautilusCameras.frontRightFromRobot,
-            AprilTagConstants.poseStrategy,
+            AprilTagConstants.primaryPoseStrategy,
+            AprilTagConstants.fallbackPoseStrategy,
             CameraResolution.HIGH_RES);
     backLeftPose =
         new CameraPoseEstimator(
             backLeft,
             NautilusCameras.backLeftFromRobot,
-            AprilTagConstants.poseStrategy,
+            AprilTagConstants.primaryPoseStrategy,
+            AprilTagConstants.fallbackPoseStrategy,
             CameraResolution.HIGH_RES);
     backRightPose =
         new CameraPoseEstimator(
             backRight,
             NautilusCameras.backRightFromRobot,
-            AprilTagConstants.poseStrategy,
+            AprilTagConstants.primaryPoseStrategy,
+            AprilTagConstants.fallbackPoseStrategy,
             CameraResolution.HIGH_RES);
 
     this.poseEstimators =
@@ -106,5 +110,8 @@ public class AprilTagVisionIOSim implements AprilTagVisionIO {
   @Override
   public void updatePose(Pose2d pose) {
     visionSim.update(pose);
+    for (CameraPoseEstimator poseEstimator : this.poseEstimators) {
+      poseEstimator.setReferencePose(pose);
+    }
   }
 }

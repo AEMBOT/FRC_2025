@@ -42,22 +42,26 @@ public class AprilTagVision extends SubsystemBase {
               new CameraPoseEstimator(
                   new PhotonCamera(NautilusCameras.frontLeftName),
                   NautilusCameras.frontLeftFromRobot,
-                  AprilTagConstants.poseStrategy,
+                  AprilTagConstants.primaryPoseStrategy,
+                  AprilTagConstants.fallbackPoseStrategy,
                   CameraResolution.HIGH_RES),
               new CameraPoseEstimator(
                   new PhotonCamera(NautilusCameras.frontRightName),
                   NautilusCameras.frontRightFromRobot,
-                  AprilTagConstants.poseStrategy,
+                  AprilTagConstants.primaryPoseStrategy,
+                  AprilTagConstants.fallbackPoseStrategy,
                   CameraResolution.HIGH_RES),
               new CameraPoseEstimator(
                   new PhotonCamera(NautilusCameras.backLeftName),
                   NautilusCameras.backLeftFromRobot,
-                  AprilTagConstants.poseStrategy,
+                  AprilTagConstants.primaryPoseStrategy,
+                  AprilTagConstants.fallbackPoseStrategy,
                   CameraResolution.HIGH_RES),
               new CameraPoseEstimator(
                   new PhotonCamera(NautilusCameras.backRightName),
                   NautilusCameras.backRightFromRobot,
-                  AprilTagConstants.poseStrategy,
+                  AprilTagConstants.primaryPoseStrategy,
+                  AprilTagConstants.fallbackPoseStrategy,
                   CameraResolution.HIGH_RES)
             };
         break;
@@ -67,22 +71,26 @@ public class AprilTagVision extends SubsystemBase {
               new CameraPoseEstimator(
                   new PhotonCamera(DoryCameras.frontLeftName),
                   DoryCameras.frontLeftFromRobot,
-                  AprilTagConstants.poseStrategy,
+                  AprilTagConstants.primaryPoseStrategy,
+                  AprilTagConstants.fallbackPoseStrategy,
                   CameraResolution.NORMAL),
               new CameraPoseEstimator(
                   new PhotonCamera(DoryCameras.frontRightName),
                   DoryCameras.frontRightFromRobot,
-                  AprilTagConstants.poseStrategy,
+                  AprilTagConstants.primaryPoseStrategy,
+                  AprilTagConstants.fallbackPoseStrategy,
                   CameraResolution.NORMAL),
               new CameraPoseEstimator(
                   new PhotonCamera(DoryCameras.backLeftName),
                   DoryCameras.backLeftFromRobot,
-                  AprilTagConstants.poseStrategy,
+                  AprilTagConstants.primaryPoseStrategy,
+                  AprilTagConstants.fallbackPoseStrategy,
                   CameraResolution.NORMAL),
               new CameraPoseEstimator(
                   new PhotonCamera(DoryCameras.backRightName),
                   DoryCameras.backRightFromRobot,
-                  AprilTagConstants.poseStrategy,
+                  AprilTagConstants.primaryPoseStrategy,
+                  AprilTagConstants.fallbackPoseStrategy,
                   CameraResolution.NORMAL),
             };
         break;

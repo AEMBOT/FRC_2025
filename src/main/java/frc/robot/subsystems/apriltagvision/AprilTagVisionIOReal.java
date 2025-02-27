@@ -1,5 +1,6 @@
 package frc.robot.subsystems.apriltagvision;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 
 public class AprilTagVisionIOReal implements AprilTagVisionIO {
@@ -27,5 +28,12 @@ public class AprilTagVisionIOReal implements AprilTagVisionIO {
     inputs.timestamps = timestampArray;
     inputs.visionStdDevs = visionStdArray;
     inputs.latency = latencyArray;
+  }
+
+  @Override
+  public void updatePose(Pose2d pose) {
+    for (CameraPoseEstimator poseEstimator : this.poseEstimators) {
+      poseEstimator.setReferencePose(pose);
+    }
   }
 }

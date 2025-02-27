@@ -37,7 +37,10 @@ public interface AprilTagVisionIO {
   /** Updates the set of loggable inputs. */
   public default void updateInputs(AprilTagVisionIOInputs inputs) {}
 
-  /** Update the reference pose of the vision system. Currently only used in sim. */
+  /**
+   * Update the reference pose of the vision system. In implementation, this should call {@code
+   * setReferencePose()} on all of your {@link CameraPoseEstimator}s.
+   */
   public default void updatePose(Pose2d pose) {}
 
   /**
@@ -183,6 +186,7 @@ public interface AprilTagVisionIO {
         PhotonCamera camera,
         Transform3d robotToCamera,
         PhotonPoseEstimator.PoseStrategy poseStrategy,
+        PhotonPoseEstimator.PoseStrategy fallbackPoseStrategy,
         CameraResolution resolution) {
       this.camera = camera;
       this.robotToCamera = robotToCamera;
@@ -190,6 +194,7 @@ public interface AprilTagVisionIO {
 
       this.poseEstimator =
           new PhotonPoseEstimator(aprilTagFieldLayout, poseStrategy, robotToCamera);
+      this.poseEstimator.setMultiTagFallbackStrategy(fallbackPoseStrategy);
     }
 
     /**
@@ -217,6 +222,16 @@ public interface AprilTagVisionIO {
 
       return new SimpleEntry<Optional<EstimatedRobotPose>, Optional<PhotonPipelineResult>>(
           result.flatMap(poseEstimator::update), result);
+    }
+
+    /**
+     * Sets the {@link PhotonPoseEstimator}'s reference pose. This is used for single-tag ambiguity
+     * resolution
+     *
+     * @param pose The reference pose
+     */
+    public void setReferencePose(Pose2d pose) {
+      poseEstimator.setReferencePose(pose);
     }
   }
 }

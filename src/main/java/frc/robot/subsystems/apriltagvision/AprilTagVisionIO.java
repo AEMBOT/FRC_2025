@@ -49,6 +49,7 @@ public interface AprilTagVisionIO {
    *
    * @param estimatedPose The estimated pose to guess standard deviations for.
    */
+  @Deprecated
   default Matrix<N3, N1> getEstimationStdDevs(
       EstimatedRobotPose estimatedPose, CameraResolution resolution) {
     var estStdDevs =
@@ -110,17 +111,17 @@ public interface AprilTagVisionIO {
    * edu.wpi.first.math.estimator.SwerveDrivePoseEstimator SwerveDrivePoseEstimator}.
    *
    * @param estimatedPose The estimated pose to guess standard deviations for.
+   * @param resolution The {@link CameraResolution} of the camera.
    */
   default Matrix<N3, N1> getEstimationStdDevs2(
       EstimatedRobotPose estimatedPose, CameraResolution resolution) {
-
-    List<Matrix<N3, N1>> targetStdDevs = new ArrayList<>();
-
     List<PhotonTrackedTarget> targets = estimatedPose.targetsUsed;
     if (targets.size() == 0) { // Disregard if no targts
       return VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
     }
 
+    // Individual stdDevs for each tag
+    List<Matrix<N3, N1>> targetStdDevs = new ArrayList<>();
     for (int i = 0; i < targets.size(); i++) {
       Transform3d targetPosition = targets.get(i).getBestCameraToTarget();
       double distance =
@@ -143,6 +144,7 @@ public interface AprilTagVisionIO {
       targetStdDevs.add(VecBuilder.fill(stdDevXY, stdDevXY, stdDevTheta));
     }
 
+    // Combine variances
     Matrix<N3, N1> summedVariances = VecBuilder.fill(0, 0, 0);
     for (Matrix<N3, N1> stdDevs : targetStdDevs) {
       double reciprocalVarianceXY = 1 / Math.pow(stdDevs.get(0, 0), 2);
@@ -155,6 +157,7 @@ public interface AprilTagVisionIO {
     double combinedVariancesXY = 1 / summedVariances.get(0, 0);
     double combinedVariancesTheta = 1 / summedVariances.get(2, 0);
 
+    // Convert variance to StdDevs
     double combinedStdDevsXY = sqrt(combinedVariancesXY);
     double combinedStdDevsTheta = sqrt(combinedVariancesTheta);
 

@@ -2,6 +2,7 @@ package frc.robot.subsystems.apriltagvision;
 
 import static frc.robot.Constants.AprilTagConstants.*;
 import static frc.robot.Constants.currentMode;
+import static java.lang.Math.sqrt;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
@@ -15,6 +16,7 @@ import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants.AprilTagConstants.CameraResolution;
 import frc.robot.Constants.Mode;
 import java.util.AbstractMap.SimpleEntry;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.littletonrobotics.junction.AutoLog;
@@ -23,6 +25,7 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 public interface AprilTagVisionIO {
   @AutoLog
@@ -103,6 +106,62 @@ public interface AprilTagVisionIO {
   }
 
   /**
+   * The standard deviations of the estimated poses from vision cameras, for use with {@link
+   * edu.wpi.first.math.estimator.SwerveDrivePoseEstimator SwerveDrivePoseEstimator}.
+   *
+   * @param estimatedPose The estimated pose to guess standard deviations for.
+   */
+  default Matrix<N3, N1> getEstimationStdDevs2(
+      EstimatedRobotPose estimatedPose, CameraResolution resolution) {
+
+    List<Matrix<N3, N1>> targetStdDevs = new ArrayList<>();
+
+    List<PhotonTrackedTarget> targets = estimatedPose.targetsUsed;
+    if (targets.size() == 0) { // Disregard if no targts
+      return VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
+    }
+
+    for (int i = 0; i < targets.size(); i++) {
+      Transform3d targetPosition = targets.get(i).getBestCameraToTarget();
+      double distance =
+          Math.sqrt(
+              Math.pow(targetPosition.getX(), 2)
+                  + Math.pow(targetPosition.getY(), 2)
+                  + Math.pow(targetPosition.getZ(), 2));
+
+      double coefficientXY =
+          switch (resolution) {
+            case NORMAL -> lowResStdDevCoefficientXY;
+            case HIGH_RES -> highResStdDevCoefficientXY;
+          };
+
+      double stdDevXY =
+          coefficientXY
+              * Math.pow(distance, 4); // TODO Collect more data and make sure this is accurate
+      double stdDevTheta = stdDevXY; // TODO Get a equation for this.
+
+      targetStdDevs.add(VecBuilder.fill(stdDevXY, stdDevXY, stdDevTheta));
+    }
+
+    Matrix<N3, N1> summedVariances = VecBuilder.fill(0, 0, 0);
+    for (Matrix<N3, N1> stdDevs : targetStdDevs) {
+      double reciprocalVarianceXY = 1 / Math.pow(stdDevs.get(0, 0), 2);
+      double reciprocalVarianceTheta = 1 / Math.pow(stdDevs.get(2, 0), 2);
+
+      summedVariances =
+          summedVariances.plus(
+              VecBuilder.fill(reciprocalVarianceXY, reciprocalVarianceXY, reciprocalVarianceTheta));
+    }
+    double combinedVariancesXY = 1 / summedVariances.get(0, 0);
+    double combinedVariancesTheta = 1 / summedVariances.get(2, 0);
+
+    double combinedStdDevsXY = sqrt(combinedVariancesXY);
+    double combinedStdDevsTheta = sqrt(combinedVariancesTheta);
+
+    return VecBuilder.fill(combinedStdDevsXY, combinedStdDevsXY, combinedStdDevsTheta);
+  }
+
+  /**
    * Updates the estimated poses for each {@link CameraPoseEstimator} in given `poseEstimators`
    *
    * <p>Updates `poseArray`, `timestampArray`, `visionStdArray`, (and `latencyArray` if desired)
@@ -130,7 +189,7 @@ public interface AprilTagVisionIO {
             poseArray[index] = estimatedRobotPose.estimatedPose;
             timestampArray[index] = estimatedRobotPose.timestampSeconds;
             Matrix<N3, N1> stdDevs =
-                getEstimationStdDevs(estimatedRobotPose, poseEstimators[index].resolution);
+                getEstimationStdDevs2(estimatedRobotPose, poseEstimators[index].resolution);
             System.arraycopy(stdDevs.getData(), 0, visionStdArray, index * 3, 3);
             if (currentMode == Mode.SIM) {
               // Report zero latency in sim. Sim latency doesn't work for some reason. TODO fix that

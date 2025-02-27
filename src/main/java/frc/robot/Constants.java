@@ -248,6 +248,10 @@ public final class Constants {
                   Units.degreesToRadians(-147)));
     }
 
+    public static final Double lowResStdDevCoefficientXY = 0.0015;
+    public static final Double highResStdDevCoefficientXY =
+        0.0015; // TODO: Calculate StdDev coefficient for high res
+
     public static final Matrix<N3, N1> highResSingleTagStdDev =
         VecBuilder.fill(0.4, 0.4, Double.MAX_VALUE);
     public static final Matrix<N3, N1> normalSingleTagStdDev =

@@ -98,4 +98,8 @@ public class Pivot extends SubsystemBase{
         return setPosition(() -> inputs.pivotPosition + (velocityDegPerSec * UPDATE_PERIOD))
             .finallyDo(io::resetProfile);
     }
+
+    public DoubleSupplier getPosition() {
+        return () -> inputs.pivotPosition;
+    }
 }

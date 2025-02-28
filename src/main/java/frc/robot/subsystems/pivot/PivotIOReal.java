@@ -52,11 +52,15 @@ public class PivotIOReal implements PivotIO {
         rightMotorConfig.CurrentLimits.StatorCurrentLimit = RIGHT_MOTOR_CURRENT_LIMIT;
         rightMotorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
         
+        leftMotorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+
         leftMotorConfig.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
         leftMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
         Logger.recordOutput("Pivot/StartingAbsEncoderValue", getAbsoluteEncoderPosition());
-        double rotorOffset = (210 * getAbsoluteEncoderPosition() / 360) - leadingMotor.getPosition().getValueAsDouble();
+        rotorOffset = (210 * getAbsoluteEncoderPosition() / 360) - leadingMotor.getPosition().getValueAsDouble();
+        
         leftMotorConfig.Feedback.FeedbackRotorOffset = rotorOffset;
+        Logger.recordOutput("Pivot/MotorEncoderWithOffset", leadingMotor.getPosition().getValueAsDouble() + rotorOffset);
         Logger.recordOutput("Pivot/rotorOffset", rotorOffset);
         Logger.recordOutput("Pivot/reverseCalculatedPosition", ((rotorOffset + leadingMotor.getPosition().getValueAsDouble()) / 210 ) * 360);
 
@@ -86,7 +90,7 @@ public class PivotIOReal implements PivotIO {
         //leftMotorConfig.Slot0.kS = -1;
         //leftMotorConfig.Slot0.kV = 0;
         //leftMotorConfig.Slot0.kA = 0;
-        leftMotorConfig.Slot0.kP = 0;
+        leftMotorConfig.Slot0.kP = 1;
         leftMotorConfig.Slot0.kI = 0;
         leftMotorConfig.Slot0.kD = 0;
 
@@ -115,6 +119,7 @@ public class PivotIOReal implements PivotIO {
     }
 
     public void updateInputs(PivotIOInputs inputs) {
+        Logger.recordOutput( "Pivot/absoluteMotorPosition", (((leadingMotor.getPosition().getValueAsDouble() + rotorOffset) / 210) * 360));
         inputs.pivotAbsolutePosition = getAbsoluteEncoderPosition();
         inputs.pivotAbsoluteVelocity = leadingMotor.getVelocity().getValueAsDouble();
         inputs.pivotAppliedVolts = leadingMotor.getMotorVoltage().getValueAsDouble();

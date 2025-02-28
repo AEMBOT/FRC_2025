@@ -58,6 +58,10 @@ public class Elevator extends SubsystemBase {
         return sysId.quasistatic(direction);
     }
 
+    public Command limitHeight(DoubleSupplier pivotAngle) {
+        return run(() -> io.limitHeight(pivotAngle.getAsDouble()));
+    }
+
     /**
      * Applies a constant voltage to the elevator and logs the sysId state.
      * @param direction Direction to run the sysId, needs to be either kForward or kReverse

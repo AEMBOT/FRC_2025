@@ -33,6 +33,8 @@ public interface ElevatorIO {
     /** Run open loop at the specified voltage. */
     public default void setVoltage(double volts) {}
 
+    public default void limitHeight(double pivotAngle) {}
+
     /** Resets the elevator goal and setpoint to the current angle of the elevator*/
     public default void resetProfile () {}
 }

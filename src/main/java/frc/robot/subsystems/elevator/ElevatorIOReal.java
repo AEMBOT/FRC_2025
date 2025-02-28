@@ -28,6 +28,8 @@ public class ElevatorIOReal implements ElevatorIO {
     private double lastTime;
     private final MotionMagicVoltage m_request;
     private double motorOffset;
+    private double maxExtension;
+    private double i;
 
 
     public ElevatorIOReal() {
@@ -62,25 +64,28 @@ public class ElevatorIOReal implements ElevatorIO {
         followingMotor.setControl(new Follower(TOP_MOTOR_ID, false));
 
         /** 
-        while (getAbsoluteEncoderPosition() < MIN_HEIGHT || getAbsoluteEncoderPosition() > MAX_HEIGHT) {
-            // TODO Look into better solutions for invalid encoder initial pose
-            System.out.println("ERROR: Busyloop because elevator position invalid! Is the encoder plugged in?");
+        while (getAbsoluteMotorPosition() < MIN_HEIGHT || getAbsoluteMotorPosition() > MAX_HEIGHT) {
+            // TODO Look into better solutions for invalid Motor initial pose
+            System.out.println("ERROR: Busyloop because elevator position invalid! Is the Motor plugged in?");
             delay(1);
         }
         */
 
         elevatorGoal = 0;
-        elevatorSetpoint = new TrapezoidProfile.State(getAbsoluteEncoderPosition(), 0);
+        elevatorSetpoint = new TrapezoidProfile.State(getAbsoluteMotorPosition(), 0);
 
         m_request = new MotionMagicVoltage(0).withSlot(0);
 
         delay(1);
 
-        motorOffset = -getAbsoluteEncoderPosition();
+        motorOffset = -getAbsoluteMotorPosition();
+
+        maxExtension = MAX_HEIGHT;
     }
 
     public void updateInputs(ElevatorIOInputs inputs) {
-        inputs.elevatorAbsolutePosition = getAbsoluteEncoderPosition();
+        Logger.recordOutput("Elevator/maxExtension", maxExtension);
+        inputs.elevatorAbsolutePosition = getAbsoluteMotorPosition();
         inputs.elevatorAbsoluteVelocity = leadingMotor.getVelocity().getValueAsDouble();
         inputs.elevatorAppliedVolts = leadingMotor.getMotorVoltage().getValueAsDouble();
         inputs.elevatorCurrentAmps = new double[] {leadingMotor.getStatorCurrent().getValueAsDouble(), 
@@ -92,8 +97,20 @@ public class ElevatorIOReal implements ElevatorIO {
     }   
 
     @Override
+    public void limitHeight(double pivotAngle) {
+        ++i;
+        Logger.recordOutput("i", pivotAngle);
+        maxExtension = (pivotAngle > 90) 
+            ? Units.inchesToMeters(20)/Math.cos(Units.degreesToRadians(180 - pivotAngle)) - Units.inchesToMeters(39)
+            : Units.inchesToMeters(35)/Math.cos(Units.degreesToRadians(pivotAngle)) - Units.inchesToMeters(39);
+         if (getAbsoluteMotorPosition() > maxExtension) {setHeight(maxExtension);} 
+    }
+    
+
+    @Override
     public void setHeight(double height) {
         height = clamp(height, MIN_HEIGHT, MAX_HEIGHT);
+        height = clamp(height, MIN_HEIGHT, maxExtension);
 
         elevatorGoal = height;
         final MotionMagicVoltage request = new MotionMagicVoltage((height - motorOffset) / rotToMetMultFactor);
@@ -106,16 +123,16 @@ public class ElevatorIOReal implements ElevatorIO {
         setMotorVoltage(volts);
     }
 
-    private double getAbsoluteEncoderPosition() {
+    private double getAbsoluteMotorPosition() {
         return (leadingMotor.getPosition().getValueAsDouble() * rotToMetMultFactor) + motorOffset;
     }
 
     private void setMotorVoltage(double volts) {
 
-        if (getAbsoluteEncoderPosition() < MIN_HEIGHT) {
+        if (getAbsoluteMotorPosition() < MIN_HEIGHT) {
             volts = clamp(volts, 0, Double.MAX_VALUE);
         }
-        if (getAbsoluteEncoderPosition() > MAX_HEIGHT) {
+        if (getAbsoluteMotorPosition() > MAX_HEIGHT) {
             volts = clamp(volts, -Double.MAX_VALUE, 0);
         }   
 
@@ -126,7 +143,7 @@ public class ElevatorIOReal implements ElevatorIO {
 
     @Override
     public void resetProfile() {
-        elevatorGoal = getAbsoluteEncoderPosition();
-        elevatorSetpoint = new TrapezoidProfile.State(getAbsoluteEncoderPosition(), 0);
+        elevatorGoal = getAbsoluteMotorPosition();
+        elevatorSetpoint = new TrapezoidProfile.State(getAbsoluteMotorPosition(), 0);
     }
 }

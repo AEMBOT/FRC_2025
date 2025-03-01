@@ -4,8 +4,11 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -139,6 +142,18 @@ public class RobotContainer {
 
     controller.y().whileTrue(wrist.changeGoalPosition(40)).onFalse(wrist.changeGoalPosition(0));
     controller.x().whileTrue(wrist.changeGoalPosition(-40)).onFalse(wrist.changeGoalPosition(0));
+
+    controller
+        .start()
+        .whileTrue(
+            new RunCommand(
+                () ->
+                    drive.setYaw(
+                        switch (DriverStation.getAlliance().get()) {
+                          case Blue -> Rotation2d.fromDegrees(0);
+                          case Red -> Rotation2d.fromDegrees(180);
+                          default -> Rotation2d.fromDegrees(0);
+                        })));
   }
 
   public Command getAutonomousCommand() {

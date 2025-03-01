@@ -21,6 +21,7 @@ import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.pivot.PivotIOReal;
 import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.subsystems.wrist.WristIOReal;
+import org.littletonrobotics.junction.Logger;
 
 public class RobotContainer {
 
@@ -73,6 +74,9 @@ public class RobotContainer {
     pivot = new Pivot(new PivotIOReal());
     elevator = new Elevator(new ElevatorIOReal());
     wrist = new Wrist(new WristIOReal());
+
+    Logger.recordOutput("currentRobot", Constants.currentRobot.ordinal());
+    System.out.println("Running on robot: " + Constants.currentRobot);
 
     // new Trigger(()-> LoggedRobot.isEnabled());
     configureBindings();

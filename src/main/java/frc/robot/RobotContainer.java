@@ -93,7 +93,7 @@ public class RobotContainer {
                 Set.of(drive)));
 
     controller
-        .a()
+        .y()
         .whileTrue(
             new DeferredCommand(
                 () ->

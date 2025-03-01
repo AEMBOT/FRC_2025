@@ -149,9 +149,11 @@ public final class Constants {
     public static final class reefTargetConstants {
       // Defines new variables for the x/y translations for the target positions (currently at
       // placeholders)
-      public static final double targetX1 = 1.0;
-      public static final double targetX2 = 1.0;
-      public static final double targetX3 = 1.0;
+      // Origin to bumper ~0.4572 m
+      public static final double targetX1 = 0.3048 + 0.4572; // TODO: Measure
+      public static final double targetX2 = 0.3048 + 0.4572; // TODO: Measure
+      public static final double targetX3 = 0.3048 + 0.4572; // TODO: Measure
+      public static final double targetX4 = 0.4064 + 0.4572; // Measured but not exact
 
       public static final double targetY = 0.1793875;
 

@@ -142,8 +142,8 @@ public final class Constants {
             true,
             Units.degreesToRadians(45));
 
-    public static final int RATCHET_PIN_1_ID = 0;
-    public static final int RATCHET_PIN_2_ID = 0;
+    public static final int RATCHET_PIN_1_ID = 8;
+    public static final int RATCHET_PIN_2_ID = 9;
   }
 
   public static final class ElevatorConstants {

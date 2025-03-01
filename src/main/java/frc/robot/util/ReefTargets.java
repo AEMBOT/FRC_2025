@@ -19,6 +19,8 @@ public final class ReefTargets {
   final Pose2d[] targetsL2Left = new Pose2d[6];
   final Pose2d[] targetsL3Right = new Pose2d[6];
   final Pose2d[] targetsL3Left = new Pose2d[6];
+  final Pose2d[] targetsL4Right = new Pose2d[6];
+  final Pose2d[] targetsL4Left = new Pose2d[6];
 
   public ReefTargets() {
     // Defines the transformation vector for a target position
@@ -29,12 +31,14 @@ public final class ReefTargets {
       new Transform2d(reefTargetConstants.targetX1, reefTargetConstants.targetY, targetThetaR),
       new Transform2d(reefTargetConstants.targetX2, reefTargetConstants.targetY, targetThetaR),
       new Transform2d(reefTargetConstants.targetX3, reefTargetConstants.targetY, targetThetaR),
+      new Transform2d(reefTargetConstants.targetX4, reefTargetConstants.targetY, targetThetaR),
     };
 
     Transform2d[] offsetsLeft = {
       new Transform2d(reefTargetConstants.targetX1, -reefTargetConstants.targetY, targetThetaL),
       new Transform2d(reefTargetConstants.targetX2, -reefTargetConstants.targetY, targetThetaL),
       new Transform2d(reefTargetConstants.targetX3, -reefTargetConstants.targetY, targetThetaL),
+      new Transform2d(reefTargetConstants.targetX4, -reefTargetConstants.targetY, targetThetaL),
     };
 
     tagPoses =
@@ -54,6 +58,8 @@ public final class ReefTargets {
       targetsL2Right[i] = tagPoses[i].transformBy(offsetsRight[1]);
       targetsL3Left[i] = tagPoses[i].transformBy(offsetsLeft[2]);
       targetsL3Right[i] = tagPoses[i].transformBy(offsetsRight[2]);
+      targetsL4Left[i] = tagPoses[i].transformBy(offsetsLeft[3]);
+      targetsL4Right[i] = tagPoses[i].transformBy(offsetsRight[3]);
     }
   }
 
@@ -80,6 +86,8 @@ public final class ReefTargets {
         return targetsL2Right[findClosestTag(currentPose)];
       case 3:
         return targetsL3Right[findClosestTag(currentPose)];
+      case 4:
+        return targetsL4Right[findClosestTag(currentPose)];
       default:
         throw new IllegalArgumentException("Invalid level: " + level);
     }
@@ -93,6 +101,8 @@ public final class ReefTargets {
         return targetsL2Left[findClosestTag(currentPose)];
       case 3:
         return targetsL3Left[findClosestTag(currentPose)];
+      case 4:
+        return targetsL4Left[findClosestTag(currentPose)];
       default:
         throw new IllegalArgumentException("Invalid level: " + level);
     }

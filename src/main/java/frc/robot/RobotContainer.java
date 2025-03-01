@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.DeferredCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -27,6 +28,9 @@ public class RobotContainer {
   // Controllers
   private final CommandXboxController controller = new CommandXboxController(0);
   private final CommandXboxController backupController = new CommandXboxController(1);
+
+  // Driver-assist variables
+  private int reef_level = 4; // Terminology: Trough is L1, top is L4
 
   public RobotContainer() {
 
@@ -83,13 +87,18 @@ public class RobotContainer {
     // Path controller bindings
     ReefTargets reefTargets = new ReefTargets();
 
+    controller.povDown().onTrue(new RunCommand(() -> {this.reef_level = 1;}));
+    controller.povLeft().onTrue(new RunCommand(() -> {this.reef_level = 2;}));
+    controller.povRight().onTrue(new RunCommand(() -> {this.reef_level = 3;}));
+    controller.povUp().onTrue(new RunCommand(() -> {this.reef_level = 4;}));
+
     controller
         .x()
         .whileTrue(
             new DeferredCommand(
                 () ->
                     PathGenerator.generateSimplePath(
-                        drive.getPose(), reefTargets.findTargetLeft(drive.getPose(), 1)),
+                        drive.getPose(), reefTargets.findTargetLeft(drive.getPose(), reef_level)),
                 Set.of(drive)));
 
     controller
@@ -100,7 +109,7 @@ public class RobotContainer {
                     PathGenerator.generateSimplePath(
                         drive.getPose(),
                         reefTargets.findTargetRight(
-                            drive.getPose(), 1)), // TODO Give driver way to select level
+                            drive.getPose(), reef_level)), // TODO Give driver way to select level
                 Set.of(drive)));
   }
 

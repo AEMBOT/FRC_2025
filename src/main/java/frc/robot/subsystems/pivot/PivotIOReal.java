@@ -48,7 +48,8 @@ public class PivotIOReal implements PivotIO {
     leftMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
     Logger.recordOutput("Pivot/StartingAbsEncoderValue", getAbsoluteEncoderPosition());
     rotorOffset =
-        (GEAR_RATIO * getAbsoluteEncoderPosition() / 360) - leadingMotor.getPosition().getValueAsDouble();
+        (GEAR_RATIO * getAbsoluteEncoderPosition() / 360)
+            - leadingMotor.getPosition().getValueAsDouble();
 
     leftMotorConfig.Feedback.FeedbackRotorOffset = rotorOffset;
     Logger.recordOutput(

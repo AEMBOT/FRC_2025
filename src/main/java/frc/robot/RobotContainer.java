@@ -14,12 +14,16 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.elevator.Elevator;
+import frc.robot.subsystems.elevator.ElevatorIO;
 import frc.robot.subsystems.elevator.ElevatorIOReal;
 import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeIOReal;
 import frc.robot.subsystems.pivot.Pivot;
+import frc.robot.subsystems.pivot.PivotIO;
 import frc.robot.subsystems.pivot.PivotIOReal;
 import frc.robot.subsystems.wrist.Wrist;
+import frc.robot.subsystems.wrist.WristIO;
 import frc.robot.subsystems.wrist.WristIOReal;
 import org.littletonrobotics.junction.Logger;
 
@@ -47,6 +51,10 @@ public class RobotContainer {
                 new ModuleIOTalonFX(1),
                 new ModuleIOTalonFX(2),
                 new ModuleIOTalonFX(3));
+        intake = new Intake(new IntakeIOReal());
+        pivot = new Pivot(new PivotIOReal());
+        elevator = new Elevator(new ElevatorIOReal());
+        wrist = new Wrist(new WristIOReal());
         break;
 
       case SIM:
@@ -57,6 +65,10 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim(),
                 new ModuleIOSim());
+        intake = new Intake(new IntakeIO() {});
+        pivot = new Pivot(new PivotIO() {});
+        elevator = new Elevator(new ElevatorIO() {});
+        wrist = new Wrist(new WristIO() {});
         break;
 
       default:
@@ -68,12 +80,12 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
+        intake = new Intake(new IntakeIO() {});
+        pivot = new Pivot(new PivotIO() {});
+        elevator = new Elevator(new ElevatorIO() {});
+        wrist = new Wrist(new WristIO() {});
         break;
     }
-    intake = new Intake(new IntakeIOReal());
-    pivot = new Pivot(new PivotIOReal());
-    elevator = new Elevator(new ElevatorIOReal());
-    wrist = new Wrist(new WristIOReal());
 
     Logger.recordOutput("currentRobot", Constants.currentRobot.ordinal());
     System.out.println("Running on robot: " + Constants.currentRobot);

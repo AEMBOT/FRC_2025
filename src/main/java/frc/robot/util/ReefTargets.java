@@ -28,17 +28,17 @@ public final class ReefTargets {
     Rotation2d targetThetaL = new Rotation2d(-reefTargetConstants.targetAngle);
 
     Transform2d[] offsetsRight = {
-      new Transform2d(reefTargetConstants.targetX1, reefTargetConstants.targetY, targetThetaR),
-      new Transform2d(reefTargetConstants.targetX2, reefTargetConstants.targetY, targetThetaR),
-      new Transform2d(reefTargetConstants.targetX3, reefTargetConstants.targetY, targetThetaR),
-      new Transform2d(reefTargetConstants.targetX4, reefTargetConstants.targetY, targetThetaR),
+      new Transform2d(reefTargetConstants.targetLevel1X, reefTargetConstants.targetY, targetThetaR),
+      new Transform2d(reefTargetConstants.targetLevel2X, reefTargetConstants.targetY, targetThetaR),
+      new Transform2d(reefTargetConstants.targetLevel3X, reefTargetConstants.targetY, targetThetaR),
+      new Transform2d(reefTargetConstants.targetLevel4X, reefTargetConstants.targetY, targetThetaR),
     };
 
     Transform2d[] offsetsLeft = {
-      new Transform2d(reefTargetConstants.targetX1, -reefTargetConstants.targetY, targetThetaL),
-      new Transform2d(reefTargetConstants.targetX2, -reefTargetConstants.targetY, targetThetaL),
-      new Transform2d(reefTargetConstants.targetX3, -reefTargetConstants.targetY, targetThetaL),
-      new Transform2d(reefTargetConstants.targetX4, -reefTargetConstants.targetY, targetThetaL),
+      new Transform2d(reefTargetConstants.targetLevel1X, -reefTargetConstants.targetY, targetThetaL),
+      new Transform2d(reefTargetConstants.targetLevel2X, -reefTargetConstants.targetY, targetThetaL),
+      new Transform2d(reefTargetConstants.targetLevel3X, -reefTargetConstants.targetY, targetThetaL),
+      new Transform2d(reefTargetConstants.targetLevel4X, -reefTargetConstants.targetY, targetThetaL),
     };
 
     tagPoses =

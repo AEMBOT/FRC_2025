@@ -13,6 +13,7 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import org.littletonrobotics.junction.Logger;
 
@@ -21,12 +22,15 @@ public class PivotIOReal implements PivotIO {
   private boolean openLoop = true;
   private final TalonFX leadingMotor = new TalonFX(LEFT_MOTOR_ID);
   private final TalonFX followingMotor = new TalonFX(RIGHT_MOTOR_ID);
+  private final DigitalOutput ratchetPin1;
+  private final DigitalOutput ratchetPin2;
   private double pivotGoal;
   private TrapezoidProfile.State pivotSetpoint;
   private double lastTime;
   private TalonFXConfiguration leftMotorConfig = new TalonFXConfiguration();
   private DutyCycleEncoder ENCODER;
   private double rotorOffset;
+  private boolean ratchetEngaged;
 
   public PivotIOReal() {
 
@@ -108,6 +112,9 @@ public class PivotIOReal implements PivotIO {
      */
     pivotGoal = getAbsoluteEncoderPosition();
     pivotSetpoint = new TrapezoidProfile.State(getAbsoluteEncoderPosition(), 0);
+
+    ratchetPin1 = new DigitalOutput(RATCHET_PIN_1_ID);
+    ratchetPin2 = new DigitalOutput(RATCHET_PIN_2_ID);
   }
 
   public void updateInputs(PivotIOInputs inputs) {
@@ -126,6 +133,7 @@ public class PivotIOReal implements PivotIO {
     inputs.pivotSetpointPosition = pivotSetpoint.position;
     inputs.pivotSetpointVelocity = pivotSetpoint.velocity;
     inputs.openLoopStatus = openLoop;
+    inputs.ratchetEngaged = ratchetEngaged;
   }
 
   @Override
@@ -165,5 +173,25 @@ public class PivotIOReal implements PivotIO {
   public void resetProfile() {
     pivotGoal = getAbsoluteEncoderPosition();
     pivotSetpoint = new TrapezoidProfile.State(getAbsoluteEncoderPosition(), 0);
+  }
+
+  @Override
+  public void runRatchetForward() {
+    ratchetPin1.set(true);
+    ratchetPin2.set(false);
+    ratchetEngaged = true;
+  }
+
+  @Override
+  public void runRatchetReverse() {
+    ratchetPin1.set(false);
+    ratchetPin2.set(true);
+    ratchetEngaged = false;
+  }
+
+  @Override
+  public void stopRatchet() {
+    ratchetPin1.set(true);
+    ratchetPin2.set(true);
   }
 }

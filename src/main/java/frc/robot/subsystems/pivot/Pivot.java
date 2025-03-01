@@ -105,4 +105,14 @@ public class Pivot extends SubsystemBase {
   public DoubleSupplier getPosition() {
     return () -> inputs.pivotPosition;
   }
+
+  /** */
+  public Command engageRatchet() {
+    return run(() -> io.runRatchetForward()).withTimeout(0.1).andThen(run(() -> io.stopRatchet()));
+  }
+
+  /** */
+  public Command disengageRatchet() {
+    return run(() -> io.runRatchetReverse()).withTimeout(0.1).andThen(run(() -> io.stopRatchet()));
+  }
 }

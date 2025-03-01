@@ -96,15 +96,15 @@ public class RobotContainer {
 
     // FIXME Resolve binding conflict between elevator down and drive slow mode
 
-    controller
-        .a()
-        .whileTrue(pivot.changePosition(10).alongWith(elevator.limitHeight(pivot.getPosition())))
-        .onFalse(pivot.changePosition(0));
-    controller
-        .b()
-        .whileTrue(pivot.changePosition(-10).alongWith(elevator.limitHeight(pivot.getPosition())))
-        .onFalse(pivot.changePosition(0));
+    controller.a().onTrue(pivot.engageRatchet()).onFalse(pivot.disengageRatchet());
 
+    /**
+     * controller .a()
+     * .whileTrue(pivot.changePosition(10).alongWith(elevator.limitHeight(pivot.getPosition())))
+     * .onFalse(pivot.changePosition(0)); controller .b()
+     * .whileTrue(pivot.changePosition(-10).alongWith(elevator.limitHeight(pivot.getPosition())))
+     * .onFalse(pivot.changePosition(0));
+     */
     controller
         .rightTrigger()
         .whileTrue(elevator.changePosition(0.25))

@@ -91,8 +91,10 @@ public class RobotContainer {
             () -> -controller.getLeftX(),
             () -> -controller.getRightX(),
             () ->
-                controller.getLeftTriggerAxis()
-                    > 0.5)); // Trigger locks make trigger boolean, rather than analog.
+                controller
+                    .leftStick()
+                    .getAsBoolean())); // Temperarily set slowmode control to left push in so that
+    // we can have all controls on one controller
 
     // FIXME Resolve binding conflict between elevator down and drive slow mode
 

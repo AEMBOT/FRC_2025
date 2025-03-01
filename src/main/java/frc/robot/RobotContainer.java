@@ -87,10 +87,34 @@ public class RobotContainer {
     // Path controller bindings
     ReefTargets reefTargets = new ReefTargets();
 
-    controller.povDown().onTrue(new RunCommand(() -> {this.reef_level = 1;}));
-    controller.povLeft().onTrue(new RunCommand(() -> {this.reef_level = 2;}));
-    controller.povRight().onTrue(new RunCommand(() -> {this.reef_level = 3;}));
-    controller.povUp().onTrue(new RunCommand(() -> {this.reef_level = 4;}));
+    controller
+        .povDown()
+        .onTrue(
+            new RunCommand(
+                () -> {
+                  this.reef_level = 1;
+                }));
+    controller
+        .povLeft()
+        .onTrue(
+            new RunCommand(
+                () -> {
+                  this.reef_level = 2;
+                }));
+    controller
+        .povRight()
+        .onTrue(
+            new RunCommand(
+                () -> {
+                  this.reef_level = 3;
+                }));
+    controller
+        .povUp()
+        .onTrue(
+            new RunCommand(
+                () -> {
+                  this.reef_level = 4;
+                }));
 
     controller
         .x()

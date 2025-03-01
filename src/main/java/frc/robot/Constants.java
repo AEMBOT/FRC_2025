@@ -93,7 +93,7 @@ public final class Constants {
     public static final double ENCODER_POSITION_OFFSET = 26.406295410157384;
 
     /** */
-    public static final double GEAR_RATIO = 93.3333333;
+    public static final double GEAR_RATIO = 378;
 
     /** */
     public static final ArmFeedforward FF_MODEL =

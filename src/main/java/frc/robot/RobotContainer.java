@@ -132,9 +132,7 @@ public class RobotContainer {
             new DeferredCommand(
                 () ->
                     PathGenerator.generateSimplePath(
-                        drive.getPose(),
-                        reefTargets.findTargetRight(
-                            drive.getPose(), reef_level)),
+                        drive.getPose(), reefTargets.findTargetRight(drive.getPose(), reef_level)),
                 Set.of(drive)));
   }
 

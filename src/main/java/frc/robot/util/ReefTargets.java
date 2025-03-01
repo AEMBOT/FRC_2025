@@ -35,10 +35,14 @@ public final class ReefTargets {
     };
 
     Transform2d[] offsetsLeft = {
-      new Transform2d(reefTargetConstants.targetLevel1X, -reefTargetConstants.targetY, targetThetaL),
-      new Transform2d(reefTargetConstants.targetLevel2X, -reefTargetConstants.targetY, targetThetaL),
-      new Transform2d(reefTargetConstants.targetLevel3X, -reefTargetConstants.targetY, targetThetaL),
-      new Transform2d(reefTargetConstants.targetLevel4X, -reefTargetConstants.targetY, targetThetaL),
+      new Transform2d(
+          reefTargetConstants.targetLevel1X, -reefTargetConstants.targetY, targetThetaL),
+      new Transform2d(
+          reefTargetConstants.targetLevel2X, -reefTargetConstants.targetY, targetThetaL),
+      new Transform2d(
+          reefTargetConstants.targetLevel3X, -reefTargetConstants.targetY, targetThetaL),
+      new Transform2d(
+          reefTargetConstants.targetLevel4X, -reefTargetConstants.targetY, targetThetaL),
     };
 
     tagPoses =

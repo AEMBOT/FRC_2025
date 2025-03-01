@@ -18,6 +18,7 @@ import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.util.PathGenerator;
 import frc.robot.util.ReefTargets;
 import java.util.Set;
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class RobotContainer {
@@ -30,7 +31,7 @@ public class RobotContainer {
   private final CommandXboxController backupController = new CommandXboxController(1);
 
   // Driver-assist variables
-  private int reef_level = 4; // Terminology: Trough is L1, top is L4
+  @AutoLogOutput private int reef_level = 4; // Terminology: Trough is L1, top is L4
 
   public RobotContainer() {
 
@@ -89,28 +90,28 @@ public class RobotContainer {
 
     controller
         .povDown()
-        .onTrue(
+        .whileTrue( // onTrue results in the button only working once.
             new RunCommand(
                 () -> {
                   this.reef_level = 1;
                 }));
     controller
         .povLeft()
-        .onTrue(
+        .whileTrue(
             new RunCommand(
                 () -> {
                   this.reef_level = 2;
                 }));
     controller
         .povRight()
-        .onTrue(
+        .whileTrue(
             new RunCommand(
                 () -> {
                   this.reef_level = 3;
                 }));
     controller
         .povUp()
-        .onTrue(
+        .whileTrue(
             new RunCommand(
                 () -> {
                   this.reef_level = 4;
@@ -133,7 +134,7 @@ public class RobotContainer {
                     PathGenerator.generateSimplePath(
                         drive.getPose(),
                         reefTargets.findTargetRight(
-                            drive.getPose(), reef_level)), // TODO Give driver way to select level
+                            drive.getPose(), reef_level)),
                 Set.of(drive)));
   }
 

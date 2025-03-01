@@ -26,7 +26,6 @@ public class Robot extends LoggedRobot {
 
     Logger.start();
 
-
     m_robotContainer = new RobotContainer();
 
     // Set up data receivers & replay source

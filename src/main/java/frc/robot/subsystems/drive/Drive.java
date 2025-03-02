@@ -6,6 +6,8 @@ import static frc.robot.Constants.currentMode;
 import static java.lang.Math.min;
 
 import com.ctre.phoenix6.SignalLogger;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -20,12 +22,14 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.units.Units; // For some reason, importing Units.* doesn't seem to work.
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.Mode;
+import frc.robot.Constants.PathingConstants;
 import frc.robot.subsystems.apriltagvision.AprilTagVision;
 import java.util.Arrays;
 import java.util.Optional;
@@ -105,6 +109,21 @@ public class Drive extends SubsystemBase {
                 (Voltage volts) -> runDriveCharacterizationVolts(volts.in(Units.Volts)),
                 null,
                 this));
+
+    // Configure AutoBuilder for pathing
+    AutoBuilder.configure(
+        this::getPose,
+        this::setPose,
+        () -> kinematics.toChassisSpeeds(getModuleStates()),
+        (speed, feedforwards) -> runVelocity(speed),
+        new PPHolonomicDriveController(
+            PathingConstants.translationPIDConstants, PathingConstants.rotationPIDConstants),
+        PathingConstants.robotConfig,
+        (BooleanSupplier)
+            () ->
+                DriverStation.getAlliance().isPresent()
+                    && DriverStation.getAlliance().get() == Alliance.Red,
+        this);
   }
 
   public void periodic() {

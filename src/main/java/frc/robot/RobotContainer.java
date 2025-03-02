@@ -5,7 +5,6 @@
 package frc.robot;
 
 import static frc.robot.Constants.currentMode;
-import static frc.robot.Constants.useKeyboard;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -15,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Mode;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -108,8 +108,11 @@ public class RobotContainer {
     Logger.recordOutput("currentRobot", Constants.currentRobot.ordinal());
     System.out.println("Running on robot: " + Constants.currentRobot);
 
-    if (currentMode == Mode.SIM && useKeyboard) {
+    if (currentMode == Mode.SIM) {
       configureKeyboardBindings();
+
+      // If an Xbox controller connects, switch to that.
+      new Trigger(() -> controller.isConnected()).onTrue(new RunCommand(() -> configureBindings()));
     } else {
       configureBindings();
     }

@@ -1,5 +1,11 @@
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Radians;
+
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
@@ -401,14 +407,44 @@ public final class Constants {
     public static final class reefTargetConstants {
       // Defines new variables for the x/y translations for the target positions (currently at
       // placeholders)
-      public static final double targetX = 0.5;
-      public static final double targetY = 0.75;
-      public static final double targetAngle = 0;
+      // Origin to bumper ~0.4572 m
+      public static final double targetLevel1X = 0.3048 + 0.4572; // TODO: Measure
+      public static final double targetLevel2X = 0.3048 + 0.4572; // TODO: Measure
+      public static final double targetLevel3X = 0.3048 + 0.4572; // TODO: Measure
+      public static final double targetLevel4X = 0.4064 + 0.4572; // Measured but not exact
+
+      public static final double targetY = 0.1793875;
+
+      public static final double targetAngle = Radians.convertFrom(180, Degrees);
 
       // Define reef centerpoints (blue alliance)
       public static final double reefCenterX = 4.489323;
       public static final double reefCenterY = 4.0259;
     }
+  }
+
+  public static final class PathingConstants {
+    public static final RobotConfig robotConfig;
+
+    static {
+      try {
+        robotConfig =
+            RobotConfig.fromGUISettings(); // TODO Set up this configuration in PathPlanner GUI
+      } catch (Exception e) {
+        throw new RuntimeException("Failed to initialize RobotConfig for PathPlanner", e);
+      }
+    }
+
+    public static final PIDConstants translationPIDConstants = new PIDConstants(5.0);
+    public static final PIDConstants rotationPIDConstants = new PIDConstants(5.0);
+
+    // TODO Constraints are placeholder. Figure out reasonable values.
+    /** Constraints for the majority of driver-assist and auto paths. */
+    public static final PathConstraints generalPathConstraints =
+        new PathConstraints(
+            1, 4, Radians.convertFrom(360, Degrees), Radians.convertFrom(360, Degrees));
+
+    public static final class BasicTargets {}
   }
 
   public static final class AprilTagConstants {

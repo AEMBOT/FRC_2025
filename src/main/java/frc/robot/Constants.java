@@ -58,7 +58,6 @@ public final class Constants {
 
   public static final double UPDATE_PERIOD = 0.02;
 
-
   public static final class PivotConstants {
     /** Maximum angle for the pivot to move to, in degrees */
     public static final double MAX_ANGLE = 120;
@@ -324,7 +323,6 @@ public final class Constants {
 
     public static final double intakeMotorCurrentLimit = 5;
   }
-
 
   public static final class DriveConstants {
     // May need tweaking

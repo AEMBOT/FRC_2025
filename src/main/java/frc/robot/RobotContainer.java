@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.DeferredCommand;
@@ -198,6 +200,18 @@ public class RobotContainer {
                     PathGenerator.generateSimplePath(
                         drive.getPose(), reefTargets.findTargetRight(drive.getPose(), reef_level)),
                 Set.of(drive)));
+
+    controller
+        .start()
+        .whileTrue(
+            new RunCommand(
+                () ->
+                    drive.setYaw(
+                        switch (DriverStation.getAlliance().get()) {
+                          case Blue -> Rotation2d.fromDegrees(0);
+                          case Red -> Rotation2d.fromDegrees(180);
+                          default -> Rotation2d.fromDegrees(0);
+                        })));
   }
 
   public Command getAutonomousCommand() {

@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.commands.PathfindingCommand;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import org.littletonrobotics.junction.LogFileUtil;
@@ -20,6 +21,11 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void robotInit() {
+
+    Logger.addDataReceiver(new WPILOGWriter("U/logs"));
+    Logger.addDataReceiver(new NT4Publisher());
+
+    Logger.start();
 
     m_robotContainer = new RobotContainer();
 
@@ -47,6 +53,8 @@ public class Robot extends LoggedRobot {
 
     // Start AdvantageKit logger
     Logger.start();
+
+    PathfindingCommand.warmupCommand().schedule();
   }
 
   @Override

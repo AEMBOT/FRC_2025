@@ -229,6 +229,7 @@ public class RobotContainer {
   }
 
   private void configureKeyboardBindings() {
+    // Wanna make this easier to handle eventually, but not super high priority atm
     drive.setDefaultCommand(
         drive.joystickDrive(
             drive,
@@ -236,6 +237,56 @@ public class RobotContainer {
             () -> -keyboardController.getRawAxis(0),
             () -> -keyboardController.getRawAxis(4),
             () -> keyboardController.getRawAxis(2) > 0.5));
+
+    // Path controller bindings
+    ReefTargets reefTargets = new ReefTargets();
+
+    keyboardController
+        .povDown()
+        .whileTrue( // onTrue results in the button only working once.
+            new RunCommand(
+                () -> {
+                  this.reef_level = 1;
+                }));
+    keyboardController
+        .povLeft()
+        .whileTrue(
+            new RunCommand(
+                () -> {
+                  this.reef_level = 2;
+                }));
+    keyboardController
+        .povRight()
+        .whileTrue(
+            new RunCommand(
+                () -> {
+                  this.reef_level = 3;
+                }));
+    keyboardController
+        .povUp()
+        .whileTrue(
+            new RunCommand(
+                () -> {
+                  this.reef_level = 4;
+                }));
+
+    keyboardController
+        .button(3)
+        .whileTrue(
+            new DeferredCommand(
+                () ->
+                    PathGenerator.generateSimplePath(
+                        drive.getPose(), reefTargets.findTargetLeft(drive.getPose(), reef_level)),
+                Set.of(drive)));
+
+    keyboardController
+        .button(4)
+        .whileTrue(
+            new DeferredCommand(
+                () ->
+                    PathGenerator.generateSimplePath(
+                        drive.getPose(), reefTargets.findTargetRight(drive.getPose(), reef_level)),
+                Set.of(drive)));
   }
 
   public Command getAutonomousCommand() {

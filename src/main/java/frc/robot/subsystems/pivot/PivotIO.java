@@ -35,6 +35,7 @@ public interface PivotIO {
     /** Whether the pivot subsystem is running in an openloop */
     public boolean openLoopStatus = false;
 
+
     /** */
     public boolean ratchetEngaged = false;
   }

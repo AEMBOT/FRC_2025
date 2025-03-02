@@ -1,17 +1,57 @@
 package frc.robot.util;
 
-import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.Waypoint;
+import edu.wpi.first.math.controller.HolonomicDriveController;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.PathingConstants;
+import frc.robot.subsystems.drive.Drive;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 
-public class PathGenerator {
+public class PathUtil {
+  public static Drive drive;
+
+  /**
+   * Sets up variables for PathUtil. Trying to use PathUtil without this will cause a crash.
+   *
+   * @param drivetrain The active {@link Drive} instance
+   */
+  public static void configure(Drive drivetrain) {
+    drive = drivetrain;
+  }
+
+  private static Command followPath(PathPlannerPath path) {
+    return new FollowPathCommandPoseBased(
+        path,
+        drive::getPose,
+        drive::getRobotRelativeVelocity,
+        (speed, feedforwards) -> drive.runVelocity(speed),
+        new PPHolonomicDriveController(
+            PathingConstants.translationPIDConstants, // Translation PID constants
+            PathingConstants.rotationPIDConstants // Rotation PID constants
+            ),
+        PathingConstants.robotConfig,
+        (BooleanSupplier)
+            () ->
+                DriverStation.getAlliance().isPresent()
+                    && DriverStation.getAlliance().get() == Alliance.Red,
+        0.1,
+        0.1,
+        drive);
+  }
+
   /**
    * Generates a simple path following command between two points. Note that this does not pathfind;
    * the robot will not avoid obstacles.
@@ -51,7 +91,25 @@ public class PathGenerator {
             // differential drivetrain, the rotation will have no effect.
             );
 
-    return AutoBuilder.followPath(path);
+    HolonomicDriveController driveController =
+        new HolonomicDriveController(
+            new PIDController(
+                PathingConstants.translationPIDConstants.kP,
+                PathingConstants.translationPIDConstants.kI,
+                PathingConstants.translationPIDConstants.kD),
+            new PIDController(
+                PathingConstants.translationPIDConstants.kP,
+                PathingConstants.translationPIDConstants.kI,
+                PathingConstants.translationPIDConstants.kD),
+            new ProfiledPIDController(
+                PathingConstants.translationPIDConstants.kP,
+                PathingConstants.translationPIDConstants.kI,
+                PathingConstants.translationPIDConstants.kD,
+                new TrapezoidProfile.Constraints(DriveConstants.MAX_ANGULAR_SPEED, 1.0)));
+
+    driveController.setTolerance(new Pose2d(0.1, 0.1, new Rotation2d()));
+
+    return followPath(path);
   }
 
   /**

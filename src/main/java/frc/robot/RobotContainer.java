@@ -29,7 +29,7 @@ import frc.robot.subsystems.pivot.PivotIOReal;
 import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.subsystems.wrist.WristIO;
 import frc.robot.subsystems.wrist.WristIOReal;
-import frc.robot.util.PathGenerator;
+import frc.robot.util.PathUtil;
 import frc.robot.util.ReefTargets;
 import java.util.Set;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -101,6 +101,7 @@ public class RobotContainer {
     Logger.recordOutput("currentRobot", Constants.currentRobot.ordinal());
     System.out.println("Running on robot: " + Constants.currentRobot);
 
+    PathUtil.configure(drive);
     configureBindings();
   }
 
@@ -188,7 +189,7 @@ public class RobotContainer {
         .whileTrue(
             new DeferredCommand(
                 () ->
-                    PathGenerator.generateSimplePath(
+                    PathUtil.generateSimplePath(
                         drive.getPose(), reefTargets.findTargetLeft(drive.getPose(), reef_level)),
                 Set.of(drive)));
 
@@ -197,7 +198,7 @@ public class RobotContainer {
         .whileTrue(
             new DeferredCommand(
                 () ->
-                    PathGenerator.generateSimplePath(
+                    PathUtil.generateSimplePath(
                         drive.getPose(), reefTargets.findTargetRight(drive.getPose(), reef_level)),
                 Set.of(drive)));
 
@@ -213,6 +214,7 @@ public class RobotContainer {
                           default -> Rotation2d.fromDegrees(0);
                         })));
   }
+
 
   public Command getAutonomousCommand() {
     return Commands.print("No autonomous command configured");

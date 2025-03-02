@@ -188,8 +188,8 @@ public class RobotContainer {
         .whileTrue(
             new DeferredCommand(
                 () ->
-                    PathGenerator.generateSimplePath(
-                        drive.getPose(), reefTargets.findTargetLeft(drive.getPose(), reef_level)),
+                    PathGenerator.generateSimpleCorrectedPath(
+                        drive, reefTargets.findTargetLeft(drive.getPose(), reef_level)),
                 Set.of(drive)));
 
     controller
@@ -197,8 +197,8 @@ public class RobotContainer {
         .whileTrue(
             new DeferredCommand(
                 () ->
-                    PathGenerator.generateSimplePath(
-                        drive.getPose(), reefTargets.findTargetRight(drive.getPose(), reef_level)),
+                    PathGenerator.generateSimpleCorrectedPath(
+                        drive, reefTargets.findTargetRight(drive.getPose(), reef_level)),
                 Set.of(drive)));
 
     controller

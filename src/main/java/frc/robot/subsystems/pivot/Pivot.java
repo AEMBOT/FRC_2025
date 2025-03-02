@@ -108,11 +108,11 @@ public class Pivot extends SubsystemBase {
 
   /** */
   public Command engageRatchet() {
-    return run(() -> io.runRatchetForward()).withTimeout(0.1).andThen(run(() -> io.stopRatchet()));
+    return run(() -> io.runRatchetForward()).withTimeout(4).andThen(run(() -> io.stopRatchet()));
   }
 
   /** */
   public Command disengageRatchet() {
-    return run(() -> io.runRatchetReverse()).withTimeout(0.1).andThen(run(() -> io.stopRatchet()));
+    return run(() -> io.runRatchetReverse()).withTimeout(4).andThen(run(() -> io.stopRatchet()));
   }
 }

@@ -177,15 +177,15 @@ public class PivotIOReal implements PivotIO {
 
   @Override
   public void runRatchetForward() {
-    ratchetPin1.set(true);
-    ratchetPin2.set(false);
+    ratchetPin1.set(false);
+    ratchetPin2.set(true);
     ratchetEngaged = true;
   }
 
   @Override
   public void runRatchetReverse() {
-    ratchetPin1.set(false);
-    ratchetPin2.set(true);
+    ratchetPin1.set(true);
+    ratchetPin2.set(false);
     ratchetEngaged = false;
   }
 

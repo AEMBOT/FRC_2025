@@ -52,7 +52,8 @@ public class PivotIOReal implements PivotIO {
     leftMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
     Logger.recordOutput("Pivot/StartingAbsEncoderValue", getAbsoluteEncoderPosition());
     rotorOffset =
-        (210 * getAbsoluteEncoderPosition() / 360) - leadingMotor.getPosition().getValueAsDouble();
+        (GEAR_RATIO * getAbsoluteEncoderPosition() / 360)
+            - leadingMotor.getPosition().getValueAsDouble();
 
     leftMotorConfig.Feedback.FeedbackRotorOffset = rotorOffset;
     Logger.recordOutput(
@@ -61,9 +62,9 @@ public class PivotIOReal implements PivotIO {
     Logger.recordOutput("Pivot/rotorOffset", rotorOffset);
     Logger.recordOutput(
         "Pivot/reverseCalculatedPosition",
-        ((rotorOffset + leadingMotor.getPosition().getValueAsDouble()) / 210) * 360);
+        ((rotorOffset + leadingMotor.getPosition().getValueAsDouble()) / GEAR_RATIO) * 360);
 
-    leftMotorConfig.Feedback.RotorToSensorRatio = 210;
+    leftMotorConfig.Feedback.RotorToSensorRatio = GEAR_RATIO;
 
     // Integrating CANcoder
     /* Configure CANcoder to zero the magnet appropriately */
@@ -81,7 +82,7 @@ public class PivotIOReal implements PivotIO {
     // Apply cancoder to feedback motor config
     // leftMotorConfig.Feedback.FeedbackRemoteSensorID = 1;
     // leftMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
-    // leftMotorConfig.Feedback.RotorToSensorRatio = 210;
+    // leftMotorConfig.Feedback.RotorToSensorRatio = GEAR_RATIO;
     // leftMotorConfig.Feedback.FeedbackRotorOffset = 0;
 
     // leftMotorConfig.Slot0.kG = -0.3;
@@ -120,7 +121,7 @@ public class PivotIOReal implements PivotIO {
   public void updateInputs(PivotIOInputs inputs) {
     Logger.recordOutput(
         "Pivot/absoluteMotorPosition",
-        (((leadingMotor.getPosition().getValueAsDouble() + rotorOffset) / 210) * 360));
+        (((leadingMotor.getPosition().getValueAsDouble() + rotorOffset) / GEAR_RATIO) * 360));
     inputs.pivotAbsolutePosition = getAbsoluteEncoderPosition();
     inputs.pivotAbsoluteVelocity = leadingMotor.getVelocity().getValueAsDouble();
     inputs.pivotAppliedVolts = leadingMotor.getMotorVoltage().getValueAsDouble();
@@ -143,7 +144,7 @@ public class PivotIOReal implements PivotIO {
 
     pivotGoal = angle;
     final MotionMagicVoltage request =
-        new MotionMagicVoltage((210 * ((angle) / 360)) - rotorOffset);
+        new MotionMagicVoltage((GEAR_RATIO * ((angle) / 360)) - rotorOffset);
     leadingMotor.setControl(request);
   }
 

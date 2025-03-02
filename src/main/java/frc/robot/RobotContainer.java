@@ -7,9 +7,6 @@ package frc.robot;
 import static frc.robot.Constants.currentMode;
 import static frc.robot.Constants.useKeyboard;
 
-import static frc.robot.Constants.currentMode;
-import static frc.robot.Constants.useKeyboard;
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;

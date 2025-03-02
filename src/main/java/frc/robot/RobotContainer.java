@@ -99,7 +99,6 @@ public class RobotContainer {
     Logger.recordOutput("currentRobot", Constants.currentRobot.ordinal());
     System.out.println("Running on robot: " + Constants.currentRobot);
 
-    // new Trigger(()-> LoggedRobot.isEnabled());
     configureBindings();
   }
 

@@ -4,13 +4,18 @@
 
 package frc.robot;
 
+import static frc.robot.Constants.currentMode;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.Mode;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONavX;
@@ -47,6 +52,8 @@ public class RobotContainer {
   // Controllers
   private final CommandXboxController controller = new CommandXboxController(0);
   private final CommandXboxController backupController = new CommandXboxController(1);
+  // * Keyboard controller to be used in SIM */
+  private final CommandGenericHID keyboardController = new CommandGenericHID(2);
 
   // Driver-assist variables
   @AutoLogOutput private int reef_level = 4; // Terminology: Trough is L1, top is L4
@@ -101,7 +108,14 @@ public class RobotContainer {
     Logger.recordOutput("currentRobot", Constants.currentRobot.ordinal());
     System.out.println("Running on robot: " + Constants.currentRobot);
 
-    configureBindings();
+    if (currentMode == Mode.SIM) {
+      configureKeyboardBindings();
+
+      // If an Xbox controller connects, switch to that.
+      new Trigger(() -> controller.isConnected()).onTrue(new RunCommand(() -> configureBindings()));
+    } else {
+      configureBindings();
+    }
   }
 
   private void configureBindings() {
@@ -212,6 +226,67 @@ public class RobotContainer {
                           case Red -> Rotation2d.fromDegrees(180);
                           default -> Rotation2d.fromDegrees(0);
                         })));
+  }
+
+  private void configureKeyboardBindings() {
+    // Wanna make this easier to handle eventually, but not super high priority atm
+    drive.setDefaultCommand(
+        drive.joystickDrive(
+            drive,
+            () -> -keyboardController.getRawAxis(1),
+            () -> -keyboardController.getRawAxis(0),
+            () -> -keyboardController.getRawAxis(4),
+            () -> keyboardController.getRawAxis(2) > 0.5));
+
+    // Path controller bindings
+    ReefTargets reefTargets = new ReefTargets();
+
+    keyboardController
+        .povDown()
+        .whileTrue( // onTrue results in the button only working once.
+            new RunCommand(
+                () -> {
+                  this.reef_level = 1;
+                }));
+    keyboardController
+        .povLeft()
+        .whileTrue(
+            new RunCommand(
+                () -> {
+                  this.reef_level = 2;
+                }));
+    keyboardController
+        .povRight()
+        .whileTrue(
+            new RunCommand(
+                () -> {
+                  this.reef_level = 3;
+                }));
+    keyboardController
+        .povUp()
+        .whileTrue(
+            new RunCommand(
+                () -> {
+                  this.reef_level = 4;
+                }));
+
+    keyboardController
+        .button(3)
+        .whileTrue(
+            new DeferredCommand(
+                () ->
+                    PathGenerator.generateSimplePath(
+                        drive.getPose(), reefTargets.findTargetLeft(drive.getPose(), reef_level)),
+                Set.of(drive)));
+
+    keyboardController
+        .button(4)
+        .whileTrue(
+            new DeferredCommand(
+                () ->
+                    PathGenerator.generateSimplePath(
+                        drive.getPose(), reefTargets.findTargetRight(drive.getPose(), reef_level)),
+                Set.of(drive)));
   }
 
   public Command getAutonomousCommand() {

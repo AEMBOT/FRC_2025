@@ -5,6 +5,7 @@
 package frc.robot.util;
 
 import static frc.robot.Constants.AprilTagConstants.aprilTagFieldLayout;
+import static frc.robot.util.FieldUtil.applyAllianceMirror;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -47,12 +48,12 @@ public final class ReefTargets {
 
     tagPoses =
         new Pose2d[] {
-          aprilTagFieldLayout.getTagPose(18).get().toPose2d(),
-          aprilTagFieldLayout.getTagPose(17).get().toPose2d(),
-          aprilTagFieldLayout.getTagPose(19).get().toPose2d(),
-          aprilTagFieldLayout.getTagPose(20).get().toPose2d(),
-          aprilTagFieldLayout.getTagPose(21).get().toPose2d(),
-          aprilTagFieldLayout.getTagPose(22).get().toPose2d()
+          applyAllianceMirror(aprilTagFieldLayout.getTagPose(18).get().toPose2d()),
+          applyAllianceMirror(aprilTagFieldLayout.getTagPose(17).get().toPose2d()),
+          applyAllianceMirror(aprilTagFieldLayout.getTagPose(19).get().toPose2d()),
+          applyAllianceMirror(aprilTagFieldLayout.getTagPose(20).get().toPose2d()),
+          applyAllianceMirror(aprilTagFieldLayout.getTagPose(21).get().toPose2d()),
+          applyAllianceMirror(aprilTagFieldLayout.getTagPose(22).get().toPose2d())
         };
 
     for (int i = 0; i < tagPoses.length; i++) {

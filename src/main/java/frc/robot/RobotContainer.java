@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONavX;
@@ -49,6 +50,7 @@ public class RobotContainer {
   private final CommandXboxController backupController = new CommandXboxController(1);
 
   // Driver-assist variables
+  private ReefTargets reefTargets;
   @AutoLogOutput private int reef_level = 4; // Terminology: Trough is L1, top is L4
 
   public RobotContainer() {
@@ -101,6 +103,14 @@ public class RobotContainer {
     Logger.recordOutput("currentRobot", Constants.currentRobot.ordinal());
     System.out.println("Running on robot: " + Constants.currentRobot);
 
+    // Calculate the reef targets at enabling. It'll crash if we try to get the alliance without being connected to a DS or FMS.
+    new Trigger(() -> DriverStation.isEnabled())
+        .onTrue(
+            new RunCommand(
+                () -> {
+                  reefTargets = new ReefTargets();
+                }));
+
     configureBindings();
   }
 
@@ -152,8 +162,6 @@ public class RobotContainer {
         .onFalse(wrist.changeGoalPosition(0));
 
     // Path controller bindings
-    ReefTargets reefTargets = new ReefTargets();
-
     controller
         .povDown()
         .whileTrue( // onTrue results in the button only working once.

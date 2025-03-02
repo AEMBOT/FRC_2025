@@ -447,6 +447,18 @@ public final class Constants {
         new PathConstraints(
             1, 4, Radians.convertFrom(360, Degrees), Radians.convertFrom(360, Degrees));
 
+    /** The default xy tolerance to terminate a corrected path. */
+    public static final double defaultTranslationTolerance = 0.05;
+
+    /** The default theta tolerance to terminate a corrected path. */
+    public static final Rotation2d defaultRotationTolerance = Rotation2d.fromDegrees(2.5);
+
+    /**
+     * If we try to path while too close to our target position, PathPlanner throws a fit. When
+     * generating a corrected path, just use simple PID if the distance is under this amount.
+     */
+    public static final double minimumPathPlannerDistance = 0.5;
+
     public static final class BasicTargets {}
   }
 

@@ -2,7 +2,7 @@ package frc.robot.subsystems.elevator;
 
 import static edu.wpi.first.math.MathUtil.clamp;
 import static edu.wpi.first.wpilibj.Timer.delay;
-import static frc.robot.Constants.ElevatorConstants.*;
+import static frc.robot.constants.ElevatorConstants.*;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;

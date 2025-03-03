@@ -4,12 +4,12 @@
 
 package frc.robot.util;
 
-import static frc.robot.Constants.AprilTagConstants.aprilTagFieldLayout;
+import static frc.robot.constants.VisionConstants.aprilTagFieldLayout;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
-import frc.robot.Constants.DriveConstants.reefTargetConstants;
+import frc.robot.constants.PositionConstants;
 
 public final class ReefTargets {
   final Pose2d[] tagPoses;
@@ -24,25 +24,21 @@ public final class ReefTargets {
 
   public ReefTargets() {
     // Defines the transformation vector for a target position
-    Rotation2d targetThetaR = new Rotation2d(reefTargetConstants.targetAngle);
-    Rotation2d targetThetaL = new Rotation2d(-reefTargetConstants.targetAngle);
+    Rotation2d targetThetaR = new Rotation2d(PositionConstants.reefRobotAngle);
+    Rotation2d targetThetaL = new Rotation2d(-PositionConstants.reefRobotAngle);
 
     Transform2d[] offsetsRight = {
-      new Transform2d(reefTargetConstants.targetLevel1X, reefTargetConstants.targetY, targetThetaR),
-      new Transform2d(reefTargetConstants.targetLevel2X, reefTargetConstants.targetY, targetThetaR),
-      new Transform2d(reefTargetConstants.targetLevel3X, reefTargetConstants.targetY, targetThetaR),
-      new Transform2d(reefTargetConstants.targetLevel4X, reefTargetConstants.targetY, targetThetaR),
+      new Transform2d(PositionConstants.reefLevel1X, PositionConstants.reefY, targetThetaR),
+      new Transform2d(PositionConstants.reefLevel2X, PositionConstants.reefY, targetThetaR),
+      new Transform2d(PositionConstants.reefLevel3X, PositionConstants.reefY, targetThetaR),
+      new Transform2d(PositionConstants.reefLevel4X, PositionConstants.reefY, targetThetaR),
     };
 
     Transform2d[] offsetsLeft = {
-      new Transform2d(
-          reefTargetConstants.targetLevel1X, -reefTargetConstants.targetY, targetThetaL),
-      new Transform2d(
-          reefTargetConstants.targetLevel2X, -reefTargetConstants.targetY, targetThetaL),
-      new Transform2d(
-          reefTargetConstants.targetLevel3X, -reefTargetConstants.targetY, targetThetaL),
-      new Transform2d(
-          reefTargetConstants.targetLevel4X, -reefTargetConstants.targetY, targetThetaL),
+      new Transform2d(PositionConstants.reefLevel1X, -PositionConstants.reefY, targetThetaL),
+      new Transform2d(PositionConstants.reefLevel2X, -PositionConstants.reefY, targetThetaL),
+      new Transform2d(PositionConstants.reefLevel3X, -PositionConstants.reefY, targetThetaL),
+      new Transform2d(PositionConstants.reefLevel4X, -PositionConstants.reefY, targetThetaL),
     };
 
     tagPoses =
@@ -120,8 +116,7 @@ public final class ReefTargets {
 
     // Find robot angle to reef and convert to a discrete "zone" value
     double reefAngle =
-        Math.atan2(
-            robotY - reefTargetConstants.reefCenterY, robotX - reefTargetConstants.reefCenterX);
+        Math.atan2(robotY - PositionConstants.reefCenterY, robotX - PositionConstants.reefCenterX);
     int reefZone = (int) Math.floor(reefAngle / (Math.PI / 6)) + 6;
     return reefZone;
   }

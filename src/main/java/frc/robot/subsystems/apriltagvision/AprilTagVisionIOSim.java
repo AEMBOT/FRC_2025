@@ -3,9 +3,9 @@ package frc.robot.subsystems.apriltagvision;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import frc.robot.Constants.AprilTagConstants;
-import frc.robot.Constants.AprilTagConstants.CameraResolution;
-import frc.robot.Constants.AprilTagConstants.NautilusCameras;
+import frc.robot.constants.VisionConstants;
+import frc.robot.constants.VisionConstants.CameraResolution;
+import frc.robot.constants.VisionConstants.NautilusCameras;
 import org.photonvision.PhotonCamera;
 import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.SimCameraProperties;
@@ -43,32 +43,32 @@ public class AprilTagVisionIOSim implements AprilTagVisionIO {
         new CameraPoseEstimator(
             frontLeft,
             NautilusCameras.frontLeftFromRobot,
-            AprilTagConstants.poseStrategy,
+            VisionConstants.poseStrategy,
             CameraResolution.HIGH_RES);
     frontRightPose =
         new CameraPoseEstimator(
             frontRight,
             NautilusCameras.frontRightFromRobot,
-            AprilTagConstants.poseStrategy,
+            VisionConstants.poseStrategy,
             CameraResolution.HIGH_RES);
     backLeftPose =
         new CameraPoseEstimator(
             backLeft,
             NautilusCameras.backLeftFromRobot,
-            AprilTagConstants.poseStrategy,
+            VisionConstants.poseStrategy,
             CameraResolution.HIGH_RES);
     backRightPose =
         new CameraPoseEstimator(
             backRight,
             NautilusCameras.backRightFromRobot,
-            AprilTagConstants.poseStrategy,
+            VisionConstants.poseStrategy,
             CameraResolution.HIGH_RES);
 
     this.poseEstimators =
         new CameraPoseEstimator[] {frontLeftPose, frontRightPose, backLeftPose, backRightPose};
 
     visionSim = new VisionSystemSim("main");
-    visionSim.addAprilTags(AprilTagConstants.aprilTagFieldLayout);
+    visionSim.addAprilTags(VisionConstants.aprilTagFieldLayout);
 
     SimCameraProperties cameraProps = new SimCameraProperties(); // Corresponds to high-res cameras
     cameraProps.setCalibration(1600, 1200, Rotation2d.fromDegrees(75));

@@ -1,7 +1,7 @@
 package frc.robot.subsystems.apriltagvision;
 
-import static frc.robot.Constants.AprilTagConstants.*;
-import static frc.robot.Constants.currentMode;
+import static frc.robot.constants.GeneralConstants.currentMode;
+import static frc.robot.constants.VisionConstants.*;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
@@ -12,8 +12,8 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.Timer;
-import frc.robot.Constants.AprilTagConstants.CameraResolution;
-import frc.robot.Constants.Mode;
+import frc.robot.constants.GeneralConstants.Mode;
+import frc.robot.constants.VisionConstants.CameraResolution;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.List;
 import java.util.Optional;

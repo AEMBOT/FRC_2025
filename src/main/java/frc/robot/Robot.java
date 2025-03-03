@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import static frc.robot.constants.GeneralConstants.currentMode;
+
 import com.pathplanner.lib.commands.PathfindingCommand;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -30,7 +32,7 @@ public class Robot extends LoggedRobot {
     m_robotContainer = new RobotContainer();
 
     // Set up data receivers & replay source
-    switch (Constants.currentMode) {
+    switch (currentMode) {
       case REAL:
         // Running on a real robot, log to a USB stick ("/U/logs")
         Logger.addDataReceiver(new WPILOGWriter("/U/logs"));

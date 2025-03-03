@@ -5,11 +5,12 @@
 package frc.robot.util;
 
 import static frc.robot.Constants.AprilTagConstants.aprilTagFieldLayout;
-import static frc.robot.util.FieldUtil.applyAllianceMirror;
+import static frc.robot.util.FieldUtil.mirrorPose;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants.DriveConstants.reefTargetConstants;
 
 public final class ReefTargets {
@@ -23,7 +24,7 @@ public final class ReefTargets {
   final Pose2d[] targetsL4Right = new Pose2d[6];
   final Pose2d[] targetsL4Left = new Pose2d[6];
 
-  public ReefTargets() {
+  public ReefTargets(Alliance alliance) {
     // Defines the transformation vector for a target position
     Rotation2d targetThetaR = new Rotation2d(reefTargetConstants.targetAngle);
     Rotation2d targetThetaL = new Rotation2d(-reefTargetConstants.targetAngle);
@@ -48,13 +49,19 @@ public final class ReefTargets {
 
     tagPoses =
         new Pose2d[] {
-          applyAllianceMirror(aprilTagFieldLayout.getTagPose(18).get().toPose2d()),
-          applyAllianceMirror(aprilTagFieldLayout.getTagPose(17).get().toPose2d()),
-          applyAllianceMirror(aprilTagFieldLayout.getTagPose(19).get().toPose2d()),
-          applyAllianceMirror(aprilTagFieldLayout.getTagPose(20).get().toPose2d()),
-          applyAllianceMirror(aprilTagFieldLayout.getTagPose(21).get().toPose2d()),
-          applyAllianceMirror(aprilTagFieldLayout.getTagPose(22).get().toPose2d())
+          aprilTagFieldLayout.getTagPose(18).get().toPose2d(),
+          aprilTagFieldLayout.getTagPose(17).get().toPose2d(),
+          aprilTagFieldLayout.getTagPose(19).get().toPose2d(),
+          aprilTagFieldLayout.getTagPose(20).get().toPose2d(),
+          aprilTagFieldLayout.getTagPose(21).get().toPose2d(),
+          aprilTagFieldLayout.getTagPose(22).get().toPose2d()
         };
+
+    if (alliance == Alliance.Red) {
+      for (int i = 0; i < tagPoses.length; i++) {
+        tagPoses[i] = mirrorPose(tagPoses[i]);
+      }
+    }
 
     for (int i = 0; i < tagPoses.length; i++) {
       targetsL1Left[i] = tagPoses[i].transformBy(offsetsLeft[0]);

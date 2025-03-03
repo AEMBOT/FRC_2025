@@ -103,12 +103,13 @@ public class RobotContainer {
     Logger.recordOutput("currentRobot", Constants.currentRobot.ordinal());
     System.out.println("Running on robot: " + Constants.currentRobot);
 
-    // Calculate the reef targets at enabling. It'll crash if we try to get the alliance without being connected to a DS or FMS.
+    // Calculate the reef targets at enabling. It'll crash if we try to get the alliance without
+    // being connected to a DS or FMS.
     new Trigger(() -> DriverStation.isEnabled())
         .onTrue(
             new RunCommand(
                 () -> {
-                  reefTargets = new ReefTargets();
+                  reefTargets = new ReefTargets(DriverStation.getAlliance().get());
                 }));
 
     configureBindings();

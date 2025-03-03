@@ -1,18 +1,18 @@
 package frc.robot.subsystems.apriltagvision;
 
-import static frc.robot.Constants.AprilTagConstants.aprilTagFieldLayout;
-import static frc.robot.Constants.currentRobot;
+import static frc.robot.constants.VisionConstants.aprilTagFieldLayout;
+import static frc.robot.constants.GeneralConstants.currentRobot;
 import static org.littletonrobotics.junction.Logger.getTimestamp;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
-import frc.robot.Constants.AprilTagConstants;
-import frc.robot.Constants.AprilTagConstants.CameraResolution;
-import frc.robot.Constants.AprilTagConstants.DoryCameras;
-import frc.robot.Constants.AprilTagConstants.NautilusCameras;
+import frc.robot.constants.GeneralConstants;
+import frc.robot.constants.VisionConstants;
+import frc.robot.constants.VisionConstants.CameraResolution;
+import frc.robot.constants.VisionConstants.DoryCameras;
+import frc.robot.constants.VisionConstants.NautilusCameras;
 import frc.robot.subsystems.apriltagvision.AprilTagVisionIO.CameraPoseEstimator;
 import java.util.Arrays;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -42,22 +42,22 @@ public class AprilTagVision extends SubsystemBase {
               new CameraPoseEstimator(
                   new PhotonCamera(NautilusCameras.frontLeftName),
                   NautilusCameras.frontLeftFromRobot,
-                  AprilTagConstants.poseStrategy,
+                  VisionConstants.poseStrategy,
                   CameraResolution.HIGH_RES),
               new CameraPoseEstimator(
                   new PhotonCamera(NautilusCameras.frontRightName),
                   NautilusCameras.frontRightFromRobot,
-                  AprilTagConstants.poseStrategy,
+                  VisionConstants.poseStrategy,
                   CameraResolution.HIGH_RES),
               new CameraPoseEstimator(
                   new PhotonCamera(NautilusCameras.backLeftName),
                   NautilusCameras.backLeftFromRobot,
-                  AprilTagConstants.poseStrategy,
+                  VisionConstants.poseStrategy,
                   CameraResolution.HIGH_RES),
               new CameraPoseEstimator(
                   new PhotonCamera(NautilusCameras.backRightName),
                   NautilusCameras.backRightFromRobot,
-                  AprilTagConstants.poseStrategy,
+                  VisionConstants.poseStrategy,
                   CameraResolution.HIGH_RES)
             };
         break;
@@ -67,28 +67,28 @@ public class AprilTagVision extends SubsystemBase {
               new CameraPoseEstimator(
                   new PhotonCamera(DoryCameras.frontLeftName),
                   DoryCameras.frontLeftFromRobot,
-                  AprilTagConstants.poseStrategy,
+                  VisionConstants.poseStrategy,
                   CameraResolution.NORMAL),
               new CameraPoseEstimator(
                   new PhotonCamera(DoryCameras.frontRightName),
                   DoryCameras.frontRightFromRobot,
-                  AprilTagConstants.poseStrategy,
+                  VisionConstants.poseStrategy,
                   CameraResolution.NORMAL),
               new CameraPoseEstimator(
                   new PhotonCamera(DoryCameras.backLeftName),
                   DoryCameras.backLeftFromRobot,
-                  AprilTagConstants.poseStrategy,
+                  VisionConstants.poseStrategy,
                   CameraResolution.NORMAL),
               new CameraPoseEstimator(
                   new PhotonCamera(DoryCameras.backRightName),
                   DoryCameras.backRightFromRobot,
-                  AprilTagConstants.poseStrategy,
+                  VisionConstants.poseStrategy,
                   CameraResolution.NORMAL),
             };
         break;
     }
 
-    switch (Constants.currentMode) {
+    switch (GeneralConstants.currentMode) {
       case REAL:
         this.io = new AprilTagVisionIOReal(visionPoseEstimators);
         break;

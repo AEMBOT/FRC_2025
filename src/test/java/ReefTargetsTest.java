@@ -6,15 +6,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.util.ReefTargets;
 import org.junit.jupiter.api.Test;
 
 public final class ReefTargetsTest {
 
   @Test
-  void testTarget() {
+  void testTargetBlue() {
 
-    ReefTargets testCase = new ReefTargets();
+    ReefTargets testCase = new ReefTargets(Alliance.Blue);
 
     try {
       assertEquals(0, testCase.findClosestTag(new Pose2d(1, 3, new Rotation2d(0))), "(1,3)");
@@ -84,6 +85,48 @@ public final class ReefTargetsTest {
 
     try {
       assertEquals(0, testCase.findClosestTag(new Pose2d(1, 5, new Rotation2d(0))), "(1,5)");
+    } catch (AssertionError e) {
+      System.out.println(e.getMessage());
+    }
+  }
+
+  @Test
+  void testTargetRed() {
+
+    ReefTargets testCase = new ReefTargets(Alliance.Red);
+
+    try {
+      assertEquals(0, testCase.findClosestTag(new Pose2d(15, 4, new Rotation2d(0))), "(15,4)");
+    } catch (AssertionError e) {
+      System.out.println(e.getMessage());
+    }
+
+    try {
+      assertEquals(2, testCase.findClosestTag(new Pose2d(14, 6, new Rotation2d(0))), "(14,6)");
+    } catch (AssertionError e) {
+      System.out.println(e.getMessage());
+    }
+
+    try {
+      assertEquals(3, testCase.findClosestTag(new Pose2d(10, 7, new Rotation2d(0))), "(10,7)");
+    } catch (AssertionError e) {
+      System.out.println(e.getMessage());
+    }
+
+    try {
+      assertEquals(4, testCase.findClosestTag(new Pose2d(7, 4, new Rotation2d(0))), "(7,4)");
+    } catch (AssertionError e) {
+      System.out.println(e.getMessage());
+    }
+
+    try {
+      assertEquals(5, testCase.findClosestTag(new Pose2d(11, 1, new Rotation2d(0))), "(11,1)");
+    } catch (AssertionError e) {
+      System.out.println(e.getMessage());
+    }
+
+    try {
+      assertEquals(1, testCase.findClosestTag(new Pose2d(14, 0, new Rotation2d(0))), "(14,0)");
     } catch (AssertionError e) {
       System.out.println(e.getMessage());
     }

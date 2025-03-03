@@ -24,21 +24,21 @@ public final class ReefTargets {
 
   public ReefTargets() {
     // Defines the transformation vector for a target position
-    Rotation2d targetThetaR = new Rotation2d(PositionConstants.targetAngle);
-    Rotation2d targetThetaL = new Rotation2d(-PositionConstants.targetAngle);
+    Rotation2d targetThetaR = new Rotation2d(PositionConstants.reefRobotAngle);
+    Rotation2d targetThetaL = new Rotation2d(-PositionConstants.reefRobotAngle);
 
     Transform2d[] offsetsRight = {
-      new Transform2d(PositionConstants.targetLevel1X, PositionConstants.targetY, targetThetaR),
-      new Transform2d(PositionConstants.targetLevel2X, PositionConstants.targetY, targetThetaR),
-      new Transform2d(PositionConstants.targetLevel3X, PositionConstants.targetY, targetThetaR),
-      new Transform2d(PositionConstants.targetLevel4X, PositionConstants.targetY, targetThetaR),
+      new Transform2d(PositionConstants.reefLevel1X, PositionConstants.reefY, targetThetaR),
+      new Transform2d(PositionConstants.reefLevel2X, PositionConstants.reefY, targetThetaR),
+      new Transform2d(PositionConstants.reefLevel3X, PositionConstants.reefY, targetThetaR),
+      new Transform2d(PositionConstants.reefLevel4X, PositionConstants.reefY, targetThetaR),
     };
 
     Transform2d[] offsetsLeft = {
-      new Transform2d(PositionConstants.targetLevel1X, -PositionConstants.targetY, targetThetaL),
-      new Transform2d(PositionConstants.targetLevel2X, -PositionConstants.targetY, targetThetaL),
-      new Transform2d(PositionConstants.targetLevel3X, -PositionConstants.targetY, targetThetaL),
-      new Transform2d(PositionConstants.targetLevel4X, -PositionConstants.targetY, targetThetaL),
+      new Transform2d(PositionConstants.reefLevel1X, -PositionConstants.reefY, targetThetaL),
+      new Transform2d(PositionConstants.reefLevel2X, -PositionConstants.reefY, targetThetaL),
+      new Transform2d(PositionConstants.reefLevel3X, -PositionConstants.reefY, targetThetaL),
+      new Transform2d(PositionConstants.reefLevel4X, -PositionConstants.reefY, targetThetaL),
     };
 
     tagPoses =

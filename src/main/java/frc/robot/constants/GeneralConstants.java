@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotBase;
 
 public class GeneralConstants {
-    /**
+  /**
    * A jumper that identifies what robot we're currently running on. It outputs high voltage on
    * Nautilus and low voltage on Dory. If there is no jumper, it'll default to high/true
    */

@@ -1,7 +1,7 @@
 package frc.robot.subsystems.apriltagvision;
 
-import static frc.robot.constants.VisionConstants.aprilTagFieldLayout;
 import static frc.robot.constants.GeneralConstants.currentRobot;
+import static frc.robot.constants.VisionConstants.aprilTagFieldLayout;
 import static org.littletonrobotics.junction.Logger.getTimestamp;
 
 import edu.wpi.first.math.VecBuilder;

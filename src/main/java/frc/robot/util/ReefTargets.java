@@ -35,14 +35,10 @@ public final class ReefTargets {
     };
 
     Transform2d[] offsetsLeft = {
-      new Transform2d(
-          PositionConstants.targetLevel1X, -PositionConstants.targetY, targetThetaL),
-      new Transform2d(
-          PositionConstants.targetLevel2X, -PositionConstants.targetY, targetThetaL),
-      new Transform2d(
-          PositionConstants.targetLevel3X, -PositionConstants.targetY, targetThetaL),
-      new Transform2d(
-          PositionConstants.targetLevel4X, -PositionConstants.targetY, targetThetaL),
+      new Transform2d(PositionConstants.targetLevel1X, -PositionConstants.targetY, targetThetaL),
+      new Transform2d(PositionConstants.targetLevel2X, -PositionConstants.targetY, targetThetaL),
+      new Transform2d(PositionConstants.targetLevel3X, -PositionConstants.targetY, targetThetaL),
+      new Transform2d(PositionConstants.targetLevel4X, -PositionConstants.targetY, targetThetaL),
     };
 
     tagPoses =
@@ -120,8 +116,7 @@ public final class ReefTargets {
 
     // Find robot angle to reef and convert to a discrete "zone" value
     double reefAngle =
-        Math.atan2(
-            robotY - PositionConstants.reefCenterY, robotX - PositionConstants.reefCenterX);
+        Math.atan2(robotY - PositionConstants.reefCenterY, robotX - PositionConstants.reefCenterX);
     int reefZone = (int) Math.floor(reefAngle / (Math.PI / 6)) + 6;
     return reefZone;
   }

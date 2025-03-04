@@ -14,9 +14,9 @@
 package frc.robot.subsystems.drive;
 
 import static edu.wpi.first.wpilibj.Timer.delay;
-import static frc.robot.Constants.DriveConstants.Module.WHEEL_RADIUS;
-import static frc.robot.Constants.DriveConstants.Module.driveMotorInversion;
-import static frc.robot.Constants.DriveConstants.Module.turnMotorInversion;
+import static frc.robot.constants.DriveConstants.Module.WHEEL_RADIUS;
+import static frc.robot.constants.DriveConstants.Module.driveMotorInversion;
+import static frc.robot.constants.DriveConstants.Module.turnMotorInversion;
 import static java.lang.Math.abs;
 
 import com.ctre.phoenix6.BaseStatusSignal;
@@ -38,7 +38,7 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
-import frc.robot.Constants.DriveConstants;
+import frc.robot.constants.DriveConstants;
 import java.util.Queue;
 
 /**

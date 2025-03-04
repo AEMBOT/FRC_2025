@@ -4,8 +4,15 @@
 
 package frc.robot;
 
+import static frc.robot.constants.GeneralConstants.currentMode;
+import static frc.robot.constants.GeneralConstants.currentRobot;
+
 import com.pathplanner.lib.auto.AutoBuilder;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.DeferredCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -25,6 +32,10 @@ import frc.robot.subsystems.pivot.PivotIOReal;
 import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.subsystems.wrist.WristIO;
 import frc.robot.subsystems.wrist.WristIOReal;
+import frc.robot.util.PathGenerator;
+import frc.robot.util.ReefTargets;
+import java.util.Set;
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -41,12 +52,15 @@ public class RobotContainer {
   private final CommandXboxController controller = new CommandXboxController(0);
   private final CommandXboxController backupController = new CommandXboxController(1);
 
+  // Driver-assist variables
+  @AutoLogOutput private int reef_level = 4; // Terminology: Trough is L1, top is L4
+
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
 
   public RobotContainer() {
 
-    switch (Constants.currentMode) {
+    switch (currentMode) {
       case REAL:
         drive =
             new Drive(
@@ -91,10 +105,9 @@ public class RobotContainer {
         break;
     }
 
-    Logger.recordOutput("currentRobot", Constants.currentRobot.ordinal());
-    System.out.println("Running on robot: " + Constants.currentRobot);
+    Logger.recordOutput("currentRobot", currentRobot.ordinal());
+    System.out.println("Running on robot: " + currentRobot);
 
-    // new Trigger(()-> LoggedRobot.isEnabled());
     configureBindings();
 
     // Set up auto chooser
@@ -102,7 +115,6 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-
     drive.setDefaultCommand(
         drive.joystickDrive(
             drive,
@@ -110,42 +122,106 @@ public class RobotContainer {
             () -> -controller.getLeftX(),
             () -> -controller.getRightX(),
             () ->
-                controller
-                    .leftStick()
-                    .getAsBoolean())); // Temperarily set slowmode control to left push in so that
-    // we can have all controls on one controller
+                controller.getLeftTriggerAxis()
+                    > 0.5)); // Trigger locks make trigger boolean, rather than analog.
 
-    // FIXME Resolve binding conflict between elevator down and drive slow mode
-
-    controller
+    backupController
         .a()
         .whileTrue(pivot.changePosition(10).alongWith(elevator.limitHeight(pivot.getPosition())))
         .onFalse(pivot.changePosition(0));
-    controller
+    backupController
         .b()
         .whileTrue(pivot.changePosition(-10).alongWith(elevator.limitHeight(pivot.getPosition())))
         .onFalse(pivot.changePosition(0));
 
-    controller
+    backupController
         .rightTrigger()
         .whileTrue(elevator.changePosition(0.25))
         .onFalse(elevator.changePosition(0));
-    controller
+    backupController
         .leftTrigger()
         .whileTrue(elevator.changePosition(-0.25))
         .onFalse(elevator.changePosition(0));
 
-    controller
+    backupController
         .rightBumper()
         .onTrue(intake.runIntakeCommand(() -> -2))
         .onFalse(intake.runIntakeCommand(() -> 0));
-    controller
+    backupController
         .leftBumper()
         .onTrue(intake.runIntakeCommand(() -> 3))
         .onFalse(intake.runIntakeCommand(() -> 0));
 
-    controller.y().whileTrue(wrist.changeGoalPosition(40)).onFalse(wrist.changeGoalPosition(0));
-    controller.x().whileTrue(wrist.changeGoalPosition(-40)).onFalse(wrist.changeGoalPosition(0));
+    backupController
+        .y()
+        .whileTrue(wrist.changeGoalPosition(40))
+        .onFalse(wrist.changeGoalPosition(0));
+    backupController
+        .x()
+        .whileTrue(wrist.changeGoalPosition(-40))
+        .onFalse(wrist.changeGoalPosition(0));
+
+    // Path controller bindings
+    ReefTargets reefTargets = new ReefTargets();
+
+    controller
+        .povDown()
+        .whileTrue( // onTrue results in the button only working once.
+            new RunCommand(
+                () -> {
+                  this.reef_level = 1;
+                }));
+    controller
+        .povLeft()
+        .whileTrue(
+            new RunCommand(
+                () -> {
+                  this.reef_level = 2;
+                }));
+    controller
+        .povRight()
+        .whileTrue(
+            new RunCommand(
+                () -> {
+                  this.reef_level = 3;
+                }));
+    controller
+        .povUp()
+        .whileTrue(
+            new RunCommand(
+                () -> {
+                  this.reef_level = 4;
+                }));
+
+    controller
+        .x()
+        .whileTrue(
+            new DeferredCommand(
+                () ->
+                    PathGenerator.generateSimpleCorrectedPath(
+                        drive, reefTargets.findTargetLeft(drive.getPose(), reef_level)),
+                Set.of(drive)));
+
+    controller
+        .y()
+        .whileTrue(
+            new DeferredCommand(
+                () ->
+                    PathGenerator.generateSimpleCorrectedPath(
+                        drive, reefTargets.findTargetRight(drive.getPose(), reef_level)),
+                Set.of(drive)));
+
+    controller
+        .start()
+        .whileTrue(
+            new RunCommand(
+                () ->
+                    drive.setYaw(
+                        switch (DriverStation.getAlliance().get()) {
+                          case Blue -> Rotation2d.fromDegrees(0);
+                          case Red -> Rotation2d.fromDegrees(180);
+                          default -> Rotation2d.fromDegrees(0);
+                        })));
   }
 
   public Command getAutonomousCommand() {

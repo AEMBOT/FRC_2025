@@ -34,6 +34,9 @@ public interface PivotIO {
 
     /** Whether the pivot subsystem is running in an openloop */
     public boolean openLoopStatus = false;
+
+    /** */
+    public boolean ratchetEngaged = false;
   }
 
   /** Updates the set of loggable inputs. */
@@ -47,4 +50,13 @@ public interface PivotIO {
 
   /** Resets the pivot goal and setpoint to the current angle of the pivot */
   public default void resetProfile() {}
+
+  /** */
+  public default void runRatchetForward() {}
+
+  /** */
+  public default void runRatchetReverse() {}
+
+  /** */
+  public default void stopRatchet() {}
 }

@@ -2,7 +2,7 @@ package frc.robot.subsystems.drive;
 
 import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kForward;
 import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kReverse;
-import static frc.robot.Constants.currentMode;
+import static frc.robot.constants.GeneralConstants.currentMode;
 import static java.lang.Math.min;
 
 import com.ctre.phoenix6.SignalLogger;
@@ -27,10 +27,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.Mode;
+import frc.robot.constants.DriveConstants;
+import frc.robot.constants.GeneralConstants.Mode;
+import frc.robot.constants.PathingConstants;
 import frc.robot.subsystems.apriltagvision.AprilTagVision;
-import frc.robot.Constants.PathingConstants;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.locks.Lock;
@@ -110,7 +110,7 @@ public class Drive extends SubsystemBase {
                 null,
                 this));
 
-    // Configure PathPlanner AutoBuilder
+    // Configure AutoBuilder for pathing
     AutoBuilder.configure(
         this::getPose,
         this::setPose,

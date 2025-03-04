@@ -11,7 +11,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.drive.Drive;
@@ -32,9 +31,7 @@ import frc.robot.subsystems.pivot.PivotIOReal;
 import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.subsystems.wrist.WristIO;
 import frc.robot.subsystems.wrist.WristIOReal;
-import frc.robot.util.PathGenerator;
 import frc.robot.util.ReefTargets;
-import java.util.Set;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -53,6 +50,9 @@ public class RobotContainer {
 
   // Driver-assist variables
   @AutoLogOutput private int reef_level = 4; // Terminology: Trough is L1, top is L4
+
+  // Command Creation
+  private final DefinedCommands definedCommands;
 
   public RobotContainer() {
 
@@ -103,6 +103,8 @@ public class RobotContainer {
 
     Logger.recordOutput("currentRobot", currentRobot.ordinal());
     System.out.println("Running on robot: " + currentRobot);
+
+    definedCommands = new DefinedCommands(drive, wrist, elevator, pivot);
 
     configureBindings();
   }
@@ -186,23 +188,9 @@ public class RobotContainer {
                   this.reef_level = 4;
                 }));
 
-    controller
-        .x()
-        .whileTrue(
-            new DeferredCommand(
-                () ->
-                    PathGenerator.generateSimplePath(
-                        drive.getPose(), reefTargets.findTargetLeft(drive.getPose(), reef_level)),
-                Set.of(drive)));
+    controller.x().whileTrue(definedCommands.goToReef(reef_level, false));
 
-    controller
-        .y()
-        .whileTrue(
-            new DeferredCommand(
-                () ->
-                    PathGenerator.generateSimplePath(
-                        drive.getPose(), reefTargets.findTargetRight(drive.getPose(), reef_level)),
-                Set.of(drive)));
+    controller.y().whileTrue(definedCommands.goToReef(reef_level, true));
 
     controller
         .start()

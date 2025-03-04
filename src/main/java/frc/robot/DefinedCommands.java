@@ -1,6 +1,10 @@
 package frc.robot;
 
 import static frc.robot.constants.PositionConstants.reefArmPositions;
+import static frc.robot.constants.PositionConstants.sourceElevatorExtension;
+import static frc.robot.constants.PositionConstants.sourcePivotAngle;
+import static frc.robot.constants.PositionConstants.sourcePose;
+import static frc.robot.constants.PositionConstants.sourceWristAngle;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.DeferredCommand;
@@ -63,6 +67,35 @@ public class DefinedCommands {
                                                 - pivot.getPosition().getAsDouble())
                                         < PivotConstants.ALLOWED_DEVIANCE))
                 .andThen(elevator.setPosition(() -> reefArmPositions[reef_level - 1][2])),
+        Set.of(drive, elevator, pivot, wrist));
+  }
+
+  public final Command goToSource() {
+    return new DeferredCommand(
+        () ->
+            PathGenerator.generateSimplePath(
+                    drive.getPose(), sourcePose)
+                .alongWith(wrist.setGoalPosition(() -> sourceWristAngle))
+                .alongWith(
+                    elevator.getPosition().getAsDouble() > sourceElevatorExtension
+                        ? elevator
+                            .setPosition(() -> sourceElevatorExtension)
+                            .until(
+                                () ->
+                                    Math.abs(
+                                            sourceElevatorExtension
+                                                - elevator.getPosition().getAsDouble())
+                                        < ElevatorConstants.ALLOWED_DEVIANCE)
+                            .andThen(pivot.setPosition(() -> sourcePivotAngle))
+                        : pivot
+                            .setPosition(() -> sourcePivotAngle)
+                            .until(
+                                () ->
+                                    Math.abs(
+                                            sourcePivotAngle
+                                                - pivot.getPosition().getAsDouble())
+                                        < PivotConstants.ALLOWED_DEVIANCE))
+                .andThen(elevator.setPosition(() -> sourceElevatorExtension)),
         Set.of(drive, elevator, pivot, wrist));
   }
 }

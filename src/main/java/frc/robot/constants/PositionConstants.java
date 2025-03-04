@@ -3,6 +3,10 @@ package frc.robot.constants;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Radians;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+
 public class PositionConstants {
   // Defines new variables for the x/y translations for the target positions (currently at
   // placeholders)
@@ -45,6 +49,15 @@ public class PositionConstants {
     public static final double sourceWristAngle = 0; // TODO find value
     public static final double sourcePivotAngle = 45; // TODO find value
     public static final double sourceElevatorExtension = 0; // TODO find value
+
+    public static final Pose2d sourcePose = new Pose2d(
+      new Translation2d(
+        0, //TODO find value
+        0 //TODO find value
+      ),
+      new Rotation2d(
+        0 //TODO find value
+      ));
 
     public static final double[][] reefArmPositions = {
       {L1WristAngle, L1PivotAngle, L1ElevatorExtension},

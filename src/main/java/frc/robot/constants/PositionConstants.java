@@ -19,4 +19,37 @@ public class PositionConstants {
   // Define reef centerpoints (blue alliance)
   public static final double reefCenterX = 4.489323;
   public static final double reefCenterY = 4.0259;
+
+
+    // L1 Arm Setpoint Values
+    public static final double L1WristAngle = 0; // TODO find value
+    public static final double L1PivotAngle = 25; // TODO find value
+    public static final double L1ElevatorExtension = 0; // TODO find value
+
+    // L2 Arm Setpoint Values
+    public static final double L2WristAngle = -30; // TODO find value
+    public static final double L2PivotAngle = 45; // TODO find value
+    public static final double L2ElevatorExtension = 0; // TODO find value
+
+    // L3 Arm Setpoint Values
+    public static final double L3WristAngle = -45; // TODO find value
+    public static final double L3PivotAngle = 60; // TODO find value
+    public static final double L3ElevatorExtension = 0.125; // TODO find value
+
+    // L4 Arm Setpoint Values
+    public static final double L4WristAngle = -50; // TODO find value
+    public static final double L4PivotAngle = 75; // TODO find value
+    public static final double L4ElevatorExtension = 1.1; // TODO find value
+
+    // Source Arm Setpoint Values
+    public static final double sourceWristAngle = 0; // TODO find value
+    public static final double sourcePivotAngle = 45; // TODO find value
+    public static final double sourceElevatorExtension = 0; // TODO find value
+
+    public static final double[][] reefArmPositions = {
+      {L1WristAngle, L1PivotAngle, L1ElevatorExtension},
+      {L2WristAngle, L2PivotAngle, L2ElevatorExtension},
+      {L3WristAngle, L3PivotAngle, L3ElevatorExtension},
+      {L4WristAngle, L4PivotAngle, L4ElevatorExtension}
+    };
 }

@@ -1,13 +1,11 @@
 package frc.robot;
 
-import static frc.robot.Constants.ElevatorConstants;
-import static frc.robot.Constants.PivotConstants;
-import static frc.robot.Constants.PositionConstants.reefArmPositions;
+import static frc.robot.constants.PositionConstants.reefArmPositions;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.DeferredCommand;
-import frc.robot.Constants.DriveConstants.reefTargetConstants.*;
-import frc.robot.Constants.ElevatorConstants;
+import frc.robot.constants.PivotConstants;
+import frc.robot.constants.ElevatorConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.pivot.Pivot;

@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import static frc.robot.constants.GeneralConstants.currentMode;
+import static frc.robot.constants.GeneralConstants.currentRobot;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -53,7 +56,7 @@ public class RobotContainer {
 
   public RobotContainer() {
 
-    switch (Constants.currentMode) {
+    switch (currentMode) {
       case REAL:
         drive =
             new Drive(
@@ -98,8 +101,8 @@ public class RobotContainer {
         break;
     }
 
-    Logger.recordOutput("currentRobot", Constants.currentRobot.ordinal());
-    System.out.println("Running on robot: " + Constants.currentRobot);
+    Logger.recordOutput("currentRobot", currentRobot.ordinal());
+    System.out.println("Running on robot: " + currentRobot);
 
     configureBindings();
   }

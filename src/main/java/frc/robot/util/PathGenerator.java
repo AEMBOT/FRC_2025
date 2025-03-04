@@ -14,7 +14,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.Constants.PathingConstants;
+import frc.robot.constants.PathingConstants;
 import frc.robot.subsystems.drive.Drive;
 import java.util.List;
 

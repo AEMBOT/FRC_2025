@@ -448,7 +448,7 @@ public final class Constants {
             1, 4, Radians.convertFrom(360, Degrees), Radians.convertFrom(360, Degrees));
 
     /** The default xy tolerance to terminate a corrected path. */
-    public static final double defaultTranslationTolerance = 0.05;
+    public static final double defaultTranslationTolerance = 0.01;
 
     /** The default theta tolerance to terminate a corrected path. */
     public static final Rotation2d defaultRotationTolerance = Rotation2d.fromDegrees(2.5);

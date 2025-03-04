@@ -2,10 +2,10 @@ package frc.robot.subsystems.wrist;
 
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
-import static frc.robot.Constants.UPDATE_PERIOD;
-import static frc.robot.Constants.WristConstants.SYS_ID_RAMP_RATE;
-import static frc.robot.Constants.WristConstants.SYS_ID_STEP_VALUE;
-import static frc.robot.Constants.WristConstants.SYS_ID_TIMEOUT;
+import static frc.robot.constants.GeneralConstants.UPDATE_PERIOD;
+import static frc.robot.constants.WristConstants.SYS_ID_RAMP_RATE;
+import static frc.robot.constants.WristConstants.SYS_ID_STEP_VALUE;
+import static frc.robot.constants.WristConstants.SYS_ID_TIMEOUT;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;

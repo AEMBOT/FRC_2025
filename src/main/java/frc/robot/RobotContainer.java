@@ -62,10 +62,20 @@ public class RobotContainer {
                 new ModuleIOTalonFX(1),
                 new ModuleIOTalonFX(2),
                 new ModuleIOTalonFX(3));
-        intake = new Intake(new IntakeIOReal());
-        pivot = new Pivot(new PivotIOReal());
-        elevator = new Elevator(new ElevatorIOReal());
-        wrist = new Wrist(new WristIOReal());
+        switch (Constants.currentRobot) {
+          case NAUTILUS:
+            intake = new Intake(new IntakeIOReal());
+            pivot = new Pivot(new PivotIOReal());
+            elevator = new Elevator(new ElevatorIOReal());
+            wrist = new Wrist(new WristIOReal());
+            break;
+          default: // Dory doesn't have arm
+            intake = new Intake(new IntakeIO() {});
+            pivot = new Pivot(new PivotIO() {});
+            elevator = new Elevator(new ElevatorIO() {});
+            wrist = new Wrist(new WristIO() {});
+            break;
+        }
         break;
 
       case SIM:

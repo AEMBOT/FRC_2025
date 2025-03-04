@@ -155,7 +155,7 @@ public class PivotIOReal implements PivotIO {
   }
 
   private double getAbsoluteEncoderPosition() {
-    return (ENCODER.get() * 360) + ENCODER_POSITION_OFFSET;
+    return ((ENCODER.get() * 360) + ENCODER_POSITION_OFFSET) % 360;
   }
 
   private void setMotorVoltage(double volts) {

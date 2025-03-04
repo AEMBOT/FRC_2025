@@ -45,8 +45,8 @@ public class ElevatorIOReal implements ElevatorIO {
     leftMotorConfig.Slot0.kI = 0;
     leftMotorConfig.Slot0.kD = 0;
 
-    leftMotorConfig.MotionMagic.MotionMagicCruiseVelocity = 0.5 / rotToMetMultFactor;
-    leftMotorConfig.MotionMagic.MotionMagicAcceleration = 1 / rotToMetMultFactor;
+    leftMotorConfig.MotionMagic.MotionMagicCruiseVelocity = 1 / rotToMetMultFactor;
+    leftMotorConfig.MotionMagic.MotionMagicAcceleration = 2 / rotToMetMultFactor;
     leftMotorConfig.MotionMagic.MotionMagicJerk = 0 / rotToMetMultFactor;
 
     leadingMotor.getConfigurator().apply(leftMotorConfig);

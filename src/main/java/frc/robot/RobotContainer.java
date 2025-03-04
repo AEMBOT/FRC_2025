@@ -6,6 +6,7 @@ package frc.robot;
 
 import static frc.robot.constants.GeneralConstants.currentMode;
 import static frc.robot.constants.GeneralConstants.currentRobot;
+import static frc.robot.constants.PositionConstants.*;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -188,10 +189,37 @@ public class RobotContainer {
                   this.reef_level = 4;
                 }));
 
-    controller.x().whileTrue(definedCommands.goToReef(reef_level, false));
+    controller
+        .b()
+        .whileTrue(
+            wrist
+                .setGoalPosition(() -> sourceWristAngle)
+                .alongWith(pivot.setPosition(() -> sourcePivotAngle))
+                .alongWith(elevator.setPosition(() -> sourceElevatorExtension)));
 
-    controller.y().whileTrue(definedCommands.goToReef(reef_level, true));
+    controller
+        .x()
+        .whileTrue(
+            wrist
+                .setGoalPosition(() -> reefArmPositions[reef_level - 1][0])
+                .alongWith(pivot.setPosition(() -> reefArmPositions[reef_level - 1][1]))
+                .alongWith(elevator.setPosition(() -> reefArmPositions[reef_level - 1][2])));
 
+    controller
+        .b()
+        .whileTrue(
+            wrist
+                .setGoalPosition(() -> sourceWristAngle)
+                .alongWith(pivot.setPosition(() -> sourcePivotAngle))
+                .alongWith(elevator.setPosition(() -> sourceElevatorExtension)));
+
+    controller
+        .a()
+        .whileTrue(
+            wrist
+                .setGoalPosition(() -> L1WristAngle)
+                .alongWith(pivot.setPosition(() -> 24))
+                .alongWith(elevator.setPosition(() -> L1ElevatorExtension)));
     controller
         .start()
         .whileTrue(

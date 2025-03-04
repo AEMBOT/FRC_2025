@@ -3,10 +3,10 @@ package frc.robot;
 import static frc.robot.constants.PositionConstants.reefArmPositions;
 import static frc.robot.constants.PositionConstants.sourceElevatorExtension;
 import static frc.robot.constants.PositionConstants.sourcePivotAngle;
-import static frc.robot.constants.PositionConstants.sourcePose;
 import static frc.robot.constants.PositionConstants.sourceWristAngle;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import frc.robot.constants.ElevatorConstants;
 import frc.robot.constants.PivotConstants;
@@ -14,7 +14,6 @@ import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.wrist.Wrist;
-import frc.robot.util.PathGenerator;
 import frc.robot.util.ReefTargets;
 import java.util.Set;
 
@@ -41,12 +40,8 @@ public class DefinedCommands {
   public final Command goToReef(int reef_level, boolean isRight) {
     return new DeferredCommand(
         () ->
-            PathGenerator.generateSimplePath(
-                    drive.getPose(),
-                    isRight
-                        ? reefTargets.findTargetRight(drive.getPose(), reef_level)
-                        : reefTargets.findTargetLeft(drive.getPose(), reef_level))
-                .alongWith(wrist.setGoalPosition(() -> reefArmPositions[reef_level - 1][0]))
+            wrist
+                .setGoalPosition(() -> reefArmPositions[reef_level - 1][0])
                 .alongWith(
                     elevator.getPosition().getAsDouble() > reefArmPositions[reef_level - 1][2]
                         ? elevator
@@ -71,10 +66,10 @@ public class DefinedCommands {
   }
 
   public final Command goToSource() {
-    return new DeferredCommand(
+    return Commands.run(
         () ->
-            PathGenerator.generateSimplePath(drive.getPose(), sourcePose)
-                .alongWith(wrist.setGoalPosition(() -> sourceWristAngle))
+            wrist
+                .setGoalPosition(() -> sourceWristAngle)
                 .alongWith(
                     elevator.getPosition().getAsDouble() > sourceElevatorExtension
                         ? elevator
@@ -92,7 +87,6 @@ public class DefinedCommands {
                                 () ->
                                     Math.abs(sourcePivotAngle - pivot.getPosition().getAsDouble())
                                         < PivotConstants.ALLOWED_DEVIANCE))
-                .andThen(elevator.setPosition(() -> sourceElevatorExtension)),
-        Set.of(drive, elevator, pivot, wrist));
+                .andThen(elevator.setPosition(() -> sourceElevatorExtension)));
   }
 }

@@ -52,9 +52,6 @@ public class RobotContainer {
   // Driver-assist variables
   @AutoLogOutput private int reef_level = 4; // Terminology: Trough is L1, top is L4
 
-  // Command Creation
-  private final DefinedCommands definedCommands;
-
   public RobotContainer() {
 
     switch (currentMode) {
@@ -105,7 +102,6 @@ public class RobotContainer {
     Logger.recordOutput("currentRobot", currentRobot.ordinal());
     System.out.println("Running on robot: " + currentRobot);
 
-    definedCommands = new DefinedCommands(drive, wrist, elevator, pivot);
 
     configureBindings();
   }

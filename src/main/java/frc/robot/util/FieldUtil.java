@@ -3,7 +3,7 @@ package frc.robot.util;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
-import frc.robot.Constants.AprilTagConstants;
+import frc.robot.constants.VisionConstants;
 
 public class FieldUtil {
   /**
@@ -13,7 +13,7 @@ public class FieldUtil {
    * @return The mirrored pose
    */
   public static Pose2d mirrorPose(Pose2d pose) {
-    double x = AprilTagConstants.aprilTagFieldLayout.getFieldLength() - pose.getX();
+    double x = VisionConstants.aprilTagFieldLayout.getFieldLength() - pose.getX();
     double y = pose.getY();
     Rotation2d theta = Rotation2d.fromDegrees(180).minus(pose.getRotation());
     return new Pose2d(x, y, theta);
@@ -26,8 +26,8 @@ public class FieldUtil {
    * @return The flipped pose
    */
   public static Pose2d flipPose(Pose2d pose) {
-    double x = AprilTagConstants.aprilTagFieldLayout.getFieldLength() - pose.getX();
-    double y = AprilTagConstants.aprilTagFieldLayout.getFieldWidth() - pose.getY();
+    double x = VisionConstants.aprilTagFieldLayout.getFieldLength() - pose.getX();
+    double y = VisionConstants.aprilTagFieldLayout.getFieldWidth() - pose.getY();
     Rotation2d theta = pose.getRotation().plus(Rotation2d.fromDegrees(180));
     return new Pose2d(x, y, theta);
   }

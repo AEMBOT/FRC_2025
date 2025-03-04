@@ -2,7 +2,7 @@ package frc.robot.subsystems.wrist;
 
 import static edu.wpi.first.math.MathUtil.clamp;
 import static edu.wpi.first.wpilibj.Timer.delay;
-import static frc.robot.Constants.WristConstants.*;
+import static frc.robot.constants.WristConstants.*;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;

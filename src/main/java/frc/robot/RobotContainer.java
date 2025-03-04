@@ -201,14 +201,6 @@ public class RobotContainer {
                 .alongWith(elevator.setPosition(() -> reefArmPositions[reef_level - 1][2])));
 
     controller
-        .b()
-        .whileTrue(
-            wrist
-                .setGoalPosition(() -> sourceWristAngle)
-                .alongWith(pivot.setPosition(() -> sourcePivotAngle))
-                .alongWith(elevator.setPosition(() -> sourceElevatorExtension)));
-
-    controller
         .a()
         .whileTrue(
             wrist

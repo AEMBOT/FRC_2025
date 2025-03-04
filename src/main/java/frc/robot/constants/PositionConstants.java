@@ -30,12 +30,12 @@ public class PositionConstants {
   public static final double L1ElevatorExtension = 0; // TODO find value
 
   // L2 Arm Setpoint Values
-  public static final double L2WristAngle = -7; // TODO find value
+  public static final double L2WristAngle = 30; // TODO find value
   public static final double L2PivotAngle = 76.2; // TODO find value
   public static final double L2ElevatorExtension = 0; // TODO find value
 
   // L3 Arm Setpoint Values
-  public static final double L3WristAngle = -7; // TODO find value
+  public static final double L3WristAngle = 5; // TODO find value
   public static final double L3PivotAngle = 76.2; // TODO find value
   public static final double L3ElevatorExtension = 0.51; // TODO find value
 

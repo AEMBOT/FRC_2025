@@ -3,7 +3,9 @@ package frc.robot.util;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.constants.VisionConstants;
+import java.util.Optional;
 
 public class FieldUtil {
   /**
@@ -39,7 +41,7 @@ public class FieldUtil {
    * @return If on blue alliance, the input pose; If on read alliance, the mirrored pose.
    */
   public static Pose2d applyAllianceMirror(Pose2d pose) {
-    return switch (DriverStation.getAlliance().get()) {
+    return switch (getAllianceSafely()) {
       case Blue -> pose;
       case Red -> mirrorPose(pose);
       default -> pose;
@@ -53,10 +55,20 @@ public class FieldUtil {
    * @return If on blue alliance, the input pose; If on read alliance, the flipped pose.
    */
   public static Pose2d applyAllianceFlip(Pose2d pose) {
-    return switch (DriverStation.getAlliance().get()) {
+    return switch (getAllianceSafely()) {
       case Blue -> pose;
       case Red -> flipPose(pose);
       default -> pose;
     };
+  }
+
+  /**
+   * Get the current alliance without risk of crashing. If not connected to DS or FMS, return {@link
+   * Alliance}.Blue.
+   */
+  public static Alliance getAllianceSafely() {
+    Optional<Alliance> allianceOption = DriverStation.getAlliance();
+
+    return allianceOption.orElse(Alliance.Blue);
   }
 }

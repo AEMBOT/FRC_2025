@@ -33,6 +33,7 @@ import frc.robot.subsystems.pivot.PivotIOReal;
 import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.subsystems.wrist.WristIO;
 import frc.robot.subsystems.wrist.WristIOReal;
+import frc.robot.util.FieldUtil;
 import frc.robot.util.PathGenerator;
 import frc.robot.util.ReefTargets;
 import java.util.Set;
@@ -112,7 +113,7 @@ public class RobotContainer {
         .onTrue(
             new RunCommand(
                 () -> {
-                  reefTargets = new ReefTargets(DriverStation.getAlliance().get());
+                  reefTargets = new ReefTargets(FieldUtil.getAllianceSafely());
                 }));
 
     configureBindings();

@@ -8,6 +8,8 @@ import static frc.robot.constants.GeneralConstants.currentMode;
 import static frc.robot.constants.GeneralConstants.currentRobot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -131,10 +133,23 @@ public class RobotContainer {
                   reefTargets = new ReefTargets(FieldUtil.getAllianceSafely());
                 }));
 
-    configureBindings();
+    // Set up pathplanner named commands, currently placeholders for automatic reef alignment/scoring
+    NamedCommands.registerCommand("L1-left", null);
+    NamedCommands.registerCommand("L1-right", null);
+    NamedCommands.registerCommand("L2-left", null);
+    NamedCommands.registerCommand("L2-right", null);
+    NamedCommands.registerCommand("L3-left", null);
+    NamedCommands.registerCommand("L3-right", null);
+    NamedCommands.registerCommand("L4-left", null);
+    NamedCommands.registerCommand("L4-right", null);
+    NamedCommands.registerCommand("source-left", null);
+    NamedCommands.registerCommand("source-right", null);
 
     // Set up auto chooser
     autoChooser = new LoggedDashboardChooser<>("Auto Routines", AutoBuilder.buildAutoChooser());
+
+    configureBindings();
+
   }
 
   private void configureBindings() {

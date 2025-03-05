@@ -8,9 +8,9 @@ public class PositionConstants {
   // placeholders)
   // Origin to bumper ~0.4572 m
   public static final double reefLevel1X = 0.4672;
-  public static final double reefLevel2X = 0.4672; 
-  public static final double reefLevel3X = 0.4672; 
-  public static final double reefLevel4X = 0.4672; 
+  public static final double reefLevel2X = 0.4672;
+  public static final double reefLevel3X = 0.4672;
+  public static final double reefLevel4X = 0.4672;
 
   public static final double reefY = 0.1793875;
 

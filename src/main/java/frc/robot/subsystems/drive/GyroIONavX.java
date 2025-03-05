@@ -13,8 +13,8 @@
 
 package frc.robot.subsystems.drive;
 
-import static frc.robot.Constants.DriveConstants.Module.ODOMETRY_FREQUENCY;
-import static frc.robot.Constants.currentRobot;
+import static frc.robot.constants.DriveConstants.Module.ODOMETRY_FREQUENCY;
+import static frc.robot.constants.GeneralConstants.currentRobot;
 
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.geometry.Rotation2d;

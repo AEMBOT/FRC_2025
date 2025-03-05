@@ -7,10 +7,10 @@ package frc.robot;
 import static frc.robot.constants.GeneralConstants.currentMode;
 import static frc.robot.constants.GeneralConstants.currentRobot;
 
+import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -40,6 +40,7 @@ import frc.robot.util.ReefTargets;
 import java.util.Set;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 public class RobotContainer {
 
@@ -57,6 +58,9 @@ public class RobotContainer {
   // Driver-assist variables
   private ReefTargets reefTargets;
   @AutoLogOutput private int reef_level = 4; // Terminology: Trough is L1, top is L4
+
+  // Dashboard inputs
+  private final LoggedDashboardChooser<Command> autoChooser;
 
   public RobotContainer() {
 
@@ -128,6 +132,9 @@ public class RobotContainer {
                 }));
 
     configureBindings();
+
+    // Set up auto chooser
+    autoChooser = new LoggedDashboardChooser<>("Auto Routines", AutoBuilder.buildAutoChooser());
   }
 
   private void configureBindings() {
@@ -239,6 +246,6 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return Commands.print("No autonomous command configured");
+    return autoChooser.get();
   }
 }

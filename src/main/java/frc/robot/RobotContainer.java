@@ -8,6 +8,7 @@ import static frc.robot.constants.GeneralConstants.currentMode;
 import static frc.robot.constants.GeneralConstants.currentRobot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -131,6 +132,7 @@ public class RobotContainer {
                   reefTargets = new ReefTargets(FieldUtil.getAllianceSafely());
                 }));
 
+    configureAutoCommands();
     configureBindings();
 
     // Set up auto chooser
@@ -243,6 +245,24 @@ public class RobotContainer {
                           case Red -> Rotation2d.fromDegrees(180);
                           default -> Rotation2d.fromDegrees(0);
                         })));
+  }
+
+  private void configureAutoCommands() {
+    NamedCommands.registerCommand(
+        "PlaceReefL",
+        new DeferredCommand(
+            () ->
+                PathGenerator.generateSimpleCorrectedPath(
+                    drive, reefTargets.findTargetLeft(drive.getPose(), reef_level)),
+            Set.of(drive)));
+
+    NamedCommands.registerCommand(
+        "PlaceReefR",
+        new DeferredCommand(
+            () ->
+                PathGenerator.generateSimpleCorrectedPath(
+                    drive, reefTargets.findTargetRight(drive.getPose(), reef_level)),
+            Set.of(drive)));
   }
 
   public Command getAutonomousCommand() {

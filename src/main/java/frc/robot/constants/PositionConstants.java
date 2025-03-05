@@ -26,28 +26,33 @@ public class PositionConstants {
 
   // L1 Arm Setpoint Values
   public static final double L1WristAngle = -7; // TODO find value
-  public static final double L1PivotAngle = 76.2; // TODO find value
+  public static final double L1PivotAngle = 60; // TODO find value
   public static final double L1ElevatorExtension = 0; // TODO find value
 
   // L2 Arm Setpoint Values
-  public static final double L2WristAngle = 30; // TODO find value
-  public static final double L2PivotAngle = 76.2; // TODO find value
+  public static final double L2WristAngle = -10.799999999999983; // TODO find value
+  public static final double L2PivotAngle = 74.54070861351771; // TODO find value
   public static final double L2ElevatorExtension = 0; // TODO find value
 
   // L3 Arm Setpoint Values
-  public static final double L3WristAngle = 5; // TODO find value
-  public static final double L3PivotAngle = 76.2; // TODO find value
-  public static final double L3ElevatorExtension = 0.51; // TODO find value
+  public static final double L3WristAngle = -15.44; // TODO find value
+  public static final double L3PivotAngle = 79.20000000000005; // TODO find value
+  public static final double L3ElevatorExtension = 0.385498046875; // TODO find value
 
   // L4 Arm Setpoint Values
-  public static final double L4WristAngle = -7; // TODO find value
-  public static final double L4PivotAngle = 79; // TODO find value
-  public static final double L4ElevatorExtension = 1.15; // TODO find value
+  public static final double L4WristAngle = -25; // TODO find value
+  public static final double L4PivotAngle = 82.6000000000001; // TODO find value
+  public static final double L4ElevatorExtension = 1.0858944163602942; // TODO fggind value
 
   // Source Arm Setpoint Values
-  public static final double sourceWristAngle = 88.1; // TODO find value
-  public static final double sourcePivotAngle = 46.7; // TODO find value
+  public static final double sourceWristAngle = 83.30000000000001; // TODO find value
+  public static final double sourcePivotAngle = 45.21778598044459; // TODO find value
   public static final double sourceElevatorExtension = 0; // TODO find value
+
+  // Starting Arm Setpoint Values
+  public static final double startingWristAngle = 89.69999999999999; // TODO find value
+  public static final double staritingPivotAngle = 44.87178593679461; // TODO find value
+  public static final double staritingElevatorExtension = 0; // TODO find value
 
   public static final Pose2d sourcePose =
       new Pose2d(

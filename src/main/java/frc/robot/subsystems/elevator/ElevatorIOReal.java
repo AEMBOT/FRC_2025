@@ -107,6 +107,7 @@ public class ElevatorIOReal implements ElevatorIO {
 
   @Override
   public void setHeight(double height) {
+
     height = clamp(height, MIN_HEIGHT, MAX_HEIGHT);
     height = clamp(height, MIN_HEIGHT, maxExtension);
 
@@ -142,5 +143,10 @@ public class ElevatorIOReal implements ElevatorIO {
   public void resetProfile() {
     elevatorGoal = getAbsoluteMotorPosition();
     elevatorSetpoint = new TrapezoidProfile.State(getAbsoluteMotorPosition(), 0);
+  }
+
+  @Override
+  public void reZero() {
+    motorOffset = -getAbsoluteMotorPosition();
   }
 }

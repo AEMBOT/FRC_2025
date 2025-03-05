@@ -116,39 +116,33 @@ public class RobotContainer {
                 controller.getLeftTriggerAxis()
                     > 0.5)); // Trigger locks make trigger boolean, rather than analog.
 
-    backupController
-        .a()
-        .whileTrue(pivot.changePosition(10).alongWith(elevator.limitHeight(pivot.getPosition())))
-        .onFalse(pivot.changePosition(0));
-    backupController
-        .b()
-        .whileTrue(pivot.changePosition(-10).alongWith(elevator.limitHeight(pivot.getPosition())))
-        .onFalse(pivot.changePosition(0));
+    controller.y().whileTrue(pivot.changePosition(10)).onFalse(pivot.changePosition(0));
+    controller.x().whileTrue(pivot.changePosition(-10)).onFalse(pivot.changePosition(0));
 
-    backupController
+    controller
         .rightTrigger()
         .whileTrue(elevator.changePosition(0.25))
         .onFalse(elevator.changePosition(0));
-    backupController
+    controller
         .leftTrigger()
         .whileTrue(elevator.changePosition(-0.25))
         .onFalse(elevator.changePosition(0));
 
-    backupController
-        .rightBumper()
-        .onTrue(intake.runIntakeCommand(() -> -2))
+    controller
+        .b()
+        .onTrue(intake.runIntakeCommand(() -> -4))
         .onFalse(intake.runIntakeCommand(() -> 0));
-    backupController
-        .leftBumper()
+    controller
+        .a()
         .onTrue(intake.runIntakeCommand(() -> 3))
         .onFalse(intake.runIntakeCommand(() -> 0));
 
-    backupController
-        .y()
+    controller
+        .rightStick()
         .whileTrue(wrist.changeGoalPosition(40))
         .onFalse(wrist.changeGoalPosition(0));
-    backupController
-        .x()
+    controller
+        .leftStick()
         .whileTrue(wrist.changeGoalPosition(-40))
         .onFalse(wrist.changeGoalPosition(0));
 
@@ -184,7 +178,7 @@ public class RobotContainer {
                   this.reef_level = 4;
                 }));
 
-    controller
+    backupController
         .b()
         .whileTrue(
             wrist
@@ -193,7 +187,7 @@ public class RobotContainer {
                 .alongWith(elevator.setPosition(() -> sourceElevatorExtension)));
 
     controller
-        .x()
+        .rightBumper()
         .whileTrue(
             wrist
                 .setGoalPosition(() -> reefArmPositions[reef_level - 1][0])
@@ -201,6 +195,14 @@ public class RobotContainer {
                 .alongWith(elevator.setPosition(() -> reefArmPositions[reef_level - 1][2])));
 
     controller
+        .leftBumper()
+        .whileTrue(
+            wrist
+                .setGoalPosition(() -> reefArmPositions[reef_level - 1][0])
+                .alongWith(pivot.setPosition(() -> reefArmPositions[reef_level - 1][1]))
+                .alongWith(elevator.setPosition(() -> reefArmPositions[reef_level - 1][2])));
+
+    backupController
         .a()
         .whileTrue(
             wrist

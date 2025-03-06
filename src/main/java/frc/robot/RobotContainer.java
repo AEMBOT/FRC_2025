@@ -8,8 +8,6 @@ import static frc.robot.constants.GeneralConstants.currentMode;
 import static frc.robot.constants.GeneralConstants.currentRobot;
 import static frc.robot.constants.PositionConstants.*;
 
-import java.util.Set;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -42,6 +40,7 @@ import frc.robot.subsystems.wrist.WristIOReal;
 import frc.robot.util.FieldUtil;
 import frc.robot.util.PathGenerator;
 import frc.robot.util.ReefTargets;
+import java.util.Set;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -149,9 +148,7 @@ public class RobotContainer {
             () -> -controller.getLeftY(),
             () -> -controller.getLeftX(),
             () -> -controller.getRightX(),
-            () ->
-                controller.getLeftTriggerAxis()
-                    > 0.5)); // Trigger locks make trigger boolean, rather than analog.
+            () -> false)); // TODO Maybe remove slow mode or smth
 
     controller.y().whileTrue(pivot.changePosition(10)).onFalse(pivot.changePosition(0));
     controller.x().whileTrue(pivot.changePosition(-10)).onFalse(pivot.changePosition(0));
@@ -227,7 +224,13 @@ public class RobotContainer {
             wrist
                 .setGoalPosition(() -> reefArmPositions[reef_level - 1][0])
                 .alongWith(pivot.setPosition(() -> reefArmPositions[reef_level - 1][1]))
-                .alongWith(elevator.setPosition(() -> reefArmPositions[reef_level - 1][2])));
+                .alongWith(elevator.setPosition(() -> reefArmPositions[reef_level - 1][2]))
+                .alongWith(
+                    new DeferredCommand(
+                        () ->
+                            PathGenerator.generateSimpleCorrectedPath(
+                                drive, PositionConstants.getRightSourcePose()),
+                        Set.of(drive))));
 
     controller
         .leftBumper()
@@ -235,7 +238,13 @@ public class RobotContainer {
             wrist
                 .setGoalPosition(() -> reefArmPositions[reef_level - 1][0])
                 .alongWith(pivot.setPosition(() -> reefArmPositions[reef_level - 1][1]))
-                .alongWith(elevator.setPosition(() -> reefArmPositions[reef_level - 1][2])));
+                .alongWith(elevator.setPosition(() -> reefArmPositions[reef_level - 1][2]))
+                .alongWith(
+                    new DeferredCommand(
+                        () ->
+                            PathGenerator.generateSimpleCorrectedPath(
+                                drive, PositionConstants.getLeftSourcePose()),
+                        Set.of(drive))));
 
     controller
         .b()

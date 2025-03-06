@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Center - ReefCenter"
+            "pathName": "Left - Reef Left"
           }
         },
         {
@@ -21,13 +21,13 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "ArmReef4"
+                        "name": "PlaceReefR"
                       }
                     },
                     {
                       "type": "named",
                       "data": {
-                        "name": "PlaceReefR"
+                        "name": "ArmReef4"
                       }
                     }
                   ]

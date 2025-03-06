@@ -128,7 +128,13 @@ public class RobotContainer {
 
     // Calculate the reef targets at enabling. It'll crash if we try to get the alliance without
     // being connected to a DS or FMS.
-    new Trigger(() -> DriverStation.isEnabled())
+    reefTargets =
+        new ReefTargets(FieldUtil.getAllianceSafely()); // This'll be blue unless in sim or smth
+    new Trigger(
+            () ->
+                DriverStation.isDSAttached()
+                    || DriverStation.isFMSAttached()
+                    || DriverStation.isEnabled())
         .onTrue(
             new RunCommand(
                 () -> {
@@ -342,18 +348,26 @@ public class RobotContainer {
 
     NamedCommands.registerCommand(
         "dynamicReefR",
-        PathGenerator.simpleGoToPoint(
-            drive,
-            reefTargets.findTargetRight(drive.getPose(), reef_level),
-            PathingConstants.defaultTranslationTolerance,
-            PathingConstants.defaultRotationTolerance));
+        new DeferredCommand(
+                () ->
+                    PathGenerator.simpleGoToPoint(
+                        drive,
+                        reefTargets.findTargetRight(drive.getPose(), reef_level),
+                        PathingConstants.defaultTranslationTolerance,
+                        PathingConstants.defaultRotationTolerance),
+                Set.of(drive))
+            .andThen(() -> drive.stop(), drive));
     NamedCommands.registerCommand(
         "dynamicReefL",
-        PathGenerator.simpleGoToPoint(
-            drive,
-            reefTargets.findTargetLeft(drive.getPose(), reef_level),
-            PathingConstants.defaultTranslationTolerance,
-            PathingConstants.defaultRotationTolerance));
+        new DeferredCommand(
+                () ->
+                    PathGenerator.simpleGoToPoint(
+                        drive,
+                        reefTargets.findTargetLeft(drive.getPose(), reef_level),
+                        PathingConstants.defaultTranslationTolerance,
+                        PathingConstants.defaultRotationTolerance),
+                Set.of(drive))
+            .andThen(() -> drive.stop(), drive));
   }
 
   public Command getAutonomousCommand() {

@@ -6,12 +6,12 @@ package frc.robot;
 
 import static frc.robot.constants.GeneralConstants.currentMode;
 import static frc.robot.constants.GeneralConstants.currentRobot;
+import static frc.robot.constants.PositionConstants.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -35,9 +35,7 @@ import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.subsystems.wrist.WristIO;
 import frc.robot.subsystems.wrist.WristIOReal;
 import frc.robot.util.FieldUtil;
-import frc.robot.util.PathGenerator;
 import frc.robot.util.ReefTargets;
-import java.util.Set;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -148,14 +146,8 @@ public class RobotContainer {
                 controller.getLeftTriggerAxis()
                     > 0.5)); // Trigger locks make trigger boolean, rather than analog.
 
-    backupController
-        .a()
-        .whileTrue(pivot.changePosition(10).alongWith(elevator.limitHeight(pivot.getPosition())))
-        .onFalse(pivot.changePosition(0));
-    backupController
-        .b()
-        .whileTrue(pivot.changePosition(-10).alongWith(elevator.limitHeight(pivot.getPosition())))
-        .onFalse(pivot.changePosition(0));
+    controller.y().whileTrue(pivot.changePosition(10)).onFalse(pivot.changePosition(0));
+    controller.x().whileTrue(pivot.changePosition(-10)).onFalse(pivot.changePosition(0));
 
     backupController
         .rightTrigger()
@@ -166,21 +158,21 @@ public class RobotContainer {
         .whileTrue(elevator.changePosition(-0.25))
         .onFalse(elevator.changePosition(0));
 
-    backupController
-        .rightBumper()
-        .onTrue(intake.runIntakeCommand(() -> -2))
+    controller
+        .rightTrigger(0.25)
+        .onTrue(intake.runIntakeCommand(() -> -4))
         .onFalse(intake.runIntakeCommand(() -> 0));
-    backupController
-        .leftBumper()
+    controller
+        .leftTrigger(0.25)
         .onTrue(intake.runIntakeCommand(() -> 3))
         .onFalse(intake.runIntakeCommand(() -> 0));
 
-    backupController
-        .y()
+    controller
+        .rightStick()
         .whileTrue(wrist.changeGoalPosition(40))
         .onFalse(wrist.changeGoalPosition(0));
-    backupController
-        .x()
+    controller
+        .leftStick()
         .whileTrue(wrist.changeGoalPosition(-40))
         .onFalse(wrist.changeGoalPosition(0));
 
@@ -215,23 +207,36 @@ public class RobotContainer {
                 }));
 
     controller
-        .x()
+        .a()
         .whileTrue(
-            new DeferredCommand(
-                () ->
-                    PathGenerator.generateSimpleCorrectedPath(
-                        drive, reefTargets.findTargetLeft(drive.getPose(), reef_level)),
-                Set.of(drive)));
+            wrist
+                .setGoalPosition(() -> sourceWristAngle)
+                .alongWith(pivot.setPosition(() -> sourcePivotAngle))
+                .alongWith(elevator.setPosition(() -> sourceElevatorExtension)));
 
     controller
-        .y()
+        .rightBumper()
         .whileTrue(
-            new DeferredCommand(
-                () ->
-                    PathGenerator.generateSimpleCorrectedPath(
-                        drive, reefTargets.findTargetRight(drive.getPose(), reef_level)),
-                Set.of(drive)));
+            wrist
+                .setGoalPosition(() -> reefArmPositions[reef_level - 1][0])
+                .alongWith(pivot.setPosition(() -> reefArmPositions[reef_level - 1][1]))
+                .alongWith(elevator.setPosition(() -> reefArmPositions[reef_level - 1][2])));
 
+    controller
+        .leftBumper()
+        .whileTrue(
+            wrist
+                .setGoalPosition(() -> reefArmPositions[reef_level - 1][0])
+                .alongWith(pivot.setPosition(() -> reefArmPositions[reef_level - 1][1]))
+                .alongWith(elevator.setPosition(() -> reefArmPositions[reef_level - 1][2])));
+
+    controller
+        .b()
+        .whileTrue(
+            wrist
+                .setGoalPosition(() -> L1WristAngle)
+                .alongWith(pivot.setPosition(() -> 24))
+                .alongWith(elevator.setPosition(() -> L1ElevatorExtension)));
     controller
         .start()
         .whileTrue(

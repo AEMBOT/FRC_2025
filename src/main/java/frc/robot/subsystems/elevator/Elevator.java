@@ -102,4 +102,17 @@ public class Elevator extends SubsystemBase {
     return setPosition(() -> inputs.elevatorGoalPosition + (velocityMetPerSec * UPDATE_PERIOD))
         .finallyDo(io::resetProfile);
   }
+
+  /**
+   * @return The current position of elevator
+   */
+  public DoubleSupplier getPosition() {
+    return () -> inputs.elevatorAbsolutePosition;
+  }
+
+  public Command zeroElevator() {
+    return run(() -> io.setVoltage(-2))
+        .until(() -> ((inputs.elevatorCurrentAmps[0] + inputs.elevatorCurrentAmps[1]) / 2) > 20)
+        .andThen(run(() -> io.reZero()));
+  }
 }

@@ -8,12 +8,14 @@ import static frc.robot.constants.GeneralConstants.currentMode;
 import static frc.robot.constants.GeneralConstants.currentRobot;
 import static frc.robot.constants.PositionConstants.*;
 
+import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.constants.GeneralConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONavX;
@@ -32,9 +34,11 @@ import frc.robot.subsystems.pivot.PivotIOReal;
 import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.subsystems.wrist.WristIO;
 import frc.robot.subsystems.wrist.WristIOReal;
+import frc.robot.util.FieldUtil;
 import frc.robot.util.ReefTargets;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 public class RobotContainer {
 
@@ -50,7 +54,11 @@ public class RobotContainer {
   private final CommandXboxController backupController = new CommandXboxController(1);
 
   // Driver-assist variables
+  private ReefTargets reefTargets;
   @AutoLogOutput private int reef_level = 4; // Terminology: Trough is L1, top is L4
+
+  // Dashboard inputs
+  private final LoggedDashboardChooser<Command> autoChooser;
 
   public RobotContainer() {
 
@@ -63,10 +71,20 @@ public class RobotContainer {
                 new ModuleIOTalonFX(1),
                 new ModuleIOTalonFX(2),
                 new ModuleIOTalonFX(3));
-        intake = new Intake(new IntakeIOReal());
-        pivot = new Pivot(new PivotIOReal());
-        elevator = new Elevator(new ElevatorIOReal());
-        wrist = new Wrist(new WristIOReal());
+        switch (GeneralConstants.currentRobot) {
+          case NAUTILUS:
+            intake = new Intake(new IntakeIOReal());
+            pivot = new Pivot(new PivotIOReal());
+            elevator = new Elevator(new ElevatorIOReal());
+            wrist = new Wrist(new WristIOReal());
+            break;
+          default: // Dory doesn't have arm
+            intake = new Intake(new IntakeIO() {});
+            pivot = new Pivot(new PivotIO() {});
+            elevator = new Elevator(new ElevatorIO() {});
+            wrist = new Wrist(new WristIO() {});
+            break;
+        }
         break;
 
       case SIM:
@@ -102,7 +120,19 @@ public class RobotContainer {
     Logger.recordOutput("currentRobot", currentRobot.ordinal());
     System.out.println("Running on robot: " + currentRobot);
 
+    // Calculate the reef targets at enabling. It'll crash if we try to get the alliance without
+    // being connected to a DS or FMS.
+    new Trigger(() -> DriverStation.isEnabled())
+        .onTrue(
+            new RunCommand(
+                () -> {
+                  reefTargets = new ReefTargets(FieldUtil.getAllianceSafely());
+                }));
+
     configureBindings();
+
+    // Set up auto chooser
+    autoChooser = new LoggedDashboardChooser<>("Auto Routines", AutoBuilder.buildAutoChooser());
   }
 
   private void configureBindings() {
@@ -147,8 +177,6 @@ public class RobotContainer {
         .onFalse(wrist.changeGoalPosition(0));
 
     // Path controller bindings
-    ReefTargets reefTargets = new ReefTargets();
-
     controller
         .povDown()
         .whileTrue( // onTrue results in the button only working once.
@@ -223,6 +251,6 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return Commands.print("No autonomous command configured");
+    return autoChooser.get();
   }
 }

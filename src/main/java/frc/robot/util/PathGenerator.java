@@ -58,6 +58,8 @@ public class PathGenerator {
             // differential drivetrain, the rotation will have no effect.
             );
 
+    path.preventFlipping = true;
+
     return AutoBuilder.followPath(path);
   }
 

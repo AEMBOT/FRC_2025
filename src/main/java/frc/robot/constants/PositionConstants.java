@@ -1,6 +1,8 @@
 package frc.robot.constants;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.Radians;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -29,7 +31,7 @@ public class PositionConstants {
 
   // Define source targets
   public static final Transform2d sourceOffset =
-      new Transform2d(0.4672, 0.0, Rotation2d.fromDegrees(180));
+      new Transform2d(0.4672 + 0.2032, 0.0, Rotation2d.fromDegrees(180));
 
   public static final Pose2d sourcePoseRightBlue =
       VisionConstants.aprilTagFieldLayout.getTagPose(12).get().toPose2d().transformBy(sourceOffset);

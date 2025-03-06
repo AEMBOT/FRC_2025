@@ -2,7 +2,7 @@ package frc.robot.subsystems.pivot;
 
 import static edu.wpi.first.math.MathUtil.clamp;
 import static edu.wpi.first.wpilibj.Timer.delay;
-import static frc.robot.Constants.PivotConstants.*;
+import static frc.robot.constants.PivotConstants.*;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;

@@ -1,7 +1,7 @@
 package frc.robot.subsystems.pivot;
 
 import static edu.wpi.first.math.MathUtil.clamp;
-import static frc.robot.Constants.PivotConstants.*;
+import static frc.robot.constants.PivotConstants.*;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -53,7 +53,7 @@ public class PivotIOSim implements PivotIO {
     MechanismRoot2d m_pivotRoot = m_pivotCanvas.getRoot("PivotRoot", 2, 0.1);
     m_pivotMech =
         m_pivotRoot.append(
-            new MechanismLigament2d("PivotMech", 1, 0, 5, new Color8Bit(Color.kLimeGreen)));
+            new MechanismLigament2d("PivotMech", 1, 0, 5, new Color8Bit(Color.kLavender)));
     SmartDashboard.putData("ArmMech", m_pivotCanvas);
   }
 

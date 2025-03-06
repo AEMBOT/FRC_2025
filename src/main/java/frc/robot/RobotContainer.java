@@ -277,7 +277,7 @@ public class RobotContainer {
         .onFalse(pivot.setPosition(() -> 0));
 
     // Path controller bindings
-    ReefTargets reefTargets = new ReefTargets();
+    // ReefTargets reefTargets = new ReefTargets();
 
     keyboardController
         .povDown()

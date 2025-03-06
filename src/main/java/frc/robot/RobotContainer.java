@@ -149,21 +149,21 @@ public class RobotContainer {
     controller.y().whileTrue(pivot.changePosition(10)).onFalse(pivot.changePosition(0));
     controller.x().whileTrue(pivot.changePosition(-10)).onFalse(pivot.changePosition(0));
 
-    controller
+    backupController
         .rightTrigger()
         .whileTrue(elevator.changePosition(0.25))
         .onFalse(elevator.changePosition(0));
-    controller
+    backupController
         .leftTrigger()
         .whileTrue(elevator.changePosition(-0.25))
         .onFalse(elevator.changePosition(0));
 
     controller
-        .b()
+        .rightTrigger(0.25)
         .onTrue(intake.runIntakeCommand(() -> -4))
         .onFalse(intake.runIntakeCommand(() -> 0));
     controller
-        .a()
+        .leftTrigger(0.25)
         .onTrue(intake.runIntakeCommand(() -> 3))
         .onFalse(intake.runIntakeCommand(() -> 0));
 
@@ -206,8 +206,8 @@ public class RobotContainer {
                   this.reef_level = 4;
                 }));
 
-    backupController
-        .b()
+    controller
+        .a()
         .whileTrue(
             wrist
                 .setGoalPosition(() -> sourceWristAngle)
@@ -230,8 +230,8 @@ public class RobotContainer {
                 .alongWith(pivot.setPosition(() -> reefArmPositions[reef_level - 1][1]))
                 .alongWith(elevator.setPosition(() -> reefArmPositions[reef_level - 1][2])));
 
-    backupController
-        .a()
+    controller
+        .b()
         .whileTrue(
             wrist
                 .setGoalPosition(() -> L1WristAngle)

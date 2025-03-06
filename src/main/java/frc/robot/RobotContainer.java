@@ -169,6 +169,14 @@ public class RobotContainer {
         .whileTrue(elevator.changePosition(-0.25))
         .onFalse(elevator.changePosition(0));
 
+    backupController
+        .a()
+        .whileTrue(
+            wrist
+                .setGoalPosition(() -> reefArmPositions[reef_level - 1][0])
+                .alongWith(pivot.setPosition(() -> reefArmPositions[reef_level - 1][1]))
+                .alongWith(elevator.setPosition(() -> reefArmPositions[reef_level - 1][2])));
+
     controller
         .rightTrigger(0.25)
         .onTrue(intake.runIntakeCommand(() -> -4))

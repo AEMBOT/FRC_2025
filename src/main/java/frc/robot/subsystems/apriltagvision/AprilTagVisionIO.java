@@ -91,12 +91,12 @@ public interface AprilTagVisionIO {
     if (numTags == 1
         && avgDist
             > switch (resolution) {
-              case HIGH_RES -> 6;
-              case NORMAL -> 4;
+              case HIGH_RES -> 3;
+              case NORMAL -> 2;
             }) {
       estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
     } else {
-      estStdDevs = estStdDevs.times(1 + (avgDist * avgDist / 20));
+      estStdDevs = estStdDevs.times(1 + (avgDist * avgDist * avgDist / 20));
     }
 
     return estStdDevs;

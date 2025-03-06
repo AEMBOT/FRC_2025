@@ -5,16 +5,20 @@ import static edu.wpi.first.units.Units.Radians;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import frc.robot.util.FieldUtil;
 
 public class PositionConstants {
   // Defines new variables for the x/y translations for the target positions (currently at
   // placeholders)
   // Origin to bumper ~0.4572 m
-  public static final double reefLevel1X = 0.3048 + 0.4572; // TODO: Measure
-  public static final double reefLevel2X = 0.3048 + 0.4572; // TODO: Measure
-  public static final double reefLevel3X = 0.3048 + 0.4572; // TODO: Measure
-  public static final double reefLevel4X = 0.4064 + 0.4572; // Measured but not exact
+  public static final double reefLevel1X = 0.4572;
+  public static final double reefLevel2X = 0.4572;
+  public static final double reefLevel3X = 0.4572;
+  public static final double reefLevel4X = 0.4572;
 
   public static final double reefY = 0.1793875;
 
@@ -24,18 +28,55 @@ public class PositionConstants {
   public static final double reefCenterX = 4.489323;
   public static final double reefCenterY = 4.0259;
 
+  // Define source targets
+  public static final Transform2d sourceOffset =
+      new Transform2d(0.4318 + 0.0508, 0.0, Rotation2d.fromDegrees(180));
+
+  public static final Pose2d sourcePoseRightBlue =
+      VisionConstants.aprilTagFieldLayout.getTagPose(12).get().toPose2d().transformBy(sourceOffset);
+  public static final Pose2d sourcePoseLeftBlue =
+      VisionConstants.aprilTagFieldLayout.getTagPose(13).get().toPose2d().transformBy(sourceOffset);
+  public static final Pose2d sourcePoseRightRed = FieldUtil.applyAllianceFlip(sourcePoseRightBlue);
+  public static final Pose2d sourcePoseLeftRed = FieldUtil.applyAllianceFlip(sourcePoseLeftBlue);
+
+  public static Pose2d getLeftSourcePose() {
+    Alliance alliance = DriverStation.getAlliance().orElseGet(() -> Alliance.Blue);
+
+    switch (alliance) {
+      case Blue:
+        return sourcePoseLeftBlue;
+      case Red:
+        return sourcePoseLeftRed;
+      default:
+        return sourcePoseLeftBlue;
+    }
+  }
+
+  public static Pose2d getRightSourcePose() {
+    Alliance alliance = DriverStation.getAlliance().orElseGet(() -> Alliance.Blue);
+
+    switch (alliance) {
+      case Blue:
+        return sourcePoseRightBlue;
+      case Red:
+        return sourcePoseRightRed;
+      default:
+        return sourcePoseRightBlue;
+    }
+  }
+
   // L1 Arm Setpoint Values
   public static final double L1WristAngle = -7; // TODO find value
   public static final double L1PivotAngle = 60; // TODO find value
   public static final double L1ElevatorExtension = 0; // TODO find value
 
   // L2 Arm Setpoint Values
-  public static final double L2WristAngle = -10.799999999999983; // TODO find value
+  public static final double L2WristAngle = -8.799999999999983; // TODO find value
   public static final double L2PivotAngle = 74.54070861351771; // TODO find value
   public static final double L2ElevatorExtension = 0; // TODO find value
 
   // L3 Arm Setpoint Values
-  public static final double L3WristAngle = -15.44; // TODO find value
+  public static final double L3WristAngle = -10.44; // TODO find value
   public static final double L3PivotAngle = 79.20000000000005; // TODO find value
   public static final double L3ElevatorExtension = 0.385498046875; // TODO find value
 

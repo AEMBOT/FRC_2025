@@ -9,13 +9,17 @@ import static frc.robot.constants.GeneralConstants.currentRobot;
 import static frc.robot.constants.PositionConstants.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.GeneralConstants;
+import frc.robot.constants.PathingConstants;
+import frc.robot.constants.PositionConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONavX;
@@ -35,7 +39,9 @@ import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.subsystems.wrist.WristIO;
 import frc.robot.subsystems.wrist.WristIOReal;
 import frc.robot.util.FieldUtil;
+import frc.robot.util.PathGenerator;
 import frc.robot.util.ReefTargets;
+import java.util.Set;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -122,13 +128,20 @@ public class RobotContainer {
 
     // Calculate the reef targets at enabling. It'll crash if we try to get the alliance without
     // being connected to a DS or FMS.
-    new Trigger(() -> DriverStation.isEnabled())
+    reefTargets =
+        new ReefTargets(FieldUtil.getAllianceSafely()); // This'll be blue unless in sim or smth
+    new Trigger(
+            () ->
+                DriverStation.isDSAttached()
+                    || DriverStation.isFMSAttached()
+                    || DriverStation.isEnabled())
         .onTrue(
             new RunCommand(
                 () -> {
                   reefTargets = new ReefTargets(FieldUtil.getAllianceSafely());
                 }));
 
+    configureAutoCommands();
     configureBindings();
 
     // Set up auto chooser
@@ -142,9 +155,7 @@ public class RobotContainer {
             () -> -controller.getLeftY(),
             () -> -controller.getLeftX(),
             () -> -controller.getRightX(),
-            () ->
-                controller.getLeftTriggerAxis()
-                    > 0.5)); // Trigger locks make trigger boolean, rather than analog.
+            () -> false)); // TODO Maybe remove slow mode or smth
 
     controller.y().whileTrue(pivot.changePosition(10)).onFalse(pivot.changePosition(0));
     controller.x().whileTrue(pivot.changePosition(-10)).onFalse(pivot.changePosition(0));
@@ -157,6 +168,14 @@ public class RobotContainer {
         .leftTrigger()
         .whileTrue(elevator.changePosition(-0.25))
         .onFalse(elevator.changePosition(0));
+
+    backupController
+        .a()
+        .whileTrue(
+            wrist
+                .setGoalPosition(() -> reefArmPositions[reef_level - 1][0])
+                .alongWith(pivot.setPosition(() -> reefArmPositions[reef_level - 1][1]))
+                .alongWith(elevator.setPosition(() -> reefArmPositions[reef_level - 1][2])));
 
     controller
         .rightTrigger(0.25)
@@ -212,7 +231,13 @@ public class RobotContainer {
             wrist
                 .setGoalPosition(() -> sourceWristAngle)
                 .alongWith(pivot.setPosition(() -> sourcePivotAngle))
-                .alongWith(elevator.setPosition(() -> sourceElevatorExtension)));
+                .alongWith(elevator.setPosition(() -> sourceElevatorExtension))
+                .alongWith(
+                    new DeferredCommand(
+                        () ->
+                            PathGenerator.generateSimpleCorrectedPath(
+                                drive, PositionConstants.getRightSourcePose()),
+                        Set.of(drive))));
 
     controller
         .rightBumper()
@@ -220,7 +245,13 @@ public class RobotContainer {
             wrist
                 .setGoalPosition(() -> reefArmPositions[reef_level - 1][0])
                 .alongWith(pivot.setPosition(() -> reefArmPositions[reef_level - 1][1]))
-                .alongWith(elevator.setPosition(() -> reefArmPositions[reef_level - 1][2])));
+                .alongWith(elevator.setPosition(() -> reefArmPositions[reef_level - 1][2]))
+                .alongWith(
+                    new DeferredCommand(
+                        () ->
+                            PathGenerator.generateSimpleCorrectedPath(
+                                drive, reefTargets.findTargetRight(drive.getPose(), reef_level)),
+                        Set.of(drive))));
 
     controller
         .leftBumper()
@@ -228,7 +259,13 @@ public class RobotContainer {
             wrist
                 .setGoalPosition(() -> reefArmPositions[reef_level - 1][0])
                 .alongWith(pivot.setPosition(() -> reefArmPositions[reef_level - 1][1]))
-                .alongWith(elevator.setPosition(() -> reefArmPositions[reef_level - 1][2])));
+                .alongWith(elevator.setPosition(() -> reefArmPositions[reef_level - 1][2]))
+                .alongWith(
+                    new DeferredCommand(
+                        () ->
+                            PathGenerator.generateSimpleCorrectedPath(
+                                drive, reefTargets.findTargetLeft(drive.getPose(), reef_level)),
+                        Set.of(drive))));
 
     controller
         .b()
@@ -248,6 +285,97 @@ public class RobotContainer {
                           case Red -> Rotation2d.fromDegrees(180);
                           default -> Rotation2d.fromDegrees(0);
                         })));
+  }
+
+  private void configureAutoCommands() {
+    NamedCommands.registerCommand(
+        "PlaceReefL",
+        new DeferredCommand(
+            () ->
+                PathGenerator.generateSimpleCorrectedPath(
+                    drive, reefTargets.findTargetLeft(drive.getPose(), reef_level)),
+            Set.of(drive)));
+
+    NamedCommands.registerCommand(
+        "PlaceReefR",
+        new DeferredCommand(
+            () ->
+                PathGenerator.generateSimpleCorrectedPath(
+                    drive, reefTargets.findTargetRight(drive.getPose(), reef_level)),
+            Set.of(drive)));
+
+    NamedCommands.registerCommand(
+        "ArmReef4",
+        wrist
+            .setGoalPosition(() -> reefArmPositions[4 - 1][0])
+            .alongWith(pivot.setPosition(() -> reefArmPositions[4 - 1][1]))
+            .alongWith(elevator.setPosition(() -> reefArmPositions[4 - 1][2])));
+
+    NamedCommands.registerCommand(
+        "ArmReef3",
+        wrist
+            .setGoalPosition(() -> reefArmPositions[3 - 1][0])
+            .alongWith(pivot.setPosition(() -> reefArmPositions[3 - 1][1]))
+            .alongWith(elevator.setPosition(() -> reefArmPositions[3 - 1][2])));
+
+    NamedCommands.registerCommand(
+        "ArmReef2",
+        wrist
+            .setGoalPosition(() -> reefArmPositions[2 - 1][0])
+            .alongWith(pivot.setPosition(() -> reefArmPositions[2][1 - 1]))
+            .alongWith(elevator.setPosition(() -> reefArmPositions[2 - 1][2])));
+
+    NamedCommands.registerCommand(
+        "ArmReef1",
+        wrist
+            .setGoalPosition(() -> reefArmPositions[1 - 1][0])
+            .alongWith(pivot.setPosition(() -> reefArmPositions[1 - 1][1]))
+            .alongWith(elevator.setPosition(() -> reefArmPositions[1 - 1][2])));
+
+    NamedCommands.registerCommand(
+        "Eject",
+        intake
+            .runIntakeCommand(() -> -4.0)
+            .withTimeout(0.5)
+            .andThen(intake.runIntakeCommand(() -> 0)));
+
+    NamedCommands.registerCommand(
+        "goToSourceL",
+        new DeferredCommand(
+            () ->
+                PathGenerator.generateSimpleCorrectedPath(
+                    drive, PositionConstants.getLeftSourcePose()),
+            Set.of(drive)));
+    NamedCommands.registerCommand(
+        "goToSourceR",
+        new DeferredCommand(
+            () ->
+                PathGenerator.generateSimpleCorrectedPath(
+                    drive, PositionConstants.getRightSourcePose()),
+            Set.of(drive)));
+
+    NamedCommands.registerCommand(
+        "dynamicReefR",
+        new DeferredCommand(
+                () ->
+                    PathGenerator.simpleGoToPoint(
+                        drive,
+                        reefTargets.findTargetRight(drive.getPose(), reef_level),
+                        PathingConstants.defaultTranslationTolerance,
+                        PathingConstants.defaultRotationTolerance),
+                Set.of(drive))
+            .andThen(() -> drive.stop(), drive));
+    NamedCommands.registerCommand(
+        "dynamicReefL",
+        new DeferredCommand(
+                () ->
+                    PathGenerator.simpleGoToPoint(
+                        drive,
+                        reefTargets.findTargetLeft(drive.getPose(), reef_level),
+                        PathingConstants.defaultTranslationTolerance,
+                        PathingConstants.defaultRotationTolerance),
+                Set.of(drive))
+            .andThen(() -> drive.stop(), drive));
   }
 
   public Command getAutonomousCommand() {

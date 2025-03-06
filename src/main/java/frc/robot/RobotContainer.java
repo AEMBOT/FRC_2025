@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.GeneralConstants;
+import frc.robot.constants.PositionConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONavX;
@@ -262,6 +263,21 @@ public class RobotContainer {
             () ->
                 PathGenerator.generateSimpleCorrectedPath(
                     drive, reefTargets.findTargetRight(drive.getPose(), reef_level)),
+            Set.of(drive)));
+
+    NamedCommands.registerCommand(
+        "goToSourceL",
+        new DeferredCommand(
+            () ->
+                PathGenerator.generateSimpleCorrectedPath(
+                    drive, PositionConstants.getLeftSourcePose()),
+            Set.of(drive)));
+    NamedCommands.registerCommand(
+        "goToSourceR",
+        new DeferredCommand(
+            () ->
+                PathGenerator.generateSimpleCorrectedPath(
+                    drive, PositionConstants.getRightSourcePose()),
             Set.of(drive)));
   }
 

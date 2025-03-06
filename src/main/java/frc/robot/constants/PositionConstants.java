@@ -15,10 +15,10 @@ public class PositionConstants {
   // Defines new variables for the x/y translations for the target positions (currently at
   // placeholders)
   // Origin to bumper ~0.4572 m
-  public static final double reefLevel1X = 0.4672;
-  public static final double reefLevel2X = 0.4672;
-  public static final double reefLevel3X = 0.4672;
-  public static final double reefLevel4X = 0.4672;
+  public static final double reefLevel1X = 0.4572;
+  public static final double reefLevel2X = 0.4572;
+  public static final double reefLevel3X = 0.4572;
+  public static final double reefLevel4X = 0.4572;
 
   public static final double reefY = 0.1793875;
 
@@ -30,7 +30,7 @@ public class PositionConstants {
 
   // Define source targets
   public static final Transform2d sourceOffset =
-      new Transform2d(0.4672 + 0.2032, 0.0, Rotation2d.fromDegrees(180));
+      new Transform2d(0.4318 + 0.0508, 0.0, Rotation2d.fromDegrees(180));
 
   public static final Pose2d sourcePoseRightBlue =
       VisionConstants.aprilTagFieldLayout.getTagPose(12).get().toPose2d().transformBy(sourceOffset);
@@ -71,12 +71,12 @@ public class PositionConstants {
   public static final double L1ElevatorExtension = 0; // TODO find value
 
   // L2 Arm Setpoint Values
-  public static final double L2WristAngle = -10.799999999999983; // TODO find value
+  public static final double L2WristAngle = -8.799999999999983; // TODO find value
   public static final double L2PivotAngle = 74.54070861351771; // TODO find value
   public static final double L2ElevatorExtension = 0; // TODO find value
 
   // L3 Arm Setpoint Values
-  public static final double L3WristAngle = -15.44; // TODO find value
+  public static final double L3WristAngle = -10.44; // TODO find value
   public static final double L3PivotAngle = 79.20000000000005; // TODO find value
   public static final double L3ElevatorExtension = 0.385498046875; // TODO find value
 

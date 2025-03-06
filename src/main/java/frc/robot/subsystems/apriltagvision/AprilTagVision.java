@@ -48,7 +48,7 @@ public class AprilTagVision extends SubsystemBase {
                   new PhotonCamera(NautilusCameras.frontRightName),
                   NautilusCameras.frontRightFromRobot,
                   VisionConstants.poseStrategy,
-                  CameraResolution.HIGH_RES),
+                  CameraResolution.NORMAL),
               new CameraPoseEstimator(
                   new PhotonCamera(NautilusCameras.backLeftName),
                   NautilusCameras.backLeftFromRobot,

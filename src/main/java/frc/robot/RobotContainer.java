@@ -216,7 +216,13 @@ public class RobotContainer {
             wrist
                 .setGoalPosition(() -> sourceWristAngle)
                 .alongWith(pivot.setPosition(() -> sourcePivotAngle))
-                .alongWith(elevator.setPosition(() -> sourceElevatorExtension)));
+                .alongWith(elevator.setPosition(() -> sourceElevatorExtension))
+                .alongWith(
+                    new DeferredCommand(
+                        () ->
+                            PathGenerator.generateSimpleCorrectedPath(
+                                drive, PositionConstants.getRightSourcePose()),
+                        Set.of(drive))));
 
     controller
         .rightBumper()
@@ -229,7 +235,7 @@ public class RobotContainer {
                     new DeferredCommand(
                         () ->
                             PathGenerator.generateSimpleCorrectedPath(
-                                drive, PositionConstants.getRightSourcePose()),
+                                drive, reefTargets.findTargetRight(drive.getPose(), reef_level)),
                         Set.of(drive))));
 
     controller
@@ -243,7 +249,7 @@ public class RobotContainer {
                     new DeferredCommand(
                         () ->
                             PathGenerator.generateSimpleCorrectedPath(
-                                drive, PositionConstants.getLeftSourcePose()),
+                                drive, reefTargets.findTargetLeft(drive.getPose(), reef_level)),
                         Set.of(drive))));
 
     controller
@@ -282,6 +288,34 @@ public class RobotContainer {
                 PathGenerator.generateSimpleCorrectedPath(
                     drive, reefTargets.findTargetRight(drive.getPose(), reef_level)),
             Set.of(drive)));
+
+    NamedCommands.registerCommand(
+        "ArmReef4",
+        wrist
+            .setGoalPosition(() -> reefArmPositions[4 - 1][0])
+            .alongWith(pivot.setPosition(() -> reefArmPositions[4][1]))
+            .alongWith(elevator.setPosition(() -> reefArmPositions[4][2])));
+
+    NamedCommands.registerCommand(
+        "ArmReef3",
+        wrist
+            .setGoalPosition(() -> reefArmPositions[3 - 1][0])
+            .alongWith(pivot.setPosition(() -> reefArmPositions[3][1]))
+            .alongWith(elevator.setPosition(() -> reefArmPositions[3][2])));
+
+    NamedCommands.registerCommand(
+        "ArmReef2",
+        wrist
+            .setGoalPosition(() -> reefArmPositions[2 - 1][0])
+            .alongWith(pivot.setPosition(() -> reefArmPositions[2][1]))
+            .alongWith(elevator.setPosition(() -> reefArmPositions[2][2])));
+
+    NamedCommands.registerCommand(
+        "ArmReef1",
+        wrist
+            .setGoalPosition(() -> reefArmPositions[1 - 1][0])
+            .alongWith(pivot.setPosition(() -> reefArmPositions[1 - 1][1]))
+            .alongWith(elevator.setPosition(() -> reefArmPositions[1 - 1][2])));
 
     NamedCommands.registerCommand(
         "goToSourceL",

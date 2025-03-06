@@ -293,22 +293,22 @@ public class RobotContainer {
         "ArmReef4",
         wrist
             .setGoalPosition(() -> reefArmPositions[4 - 1][0])
-            .alongWith(pivot.setPosition(() -> reefArmPositions[4][1]))
-            .alongWith(elevator.setPosition(() -> reefArmPositions[4][2])));
+            .alongWith(pivot.setPosition(() -> reefArmPositions[4 - 1][1]))
+            .alongWith(elevator.setPosition(() -> reefArmPositions[4 - 1][2])));
 
     NamedCommands.registerCommand(
         "ArmReef3",
         wrist
             .setGoalPosition(() -> reefArmPositions[3 - 1][0])
-            .alongWith(pivot.setPosition(() -> reefArmPositions[3][1]))
-            .alongWith(elevator.setPosition(() -> reefArmPositions[3][2])));
+            .alongWith(pivot.setPosition(() -> reefArmPositions[3 - 1][1]))
+            .alongWith(elevator.setPosition(() -> reefArmPositions[3 - 1][2])));
 
     NamedCommands.registerCommand(
         "ArmReef2",
         wrist
             .setGoalPosition(() -> reefArmPositions[2 - 1][0])
-            .alongWith(pivot.setPosition(() -> reefArmPositions[2][1]))
-            .alongWith(elevator.setPosition(() -> reefArmPositions[2][2])));
+            .alongWith(pivot.setPosition(() -> reefArmPositions[2][1 - 1]))
+            .alongWith(elevator.setPosition(() -> reefArmPositions[2 - 1][2])));
 
     NamedCommands.registerCommand(
         "ArmReef1",
@@ -316,6 +316,13 @@ public class RobotContainer {
             .setGoalPosition(() -> reefArmPositions[1 - 1][0])
             .alongWith(pivot.setPosition(() -> reefArmPositions[1 - 1][1]))
             .alongWith(elevator.setPosition(() -> reefArmPositions[1 - 1][2])));
+
+    NamedCommands.registerCommand(
+        "Eject",
+        intake
+            .runIntakeCommand(() -> -4.0)
+            .withTimeout(0.5)
+            .andThen(intake.runIntakeCommand(() -> 0)));
 
     NamedCommands.registerCommand(
         "goToSourceL",

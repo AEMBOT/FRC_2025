@@ -11,19 +11,32 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "race",
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "wait",
                 "data": {
-                  "name": "PlaceReefL"
+                  "waitTime": 4.0
                 }
               },
               {
-                "type": "named",
+                "type": "parallel",
                 "data": {
-                  "name": "ArmReef4"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "PlaceReefL"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "ArmReef4"
+                      }
+                    }
+                  ]
                 }
               }
             ]
@@ -32,7 +45,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Outake"
+            "name": "Eject"
           }
         }
       ]

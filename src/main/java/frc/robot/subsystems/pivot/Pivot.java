@@ -41,6 +41,10 @@ public class Pivot extends SubsystemBase {
     io.updateInputs(inputs);
   }
 
+  public void simulationPeriodic() {
+    io.simulationPeriodic();
+  }
+
   /**
    * Sets the setpoint of the pivot to a certain degree.
    *

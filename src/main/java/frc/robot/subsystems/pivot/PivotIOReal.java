@@ -77,7 +77,7 @@ public class PivotIOReal implements PivotIO {
 
     // cc_cfg.MagnetSensor.MagnetOffset = 0.4;
 
-    // m_cc.getConfigurator().apply(cc_cfg); Dont know what m_cc is but hey its here
+    // m_cc.getConfigurator().apply(cc_cfg); m_cc is cancoder that belongs to this class
 
     // Apply cancoder to feedback motor config
     // leftMotorConfig.Feedback.FeedbackRemoteSensorID = 1;

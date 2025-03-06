@@ -59,4 +59,8 @@ public interface PivotIO {
 
   /** */
   public default void stopRatchet() {}
+
+  public default void simInit() {}
+
+  public default void simulationPeriodic() {}
 }

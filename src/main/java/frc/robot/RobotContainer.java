@@ -31,6 +31,7 @@ import frc.robot.subsystems.intake.IntakeIOReal;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.pivot.PivotIO;
 import frc.robot.subsystems.pivot.PivotIOReal;
+import frc.robot.subsystems.pivot.PivotIOSim;
 import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.subsystems.wrist.WristIO;
 import frc.robot.subsystems.wrist.WristIOReal;
@@ -84,7 +85,7 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim());
         intake = new Intake(new IntakeIO() {});
-        pivot = new Pivot(new PivotIO() {});
+        pivot = new Pivot(new PivotIOSim() {});
         elevator = new Elevator(new ElevatorIO() {});
         wrist = new Wrist(new WristIO() {});
         break;
@@ -237,6 +238,15 @@ public class RobotContainer {
             () -> -keyboardController.getRawAxis(0),
             () -> -keyboardController.getRawAxis(4),
             () -> keyboardController.getRawAxis(2) > 0.5));
+
+    keyboardController
+        .button(5)
+        .whileTrue(pivot.setPosition(() -> 90))
+        .onFalse(pivot.setPosition(() -> 0));
+    keyboardController
+        .button(6)
+        .whileTrue(pivot.setPosition(() -> 360))
+        .onFalse(pivot.setPosition(() -> 0));
 
     // Path controller bindings
     ReefTargets reefTargets = new ReefTargets();

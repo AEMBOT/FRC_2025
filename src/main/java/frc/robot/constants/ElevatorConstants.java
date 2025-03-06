@@ -57,7 +57,7 @@ public class ElevatorConstants {
   public static final double SYS_ID_TIMEOUT = 30;
 
   /** How many degrees the elevator can be off its goal position for it to be sufficient */
-  public static final double ALLOWED_DEVIANCE = 1.15;
+  public static final double ALLOWED_DEVIANCE = 0.05;
 
   /** */
   public static final Translation3d TRANSLATION_FROM_ROBOT = new Translation3d(-0.2, 0, 0.255);

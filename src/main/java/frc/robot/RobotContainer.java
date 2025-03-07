@@ -236,7 +236,9 @@ public class RobotContainer {
                     new DeferredCommand(
                         () ->
                             PathGenerator.generateSimpleCorrectedPath(
-                                drive, PositionConstants.getSourcePose(FieldUtil.onRightSide(drive.getPose()))),
+                                drive,
+                                PositionConstants.getSourcePose(
+                                    FieldUtil.isOnRightSide(drive.getPose()))),
                         Set.of(drive))));
 
     controller

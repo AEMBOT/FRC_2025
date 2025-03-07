@@ -7,6 +7,8 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.constants.VisionConstants;
 import java.util.Optional;
 
+import com.fasterxml.jackson.databind.ser.std.StdKeySerializers.Default;
+
 public class FieldUtil {
   /**
    * Mirrors a pose along the field's center line.
@@ -70,5 +72,26 @@ public class FieldUtil {
     Optional<Alliance> allianceOption = DriverStation.getAlliance();
 
     return allianceOption.orElse(Alliance.Blue);
+  }
+
+  /**
+   * @param pose The pose to process
+   * @return If the pose is on the right side, relative to our drivers.
+   */
+  public static boolean onRightSide(Pose2d pose) {
+    Alliance alliance = getAllianceSafely();
+    double midField = VisionConstants.aprilTagFieldLayout.getFieldWidth() / 2;
+
+    switch (alliance) {
+      case Blue -> {
+        return (pose.getY() < midField);
+      }
+      case Red -> {
+        return (pose.getY() > midField);
+      }
+      default -> {
+        return true; // This shouldn't ever happen, just here to make the compiler happy.
+      }
+    }
   }
 }

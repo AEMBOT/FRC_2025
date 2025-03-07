@@ -65,6 +65,14 @@ public class PositionConstants {
     }
   }
 
+  public static Pose2d getSourcePose(boolean isOnRight) {
+    if (isOnRight) {
+      return getRightSourcePose();
+    } else {
+      return getLeftSourcePose();
+    }
+  }
+
   // L1 Arm Setpoint Values
   public static final double L1WristAngle = -26.745;
   public static final double L1PivotAngle = 38.702;

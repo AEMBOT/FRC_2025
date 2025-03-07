@@ -12,9 +12,10 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.constants.PositionConstants;
+import org.littletonrobotics.junction.AutoLogOutput;
 
 public final class ReefTargets {
-  final Pose2d[] tagPoses;
+  @AutoLogOutput final Pose2d[] tagPoses;
   final Pose2d[] targetsL1Right = new Pose2d[6];
   final Pose2d[] targetsL1Left = new Pose2d[6];
   final Pose2d[] targetsL2Right = new Pose2d[6];

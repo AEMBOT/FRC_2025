@@ -36,6 +36,25 @@
               {
                 "type": "wait",
                 "data": {
+                  "waitTime": 5.0
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Eject"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
                   "waitTime": 4.0
                 }
               }
@@ -43,9 +62,22 @@
           }
         },
         {
-          "type": "named",
+          "type": "race",
           "data": {
-            "name": "Eject"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "ArmReef2"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 4.0
+                }
+              }
+            ]
           }
         }
       ]

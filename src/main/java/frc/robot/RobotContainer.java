@@ -137,9 +137,10 @@ public class RobotContainer {
                     || DriverStation.isEnabled())
         .onTrue(
             new RunCommand(
-                () -> {
-                  reefTargets = new ReefTargets(FieldUtil.getAllianceSafely());
-                }));
+                    () -> {
+                      reefTargets = new ReefTargets(FieldUtil.getAllianceSafely());
+                    })
+                .withTimeout(0.01)); // TODO bad and sucks, make better
 
     configureAutoCommands();
     configureBindings();
@@ -198,32 +199,36 @@ public class RobotContainer {
     // Path controller bindings
     controller
         .povDown()
-        .whileTrue( // onTrue results in the button only working once.
+        .onTrue( // onTrue results in the button only working once.
             new RunCommand(
-                () -> {
-                  this.reef_level = 1;
-                }));
+                    () -> {
+                      this.reef_level = 1;
+                    })
+                .withTimeout(0.01));
     controller
         .povLeft()
-        .whileTrue(
+        .onTrue(
             new RunCommand(
-                () -> {
-                  this.reef_level = 2;
-                }));
+                    () -> {
+                      this.reef_level = 2;
+                    })
+                .withTimeout(0.01));
     controller
         .povRight()
-        .whileTrue(
+        .onTrue(
             new RunCommand(
-                () -> {
-                  this.reef_level = 3;
-                }));
+                    () -> {
+                      this.reef_level = 3;
+                    })
+                .withTimeout(0.01));
     controller
         .povUp()
-        .whileTrue(
+        .onTrue(
             new RunCommand(
-                () -> {
-                  this.reef_level = 4;
-                }));
+                    () -> {
+                      this.reef_level = 4;
+                    })
+                .withTimeout(0.01));
 
     controller
         .a()
@@ -339,7 +344,8 @@ public class RobotContainer {
         intake
             .runIntakeCommand(() -> -4.0)
             .withTimeout(0.5)
-            .andThen(intake.runIntakeCommand(() -> 0)));
+            .andThen(intake.runIntakeCommand(() -> 0))
+            .withTimeout(0.1));
 
     NamedCommands.registerCommand(
         "goToSourceL",

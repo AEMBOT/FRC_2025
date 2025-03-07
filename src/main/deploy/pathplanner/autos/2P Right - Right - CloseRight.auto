@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Center - Reef Left"
+            "pathName": "2 Piece Center Right.0"
           }
         },
         {
@@ -21,7 +21,7 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "PlaceReefR"
+                        "name": "PlaceReefL"
                       }
                     },
                     {
@@ -37,25 +37,6 @@
                 "type": "wait",
                 "data": {
                   "waitTime": 4.0
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Eject"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 1.0
                 }
               }
             ]

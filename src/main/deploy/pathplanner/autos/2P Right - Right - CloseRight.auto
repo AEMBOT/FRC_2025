@@ -36,10 +36,34 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 4.0
+                  "waitTime": 5.0
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Eject"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "2 Piece Center Right.1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "2 Piece Center Right.2"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": []
           }
         }
       ]

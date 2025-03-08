@@ -117,6 +117,11 @@ public class WristIOReal implements WristIO {
   }
 
   @Override
+  public void rezeroWrist() {
+    rotorOffset = (MOTOR_RATIO * 90 / 360) - motor.getPosition().getValueAsDouble();
+  }
+
+  @Override
   public void resetProfile() {
     wristGoal = getAbsoluteMotorPosition();
     wristSetpoint = new TrapezoidProfile.State(getAbsoluteEncoderPosition(), 0);

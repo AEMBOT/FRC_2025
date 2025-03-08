@@ -45,6 +45,9 @@ public interface WristIO {
   /** Run open loop at the specified voltage. */
   public default void setVoltage(double volts) {}
 
+  /** Performs a rough re-zeroing of the wrist encoder. Wrist must be facing vertically. */
+  public default void rezeroWrist() {}
+
   /** Resets the wrist goal and setpoint to the current angle of the wrist */
   public default void resetProfile() {}
 }

@@ -156,7 +156,7 @@ public class RobotContainer {
             () -> -controller.getLeftY(),
             () -> -controller.getLeftX(),
             () -> -controller.getRightX(),
-            () -> controller.leftBumper().getAsBoolean()));
+            () -> controller.rightBumper().getAsBoolean()));
 
     controller.y().whileTrue(pivot.changePosition(10)).onFalse(pivot.changePosition(0));
     controller.x().whileTrue(pivot.changePosition(-10)).onFalse(pivot.changePosition(0));
@@ -275,7 +275,7 @@ public class RobotContainer {
     //                     Set.of(drive))));
 
     controller
-        .rightBumper()
+        .leftBumper()
         .whileTrue(
             wrist
                 .setGoalPosition(() -> reefArmPositions[reef_level - 1][0])

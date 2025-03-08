@@ -151,7 +151,6 @@ public class PathGenerator {
             () -> {
               translationPID.close();
               thetaPID.close();
-              drive.runVelocity(new ChassisSpeeds());
             });
   }
 

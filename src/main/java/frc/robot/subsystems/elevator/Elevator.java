@@ -3,7 +3,6 @@ package frc.robot.subsystems.elevator;
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.constants.GeneralConstants.UPDATE_PERIOD;
-import static frc.robot.constants.WristConstants.ALLOWED_DEVIANCE;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -89,7 +88,7 @@ public class Elevator extends SubsystemBase {
    * @return A {@link RunCommand} to set the elevator setpoint to posIn.
    */
   public Command setPosition(DoubleSupplier posMet) {
-    return run(() -> io.setHeight(posMet.getAsDouble())).until( ()-> Math.abs(inputs.elevatorGoalPosition - inputs.elevatorAbsolutePosition) < ALLOWED_DEVIANCE);
+    return run(() -> io.setHeight(posMet.getAsDouble()));
   }
 
   /**

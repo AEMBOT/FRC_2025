@@ -7,7 +7,7 @@ import edu.wpi.first.math.util.Units;
 
 public class DriveConstants {
   // May need tweaking
-  public static final double MAX_LINEAR_SPEED = Units.feetToMeters(18.5); // MK4i L3+
+  public static final double MAX_LINEAR_SPEED = Units.feetToMeters(18.5) * (7/8); // The max speed of MK4i L3+ is 18.5 ft/s
   public static final double TRACK_WIDTH_X = Units.inchesToMeters(22.75); // 28 in square chassis
   public static final double TRACK_WIDTH_Y = Units.inchesToMeters(22.75);
   public static final double DRIVE_BASE_RADIUS =

@@ -126,4 +126,9 @@ public class WristIOReal implements WristIO {
     wristGoal = getAbsoluteMotorPosition();
     wristSetpoint = new TrapezoidProfile.State(getAbsoluteEncoderPosition(), 0);
   }
+
+  @Override
+  public double getPosition() {
+    return getAbsoluteEncoderPosition();
+  }
 }

@@ -50,4 +50,8 @@ public interface WristIO {
 
   /** Resets the wrist goal and setpoint to the current angle of the wrist */
   public default void resetProfile() {}
+
+  public default double getPosition() {
+    return 0.0;
+  }
 }

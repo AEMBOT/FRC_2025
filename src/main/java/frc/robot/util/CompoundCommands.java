@@ -80,8 +80,11 @@ public class CompoundCommands {
 
     NamedCommands.registerCommand("Eject", ejectCoral());
 
-    NamedCommands.registerCommand("DriveSourceL", driveToLeftSource());
-    NamedCommands.registerCommand("DriveSourceR", driveToRightSource());
+    NamedCommands.registerCommand("DriveSourceLeft", driveToLeftSource());
+    NamedCommands.registerCommand("DriveSourceRight", driveToRightSource());
+
+    NamedCommands.registerCommand("AutoIntakeSourceLeft", intakeSource(false));
+    NamedCommands.registerCommand("AutoIntakeSourceRight", intakeSource(true));
   }
 
   /**
@@ -104,6 +107,18 @@ public class CompoundCommands {
 
     // Wait after alignment so drivers can A-Stop if needed.
     return alignCommand.andThen(waitSeconds(3.0)).andThen(ejectCoral());
+  }
+
+  public static Command intakeSource(boolean isOnRight) {
+    Command driveCommand;
+    if (isOnRight) {
+      driveCommand = driveToRightSource();
+    } else {
+      driveCommand = driveToLeftSource();
+    }
+
+    Command alignCommand = new ParallelCommandGroup(driveCommand, armToSource());
+    return alignCommand.andThen(intakeCoral());
   }
 
   /**
@@ -207,5 +222,11 @@ public class CompoundCommands {
   /** Run outtake with IntakeConstants.ejectTime. */
   public static Command ejectCoral() {
     return intake.ejectCommand().withTimeout(IntakeConstants.ejectTime);
+  }
+
+  /** Run intake with IntakeConstants.intakeTime. */
+  public static Command intakeCoral() {
+    // Eventually, we probably want to run until the TOF sensor is activated.
+    return intake.intakeCommand().withTimeout(IntakeConstants.intakeTime);
   }
 }

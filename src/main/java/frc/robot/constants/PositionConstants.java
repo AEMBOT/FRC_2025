@@ -66,7 +66,9 @@ public class PositionConstants {
 
   /**
    * Gets the pose for left or right source on our alliance.
-   * @param isOnRight If we want the right source rather than left. Usually from {@link FieldUtil}.isOnRightSide
+   *
+   * @param isOnRight If we want the right source rather than left. Usually from {@link
+   *     FieldUtil}.isOnRightSide
    */
   public static Pose2d getSourcePose(boolean isOnRight) {
     if (isOnRight) {

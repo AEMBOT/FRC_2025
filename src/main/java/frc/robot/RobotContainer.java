@@ -156,7 +156,7 @@ public class RobotContainer {
             () -> -controller.getLeftY(),
             () -> -controller.getLeftX(),
             () -> -controller.getRightX(),
-            () -> controller.rightBumper().getAsBoolean())); // TODO Maybe remove slow mode or smth
+            () -> controller.rightBumper().getAsBoolean()));
 
     controller.y().whileTrue(pivot.changePosition(10)).onFalse(pivot.changePosition(0));
     controller.x().whileTrue(pivot.changePosition(-10)).onFalse(pivot.changePosition(0));

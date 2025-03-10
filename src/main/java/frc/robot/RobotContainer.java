@@ -322,7 +322,7 @@ public class RobotContainer {
         "ArmReef2",
         wrist
             .setGoalPosition(() -> reefArmPositions[2 - 1][0])
-            .alongWith(pivot.setPosition(() -> reefArmPositions[2][1 - 1]))
+            .alongWith(pivot.setPosition(() -> reefArmPositions[2 - 1][1]))
             .alongWith(elevator.setPosition(() -> reefArmPositions[2 - 1][2])));
 
     NamedCommands.registerCommand(

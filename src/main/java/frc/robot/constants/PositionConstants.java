@@ -103,6 +103,11 @@ public class PositionConstants {
   public static final double sourcePivotAngle = 45.21778598044459;
   public static final double sourceElevatorExtension = 0;
 
+  // Climb Arm Setpoint Values
+  public static final double climbWristAngle = -26.745;
+  public static final double climbPivotAngle = 24;
+  public static final double climbElevatorExtension = 0;
+
   // Starting Arm Setpoint Values
   public static final double startingWristAngle = 89.69999999999999;
   public static final double staritingPivotAngle = 44.87178593679461;

@@ -142,10 +142,11 @@ public class ModuleIOTalonFX implements ModuleIO {
     driveConfig.Feedback.SensorToMechanismRatio =
         (DRIVE_GEAR_RATIO) * (1.0 / (WHEEL_RADIUS * 2 * Math.PI));
 
-    driveConfig.Slot0.kV = 0.37914;
+    // For teleop, kV to 2.0608994822, kP to 2.0
+    driveConfig.Slot0.kV = 2.0608994822;
     driveConfig.Slot0.kA = 0.013797;
     driveConfig.Slot0.kS = 0.37914;
-    driveConfig.Slot0.kP = 0.54716; // TODO hand tune
+    driveConfig.Slot0.kP = 2.0; // TODO hand tune
     driveConfig.Slot0.kD = 0.005;
 
     driveTalon.getConfigurator().apply(driveConfig);

@@ -137,9 +137,10 @@ public class RobotContainer {
                     || DriverStation.isEnabled())
         .onTrue(
             new RunCommand(
-                () -> {
-                  reefTargets = new ReefTargets(FieldUtil.getAllianceSafely());
-                }));
+                    () -> {
+                      reefTargets = new ReefTargets(FieldUtil.getAllianceSafely());
+                    })
+                .withTimeout(0.01)); // TODO Use of RunCommand here is janky, find better solution
 
     configureAutoCommands();
     configureBindings();
@@ -155,7 +156,7 @@ public class RobotContainer {
             () -> -controller.getLeftY(),
             () -> -controller.getLeftX(),
             () -> -controller.getRightX(),
-            () -> false)); // TODO Maybe remove slow mode or smth
+            () -> controller.rightBumper().getAsBoolean()));
 
     controller.y().whileTrue(pivot.changePosition(10)).onFalse(pivot.changePosition(0));
     controller.x().whileTrue(pivot.changePosition(-10)).onFalse(pivot.changePosition(0));
@@ -236,21 +237,9 @@ public class RobotContainer {
                     new DeferredCommand(
                         () ->
                             PathGenerator.generateSimpleCorrectedPath(
-                                drive, PositionConstants.getRightSourcePose()),
-                        Set.of(drive))));
-
-    controller
-        .rightBumper()
-        .whileTrue(
-            wrist
-                .setGoalPosition(() -> reefArmPositions[reef_level - 1][0])
-                .alongWith(pivot.setPosition(() -> reefArmPositions[reef_level - 1][1]))
-                .alongWith(elevator.setPosition(() -> reefArmPositions[reef_level - 1][2]))
-                .alongWith(
-                    new DeferredCommand(
-                        () ->
-                            PathGenerator.generateSimpleCorrectedPath(
-                                drive, reefTargets.findTargetRight(drive.getPose(), reef_level)),
+                                drive,
+                                PositionConstants.getSourcePose(
+                                    FieldUtil.isOnRightSide(drive.getPose()))),
                         Set.of(drive))));
 
     controller
@@ -259,13 +248,7 @@ public class RobotContainer {
             wrist
                 .setGoalPosition(() -> reefArmPositions[reef_level - 1][0])
                 .alongWith(pivot.setPosition(() -> reefArmPositions[reef_level - 1][1]))
-                .alongWith(elevator.setPosition(() -> reefArmPositions[reef_level - 1][2]))
-                .alongWith(
-                    new DeferredCommand(
-                        () ->
-                            PathGenerator.generateSimpleCorrectedPath(
-                                drive, reefTargets.findTargetLeft(drive.getPose(), reef_level)),
-                        Set.of(drive))));
+                .alongWith(elevator.setPosition(() -> reefArmPositions[reef_level - 1][2])));
 
     controller
         .b()
@@ -322,7 +305,7 @@ public class RobotContainer {
         "ArmReef2",
         wrist
             .setGoalPosition(() -> reefArmPositions[2 - 1][0])
-            .alongWith(pivot.setPosition(() -> reefArmPositions[2][1 - 1]))
+            .alongWith(pivot.setPosition(() -> reefArmPositions[2 - 1][1]))
             .alongWith(elevator.setPosition(() -> reefArmPositions[2 - 1][2])));
 
     NamedCommands.registerCommand(

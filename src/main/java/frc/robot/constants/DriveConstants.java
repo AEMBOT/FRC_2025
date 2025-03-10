@@ -8,11 +8,14 @@ import edu.wpi.first.math.util.Units;
 public class DriveConstants {
   // May need tweaking
   public static final double MAX_LINEAR_SPEED = Units.feetToMeters(18.5); // MK4i L3+
+  public static final double DESIRED_MAX_LINEAR_SPEED = 16.65;
   public static final double TRACK_WIDTH_X = Units.inchesToMeters(22.75); // 28 in square chassis
   public static final double TRACK_WIDTH_Y = Units.inchesToMeters(22.75);
   public static final double DRIVE_BASE_RADIUS =
       Math.hypot(TRACK_WIDTH_X / 2.0, TRACK_WIDTH_Y / 2.0);
   public static final double MAX_ANGULAR_SPEED = MAX_LINEAR_SPEED / DRIVE_BASE_RADIUS;
+  public static final double DESIRED_MAX_ANGULAR_SPEED =
+      DESIRED_MAX_LINEAR_SPEED / DRIVE_BASE_RADIUS;
 
   public static final double CONTROLLER_DEADBAND = 0.05;
   public static final double SLOWMODE_MAX_METERS_PER_SEC = 1;

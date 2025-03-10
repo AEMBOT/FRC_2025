@@ -3,6 +3,7 @@ package frc.robot.subsystems.pivot;
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.constants.GeneralConstants.UPDATE_PERIOD;
+import static frc.robot.constants.PivotConstants.ALLOWED_DEVIANCE;
 import static frc.robot.constants.PivotConstants.SYS_ID_RAMP_RATE;
 import static frc.robot.constants.PivotConstants.SYS_ID_STEP_VALUE;
 import static frc.robot.constants.PivotConstants.SYS_ID_TIMEOUT;
@@ -48,7 +49,11 @@ public class Pivot extends SubsystemBase {
    * @return A {@link RunCommand} to set the pivot setpoint to posDeg.
    */
   public Command setAngleDeg(DoubleSupplier posDeg) {
-    return run(() -> io.setAngle(posDeg.getAsDouble()));
+    return run(() -> io.setAngle(posDeg.getAsDouble()))
+        .until(
+            () ->
+                Math.abs(inputs.pivotSetpointPosition - inputs.pivotAbsolutePosition)
+                    < ALLOWED_DEVIANCE);
   }
 
   /**

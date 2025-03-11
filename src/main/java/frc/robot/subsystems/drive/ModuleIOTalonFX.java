@@ -142,7 +142,6 @@ public class ModuleIOTalonFX implements ModuleIO {
     driveConfig.Feedback.SensorToMechanismRatio =
         (DRIVE_GEAR_RATIO) * (1.0 / (WHEEL_RADIUS * 2 * Math.PI));
 
-    // For teleop, kV to 2.0608994822, kP to 2.0
     driveConfig.Slot0.kV = 2.0608994822;
     driveConfig.Slot0.kA = 0.013797;
     driveConfig.Slot0.kS = 0.37914;

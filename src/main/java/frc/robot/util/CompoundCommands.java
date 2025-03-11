@@ -221,12 +221,12 @@ public class CompoundCommands {
 
   /** Run outtake with IntakeConstants.ejectTime. */
   public static Command ejectCoral() {
-    return intake.ejectCommand().withTimeout(IntakeConstants.ejectTime);
+    return intake.ejectCommand().withTimeout(IntakeConstants.ejectTimeout);
   }
 
   /** Run intake with IntakeConstants.intakeTime. */
   public static Command intakeCoral() {
     // Eventually, we probably want to run until the TOF sensor is activated.
-    return intake.intakeCommand().withTimeout(IntakeConstants.intakeTime);
+    return intake.intakeCommand().withTimeout(IntakeConstants.intakeTimeout);
   }
 }

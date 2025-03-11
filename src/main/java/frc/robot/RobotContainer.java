@@ -117,6 +117,7 @@ public class RobotContainer {
     Logger.recordOutput("currentRobot", currentRobot.ordinal());
     System.out.println("Running on robot: " + currentRobot);
 
+    CompoundCommands.configure(drive, elevator, pivot, wrist, intake);
     configureBindings();
 
     // Set up auto chooser

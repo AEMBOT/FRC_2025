@@ -13,7 +13,9 @@ import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands.*;
 import edu.wpi.first.wpilibj2.command.DeferredCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -178,13 +180,28 @@ public class RobotContainer {
                 .alongWith(elevator.setPosition(() -> reefArmPositions[reef_level - 1][2])));
 
     controller
+        .leftTrigger(0.25)
+        .onTrue(
+            intake
+                .runIntakeCommand(() -> 3)
+                .alongWith(wrist.setGoalPosition(() -> sourceWristAngle))
+                .alongWith(pivot.setPosition(() -> sourcePivotAngle))
+                .alongWith(elevator.setPosition(() -> sourceElevatorExtension)))
+        .onFalse(
+            intake
+                .runIntakeCommand(() -> 0.5)
+                .alongWith(wrist.setGoalPosition(() -> startingWristAngle))
+                .alongWith(elevator.setPosition(() -> staritingElevatorExtension))
+                .alongWith(pivot.setPosition(() -> staritingPivotAngle)));
+    controller
         .rightTrigger(0.25)
         .onTrue(intake.runIntakeCommand(() -> -4))
-        .onFalse(intake.runIntakeCommand(() -> 0));
-    controller
-        .leftTrigger(0.25)
-        .onTrue(intake.runIntakeCommand(() -> 3))
-        .onFalse(intake.runIntakeCommand(() -> 0));
+        .onFalse(
+            intake
+                .runIntakeCommand(() -> 0)
+                .alongWith(wrist.setGoalPosition(() -> startingWristAngle))
+                .alongWith(elevator.setPosition(() -> staritingElevatorExtension))
+                .alongWith(pivot.setPosition(() -> staritingPivotAngle)));
 
     controller
         .rightStick()
@@ -198,32 +215,36 @@ public class RobotContainer {
     // Path controller bindings
     controller
         .povDown()
-        .whileTrue( // onTrue results in the button only working once.
-            new RunCommand(
-                () -> {
-                  this.reef_level = 1;
-                }));
+        .onTrue( // onTrue results in the button only working once.
+            new InstantCommand(
+                    () -> {
+                      this.reef_level = 1;
+                    })
+                .andThen(pivot.setPosition(() -> reefArmPositions[0][1])));
     controller
         .povLeft()
-        .whileTrue(
-            new RunCommand(
-                () -> {
-                  this.reef_level = 2;
-                }));
+        .onTrue(
+            new InstantCommand(
+                    () -> {
+                      this.reef_level = 2;
+                    })
+                .andThen(pivot.setPosition(() -> reefArmPositions[1][1])));
     controller
         .povRight()
-        .whileTrue(
-            new RunCommand(
-                () -> {
-                  this.reef_level = 3;
-                }));
+        .onTrue(
+            new InstantCommand(
+                    () -> {
+                      this.reef_level = 3;
+                    })
+                .andThen(pivot.setPosition(() -> reefArmPositions[2][1])));
     controller
         .povUp()
-        .whileTrue(
-            new RunCommand(
-                () -> {
-                  this.reef_level = 4;
-                }));
+        .onTrue(
+            new InstantCommand(
+                    () -> {
+                      this.reef_level = 4;
+                    })
+                .andThen(pivot.setPosition(() -> reefArmPositions[3][1])));
 
     controller
         .a()

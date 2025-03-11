@@ -91,8 +91,8 @@ public class PositionConstants {
   public static final double sourceElevatorExtension = 0; // TODO find value
 
   // Starting Arm Setpoint Values
-  public static final double startingWristAngle = 89.69999999999999; // TODO find value
-  public static final double staritingPivotAngle = 44.87178593679461; // TODO find value
+  public static final double startingWristAngle = -28.795743719893572; // TODO find value
+  public static final double staritingPivotAngle = 74.14193660354842; // TODO find value
   public static final double staritingElevatorExtension = 0; // TODO find value
 
   public static final Pose2d sourcePose =

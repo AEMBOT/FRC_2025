@@ -19,7 +19,7 @@ public class Intake extends SubsystemBase {
   }
 
   public Command runIntakeCommand(DoubleSupplier volts) {
-    return run(() -> intake.setVoltage(volts.getAsDouble()));
+    return runOnce(() -> intake.setVoltage(volts.getAsDouble()));
   }
   /**
    * public Command zeroElevator() { return Commands.sequence( runOnce(() ->

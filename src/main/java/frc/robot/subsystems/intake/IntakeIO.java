@@ -7,6 +7,12 @@ public interface IntakeIO {
   @AutoLog
   public static class IntakeIOInputs {
     public double intakeAppliedVolts = 0.0;
+
+    public double gamePieceDistanceFromCenter = 0.0;
+
+    public boolean hasGamePiece = true;
+
+    // public double lastMeasurementTime = 0.0;
   }
 
   public default void updateInputs(IntakeIOInputs inputs) {}

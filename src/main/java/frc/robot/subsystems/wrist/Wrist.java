@@ -2,7 +2,9 @@ package frc.robot.subsystems.wrist;
 
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
+import static edu.wpi.first.wpilibj2.command.Commands.waitUntil;
 import static frc.robot.constants.GeneralConstants.UPDATE_PERIOD;
+import static frc.robot.constants.WristConstants.ALLOWED_DEVIANCE;
 import static frc.robot.constants.WristConstants.SYS_ID_RAMP_RATE;
 import static frc.robot.constants.WristConstants.SYS_ID_STEP_VALUE;
 import static frc.robot.constants.WristConstants.SYS_ID_TIMEOUT;
@@ -87,7 +89,12 @@ public class Wrist extends SubsystemBase {
    * @return A {@link RunCommand} to set the wrist setpoint to posDeg.
    */
   public Command setGoalPosition(DoubleSupplier posDeg) {
-    return run(() -> io.setAngle(posDeg.getAsDouble()));
+    return runOnce(() -> io.setAngle(posDeg.getAsDouble()))
+        .andThen(
+            waitUntil(
+                () ->
+                    Math.abs(inputs.wristGoalPosition - inputs.wristAbsolutePosition)
+                        < ALLOWED_DEVIANCE));
   }
 
   /**

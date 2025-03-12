@@ -9,6 +9,7 @@ import static frc.robot.constants.PivotConstants.SYS_ID_STEP_VALUE;
 import static frc.robot.constants.PivotConstants.SYS_ID_TIMEOUT;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -49,11 +50,7 @@ public class Pivot extends SubsystemBase {
    * @return A {@link RunCommand} to set the pivot setpoint to posDeg.
    */
   public Command setAngleDeg(DoubleSupplier posDeg) {
-    return run(() -> io.setAngle(posDeg.getAsDouble()))
-        .until(
-            () ->
-                Math.abs(inputs.pivotSetpointPosition - inputs.pivotAbsolutePosition)
-                    < ALLOWED_DEVIANCE);
+    return run(() -> io.setAngle(posDeg.getAsDouble()));
   }
 
   /**
@@ -92,7 +89,12 @@ public class Pivot extends SubsystemBase {
    * @return A {@link RunCommand} to set the pivot setpoint to posDeg.
    */
   public Command setPosition(DoubleSupplier posDeg) {
-    return run(() -> io.setAngle(posDeg.getAsDouble()));
+    return runOnce(() -> io.setAngle(posDeg.getAsDouble()))
+        .andThen(
+            Commands.waitUntil(
+                () ->
+                    Math.abs(inputs.pivotPosition - inputs.pivotAbsolutePosition)
+                        < ALLOWED_DEVIANCE));
   }
 
   /**

@@ -13,7 +13,6 @@ import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands.*;
 import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -184,24 +183,24 @@ public class RobotContainer {
         .onTrue(
             intake
                 .runIntakeCommand(() -> 3)
+                .alongWith(elevator.setPosition(() -> sourceElevatorExtension))
                 .alongWith(wrist.setGoalPosition(() -> sourceWristAngle))
-                .alongWith(pivot.setPosition(() -> sourcePivotAngle))
-                .alongWith(elevator.setPosition(() -> sourceElevatorExtension)))
+                .alongWith(pivot.setPosition(() -> sourcePivotAngle)))
         .onFalse(
             intake
                 .runIntakeCommand(() -> 0.5)
-                .alongWith(wrist.setGoalPosition(() -> startingWristAngle))
-                .alongWith(elevator.setPosition(() -> staritingElevatorExtension))
-                .alongWith(pivot.setPosition(() -> staritingPivotAngle)));
-    controller
+                .alongWith(elevator.setPosition(() -> stowElevatorExtension))
+                .alongWith(wrist.setGoalPosition(() -> stowWristAngle))
+                .alongWith(pivot.setPosition(() -> stowPivotAngle)));
+    controller  
         .rightTrigger(0.25)
         .onTrue(intake.runIntakeCommand(() -> -4))
         .onFalse(
             intake
                 .runIntakeCommand(() -> 0)
-                .alongWith(wrist.setGoalPosition(() -> startingWristAngle))
-                .alongWith(elevator.setPosition(() -> staritingElevatorExtension))
-                .alongWith(pivot.setPosition(() -> staritingPivotAngle)));
+                .alongWith(elevator.setPosition(() -> stowElevatorExtension))
+                .alongWith(wrist.setGoalPosition(() -> stowWristAngle))
+                .andThen(pivot.setPosition(() -> stowPivotAngle)));
 
     controller
         .rightStick()
@@ -217,34 +216,30 @@ public class RobotContainer {
         .povDown()
         .onTrue( // onTrue results in the button only working once.
             new InstantCommand(
-                    () -> {
-                      this.reef_level = 1;
-                    })
-                .andThen(pivot.setPosition(() -> reefArmPositions[0][1])));
+                () -> {
+                  this.reef_level = 1;
+                }));
     controller
         .povLeft()
         .onTrue(
             new InstantCommand(
-                    () -> {
-                      this.reef_level = 2;
-                    })
-                .andThen(pivot.setPosition(() -> reefArmPositions[1][1])));
+                () -> {
+                  this.reef_level = 2;
+                }));
     controller
         .povRight()
         .onTrue(
             new InstantCommand(
-                    () -> {
-                      this.reef_level = 3;
-                    })
-                .andThen(pivot.setPosition(() -> reefArmPositions[2][1])));
+                () -> {
+                  this.reef_level = 3;
+                }));
     controller
         .povUp()
         .onTrue(
             new InstantCommand(
-                    () -> {
-                      this.reef_level = 4;
-                    })
-                .andThen(pivot.setPosition(() -> reefArmPositions[3][1])));
+                () -> {
+                  this.reef_level = 4;
+                }));
 
     controller
         .a()
@@ -263,9 +258,9 @@ public class RobotContainer {
     controller
         .rightBumper()
         .whileTrue(
-            wrist
-                .setGoalPosition(() -> reefArmPositions[reef_level - 1][0])
-                .alongWith(pivot.setPosition(() -> reefArmPositions[reef_level - 1][1]))
+            pivot
+                .setPosition(() -> reefArmPositions[reef_level - 1][1])
+                .andThen(wrist.setGoalPosition(() -> reefArmPositions[reef_level - 1][0]))
                 .alongWith(elevator.setPosition(() -> reefArmPositions[reef_level - 1][2]))
                 .alongWith(
                     new DeferredCommand(
@@ -277,9 +272,9 @@ public class RobotContainer {
     controller
         .leftBumper()
         .whileTrue(
-            wrist
-                .setGoalPosition(() -> reefArmPositions[reef_level - 1][0])
-                .alongWith(pivot.setPosition(() -> reefArmPositions[reef_level - 1][1]))
+            pivot
+                .setPosition(() -> reefArmPositions[reef_level - 1][1])
+                .andThen(wrist.setGoalPosition(() -> reefArmPositions[reef_level - 1][0]))
                 .alongWith(elevator.setPosition(() -> reefArmPositions[reef_level - 1][2]))
                 .alongWith(
                     new DeferredCommand(

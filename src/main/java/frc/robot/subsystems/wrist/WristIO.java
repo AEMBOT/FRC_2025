@@ -45,6 +45,8 @@ public interface WristIO {
   /** Run open loop at the specified voltage. */
   public default void setVoltage(double volts) {}
 
+  public default void simulationPeriodic() {}
+
   /** Resets the wrist goal and setpoint to the current angle of the wrist */
   public default void resetProfile() {}
 }

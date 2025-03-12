@@ -41,6 +41,10 @@ public class Wrist extends SubsystemBase {
     io.updateInputs(inputs);
   }
 
+  public void simulationPeriodic() {
+    io.simulationPeriodic();
+  }
+
   /**
    * Sets the setpoint of the wrist to a certain degree.
    *

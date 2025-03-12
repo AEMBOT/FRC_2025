@@ -3,10 +3,7 @@ package frc.robot.constants;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 
 public class PivotConstants {
   /** Maximum angle for the pivot to move to, in degrees */
@@ -81,17 +78,7 @@ public class PivotConstants {
   public static final double SIM_SETPOINT_POSITION = 1.05;
 
   /** */
-  public static final SingleJointedArmSim SIM =
-      new SingleJointedArmSim(
-          DCMotor.getNEO(2),
-          300,
-          0.17,
-          0.500,
-          Units.degreesToRadians(MIN_ANGLE),
-          Units.degreesToRadians(MAX_ANGLE),
-          true,
-          Units.degreesToRadians(45));
-
   public static final int RATCHET_PIN_1_ID = 8;
+
   public static final int RATCHET_PIN_2_ID = 9;
 }

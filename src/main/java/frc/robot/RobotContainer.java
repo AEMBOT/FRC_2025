@@ -37,6 +37,7 @@ import frc.robot.subsystems.pivot.PivotIOSim;
 import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.subsystems.wrist.WristIO;
 import frc.robot.subsystems.wrist.WristIOReal;
+import frc.robot.subsystems.wrist.WristIOSim;
 import frc.robot.util.FieldUtil;
 import frc.robot.util.PathGenerator;
 import frc.robot.util.ReefTargets;
@@ -105,7 +106,7 @@ public class RobotContainer {
         intake = new Intake(new IntakeIO() {});
         pivot = new Pivot(new PivotIOSim() {});
         elevator = new Elevator(new ElevatorIO() {});
-        wrist = new Wrist(new WristIO() {});
+        wrist = new Wrist(new WristIOSim() {});
         break;
 
       default:
@@ -274,6 +275,19 @@ public class RobotContainer {
     keyboardController
         .button(6)
         .whileTrue(pivot.setPosition(() -> 360))
+        .onFalse(pivot.setPosition(() -> 0));
+    keyboardController
+        .button(7)
+        .whileTrue(wrist.setAngleDeg(() -> 90))
+        .onFalse(wrist.setAngleDeg(() -> 0));
+
+    keyboardController
+        .button(8)
+        .whileTrue(wrist.setAngleDeg(() -> 45))
+        .onFalse(wrist.setAngleDeg(() -> 0));
+    keyboardController
+        .button(8)
+        .whileTrue(pivot.setPosition(() -> 70))
         .onFalse(pivot.setPosition(() -> 0));
 
     // Path controller bindings

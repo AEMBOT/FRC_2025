@@ -1,9 +1,4 @@
 {
-  "Keyboard 0 Settings": {
-    "window": {
-      "visible": true
-    }
-  },
   "keyboardJoysticks": [
     {
       "axisConfig": [
@@ -43,8 +38,8 @@
         86,
         44,
         46,
-        -1,
-        -1,
+        59,
+        39,
         82,
         47
       ],

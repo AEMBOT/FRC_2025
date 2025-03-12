@@ -23,17 +23,23 @@ public class IntakeIOReal implements IntakeIO {
 
   public void updateInputs(IntakeIOInputs inputs) {
     inputs.intakeAppliedVolts = motor.getMotorVoltage().getValueAsDouble();
-    inputs.gamePieceDistanceFromCenter = getGamePieceDistanceFromCenter();
-    inputs.hasGamePiece = checkGamePiece();
+    inputs.gamePieceLocation = getGamePieceLocation();
+    inputs.hasGamePiece = checkForGamePiece();
     // inputs.lastMeasurementTime = CANRANGE.getMeasurementTime().getValueAsDouble();
   }
 
-  private double getGamePieceDistanceFromCenter() {
-    return CANRANGE.getDistance().getValueAsDouble() + coralRadius - canrangeOffset;
+  // gets coral location relative to the center of intake. gives a negative on the left side,
+  // positive value
+  // if on the right side of the intake
+  private double getGamePieceLocation() {
+    if (checkForGamePiece() == true) {
+      return CANRANGE.getDistance().getValueAsDouble() + coralRadius - canrangeOffset;
+    } else return 0.0;
   }
 
-  private boolean checkGamePiece() {
-    if (CANRANGE.getDistance().getValueAsDouble() > 0.4) {
+  private boolean checkForGamePiece() {
+    if (CANRANGE.getDistance().getValueAsDouble() > 0.4) { 
+          // left point of coral physically can't be past 0.4 meters of the intake
       return false;
     } else return true;
   }

@@ -21,6 +21,10 @@ public class Intake extends SubsystemBase {
   public Command runIntakeCommand(DoubleSupplier volts) {
     return run(() -> intake.setVoltage(volts.getAsDouble()));
   }
+
+  public DoubleSupplier getGamePiecePosition() {
+    return () -> intakeInputs.gamePieceLocation;
+  }
   /**
    * public Command zeroElevator() { return Commands.sequence( runOnce(() ->
    * elevator.setHoming(true)), elevator.setVoltage(-1). until(elevator::elevator.atMinimum()).

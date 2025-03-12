@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import frc.robot.constants.PositionConstants;
+import java.util.function.DoubleSupplier;
 
 public final class ReefTargets {
   final Pose2d[] tagPoses;
@@ -22,11 +23,20 @@ public final class ReefTargets {
   final Pose2d[] targetsL4Right = new Pose2d[6];
   final Pose2d[] targetsL4Left = new Pose2d[6];
 
+  final Pose2d[] coralOffsetTargetsL1Right = new Pose2d[6];
+  final Pose2d[] coralOffsetTargetsL1Left = new Pose2d[6];
+  final Pose2d[] coralOffsetTargetsL2Right = new Pose2d[6];
+  final Pose2d[] coralOffsetTargetsL2Left = new Pose2d[6];
+  final Pose2d[] coralOffsetTargetsL3Right = new Pose2d[6];
+  final Pose2d[] coralOffsetTargetsL3Left = new Pose2d[6];
+  final Pose2d[] coralOffsetTargetsL4Right = new Pose2d[6];
+  final Pose2d[] coralOffsetTargetsL4Left = new Pose2d[6];
+
+  Rotation2d targetThetaR = new Rotation2d(PositionConstants.reefRobotAngle);
+  Rotation2d targetThetaL = new Rotation2d(-PositionConstants.reefRobotAngle);
+
   public ReefTargets() {
     // Defines the transformation vector for a target position
-    Rotation2d targetThetaR = new Rotation2d(PositionConstants.reefRobotAngle);
-    Rotation2d targetThetaL = new Rotation2d(-PositionConstants.reefRobotAngle);
-
     Transform2d[] offsetsRight = {
       new Transform2d(PositionConstants.reefLevel1X, PositionConstants.reefY, targetThetaR),
       new Transform2d(PositionConstants.reefLevel2X, PositionConstants.reefY, targetThetaR),
@@ -81,13 +91,13 @@ public final class ReefTargets {
   public Pose2d findTargetRight(Pose2d currentPose, int level) {
     switch (level) {
       case 1:
-        return targetsL1Right[findClosestTag(currentPose)];
+        return coralOffsetTargetsL1Right[findClosestTag(currentPose)];
       case 2:
-        return targetsL2Right[findClosestTag(currentPose)];
+        return coralOffsetTargetsL2Right[findClosestTag(currentPose)];
       case 3:
-        return targetsL3Right[findClosestTag(currentPose)];
+        return coralOffsetTargetsL3Right[findClosestTag(currentPose)];
       case 4:
-        return targetsL4Right[findClosestTag(currentPose)];
+        return coralOffsetTargetsL4Right[findClosestTag(currentPose)];
       default:
         throw new IllegalArgumentException("Invalid level: " + level);
     }
@@ -96,15 +106,68 @@ public final class ReefTargets {
   public Pose2d findTargetLeft(Pose2d currentPose, int level) {
     switch (level) {
       case 1:
-        return targetsL1Left[findClosestTag(currentPose)];
+        return coralOffsetTargetsL1Left[findClosestTag(currentPose)];
       case 2:
-        return targetsL2Left[findClosestTag(currentPose)];
+        return coralOffsetTargetsL2Left[findClosestTag(currentPose)];
       case 3:
-        return targetsL3Left[findClosestTag(currentPose)];
+        return coralOffsetTargetsL3Left[findClosestTag(currentPose)];
       case 4:
-        return targetsL4Left[findClosestTag(currentPose)];
+        return coralOffsetTargetsL4Left[findClosestTag(currentPose)];
       default:
         throw new IllegalArgumentException("Invalid level: " + level);
+    }
+  }
+
+  public void updateTargetsLeftAndRight(DoubleSupplier gamePiecePosition) {
+    double gamePiecePositionMet = gamePiecePosition.getAsDouble();
+
+    Transform2d[] coralOffsetsRight = {
+      new Transform2d(
+          PositionConstants.reefLevel1X,
+          PositionConstants.reefY + gamePiecePositionMet,
+          targetThetaR),
+      new Transform2d(
+          PositionConstants.reefLevel2X,
+          PositionConstants.reefY + gamePiecePositionMet,
+          targetThetaR),
+      new Transform2d(
+          PositionConstants.reefLevel3X,
+          PositionConstants.reefY + gamePiecePositionMet,
+          targetThetaR),
+      new Transform2d(
+          PositionConstants.reefLevel4X,
+          PositionConstants.reefY + gamePiecePositionMet,
+          targetThetaR),
+    };
+
+    Transform2d[] coralOffsetsLeft = {
+      new Transform2d(
+          PositionConstants.reefLevel1X,
+          -PositionConstants.reefY + gamePiecePositionMet,
+          targetThetaL),
+      new Transform2d(
+          PositionConstants.reefLevel2X,
+          -PositionConstants.reefY + gamePiecePositionMet,
+          targetThetaL),
+      new Transform2d(
+          PositionConstants.reefLevel3X,
+          -PositionConstants.reefY + gamePiecePositionMet,
+          targetThetaL),
+      new Transform2d(
+          PositionConstants.reefLevel4X,
+          -PositionConstants.reefY + gamePiecePositionMet,
+          targetThetaL),
+    };
+
+    for (int i = 0; i < tagPoses.length; i++) {
+      coralOffsetTargetsL1Left[i] = targetsL1Left[i].transformBy(coralOffsetsLeft[0]);
+      coralOffsetTargetsL1Right[i] = targetsL1Right[i].transformBy(coralOffsetsRight[0]);
+      coralOffsetTargetsL2Left[i] = targetsL1Left[i].transformBy(coralOffsetsLeft[1]);
+      coralOffsetTargetsL2Right[i] = targetsL1Right[i].transformBy(coralOffsetsRight[1]);
+      coralOffsetTargetsL3Left[i] = targetsL1Left[i].transformBy(coralOffsetsLeft[2]);
+      coralOffsetTargetsL3Right[i] = targetsL1Right[i].transformBy(coralOffsetsRight[2]);
+      coralOffsetTargetsL4Left[i] = targetsL1Left[i].transformBy(coralOffsetsLeft[3]);
+      coralOffsetTargetsL4Right[i] = targetsL1Right[i].transformBy(coralOffsetsRight[3]);
     }
   }
 

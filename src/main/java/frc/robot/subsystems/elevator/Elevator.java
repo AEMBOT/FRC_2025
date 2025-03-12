@@ -106,8 +106,9 @@ public class Elevator extends SubsystemBase {
    *     elevator dampening profile after completion.
    */
   public Command changePosition(double velocityMetPerSec) {
-    return setPosition(() -> inputs.elevatorGoalPosition + (velocityMetPerSec * UPDATE_PERIOD))
-        .finallyDo(io::resetProfile);
+    return run(() ->
+            io.setHeight(inputs.elevatorGoalPosition + (velocityMetPerSec * UPDATE_PERIOD)))
+        .finallyDo(() -> io.resetProfile());
   }
 
   /**

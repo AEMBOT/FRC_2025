@@ -105,7 +105,7 @@ public class Wrist extends SubsystemBase {
    *     wrist dampening profile after completion.
    */
   public Command changeGoalPosition(double velocityDegPerSec) {
-    return setGoalPosition(() -> inputs.wristGoalPosition + (velocityDegPerSec * UPDATE_PERIOD))
+    return run(() -> io.setAngle(inputs.wristGoalPosition + (velocityDegPerSec * UPDATE_PERIOD)))
         .finallyDo(io::resetProfile);
   }
 }

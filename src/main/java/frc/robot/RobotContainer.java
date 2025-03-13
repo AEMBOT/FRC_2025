@@ -193,7 +193,7 @@ public class RobotContainer {
                 .alongWith(elevator.setPosition(() -> stowElevatorExtension))
                 .alongWith(wrist.setGoalPosition(() -> stowWristAngle))
                 .alongWith(pivot.setPosition(() -> stowPivotAngle)));
-    controller  
+    controller
         .rightTrigger(0.25)
         .onTrue(intake.runIntakeCommand(() -> -4))
         .onFalse(

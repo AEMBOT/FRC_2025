@@ -242,16 +242,6 @@ public class RobotContainer {
                                     FieldUtil.isOnRightSide(drive.getPose()))),
                         Set.of(drive))));
 
-    // FIXME Temporary for testing. DO NOT USE
-    controller
-        .b()
-        .whileTrue(
-            new DeferredCommand(
-                () ->
-                    PathGenerator.generateSimpleCorrectedPath(
-                        drive, reefTargets.findTargetLeft(drive.getPose(), reef_level)),
-                Set.of(drive)));
-
     controller
         .leftBumper()
         .whileTrue(
@@ -260,13 +250,13 @@ public class RobotContainer {
                 .alongWith(pivot.setPosition(() -> reefArmPositions[reef_level - 1][1]))
                 .alongWith(elevator.setPosition(() -> reefArmPositions[reef_level - 1][2])));
 
-    // controller
-    //     .b()
-    //     .whileTrue(
-    //         wrist
-    //             .setGoalPosition(() -> L1WristAngle)
-    //             .alongWith(pivot.setPosition(() -> 24))
-    //             .alongWith(elevator.setPosition(() -> L1ElevatorExtension)));
+    controller
+        .b()
+        .whileTrue(
+            wrist
+                .setGoalPosition(() -> L1WristAngle)
+                .alongWith(pivot.setPosition(() -> 24))
+                .alongWith(elevator.setPosition(() -> L1ElevatorExtension)));
     controller
         .start()
         .whileTrue(

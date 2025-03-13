@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Left - ReefCenter"
+            "pathName": "2 Piece Center Right.0"
           }
         },
         {
@@ -43,22 +43,27 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Eject"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "2 Piece Center Right.1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "2 Piece Center Right.2"
+          }
+        },
+        {
           "type": "race",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Eject"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 1.0
-                }
-              }
-            ]
+            "commands": []
           }
         }
       ]

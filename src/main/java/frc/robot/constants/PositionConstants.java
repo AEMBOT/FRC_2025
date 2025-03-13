@@ -6,7 +6,6 @@ import static edu.wpi.first.units.Units.Radians;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.util.FieldUtil;
@@ -65,37 +64,49 @@ public class PositionConstants {
     }
   }
 
+  /**
+   * Gets the pose for left or right source on our alliance.
+   *
+   * @param isOnRight If we want the right source rather than left. Usually from {@link
+   *     FieldUtil}.isOnRightSide
+   */
+  public static Pose2d getSourcePose(boolean isOnRight) {
+    if (isOnRight) {
+      return getRightSourcePose();
+    } else {
+      return getLeftSourcePose();
+    }
+  }
+
   // L1 Arm Setpoint Values
-  public static final double L1WristAngle = -7; // TODO find value
-  public static final double L1PivotAngle = 60; // TODO find value
-  public static final double L1ElevatorExtension = 0; // TODO find value
+  public static final double L1WristAngle = -26.745;
+  public static final double L1PivotAngle = 38.702;
+  public static final double L1ElevatorExtension = 0;
 
   // L2 Arm Setpoint Values
-  public static final double L2WristAngle = -8.799999999999983; // TODO find value
-  public static final double L2PivotAngle = 74.54070861351771; // TODO find value
-  public static final double L2ElevatorExtension = 0; // TODO find value
+  public static final double L2WristAngle = -8.799999999999983;
+  public static final double L2PivotAngle = 74.54070861351771;
+  public static final double L2ElevatorExtension = 0;
 
   // L3 Arm Setpoint Values
-  public static final double L3WristAngle = -10.44; // TODO find value
-  public static final double L3PivotAngle = 79.20000000000005; // TODO find value
-  public static final double L3ElevatorExtension = 0.385498046875; // TODO find value
+  public static final double L3WristAngle = -10.44;
+  public static final double L3PivotAngle = 79.20000000000005;
+  public static final double L3ElevatorExtension = 0.385498046875 + 0.03;
 
   // L4 Arm Setpoint Values
-  public static final double L4WristAngle = -25; // TODO find value
-  public static final double L4PivotAngle = 82.6000000000001; // TODO find value
-  public static final double L4ElevatorExtension = 1.0858944163602942; // TODO fggind value
+  public static final double L4WristAngle = -25;
+  public static final double L4PivotAngle = 82.6000000000001;
+  public static final double L4ElevatorExtension = 1.0858944163602942 + 0.03;
 
   // Source Arm Setpoint Values
-  public static final double sourceWristAngle = 83.30000000000001; // TODO find value
-  public static final double sourcePivotAngle = 45.21778598044459; // TODO find value
-  public static final double sourceElevatorExtension = 0; // TODO find value
+  public static final double sourceWristAngle = 83.30000000000001;
+  public static final double sourcePivotAngle = 45.21778598044459;
+  public static final double sourceElevatorExtension = 0;
 
   // stow Arm Setpoint Values
   public static final double stowWristAngle = -28.795743719893572; // TODO find value
   public static final double stowPivotAngle = 74.14193660354842; // TODO find value
   public static final double stowElevatorExtension = 0; // TODO find value
-
-  public static final double safeReefExitPivotAngle = 90;
 
   public static final Pose2d sourcePose =
       new Pose2d(

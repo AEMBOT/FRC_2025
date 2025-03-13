@@ -151,6 +151,7 @@ public class PathGenerator {
             () -> {
               translationPID.close();
               thetaPID.close();
+              drive.stop();
             });
   }
 

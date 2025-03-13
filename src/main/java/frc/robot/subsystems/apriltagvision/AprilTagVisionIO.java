@@ -74,21 +74,23 @@ public interface AprilTagVisionIO {
     avgDist /= numTags;
 
     // Set stdDevConstant based on resolution and tag count
-    Matrix<N3, N1> stdDevConstant = switch(resolution) {
-      case HIGH_RES -> (numTags == 1) ? highResSingleTagStdDev : highResMultiTagStdDev;
-      case NORMAL -> (numTags == 1) ? normalSingleTagStdDev : normalMultiTagStdDev;
-    };
+    Matrix<N3, N1> stdDevConstant =
+        switch (resolution) {
+          case HIGH_RES -> (numTags == 1) ? highResSingleTagStdDev : highResMultiTagStdDev;
+          case NORMAL -> (numTags == 1) ? normalSingleTagStdDev : normalMultiTagStdDev;
+        };
     // Set max distance based on resolution and tag count
-    double maxDistance = switch(resolution) {
-      case HIGH_RES -> (numTags == 1) ? highResSingleTagMaxDist : highResMultiTagMaxDist;
-      case NORMAL -> (numTags == 1) ? normalSingleTagMaxDist : normalMultiTagMaxDist;
-    };
+    double maxDistance =
+        switch (resolution) {
+          case HIGH_RES -> (numTags == 1) ? highResSingleTagMaxDist : highResMultiTagMaxDist;
+          case NORMAL -> (numTags == 1) ? normalSingleTagMaxDist : normalMultiTagMaxDist;
+        };
 
     // If the average distance is larger than the max distance, return inf
     if (avgDist > maxDistance) {
       estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
 
-    // otherwise return stdDev multiplies by distance squared
+      // otherwise return stdDev multiplies by distance squared
     } else {
       estStdDevs = stdDevConstant.times(Math.pow(avgDist, 2));
     }

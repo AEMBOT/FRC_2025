@@ -31,6 +31,13 @@ public class Intake extends SubsystemBase {
   }
 
   /**
+   * @return True if there is a game piece in the intake.
+   */
+  public boolean getHasGamePiece() {
+    return intakeInputs.hasGamePiece;
+  }
+
+  /**
    * Runs the intake at intake voltage specified in {@link IntakeConstants}.
    *
    * @return Command that MUST BE TERMINATED EXTERNALLY and will stop intake once terminated.

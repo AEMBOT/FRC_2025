@@ -232,10 +232,9 @@ public class CompoundCommands {
     return intake.ejectCommand().withTimeout(IntakeConstants.ejectTimeout);
   }
 
-  /** Run intake with IntakeConstants.intakeTime. */
+  /** Run intake until we have coral or timeout (IntakeConstants.intakeTimeout) runs out */
   public static Command intakeCoral() {
-    // Eventually, we probably want to run until the TOF sensor is activated.
-    return intake.intakeCommand().withTimeout(IntakeConstants.intakeTimeout);
+    return intake.intakeCommand().until(() -> intake.getHasGamePiece()).withTimeout(IntakeConstants.intakeTimeout);
   }
 
   /**

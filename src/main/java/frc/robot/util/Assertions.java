@@ -15,8 +15,4 @@ public class Assertions {
         tolerance,
         message + " | θ");
   }
-
-  public static void assertPoseEquals(Pose2d expected, Pose2d actual, String message) {
-    assertPoseWithin(expected, actual, message, 0.0);
-  }
 }

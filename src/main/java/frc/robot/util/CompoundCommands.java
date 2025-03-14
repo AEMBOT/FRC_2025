@@ -234,7 +234,10 @@ public class CompoundCommands {
 
   /** Run intake until we have coral or timeout (IntakeConstants.intakeTimeout) runs out */
   public static Command intakeCoral() {
-    return intake.intakeCommand().until(() -> intake.getHasGamePiece()).withTimeout(IntakeConstants.intakeTimeout);
+    return intake
+        .intakeCommand()
+        .until(() -> intake.getHasGamePiece())
+        .withTimeout(IntakeConstants.intakeTimeout);
   }
 
   /**

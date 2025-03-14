@@ -30,7 +30,7 @@ public class PositionConstants {
 
   // Define source targets
   public static final Transform2d sourceOffset =
-      new Transform2d(0.4318 + 0.0508, 0.0, Rotation2d.fromDegrees(180));
+      new Transform2d(0.4318 + 0.3429, 0.0, Rotation2d.fromDegrees(180));
 
   public static final Pose2d sourcePoseRightBlue =
       VisionConstants.aprilTagFieldLayout.getTagPose(12).get().toPose2d().transformBy(sourceOffset);

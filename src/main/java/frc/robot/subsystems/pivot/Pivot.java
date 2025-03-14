@@ -105,7 +105,7 @@ public class Pivot extends SubsystemBase {
    *     pivot dampening profile after completion.
    */
   public Command changePosition(double velocityDegPerSec) {
-    return setPosition(() -> inputs.pivotPosition + (velocityDegPerSec * UPDATE_PERIOD))
+    return run(() -> io.setAngle(inputs.pivotPosition + (velocityDegPerSec * UPDATE_PERIOD)))
         .finallyDo(io::resetProfile);
   }
 

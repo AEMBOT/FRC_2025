@@ -83,18 +83,25 @@ public final class ReefTargets {
    * @return The offset of our Robot position from the ApriLTag in a Transform2d
    */
   public Transform2d getTagOffset(int level, Boolean isOnRight, double gamePiecePosition) {
+    double additionalOffset;
+    if (level == 1) {
+      additionalOffset = 0;
+    } else {
+      additionalOffset = gamePiecePosition;
+    }
+
     Transform2d coralOffset;
     if (isOnRight) {
       coralOffset =
           new Transform2d(
               PositionConstants.reefLevel[level - 1],
-              PositionConstants.reefY + gamePiecePosition,
+              PositionConstants.reefY + additionalOffset,
               new Rotation2d(PositionConstants.reefRobotAngle));
     } else {
       coralOffset =
           new Transform2d(
               PositionConstants.reefLevel[level - 1],
-              -PositionConstants.reefY + gamePiecePosition,
+              -PositionConstants.reefY + additionalOffset,
               new Rotation2d(-PositionConstants.reefRobotAngle));
     }
     return coralOffset;

@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import edu.wpi.first.math.geometry.Pose2d;
 
 public class Assertions {
-  public static void AssertPoseWithin(
+  public static void assertPoseWithin(
       Pose2d expected, Pose2d actual, String message, double tolerance) {
     assertEquals(expected.getX(), actual.getX(), tolerance, message + " | X");
     assertEquals(expected.getY(), actual.getY(), tolerance, message + " | Y");
@@ -16,7 +16,7 @@ public class Assertions {
         message + " | Delta");
   }
 
-  public static void AssertPoseEquals(Pose2d expected, Pose2d actual, String message) {
-    AssertPoseWithin(expected, actual, message, 0.0);
+  public static void assertPoseEquals(Pose2d expected, Pose2d actual, String message) {
+    assertPoseWithin(expected, actual, message, 0.0);
   }
 }

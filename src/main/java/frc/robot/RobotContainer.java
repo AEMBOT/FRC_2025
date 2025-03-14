@@ -4,16 +4,17 @@
 
 package frc.robot;
 
+import static edu.wpi.first.wpilibj2.command.Commands.*;
 import static frc.robot.constants.GeneralConstants.currentMode;
 import static frc.robot.constants.GeneralConstants.currentRobot;
 
+import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.constants.GeneralConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONavX;
@@ -32,11 +33,10 @@ import frc.robot.subsystems.pivot.PivotIOReal;
 import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.subsystems.wrist.WristIO;
 import frc.robot.subsystems.wrist.WristIOReal;
-import frc.robot.util.PathGenerator;
-import frc.robot.util.ReefTargets;
-import java.util.Set;
+import frc.robot.util.CompoundCommands;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 public class RobotContainer {
 
@@ -54,6 +54,9 @@ public class RobotContainer {
   // Driver-assist variables
   @AutoLogOutput private int reef_level = 4; // Terminology: Trough is L1, top is L4
 
+  // Dashboard inputs
+  private final LoggedDashboardChooser<Command> autoChooser;
+
   public RobotContainer() {
 
     switch (currentMode) {
@@ -65,10 +68,20 @@ public class RobotContainer {
                 new ModuleIOTalonFX(1),
                 new ModuleIOTalonFX(2),
                 new ModuleIOTalonFX(3));
-        intake = new Intake(new IntakeIOReal());
-        pivot = new Pivot(new PivotIOReal());
-        elevator = new Elevator(new ElevatorIOReal());
-        wrist = new Wrist(new WristIOReal());
+        switch (GeneralConstants.currentRobot) {
+          case NAUTILUS:
+            intake = new Intake(new IntakeIOReal());
+            pivot = new Pivot(new PivotIOReal());
+            elevator = new Elevator(new ElevatorIOReal());
+            wrist = new Wrist(new WristIOReal());
+            break;
+          default: // Dory doesn't have arm
+            intake = new Intake(new IntakeIO() {});
+            pivot = new Pivot(new PivotIO() {});
+            elevator = new Elevator(new ElevatorIO() {});
+            wrist = new Wrist(new WristIO() {});
+            break;
+        }
         break;
 
       case SIM:
@@ -104,7 +117,11 @@ public class RobotContainer {
     Logger.recordOutput("currentRobot", currentRobot.ordinal());
     System.out.println("Running on robot: " + currentRobot);
 
+    CompoundCommands.configure(drive, elevator, pivot, wrist, intake);
     configureBindings();
+
+    // Set up auto chooser
+    autoChooser = new LoggedDashboardChooser<>("Auto Routines", AutoBuilder.buildAutoChooser());
   }
 
   private void configureBindings() {
@@ -114,18 +131,10 @@ public class RobotContainer {
             () -> -controller.getLeftY(),
             () -> -controller.getLeftX(),
             () -> -controller.getRightX(),
-            () ->
-                controller.getLeftTriggerAxis()
-                    > 0.5)); // Trigger locks make trigger boolean, rather than analog.
+            () -> controller.rightBumper().getAsBoolean()));
 
-    backupController
-        .a()
-        .whileTrue(pivot.changePosition(10).alongWith(elevator.limitHeight(pivot.getPosition())))
-        .onFalse(pivot.changePosition(0));
-    backupController
-        .b()
-        .whileTrue(pivot.changePosition(-10).alongWith(elevator.limitHeight(pivot.getPosition())))
-        .onFalse(pivot.changePosition(0));
+    controller.y().whileTrue(pivot.changePosition(10)).onFalse(pivot.changePosition(0));
+    controller.x().whileTrue(pivot.changePosition(-10)).onFalse(pivot.changePosition(0));
 
     backupController
         .rightTrigger()
@@ -136,83 +145,57 @@ public class RobotContainer {
         .whileTrue(elevator.changePosition(-0.25))
         .onFalse(elevator.changePosition(0));
 
-    backupController
-        .rightBumper()
-        .onTrue(intake.runIntakeCommand(() -> -2))
-        .onFalse(intake.runIntakeCommand(() -> 0));
-    backupController
-        .leftBumper()
-        .onTrue(intake.runIntakeCommand(() -> 3))
-        .onFalse(intake.runIntakeCommand(() -> 0));
+    backupController.a().whileTrue(CompoundCommands.armToReef(reef_level));
 
-    backupController
-        .y()
+    controller.rightTrigger(0.25).whileTrue(intake.ejectCommand());
+    controller.leftTrigger(0.25).whileTrue(intake.intakeCommand());
+
+    controller
+        .rightStick()
         .whileTrue(wrist.changeGoalPosition(40))
         .onFalse(wrist.changeGoalPosition(0));
-    backupController
-        .x()
+    controller
+        .leftStick()
         .whileTrue(wrist.changeGoalPosition(-40))
         .onFalse(wrist.changeGoalPosition(0));
 
     // Path controller bindings
-    ReefTargets reefTargets = new ReefTargets();
-
     controller
         .povDown()
-        .whileTrue( // onTrue results in the button only working once.
-            new RunCommand(
+        .onTrue(
+            runOnce(
                 () -> {
                   this.reef_level = 1;
                 }));
     controller
         .povLeft()
-        .whileTrue(
-            new RunCommand(
+        .onTrue(
+            runOnce(
                 () -> {
                   this.reef_level = 2;
                 }));
     controller
         .povRight()
-        .whileTrue(
-            new RunCommand(
+        .onTrue(
+            runOnce(
                 () -> {
                   this.reef_level = 3;
                 }));
     controller
         .povUp()
-        .whileTrue(
-            new RunCommand(
+        .onTrue(
+            runOnce(
                 () -> {
                   this.reef_level = 4;
                 }));
 
     controller
-        .x()
-        .whileTrue(
-            new DeferredCommand(
-                () ->
-                    PathGenerator.generateSimpleCorrectedPath(
-                        drive,
-                        reefTargets.findTargetTag(
-                            "Left",
-                            drive.getPose(),
-                            reef_level,
-                            intake.getGamePiecePosition().getAsDouble())),
-                Set.of(drive)));
-
+        .leftBumper()
+        .whileTrue(CompoundCommands.deferDrive(() -> CompoundCommands.driveToLeftReef(reef_level)));
     controller
-        .y()
+        .rightBumper()
         .whileTrue(
-            new DeferredCommand(
-                () ->
-                    PathGenerator.generateSimpleCorrectedPath(
-                        drive,
-                        reefTargets.findTargetTag(
-                            "Right",
-                            drive.getPose(),
-                            reef_level,
-                            intake.getGamePiecePosition().getAsDouble())),
-                Set.of(drive)));
+            CompoundCommands.deferDrive(() -> CompoundCommands.driveToRightReef(reef_level)));
 
     controller
         .start()
@@ -228,6 +211,6 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return Commands.print("No autonomous command configured");
+    return autoChooser.get();
   }
 }

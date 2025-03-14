@@ -5,17 +5,19 @@
 package frc.robot.util;
 
 import static frc.robot.constants.VisionConstants.aprilTagFieldLayout;
+import static frc.robot.util.FieldUtil.mirrorPose;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.constants.PositionConstants;
 
 public final class ReefTargets {
   final Pose2d[] tagPoses;
   final Pose2d coralOffsetTargetTagPose = new Pose2d();
 
-  public ReefTargets() {
+  public ReefTargets(Alliance alliance) {
     // Defines the transformation vector for a target position
     tagPoses =
         new Pose2d[] {
@@ -26,6 +28,12 @@ public final class ReefTargets {
           aprilTagFieldLayout.getTagPose(21).get().toPose2d(), // 4
           aprilTagFieldLayout.getTagPose(22).get().toPose2d() // 5
         };
+
+    if (alliance == Alliance.Red) {
+      for (int i = 0; i < tagPoses.length; i++) {
+        tagPoses[i] = mirrorPose(tagPoses[i]);
+      }
+    }
   }
 
   public int findClosestTag(Pose2d robotCurrentPosition) {
@@ -50,8 +58,8 @@ public final class ReefTargets {
    * @param gamePiecePosition Position of our game piece from the center of intake in meters
    * @return The function to transform our target tag (closest tag) to our robot
    */
-  public Pose2d findTargetTag(String side, Pose2d currentPose, int level, double gamePiecePosition) {
-    return transformTag(side, level, findClosestTag(currentPose), gamePiecePosition);
+  public Pose2d findTargetTag(Boolean isOnRight, Pose2d currentPose, int level, double gamePiecePosition) {
+    return findCoralOffsetPose(isOnRight, level, tagPoses[findClosestTag(currentPose)], gamePiecePosition);
   }
 
   /**
@@ -61,32 +69,31 @@ public final class ReefTargets {
    * @param gamePiecePosition Position of our game piece from the center of intake in meters
    * @return The transformed target AprilTag
    */
-  public Pose2d transformTag(String side, int level, int tag, double gamePiecePosition) {
-    return tagPoses[tag].transformBy(getTagOffset(level, side, gamePiecePosition));
+  public Pose2d findCoralOffsetPose(Boolean isOnRight, int level, Pose2d targetTag, double gamePiecePosition) {
+    return targetTag.transformBy(getTagOffset(level, isOnRight, gamePiecePosition));
   }
 
   /**
    * @param level Target reef level
-   * @param side The side we are targetting to place on reef
+   * @param isOnRight The side we are targetting to place on reef
    * @param gamePiecePosition Position of our game piece from the center of intake in meters
    * @return The offset of our Robot position from the ApriLTag in a Transform2d
    */
-  public Transform2d getTagOffset(int level, String side, double gamePiecePosition) {
-    switch (side) {
-      case "Right":
-        return new Transform2d(
-            PositionConstants.reefLevel[level - 1],
-            PositionConstants.reefY + gamePiecePosition,
-            new Rotation2d(PositionConstants.reefRobotAngle));
-
-      case "Left":
-        return new Transform2d(
-            PositionConstants.reefLevel[level - 1],
-            -PositionConstants.reefY + gamePiecePosition,
-            new Rotation2d(-PositionConstants.reefRobotAngle));
-
-      default:
-        throw new IllegalArgumentException("Invalid side: " + side);
+  public Transform2d getTagOffset(int level, Boolean isOnRight, double gamePiecePosition) {
+    Transform2d coralOffset;
+    if (isOnRight) {
+      coralOffset =
+          new Transform2d(
+              PositionConstants.reefLevel[level - 1],
+              PositionConstants.reefY + gamePiecePosition,
+              new Rotation2d(PositionConstants.reefRobotAngle));
+    } else {
+      coralOffset =
+          new Transform2d(
+              PositionConstants.reefLevel[level - 1],
+              -PositionConstants.reefY + gamePiecePosition,
+              new Rotation2d(-PositionConstants.reefRobotAngle));
+    }
     }
   }
 
@@ -100,8 +107,8 @@ public final class ReefTargets {
    * @return A double matrix containing our PoseX, PoseY, and Pose Rotation in degrees.
    */
   public double[] testPoseValues(
-      String side, Pose2d currentPose, int level, double gamePiecePositionMet) {
-    Pose2d result = findTargetTag(side, currentPose, level, gamePiecePositionMet);
+      Boolean isOnRight, Pose2d currentPose, int level, double gamePiecePositionMet) {
+    Pose2d result = findTargetTag(isOnRight, currentPose, level, gamePiecePositionMet);
 
     double[] poseValues = {result.getX(), result.getY(), result.getRotation().getDegrees()};
     return poseValues;

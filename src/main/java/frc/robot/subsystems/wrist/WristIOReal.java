@@ -39,12 +39,13 @@ public class WristIOReal implements WristIO {
     motorConfig.Slot0.kI = 0;
     motorConfig.Slot0.kD = 0;
 
-    motorConfig.MotionMagic.MotionMagicCruiseVelocity = 3;
-    motorConfig.MotionMagic.MotionMagicAcceleration = 6;
+    motorConfig.MotionMagic.MotionMagicCruiseVelocity = 9;
+    motorConfig.MotionMagic.MotionMagicAcceleration = 16;
 
     motorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
-    rotorOffset = (MOTOR_RATIO * -15 / 360) - motor.getPosition().getValueAsDouble();
+    rotorOffset =
+        (MOTOR_RATIO * getAbsoluteEncoderPosition() / 360) - motor.getPosition().getValueAsDouble();
 
     motor.getConfigurator().apply(motorConfig);
 
@@ -61,7 +62,7 @@ public class WristIOReal implements WristIO {
   }
 
   public void updateInputs(WristIOInputs inputs) {
-    inputs.wristAbsolutePosition = getAbsoluteMotorPosition();
+    inputs.wristAbsolutePosition = getAbsoluteEncoderPosition();
     Logger.recordOutput("Wrist/motorTemp", motor.getDeviceTemp().getValueAsDouble());
     Logger.recordOutput("rawWristMotorValue", ENCODER.get());
     Logger.recordOutput(
@@ -100,7 +101,7 @@ public class WristIOReal implements WristIO {
   }
 
   private double getAbsoluteEncoderPosition() {
-    return ((ENCODER.get() * 180) + ENCODER_POSITION_OFFSET + 360) % 360;
+    return ((((1 - ENCODER.get()) * 180) + ENCODER_POSITION_OFFSET + 90) % 360) - 90;
   }
 
   private void setMotorVoltage(double volts) {

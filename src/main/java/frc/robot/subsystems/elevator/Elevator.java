@@ -2,6 +2,8 @@ package frc.robot.subsystems.elevator;
 
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
+import static edu.wpi.first.wpilibj2.command.Commands.waitUntil;
+import static frc.robot.constants.ElevatorConstants.ALLOWED_DEVIANCE;
 import static frc.robot.constants.GeneralConstants.UPDATE_PERIOD;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -88,7 +90,12 @@ public class Elevator extends SubsystemBase {
    * @return A {@link RunCommand} to set the elevator setpoint to posIn.
    */
   public Command setPosition(DoubleSupplier posMet) {
-    return run(() -> io.setHeight(posMet.getAsDouble()));
+    return runOnce(() -> io.setHeight(posMet.getAsDouble()))
+        .andThen(
+            waitUntil(
+                () ->
+                    Math.abs(inputs.elevatorGoalPosition - inputs.elevatorAbsolutePosition)
+                        < ALLOWED_DEVIANCE));
   }
 
   /**
@@ -99,7 +106,21 @@ public class Elevator extends SubsystemBase {
    *     elevator dampening profile after completion.
    */
   public Command changePosition(double velocityMetPerSec) {
-    return setPosition(() -> inputs.elevatorGoalPosition + (velocityMetPerSec * UPDATE_PERIOD))
-        .finallyDo(io::resetProfile);
+    return run(() ->
+            io.setHeight(inputs.elevatorGoalPosition + (velocityMetPerSec * UPDATE_PERIOD)))
+        .finallyDo(() -> io.resetProfile());
+  }
+
+  /**
+   * @return The current position of elevator
+   */
+  public DoubleSupplier getPosition() {
+    return () -> inputs.elevatorAbsolutePosition;
+  }
+
+  public Command zeroElevator() {
+    return run(() -> io.setVoltage(-2))
+        .until(() -> ((inputs.elevatorCurrentAmps[0] + inputs.elevatorCurrentAmps[1]) / 2) > 20)
+        .andThen(run(() -> io.reZero()));
   }
 }

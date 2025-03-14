@@ -174,7 +174,7 @@ public class CompoundCommands {
         () ->
             PathGenerator.generateSimpleCorrectedPath(
                 drive,
-                reefTargets.findTarget(
+                reefTargets.findTargetTag(
                     false,
                     drive.getPose(),
                     reefLevel,
@@ -193,7 +193,7 @@ public class CompoundCommands {
         () ->
             PathGenerator.generateSimpleCorrectedPath(
                 drive,
-                reefTargets.findTarget(
+                reefTargets.findTargetTag(
                     true, drive.getPose(), reefLevel, intake.getGamePiecePosition().getAsDouble())),
         Set.of(drive));
   }

@@ -52,24 +52,27 @@ public final class ReefTargets {
   }
 
   /**
-   * @param side The side we are targetting to place on reef
+   * @param isOnRight The side we are targetting to place on reef
    * @param currentPose Current robot pose
    * @param level Target reef level
    * @param gamePiecePosition Position of our game piece from the center of intake in meters
    * @return The function to transform our target tag (closest tag) to our robot
    */
-  public Pose2d findTargetTag(Boolean isOnRight, Pose2d currentPose, int level, double gamePiecePosition) {
-    return findCoralOffsetPose(isOnRight, level, tagPoses[findClosestTag(currentPose)], gamePiecePosition);
+  public Pose2d findTargetTag(
+      Boolean isOnRight, Pose2d currentPose, int level, double gamePiecePosition) {
+    return findCoralOffsetPose(
+        isOnRight, level, tagPoses[findClosestTag(currentPose)], gamePiecePosition);
   }
 
   /**
-   * @param side The side we are targetting to place on reef
+   * @param isOnRight The side we are targetting to place on reef
    * @param level Target reef level
    * @param tag The ID of our target april tag (gotten from our findClosestTag function)
    * @param gamePiecePosition Position of our game piece from the center of intake in meters
    * @return The transformed target AprilTag
    */
-  public Pose2d findCoralOffsetPose(Boolean isOnRight, int level, Pose2d targetTag, double gamePiecePosition) {
+  public Pose2d findCoralOffsetPose(
+      Boolean isOnRight, int level, Pose2d targetTag, double gamePiecePosition) {
     return targetTag.transformBy(getTagOffset(level, isOnRight, gamePiecePosition));
   }
 
@@ -94,13 +97,13 @@ public final class ReefTargets {
               -PositionConstants.reefY + gamePiecePosition,
               new Rotation2d(-PositionConstants.reefRobotAngle));
     }
-    }
+    return coralOffset;
   }
 
   /**
    * Use only for testing to check values. Can be removed later on if not needed
    *
-   * @param side The side we want to test placing on reef
+   * @param isOnRight The side we are targetting to place on reef
    * @param currentPose The pose of our imaginary robot
    * @param level The level we want to test placing on reef
    * @param gamePiecePositionMet The offset position of our imaginary coral

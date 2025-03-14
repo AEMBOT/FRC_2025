@@ -19,7 +19,7 @@ public final class ReefTargetsTest {
     // AprilTag 18
     try {
       assertArrayEquals(
-          new double[] {3.6576 - 0.3048 - 0.4572, 4.0259 + 0.1793875, 0},
+          new double[] {3.6576 - 0.4572, 4.0259 + 0.1793875, 0},
           reefTargetsBlue.testPoseValues(false, new Pose2d(3.5, 4, new Rotation2d(0)), 1, 0.0),
           "\n Left L1, (3.5, 4), Coral 0.0, AprilTag 18");
     } catch (AssertionError e) {
@@ -27,7 +27,7 @@ public final class ReefTargetsTest {
     }
     try {
       assertArrayEquals(
-          new double[] {3.6576 - 0.3048 - 0.4572, 4.0259 + 0.1793875 - 0.5, 0},
+          new double[] {3.6576 - 0.4572, 4.0259 + 0.1793875 - 0.5, 0},
           reefTargetsBlue.testPoseValues(false, new Pose2d(3.5, 4, new Rotation2d(0)), 1, 0.5),
           "Left L1, (3.5, 4), Coral 0.5, AprilTag 18");
     } catch (AssertionError e) {
@@ -35,7 +35,7 @@ public final class ReefTargetsTest {
     }
     try {
       assertArrayEquals(
-          new double[] {3.6576 - 0.3048 - 0.4572, 4.0259 - 0.1793875, 0},
+          new double[] {3.6576 - 0.4572, 4.0259 - 0.1793875, 0},
           reefTargetsBlue.testPoseValues(true, new Pose2d(3.5, 4, new Rotation2d(0)), 1, 0.0),
           "Right L1, (3.5, 4), Coral 0.0, AprilTag 18");
     } catch (AssertionError e) {
@@ -43,7 +43,7 @@ public final class ReefTargetsTest {
     }
     try {
       assertArrayEquals(
-          new double[] {3.6576 - 0.3048 - 0.4572, 4.0259 - 0.1793875 - 0.5, 0},
+          new double[] {3.6576 - 0.4572, 4.0259 - 0.1793875 - 0.5, 0},
           reefTargetsBlue.testPoseValues(true, new Pose2d(3.5, 4, new Rotation2d(0)), 1, 0.5),
           "Right L1, (3.5, 4), Coral 0.5, AprilTag 18");
     } catch (AssertionError e) {
@@ -52,7 +52,7 @@ public final class ReefTargetsTest {
     // AprilTag 19
     try {
       assertArrayEquals(
-          new double[] {0, 0, 0},//needs to be calculated by hand
+          new double[] {0, 0, 0}, // needs to be calculated by hand
           reefTargetsBlue.testPoseValues(false, new Pose2d(4, 4.5, new Rotation2d(0)), 1, 0.0),
           "\n Left L1, (4, 4.5), Coral 0.0, AprilTag 19");
     } catch (AssertionError e) {
@@ -60,7 +60,7 @@ public final class ReefTargetsTest {
     }
     try {
       assertArrayEquals(
-          new double[] {0, 0, 0}, //needs to be calculated by hand
+          new double[] {0, 0, 0}, // needs to be calculated by hand
           reefTargetsBlue.testPoseValues(false, new Pose2d(4, 4.5, new Rotation2d(0)), 1, 0.5),
           "Left L1, (4, 4.5), Coral 0.5, AprilTag 19");
     } catch (AssertionError e) {
@@ -69,7 +69,7 @@ public final class ReefTargetsTest {
     // AprilTag 21
     try {
       assertArrayEquals(
-          new double[] {5.321046 + 0.3048 + 0.4572, 4.0259 + 0.1793875, 180},
+          new double[] {5.321046 + 0.4572, 4.0259 + 0.1793875, 180},
           reefTargetsBlue.testPoseValues(true, new Pose2d(5, 4, new Rotation2d(0)), 1, 0.0),
           "\n Right L1, (5, 4), Coral 0.0, AprilTag 21");
     } catch (AssertionError e) {
@@ -77,7 +77,7 @@ public final class ReefTargetsTest {
     }
     try {
       assertArrayEquals(
-          new double[] {5.321046 + 0.3048 + 0.4572, 4.0259 + 0.1793875 + 0.5, 180},
+          new double[] {5.321046 + 0.4572, 4.0259 + 0.1793875 + 0.5, 180},
           reefTargetsBlue.testPoseValues(true, new Pose2d(5, 4, new Rotation2d(0)), 1, 0.5),
           "Right L1, (5, 4), Coral 0.5, AprilTag 21");
     } catch (AssertionError e) {
@@ -85,7 +85,6 @@ public final class ReefTargetsTest {
     }
   }
 
-  
   @Test
   void testTargetBlue() {
     ReefTargets testCase = new ReefTargets(Alliance.Blue);

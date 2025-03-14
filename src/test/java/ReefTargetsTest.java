@@ -12,11 +12,11 @@ import frc.robot.util.ReefTargets;
 import org.junit.jupiter.api.Test;
 
 public final class ReefTargetsTest {
+  double tolerance = 0.001;
+
   @Test
   void testReefTargetCoralOffset() {
     ReefTargets reefTargetsBlue = new ReefTargets(Alliance.Blue);
-
-    double tolerance = 0.05;
 
     // AprilTag 18
     try {
@@ -109,7 +109,6 @@ public final class ReefTargetsTest {
   @Test
   void testTargetBlue() {
     ReefTargets testCase = new ReefTargets(Alliance.Blue);
-    double tolerance = 0.001;
 
     try {
       assertPoseWithin(
@@ -235,8 +234,6 @@ public final class ReefTargetsTest {
   @Test
   void testTargetRed() {
     ReefTargets testCase = new ReefTargets(Alliance.Red);
-
-    double tolerance = 0.001;
 
     try {
       assertPoseWithin(

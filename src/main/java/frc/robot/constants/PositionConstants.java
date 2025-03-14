@@ -109,9 +109,9 @@ public class PositionConstants {
   public static final double climbElevatorExtension = 0;
 
   // Starting Arm Setpoint Values
-  public static final double startingWristAngle = 89.69999999999999;
-  public static final double staritingPivotAngle = 44.87178593679461;
-  public static final double staritingElevatorExtension = 0;
+  public static final double stowWristAngle = 89.69999999999999;
+  public static final double stowPivotAngle = 44.87178593679461;
+  public static final double stowElevatorExtension = 0;
 
   public static final double[][] reefArmPositions = {
     {L1WristAngle, L1PivotAngle, L1ElevatorExtension},

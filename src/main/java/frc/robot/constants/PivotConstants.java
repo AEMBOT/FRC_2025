@@ -39,8 +39,9 @@ public class PivotConstants {
   /** */
   public static final int ENCODER_ID = 1;
 
-  /** */
-  public static final double ENCODER_POSITION_OFFSET = 26.406295410157384;
+  // Procedure: Set offset to -90, move pivot to real 90 (Vertical). Output value with flipped sign
+  // is new offset.
+  public static final double ENCODER_POSITION_OFFSET = 154.59714611492865 * -1;
 
   /** */
   public static final double GEAR_RATIO = 378;

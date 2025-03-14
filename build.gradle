@@ -162,7 +162,7 @@ spotless {
             exclude "**/build/**", "**/build-*/**"
         }
         greclipse()
-        leadingTabsToSpaces(4)
+        indentWithSpaces(4)
         trimTrailingWhitespace()
         endWithNewline()
     }
@@ -186,7 +186,7 @@ spotless {
         target '**/*.yaml'
         jackson()
         prettier()
-        leadingTabsToSpaces(2)
+        indentWithSpaces(2)
         endWithNewline()
     }
 }

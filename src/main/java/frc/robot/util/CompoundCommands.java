@@ -233,7 +233,9 @@ public class CompoundCommands {
 
   /**
    * Generates a {@link DeferredCommand} requiring wrist, pivot, and elevator
-   * @param command The supplier for the command. <p>Ex: {@code () -> CompoundCommands.armToReef(RobotContainer.reef_level)}</p>
+   *
+   * @param command The supplier for the command.
+   *     <p>Ex: {@code () -> CompoundCommands.armToReef(RobotContainer.reef_level)}
    */
   public static DeferredCommand deferArm(Supplier<Command> command) {
     return new DeferredCommand(command, Set.of(wrist, pivot, elevator));
@@ -241,7 +243,9 @@ public class CompoundCommands {
 
   /**
    * Generates a {@link DeferredCommand} requiring drive
-   * @param command The supplier for the command. <p>Ex: {@code () -> CompoundCommands.driveToReef(RobotContainer.reef_level)}</p>
+   *
+   * @param command The supplier for the command.
+   *     <p>Ex: {@code () -> CompoundCommands.driveToReef(RobotContainer.reef_level)}
    */
   public static DeferredCommand deferDrive(Supplier<Command> command) {
     return new DeferredCommand(command, Set.of(drive));

@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.DeferredCommand;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.drive.Drive;
@@ -189,30 +188,30 @@ public class RobotContainer {
 
     controller
         .x()
-        .onTrue(
-            new InstantCommand(
-                () -> reefTargets.updateTargetsLeftAndRight(intake.getGamePiecePosition())));
-    controller
-        .x()
         .whileTrue(
             new DeferredCommand(
                 () ->
                     PathGenerator.generateSimpleCorrectedPath(
-                        drive, reefTargets.findTargetLeft(drive.getPose(), reef_level)),
+                        drive,
+                        reefTargets.findTarget(
+                            "Left",
+                            drive.getPose(),
+                            reef_level,
+                            intake.getGamePiecePosition().getAsDouble())),
                 Set.of(drive)));
 
     controller
         .y()
-        .onTrue(
-            new InstantCommand(
-                () -> reefTargets.updateTargetsLeftAndRight(intake.getGamePiecePosition())));
-    controller
-        .y()
         .whileTrue(
             new DeferredCommand(
                 () ->
                     PathGenerator.generateSimpleCorrectedPath(
-                        drive, reefTargets.findTargetRight(drive.getPose(), reef_level)),
+                        drive,
+                        reefTargets.findTarget(
+                            "Right",
+                            drive.getPose(),
+                            reef_level,
+                            intake.getGamePiecePosition().getAsDouble())),
                 Set.of(drive)));
 
     controller

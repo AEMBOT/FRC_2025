@@ -8,6 +8,7 @@ public class IntakeConstants {
   public static final int CANRANGE_ID = 16;
 
   public static final double canrangeOffset = -0.2721501143002286; // 9.125 ft approx.
+  // could look at cad measurements to get more accurate
 
   public static final double coralRadius = 2.25 / 39.37;
 }

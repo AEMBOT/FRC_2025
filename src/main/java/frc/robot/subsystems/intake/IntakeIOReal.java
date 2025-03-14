@@ -38,8 +38,8 @@ public class IntakeIOReal implements IntakeIO {
   }
 
   private boolean checkForGamePiece() {
-    if (CANRANGE.getDistance().getValueAsDouble() > 0.4) { 
-          // left point of coral physically can't be past 0.4 meters of the intake
+    if (CANRANGE.getDistance().getValueAsDouble() > 0.4) {
+      // left point of coral physically can't be past 0.4 meters of the intake
       return false;
     } else return true;
   }

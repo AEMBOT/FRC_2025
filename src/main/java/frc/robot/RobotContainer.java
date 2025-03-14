@@ -4,22 +4,17 @@
 
 package frc.robot;
 
+import static edu.wpi.first.wpilibj2.command.Commands.*;
 import static frc.robot.constants.GeneralConstants.currentMode;
 import static frc.robot.constants.GeneralConstants.currentRobot;
-import static frc.robot.constants.PositionConstants.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.GeneralConstants;
-import frc.robot.constants.PathingConstants;
-import frc.robot.constants.PositionConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONavX;
@@ -38,10 +33,7 @@ import frc.robot.subsystems.pivot.PivotIOReal;
 import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.subsystems.wrist.WristIO;
 import frc.robot.subsystems.wrist.WristIOReal;
-import frc.robot.util.FieldUtil;
-import frc.robot.util.PathGenerator;
-import frc.robot.util.ReefTargets;
-import java.util.Set;
+import frc.robot.util.CompoundCommands;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -60,7 +52,6 @@ public class RobotContainer {
   private final CommandXboxController backupController = new CommandXboxController(1);
 
   // Driver-assist variables
-  private ReefTargets reefTargets;
   @AutoLogOutput private int reef_level = 4; // Terminology: Trough is L1, top is L4
 
   // Dashboard inputs
@@ -126,23 +117,7 @@ public class RobotContainer {
     Logger.recordOutput("currentRobot", currentRobot.ordinal());
     System.out.println("Running on robot: " + currentRobot);
 
-    // Calculate the reef targets at enabling. It'll crash if we try to get the alliance without
-    // being connected to a DS or FMS.
-    reefTargets =
-        new ReefTargets(FieldUtil.getAllianceSafely()); // This'll be blue unless in sim or smth
-    new Trigger(
-            () ->
-                DriverStation.isDSAttached()
-                    || DriverStation.isFMSAttached()
-                    || DriverStation.isEnabled())
-        .onTrue(
-            new RunCommand(
-                    () -> {
-                      reefTargets = new ReefTargets(FieldUtil.getAllianceSafely());
-                    })
-                .withTimeout(0.01)); // TODO Use of RunCommand here is janky, find better solution
-
-    configureAutoCommands();
+    CompoundCommands.configure(drive, elevator, pivot, wrist, intake);
     configureBindings();
 
     // Set up auto chooser
@@ -170,22 +145,10 @@ public class RobotContainer {
         .whileTrue(elevator.changePosition(-0.25))
         .onFalse(elevator.changePosition(0));
 
-    backupController
-        .a()
-        .whileTrue(
-            wrist
-                .setGoalPosition(() -> reefArmPositions[reef_level - 1][0])
-                .alongWith(pivot.setPosition(() -> reefArmPositions[reef_level - 1][1]))
-                .alongWith(elevator.setPosition(() -> reefArmPositions[reef_level - 1][2])));
+    backupController.a().whileTrue(CompoundCommands.armToReef(reef_level));
 
-    controller
-        .rightTrigger(0.25)
-        .onTrue(intake.runIntakeCommand(() -> -4))
-        .onFalse(intake.runIntakeCommand(() -> 0));
-    controller
-        .leftTrigger(0.25)
-        .onTrue(intake.runIntakeCommand(() -> 3))
-        .onFalse(intake.runIntakeCommand(() -> 0));
+    controller.rightTrigger(0.25).whileTrue(intake.ejectCommand());
+    controller.leftTrigger(0.25).whileTrue(intake.intakeCommand());
 
     controller
         .rightStick()
@@ -199,64 +162,42 @@ public class RobotContainer {
     // Path controller bindings
     controller
         .povDown()
-        .whileTrue( // onTrue results in the button only working once.
-            new RunCommand(
+        .onTrue(
+            runOnce(
                 () -> {
                   this.reef_level = 1;
                 }));
     controller
         .povLeft()
-        .whileTrue(
-            new RunCommand(
+        .onTrue(
+            runOnce(
                 () -> {
                   this.reef_level = 2;
                 }));
     controller
         .povRight()
-        .whileTrue(
-            new RunCommand(
+        .onTrue(
+            runOnce(
                 () -> {
                   this.reef_level = 3;
                 }));
     controller
         .povUp()
-        .whileTrue(
-            new RunCommand(
+        .onTrue(
+            runOnce(
                 () -> {
                   this.reef_level = 4;
                 }));
 
     controller
         .a()
-        .whileTrue(
-            wrist
-                .setGoalPosition(() -> sourceWristAngle)
-                .alongWith(pivot.setPosition(() -> sourcePivotAngle))
-                .alongWith(elevator.setPosition(() -> sourceElevatorExtension))
-                .alongWith(
-                    new DeferredCommand(
-                        () ->
-                            PathGenerator.generateSimpleCorrectedPath(
-                                drive,
-                                PositionConstants.getSourcePose(
-                                    FieldUtil.isOnRightSide(drive.getPose()))),
-                        Set.of(drive))));
+        .whileTrue(CompoundCommands.armToSource().alongWith(CompoundCommands.driveToSource()));
 
     controller
         .leftBumper()
-        .whileTrue(
-            wrist
-                .setGoalPosition(() -> reefArmPositions[reef_level - 1][0])
-                .alongWith(pivot.setPosition(() -> reefArmPositions[reef_level - 1][1]))
-                .alongWith(elevator.setPosition(() -> reefArmPositions[reef_level - 1][2])));
+        .whileTrue(CompoundCommands.deferArm(() -> CompoundCommands.armToReef(this.reef_level)));
 
-    controller
-        .b()
-        .whileTrue(
-            wrist
-                .setGoalPosition(() -> L1WristAngle)
-                .alongWith(pivot.setPosition(() -> 24))
-                .alongWith(elevator.setPosition(() -> L1ElevatorExtension)));
+    controller.b().whileTrue(CompoundCommands.armToClimb());
     controller
         .start()
         .whileTrue(
@@ -268,97 +209,6 @@ public class RobotContainer {
                           case Red -> Rotation2d.fromDegrees(180);
                           default -> Rotation2d.fromDegrees(0);
                         })));
-  }
-
-  private void configureAutoCommands() {
-    NamedCommands.registerCommand(
-        "PlaceReefL",
-        new DeferredCommand(
-            () ->
-                PathGenerator.generateSimpleCorrectedPath(
-                    drive, reefTargets.findTargetLeft(drive.getPose(), reef_level)),
-            Set.of(drive)));
-
-    NamedCommands.registerCommand(
-        "PlaceReefR",
-        new DeferredCommand(
-            () ->
-                PathGenerator.generateSimpleCorrectedPath(
-                    drive, reefTargets.findTargetRight(drive.getPose(), reef_level)),
-            Set.of(drive)));
-
-    NamedCommands.registerCommand(
-        "ArmReef4",
-        wrist
-            .setGoalPosition(() -> reefArmPositions[4 - 1][0])
-            .alongWith(pivot.setPosition(() -> reefArmPositions[4 - 1][1]))
-            .alongWith(elevator.setPosition(() -> reefArmPositions[4 - 1][2])));
-
-    NamedCommands.registerCommand(
-        "ArmReef3",
-        wrist
-            .setGoalPosition(() -> reefArmPositions[3 - 1][0])
-            .alongWith(pivot.setPosition(() -> reefArmPositions[3 - 1][1]))
-            .alongWith(elevator.setPosition(() -> reefArmPositions[3 - 1][2])));
-
-    NamedCommands.registerCommand(
-        "ArmReef2",
-        wrist
-            .setGoalPosition(() -> reefArmPositions[2 - 1][0])
-            .alongWith(pivot.setPosition(() -> reefArmPositions[2 - 1][1]))
-            .alongWith(elevator.setPosition(() -> reefArmPositions[2 - 1][2])));
-
-    NamedCommands.registerCommand(
-        "ArmReef1",
-        wrist
-            .setGoalPosition(() -> reefArmPositions[1 - 1][0])
-            .alongWith(pivot.setPosition(() -> reefArmPositions[1 - 1][1]))
-            .alongWith(elevator.setPosition(() -> reefArmPositions[1 - 1][2])));
-
-    NamedCommands.registerCommand(
-        "Eject",
-        intake
-            .runIntakeCommand(() -> -4.0)
-            .withTimeout(0.5)
-            .andThen(intake.runIntakeCommand(() -> 0)));
-
-    NamedCommands.registerCommand(
-        "goToSourceL",
-        new DeferredCommand(
-            () ->
-                PathGenerator.generateSimpleCorrectedPath(
-                    drive, PositionConstants.getLeftSourcePose()),
-            Set.of(drive)));
-    NamedCommands.registerCommand(
-        "goToSourceR",
-        new DeferredCommand(
-            () ->
-                PathGenerator.generateSimpleCorrectedPath(
-                    drive, PositionConstants.getRightSourcePose()),
-            Set.of(drive)));
-
-    NamedCommands.registerCommand(
-        "dynamicReefR",
-        new DeferredCommand(
-                () ->
-                    PathGenerator.simpleGoToPoint(
-                        drive,
-                        reefTargets.findTargetRight(drive.getPose(), reef_level),
-                        PathingConstants.defaultTranslationTolerance,
-                        PathingConstants.defaultRotationTolerance),
-                Set.of(drive))
-            .andThen(() -> drive.stop(), drive));
-    NamedCommands.registerCommand(
-        "dynamicReefL",
-        new DeferredCommand(
-                () ->
-                    PathGenerator.simpleGoToPoint(
-                        drive,
-                        reefTargets.findTargetLeft(drive.getPose(), reef_level),
-                        PathingConstants.defaultTranslationTolerance,
-                        PathingConstants.defaultRotationTolerance),
-                Set.of(drive))
-            .andThen(() -> drive.stop(), drive));
   }
 
   public Command getAutonomousCommand() {

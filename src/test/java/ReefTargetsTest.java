@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static frc.robot.util.Assertions.AssertPoseWithin;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -12,83 +12,97 @@ import frc.robot.util.ReefTargets;
 import org.junit.jupiter.api.Test;
 
 public final class ReefTargetsTest {
+  double tolerance = 0.05;
 
   @Test
   void testReefTargetCoralOffset() {
     ReefTargets reefTargetsBlue = new ReefTargets(Alliance.Blue);
     // AprilTag 18
     try {
-      assertArrayEquals(
-          new double[] {3.200, 4.205, 0},
-          reefTargetsBlue.testPoseValues(false, new Pose2d(3.5, 4, new Rotation2d(0)), 4, 0.0),
-          "\n Left L4, (3.5, 4), Coral 0.0, AprilTag 18");
+      AssertPoseWithin(
+          new Pose2d(3.200, 4.205, Rotation2d.fromDegrees(0)),
+          reefTargetsBlue.findTargetTag(false, new Pose2d(3.5, 4, new Rotation2d(0)), 4, 0.0),
+          "\n Left L4, (3.5, 4), Coral 0.0, AprilTag 18",
+          tolerance);
     } catch (AssertionError e) {
       System.out.println(e.getMessage());
     }
     try {
-      assertArrayEquals(
-          new double[] {3.200, 3.705, 0},
-          reefTargetsBlue.testPoseValues(false, new Pose2d(3.5, 4, new Rotation2d(0)), 4, 0.5),
-          "Left L4, (3.5, 4), Coral 0.5, AprilTag 18");
+      AssertPoseWithin(
+          new Pose2d(3.200, 3.705, Rotation2d.fromDegrees(0)),
+          reefTargetsBlue.findTargetTag(false, new Pose2d(3.5, 4, new Rotation2d(0)), 4, 0.5),
+          "Left L4, (3.5, 4), Coral 0.5, AprilTag 18",
+          tolerance);
     } catch (AssertionError e) {
       System.out.println(e.getMessage());
     }
     try {
-      assertArrayEquals(
-          new double[] {3.200, 3.847, 0},
-          reefTargetsBlue.testPoseValues(true, new Pose2d(3.5, 4, new Rotation2d(0)), 4, 0.0),
-          "Right L4, (3.5, 4), Coral 0.0, AprilTag 18");
+      AssertPoseWithin(
+          new Pose2d(3.200, 3.847, Rotation2d.fromDegrees(0)),
+          reefTargetsBlue.findTargetTag(
+              true, new Pose2d(3.5, 4, Rotation2d.fromDegrees(0)), 4, 0.0),
+          "Right L4, (3.5, 4), Coral 0.0, AprilTag 18",
+          tolerance);
     } catch (AssertionError e) {
       System.out.println(e.getMessage());
     }
     try {
-      assertArrayEquals(
-          new double[] {3.200, 3.347, 0},
-          reefTargetsBlue.testPoseValues(true, new Pose2d(3.5, 4, new Rotation2d(0)), 4, 0.5),
-          "Right L4, (3.5, 4), Coral 0.5, AprilTag 18");
+      AssertPoseWithin(
+          new Pose2d(3.200, 3.347, Rotation2d.fromDegrees(0)),
+          reefTargetsBlue.findTargetTag(
+              true, new Pose2d(3.5, 4, Rotation2d.fromDegrees(0)), 4, 0.5),
+          "Right L4, (3.5, 4), Coral 0.5, AprilTag 18",
+          tolerance);
     } catch (AssertionError e) {
       System.out.println(e.getMessage());
     }
     // AprilTag 19
     try {
-      assertArrayEquals(
-          new double[] {4.001, 5.231, -60}, // needs to be calculated by hand
-          reefTargetsBlue.testPoseValues(false, new Pose2d(4, 4.5, new Rotation2d(-60)), 4, 0.0),
-          "\n Left L4, (4, 4.5), Coral 0.0, AprilTag 19");
+      AssertPoseWithin(
+          new Pose2d(4.001, 5.231, Rotation2d.fromDegrees(-60)),
+          reefTargetsBlue.findTargetTag(
+              false, new Pose2d(4, 4.5, Rotation2d.fromDegrees(-60)), 4, 0.0),
+          "\n Left L4, (4, 4.5), Coral 0.0, AprilTag 19",
+          tolerance);
     } catch (AssertionError e) {
       System.out.println(e.getMessage());
     }
     try {
-      assertArrayEquals(
-          new double[] {3.568, 4.981, -60}, // needs to be calculated by hand
-          reefTargetsBlue.testPoseValues(false, new Pose2d(4, 4.5, new Rotation2d(0)), 4, 0.5),
-          "Left L4, (4, 4.5), Coral 0.5, AprilTag 19");
+      AssertPoseWithin(
+          new Pose2d(3.568, 4.981, Rotation2d.fromDegrees(-60)),
+          reefTargetsBlue.findTargetTag(
+              false, new Pose2d(4, 4.5, Rotation2d.fromDegrees(0)), 4, 0.5),
+          "Left L4, (4, 4.5), Coral 0.5, AprilTag 19",
+          tolerance);
     } catch (AssertionError e) {
       System.out.println(e.getMessage());
     }
     // AprilTag 21
     try {
-      assertArrayEquals(
-          new double[] {5.778, 4.205, 180},
-          reefTargetsBlue.testPoseValues(true, new Pose2d(5, 4, new Rotation2d(0)), 4, 0.0),
-          "\n Right L4, (5, 4), Coral 0.0, AprilTag 21");
+      AssertPoseWithin(
+          new Pose2d(5.778, 4.205, Rotation2d.fromDegrees(180)),
+          reefTargetsBlue.findTargetTag(true, new Pose2d(5, 4, Rotation2d.fromDegrees(0)), 4, 0.0),
+          "\n Right L4, (5, 4), Coral 0.0, AprilTag 21",
+          tolerance);
     } catch (AssertionError e) {
       System.out.println(e.getMessage());
     }
     try {
-      assertArrayEquals(
-          new double[] {5.778, 4.705, 180},
-          reefTargetsBlue.testPoseValues(true, new Pose2d(5, 4, new Rotation2d(0)), 4, 0.5),
-          "Right L4, (5, 4), Coral 0.5, AprilTag 21");
+      AssertPoseWithin(
+          new Pose2d(5.778, 4.705, Rotation2d.fromDegrees(180)),
+          reefTargetsBlue.findTargetTag(true, new Pose2d(5, 4, Rotation2d.fromDegrees(0)), 4, 0.5),
+          "Right L4, (5, 4), Coral 0.5, AprilTag 21",
+          tolerance);
     } catch (AssertionError e) {
       System.out.println(e.getMessage());
     }
 
     try {
-      assertArrayEquals(
-          new double[] {5.778, 4.205, 180},
-          reefTargetsBlue.testPoseValues(true, new Pose2d(5, 4, new Rotation2d(0)), 1, 0.5),
-          "\n Right L1, (5, 4), Coral 0.0, AprilTag 21");
+      AssertPoseWithin(
+          new Pose2d(5.778, 4.205, Rotation2d.fromDegrees(180)),
+          reefTargetsBlue.findTargetTag(true, new Pose2d(5, 4, Rotation2d.fromDegrees(0)), 1, 0.5),
+          "\n Right L1, (5, 4), Coral 0.0, AprilTag 21",
+          tolerance);
     } catch (AssertionError e) {
       System.out.println(e.getMessage());
     }

@@ -96,28 +96,6 @@ public final class ReefTargets {
     return coralOffset;
   }
 
-  /**
-   * Use only for testing to check values. Can be removed later on if not needed
-   *
-   * @param isOnRight The side we are targetting to place on reef
-   * @param currentPose The pose of our imaginary robot
-   * @param level The level we want to test placing on reef
-   * @param gamePiecePositionMet The offset position of our imaginary coral
-   * @return A double matrix containing our PoseX, PoseY, and Pose Rotation in degrees.
-   */
-  public double[] testPoseValues(
-      Boolean isOnRight, Pose2d currentPose, int level, double gamePiecePositionMet) {
-    Pose2d result = findTargetTag(isOnRight, currentPose, level, gamePiecePositionMet);
-
-    double[] poseValues = {result.getX(), result.getY(), result.getRotation().getDegrees()};
-
-    for (int i = 0; i < poseValues.length; i++) {
-      poseValues[i] = (double) Math.round(poseValues[i] * 1000.0) / 1000.0;
-    }
-
-    return poseValues;
-  }
-
   @Deprecated
   public int getReefSection(Pose2d robotCurrentPosition) {
     // Define variables based upon the robot's position parameter

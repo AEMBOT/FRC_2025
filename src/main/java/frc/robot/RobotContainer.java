@@ -193,7 +193,9 @@ public class RobotContainer {
         .a()
         .whileTrue(CompoundCommands.armToSource().alongWith(CompoundCommands.driveToSource()));
 
-    controller.leftBumper().whileTrue(CompoundCommands.armToReef(reef_level));
+    controller
+        .leftBumper()
+        .whileTrue(CompoundCommands.deferArm(() -> CompoundCommands.armToReef(this.reef_level)));
 
     controller.b().whileTrue(CompoundCommands.armToClimb());
     controller

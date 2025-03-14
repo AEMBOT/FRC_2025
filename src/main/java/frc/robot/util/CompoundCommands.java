@@ -17,6 +17,7 @@ import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.wrist.Wrist;
 import java.util.Set;
+import java.util.function.Supplier;
 
 /** Commands to be used in auto. AutoCommands.configure must be called before anything will work. */
 public class CompoundCommands {
@@ -228,5 +229,21 @@ public class CompoundCommands {
   public static Command intakeCoral() {
     // Eventually, we probably want to run until the TOF sensor is activated.
     return intake.intakeCommand().withTimeout(IntakeConstants.intakeTimeout);
+  }
+
+  /**
+   * Generates a {@link DeferredCommand} requiring wrist, pivot, and elevator
+   * @param command The supplier for the command. <p>Ex: {@code () -> CompoundCommands.armToReef(RobotContainer.reef_level)}</p>
+   */
+  public static DeferredCommand deferArm(Supplier<Command> command) {
+    return new DeferredCommand(command, Set.of(wrist, pivot, elevator));
+  }
+
+  /**
+   * Generates a {@link DeferredCommand} requiring drive
+   * @param command The supplier for the command. <p>Ex: {@code () -> CompoundCommands.driveToReef(RobotContainer.reef_level)}</p>
+   */
+  public static DeferredCommand deferDrive(Supplier<Command> command) {
+    return new DeferredCommand(command, Set.of(drive));
   }
 }

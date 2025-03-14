@@ -114,6 +114,11 @@ public final class ReefTargets {
     Pose2d result = findTargetTag(isOnRight, currentPose, level, gamePiecePositionMet);
 
     double[] poseValues = {result.getX(), result.getY(), result.getRotation().getDegrees()};
+
+    for (int i = 0; i < poseValues.length; i++) {
+      poseValues[i] = (double) Math.round(poseValues[i] * 1000.0) / 1000.0;
+    }
+
     return poseValues;
   }
 

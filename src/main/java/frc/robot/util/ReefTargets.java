@@ -60,19 +60,8 @@ public final class ReefTargets {
    */
   public Pose2d findTargetTag(
       Boolean isOnRight, Pose2d currentPose, int level, double gamePiecePosition) {
-    return findCoralOffsetPose(
-        isOnRight, level, tagPoses[findClosestTag(currentPose)], gamePiecePosition);
-  }
 
-  /**
-   * @param isOnRight The side we are targetting to place on reef
-   * @param level Target reef level
-   * @param tag The ID of our target april tag (gotten from our findClosestTag function)
-   * @param gamePiecePosition Position of our game piece from the center of intake in meters
-   * @return The transformed target AprilTag
-   */
-  public Pose2d findCoralOffsetPose(
-      Boolean isOnRight, int level, Pose2d targetTag, double gamePiecePosition) {
+    Pose2d targetTag = tagPoses[findClosestTag(currentPose)];
     return targetTag.transformBy(getTagOffset(level, isOnRight, gamePiecePosition));
   }
 

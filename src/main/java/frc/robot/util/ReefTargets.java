@@ -37,23 +37,6 @@ public final class ReefTargets {
     }
   }
 
-  // TODO Remove before merge
-  @Deprecated(forRemoval = true)
-  public int findClosestTagIndex(Pose2d robotCurrentPosition) {
-    double closestDist = Double.MAX_VALUE;
-    int closest = -1;
-
-    for (int i = 0; i < tagPoses.length; i++) {
-      double distance =
-          robotCurrentPosition.getTranslation().getDistance(tagPoses[i].getTranslation());
-      if (distance < closestDist) {
-        closestDist = distance;
-        closest = i;
-      }
-    }
-    return closest;
-  }
-
   public Pose2d findClosestTagPose(Pose2d robotCurrentPosition) {
     return robotCurrentPosition.nearest(Arrays.asList(tagPoses));
   }

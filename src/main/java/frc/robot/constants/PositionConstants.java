@@ -6,7 +6,6 @@ import static edu.wpi.first.units.Units.Radians;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.util.FieldUtil;
@@ -104,20 +103,15 @@ public class PositionConstants {
   public static final double sourcePivotAngle = 45.21778598044459;
   public static final double sourceElevatorExtension = 0;
 
-  // stow Arm Setpoint Values
-  public static final double stowWristAngle = -28.795743719893572; // TODO find value
-  public static final double stowPivotAngle = 74.14193660354842; // TODO find value
-  public static final double stowElevatorExtension = 0; // TODO find value
+  // Climb Arm Setpoint Values
+  public static final double climbWristAngle = -26.745;
+  public static final double climbPivotAngle = 24;
+  public static final double climbElevatorExtension = 0;
 
-  public static final Pose2d sourcePose =
-      new Pose2d(
-          new Translation2d(
-              0, // TODO find value
-              0 // TODO find value
-              ),
-          new Rotation2d(
-              0 // TODO find value
-              ));
+  // Starting Arm Setpoint Values
+  public static final double startingWristAngle = 89.69999999999999;
+  public static final double staritingPivotAngle = 44.87178593679461;
+  public static final double staritingElevatorExtension = 0;
 
   public static final double[][] reefArmPositions = {
     {L1WristAngle, L1PivotAngle, L1ElevatorExtension},

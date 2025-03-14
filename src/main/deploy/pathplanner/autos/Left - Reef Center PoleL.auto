@@ -11,54 +11,9 @@
           }
         },
         {
-          "type": "race",
+          "type": "named",
           "data": {
-            "commands": [
-              {
-                "type": "parallel",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "PlaceReefL"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "ArmReef4"
-                      }
-                    }
-                  ]
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 5.0
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Eject"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 1.0
-                }
-              }
-            ]
+            "name": "AutoPlaceLeft4"
           }
         }
       ]

@@ -179,14 +179,14 @@ spotless {
             exclude "**/build/**", "**/build-*/**"
         }
         trimTrailingWhitespace()
-        leadingTabsToSpaces(2)
+        indentWithSpaces(2)
         endWithNewline()
     }
     yaml {
         target '**/*.yaml'
         jackson()
         prettier()
-        indentWithSpaces(2)
+        leadingTabsToSpaces(2)
         endWithNewline()
     }
 }

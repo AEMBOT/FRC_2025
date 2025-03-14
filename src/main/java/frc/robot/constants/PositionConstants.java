@@ -15,8 +15,8 @@ public class PositionConstants {
   // placeholders)
   // Origin to bumper ~0.4572 m
 
-  public static final double[] reefLevel = {0.4572, 0.4572, 0.4572, 0.4572};
-  public static final double reefY = 0.1793875;
+  public static final double[] reefOffsetsX = {0.4572, 0.4572, 0.4572, 0.4572};
+  public static final double reefOffsetY = 0.1793875;
 
   public static final double reefRobotAngle = Radians.convertFrom(180, Degrees);
 

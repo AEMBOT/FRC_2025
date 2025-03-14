@@ -94,14 +94,14 @@ public final class ReefTargets {
     if (isOnRight) {
       coralOffset =
           new Transform2d(
-              PositionConstants.reefLevel[level - 1],
-              PositionConstants.reefY + additionalOffset,
+              PositionConstants.reefOffsetsX[level - 1],
+              PositionConstants.reefOffsetY + additionalOffset,
               new Rotation2d(PositionConstants.reefRobotAngle));
     } else {
       coralOffset =
           new Transform2d(
-              PositionConstants.reefLevel[level - 1],
-              -PositionConstants.reefY + additionalOffset,
+              PositionConstants.reefOffsetsX[level - 1],
+              -PositionConstants.reefOffsetY + additionalOffset,
               new Rotation2d(-PositionConstants.reefRobotAngle));
     }
     return coralOffset;

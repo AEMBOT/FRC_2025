@@ -236,7 +236,7 @@ public final class ReefTargetsTest {
   void testTargetRed() {
     ReefTargets testCase = new ReefTargets(Alliance.Red);
 
-    double tolerance = 0.05;
+    double tolerance = 0.001;
 
     try {
       assertPoseWithin(

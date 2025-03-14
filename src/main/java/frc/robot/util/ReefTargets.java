@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.constants.PositionConstants;
+import java.util.Arrays;
 
 public final class ReefTargets {
   final Pose2d[] tagPoses;
@@ -36,7 +37,9 @@ public final class ReefTargets {
     }
   }
 
-  public int findClosestTag(Pose2d robotCurrentPosition) {
+  // TODO Remove before merge
+  @Deprecated(forRemoval = true)
+  public int findClosestTagIndex(Pose2d robotCurrentPosition) {
     double closestDist = Double.MAX_VALUE;
     int closest = -1;
 
@@ -51,6 +54,10 @@ public final class ReefTargets {
     return closest;
   }
 
+  public Pose2d findClosestTagPose(Pose2d robotCurrentPosition) {
+    return robotCurrentPosition.nearest(Arrays.asList(tagPoses));
+  }
+
   /**
    * @param isOnRight If we want to place on right pole, as opposed to left
    * @param currentPose Current robot pose
@@ -61,7 +68,7 @@ public final class ReefTargets {
   public Pose2d getReefPose(
       Boolean isOnRight, Pose2d currentPose, int level, double gamePiecePosition) {
 
-    Pose2d targetTag = tagPoses[findClosestTag(currentPose)];
+    Pose2d targetTag = findClosestTagPose(currentPose);
     return targetTag.transformBy(getTagOffset(level, isOnRight, gamePiecePosition));
   }
 

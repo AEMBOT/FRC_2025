@@ -199,7 +199,8 @@ public class RobotContainer {
         .whileTrue(
             new ParallelCommandGroup(
                 CompoundCommands.deferArm(() -> CompoundCommands.armToReef(this.reef_level)),
-                CompoundCommands.deferDrive(() -> CompoundCommands.driveToLeftReef(this.reef_level))));
+                CompoundCommands.deferDrive(
+                    () -> CompoundCommands.driveToLeftReef(this.reef_level))));
 
     controller
         .rightBumper()

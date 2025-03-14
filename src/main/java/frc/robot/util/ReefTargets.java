@@ -13,7 +13,6 @@ import frc.robot.constants.PositionConstants;
 
 public final class ReefTargets {
   final Pose2d[] tagPoses;
-
   final Pose2d coralOffsetTargetTagPose = new Pose2d();
 
   public ReefTargets() {
@@ -27,26 +26,6 @@ public final class ReefTargets {
           aprilTagFieldLayout.getTagPose(21).get().toPose2d(), // 4
           aprilTagFieldLayout.getTagPose(22).get().toPose2d() // 5
         };
-  }
-
-  public Pose2d transformTag(String side, int level, int tag) {
-    return tagPoses[tag].transformBy(getOffset(level, side));
-  }
-
-  public Transform2d getOffset(int level, String side) {
-    if (side == "Right") {
-      return new Transform2d(
-          PositionConstants.reefLevel[level - 1],
-          PositionConstants.reefY,
-          new Rotation2d(PositionConstants.reefRobotAngle));
-    } else if (side == "Left") {
-      return new Transform2d(
-          PositionConstants.reefLevel[level - 1],
-          -PositionConstants.reefY,
-          new Rotation2d(-PositionConstants.reefRobotAngle));
-    } else {
-      throw new IllegalArgumentException("Invalid side: " + side);
-    }
   }
 
   public int findClosestTag(Pose2d robotCurrentPosition) {
@@ -64,38 +43,66 @@ public final class ReefTargets {
     return closest;
   }
 
-  public Pose2d findTarget(String side, Pose2d currentPose, int level, double gamePiecePosition) {
-    // Pose2d targetTag = transformTag(side, level, findClosestTag(currentPose));
-
-    return findCoralOffsetPose(
-        side, tagPoses[findClosestTag(currentPose)], gamePiecePosition, level);
+  /**
+   * @param side The side we are targetting to place on reef
+   * @param currentPose Current robot pose
+   * @param level Target reef level
+   * @param gamePiecePosition Position of our game piece from the center of intake in meters
+   * @return The function to transform our target tag (closest tag) to our robot
+   */
+  public Pose2d findTargetTag(String side, Pose2d currentPose, int level, double gamePiecePosition) {
+    return transformTag(side, level, findClosestTag(currentPose), gamePiecePosition);
   }
 
-  public Pose2d findCoralOffsetPose(
-      String side, Pose2d targetTag, double gamePiecePositionMet, int level) {
-    Transform2d coralOffset;
-    if (side == "Right") {
-       coralOffset =
-          new Transform2d(
-              PositionConstants.reefLevel[level - 1],
-              PositionConstants.reefY - gamePiecePositionMet,
-              new Rotation2d(PositionConstants.reefRobotAngle));
+  /**
+   * @param side The side we are targetting to place on reef
+   * @param level Target reef level
+   * @param tag The ID of our target april tag (gotten from our findClosestTag function)
+   * @param gamePiecePosition Position of our game piece from the center of intake in meters
+   * @return The transformed target AprilTag
+   */
+  public Pose2d transformTag(String side, int level, int tag, double gamePiecePosition) {
+    return tagPoses[tag].transformBy(getTagOffset(level, side, gamePiecePosition));
+  }
 
-    } else if (side == "Left") {
-      coralOffset =
-          new Transform2d(
-              PositionConstants.reefLevel[level - 1],
-              -PositionConstants.reefY - gamePiecePositionMet,
-              new Rotation2d(-PositionConstants.reefRobotAngle));
-    } else {
-      throw new IllegalArgumentException("Invalid side: " + side);
+  /**
+   * @param level Target reef level
+   * @param side The side we are targetting to place on reef
+   * @param gamePiecePosition Position of our game piece from the center of intake in meters
+   * @return The offset of our Robot position from the ApriLTag in a Transform2d
+   */
+  public Transform2d getTagOffset(int level, String side, double gamePiecePosition) {
+    switch (side) {
+      case "Right":
+        return new Transform2d(
+            PositionConstants.reefLevel[level - 1],
+            PositionConstants.reefY + gamePiecePosition,
+            new Rotation2d(PositionConstants.reefRobotAngle));
+
+      case "Left":
+        return new Transform2d(
+            PositionConstants.reefLevel[level - 1],
+            -PositionConstants.reefY + gamePiecePosition,
+            new Rotation2d(-PositionConstants.reefRobotAngle));
+
+      default:
+        throw new IllegalArgumentException("Invalid side: " + side);
     }
-    return targetTag.transformBy(coralOffset);
   }
 
-  public double[] getPoseValuesTest(
+  /**
+   * Use only for testing to check values. Can be removed later on if not needed
+   *
+   * @param side The side we want to test placing on reef
+   * @param currentPose The pose of our imaginary robot
+   * @param level The level we want to test placing on reef
+   * @param gamePiecePositionMet The offset position of our imaginary coral
+   * @return A double matrix containing our PoseX, PoseY, and Pose Rotation in degrees.
+   */
+  public double[] testPoseValues(
       String side, Pose2d currentPose, int level, double gamePiecePositionMet) {
-    Pose2d result = findTarget(side, currentPose, level, gamePiecePositionMet);
+    Pose2d result = findTargetTag(side, currentPose, level, gamePiecePositionMet);
+
     double[] poseValues = {result.getX(), result.getY(), result.getRotation().getDegrees()};
     return poseValues;
   }

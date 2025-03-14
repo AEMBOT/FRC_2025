@@ -193,7 +193,7 @@ public class RobotContainer {
                 () ->
                     PathGenerator.generateSimpleCorrectedPath(
                         drive,
-                        reefTargets.findTarget(
+                        reefTargets.findTargetTag(
                             "Left",
                             drive.getPose(),
                             reef_level,
@@ -207,7 +207,7 @@ public class RobotContainer {
                 () ->
                     PathGenerator.generateSimpleCorrectedPath(
                         drive,
-                        reefTargets.findTarget(
+                        reefTargets.findTargetTag(
                             "Right",
                             drive.getPose(),
                             reef_level,

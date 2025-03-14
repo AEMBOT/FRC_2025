@@ -13,40 +13,80 @@ import org.junit.jupiter.api.Test;
 public final class ReefTargetsTest {
 
   @Test
-  void testReefTargetOffset() {
+  void testReefTargetCoralOffset() {
     ReefTargets reefTargets = new ReefTargets();
-
+    // AprilTag 18
     try {
       assertArrayEquals(
-          new double[] {4.073905999999999, 3.3063179999999996, -120.00000000000001},
-          reefTargets.getPoseValuesTest("Left", new Pose2d(0, 0, new Rotation2d(0)), 1, 0.0),
-          "Left L1, (0, 0), Coral 0.0, AprilTag 17");
+          new double[] {3.6576 - 0.3048 - 0.4572, 4.0259 + 0.1793875, 0},
+          reefTargets.testPoseValues("Left", new Pose2d(3.5, 4, new Rotation2d(0)), 1, 0.0),
+          "\n Left L1, (3.5, 4), Coral 0.0, AprilTag 18");
     } catch (AssertionError e) {
       System.out.println(e.getMessage());
     }
-
     try {
       assertArrayEquals(
-          new double[] {3.6576, 4.0259, -180},
-          reefTargets.getPoseValuesTest("Left", new Pose2d(3.5, 4, new Rotation2d(0)), 1, 0.0),
-          "Left L1, (3.5, 4), Coral 0.0, AprilTag 18");
+          new double[] {3.6576 - 0.3048 - 0.4572, 4.0259 + 0.1793875 - 0.5, 0},
+          reefTargets.testPoseValues("Left", new Pose2d(3.5, 4, new Rotation2d(0)), 1, 0.5),
+          "Left L1, (3.5, 4), Coral 0.5, AprilTag 18");
     } catch (AssertionError e) {
       System.out.println(e.getMessage());
     }
-
     try {
       assertArrayEquals(
-          new double[] {3.6576, 4.0259 - 0.2, -180},
-          reefTargets.getPoseValuesTest("Left", new Pose2d(3.5, 4, new Rotation2d(0)), 1, 0.2),
-          "Left L1, (3.5, 4), Coral 0.2, AprilTag 18");
+          new double[] {3.6576 - 0.3048 - 0.4572, 4.0259 - 0.1793875, 0},
+          reefTargets.testPoseValues("Right", new Pose2d(3.5, 4, new Rotation2d(0)), 1, 0.0),
+          "Right L1, (3.5, 4), Coral 0.0, AprilTag 18");
+    } catch (AssertionError e) {
+      System.out.println(e.getMessage());
+    }
+    try {
+      assertArrayEquals(
+          new double[] {3.6576 - 0.3048 - 0.4572, 4.0259 - 0.1793875 - 0.5, 0},
+          reefTargets.testPoseValues("Right", new Pose2d(3.5, 4, new Rotation2d(0)), 1, 0.5),
+          "Right L1, (3.5, 4), Coral 0.5, AprilTag 18");
+    } catch (AssertionError e) {
+      System.out.println(e.getMessage());
+    }
+    // AprilTag 19
+    try {
+      assertArrayEquals(
+          new double[] {0, 0, 0},//needs to be calculated by hand
+          reefTargets.testPoseValues("Left", new Pose2d(4, 4.5, new Rotation2d(0)), 1, 0.0),
+          "\n Left L1, (4, 4.5), Coral 0.0, AprilTag 19");
+    } catch (AssertionError e) {
+      System.out.println(e.getMessage());
+    }
+    try {
+      assertArrayEquals(
+          new double[] {0, 0, 0}, //needs to be calculated by hand
+          reefTargets.testPoseValues("Left", new Pose2d(4, 4.5, new Rotation2d(0)), 1, 0.5),
+          "Left L1, (4, 4.5), Coral 0.5, AprilTag 19");
+    } catch (AssertionError e) {
+      System.out.println(e.getMessage());
+    }
+    // AprilTag 21
+    try {
+      assertArrayEquals(
+          new double[] {5.321046 + 0.3048 + 0.4572, 4.0259 + 0.1793875, 180},
+          reefTargets.testPoseValues("Right", new Pose2d(5, 4, new Rotation2d(0)), 1, 0.0),
+          "\n Right L1, (5, 4), Coral 0.0, AprilTag 21");
+    } catch (AssertionError e) {
+      System.out.println(e.getMessage());
+    }
+    try {
+      assertArrayEquals(
+          new double[] {5.321046 + 0.3048 + 0.4572, 4.0259 + 0.1793875 + 0.5, 180},
+          reefTargets.testPoseValues("Right", new Pose2d(5, 4, new Rotation2d(0)), 1, 0.5),
+          "Right L1, (5, 4), Coral 0.5, AprilTag 21");
     } catch (AssertionError e) {
       System.out.println(e.getMessage());
     }
   }
 
+  
   @Test
   void testTarget() {
-
     ReefTargets testCase = new ReefTargets();
 
     try {

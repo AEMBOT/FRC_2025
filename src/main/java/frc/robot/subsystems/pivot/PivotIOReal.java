@@ -93,8 +93,8 @@ public class PivotIOReal implements PivotIO {
     leftMotorConfig.Slot0.kI = 0;
     leftMotorConfig.Slot0.kD = 0;
 
-    leftMotorConfig.MotionMagic.MotionMagicCruiseVelocity = 25;
-    leftMotorConfig.MotionMagic.MotionMagicAcceleration = 50;
+    leftMotorConfig.MotionMagic.MotionMagicCruiseVelocity = 35;
+    leftMotorConfig.MotionMagic.MotionMagicAcceleration = 70;
     leftMotorConfig.MotionMagic.MotionMagicJerk = 0;
 
     leadingMotor.getConfigurator().apply(leftMotorConfig);
@@ -155,7 +155,7 @@ public class PivotIOReal implements PivotIO {
   }
 
   private double getAbsoluteEncoderPosition() {
-    return (ENCODER.get() * 360) + ENCODER_POSITION_OFFSET;
+    return ((ENCODER.get() * 360) + ENCODER_POSITION_OFFSET) % 360;
   }
 
   private void setMotorVoltage(double volts) {

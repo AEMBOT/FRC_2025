@@ -5,10 +5,12 @@
 package frc.robot.util;
 
 import static frc.robot.constants.VisionConstants.aprilTagFieldLayout;
+import static frc.robot.util.FieldUtil.mirrorPose;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.constants.PositionConstants;
 
 public final class ReefTargets {
@@ -16,7 +18,7 @@ public final class ReefTargets {
 
   final Pose2d coralOffsetTargetTagPose = new Pose2d();
 
-  public ReefTargets() {
+  public ReefTargets(Alliance alliance) {
     // Defines the transformation vector for a target position
     tagPoses =
         new Pose2d[] {
@@ -27,25 +29,29 @@ public final class ReefTargets {
           aprilTagFieldLayout.getTagPose(21).get().toPose2d(), // 4
           aprilTagFieldLayout.getTagPose(22).get().toPose2d() // 5
         };
+
+    if (alliance == Alliance.Red) {
+      for (int i = 0; i < tagPoses.length; i++) {
+        tagPoses[i] = mirrorPose(tagPoses[i]);
+      }
+    }
   }
 
-  public Pose2d transformTag(String side, int level, int tag) {
-    return tagPoses[tag].transformBy(getOffset(level, side));
+  public Pose2d transformTag(Boolean isOnRight, int level, int tag) {
+    return tagPoses[tag].transformBy(getOffset(level, isOnRight));
   }
 
-  public Transform2d getOffset(int level, String side) {
-    if (side == "Right") {
+  public Transform2d getOffset(int level, Boolean isOnRight) {
+    if (isOnRight) {
       return new Transform2d(
           PositionConstants.reefLevel[level - 1],
           PositionConstants.reefY,
           new Rotation2d(PositionConstants.reefRobotAngle));
-    } else if (side == "Left") {
+    } else {
       return new Transform2d(
           PositionConstants.reefLevel[level - 1],
           -PositionConstants.reefY,
           new Rotation2d(-PositionConstants.reefRobotAngle));
-    } else {
-      throw new IllegalArgumentException("Invalid side: " + side);
     }
   }
 
@@ -64,38 +70,37 @@ public final class ReefTargets {
     return closest;
   }
 
-  public Pose2d findTarget(String side, Pose2d currentPose, int level, double gamePiecePosition) {
+  public Pose2d findTarget(
+      Boolean isOnRight, Pose2d currentPose, int level, double gamePiecePosition) {
     // Pose2d targetTag = transformTag(side, level, findClosestTag(currentPose));
 
     return findCoralOffsetPose(
-        side, tagPoses[findClosestTag(currentPose)], gamePiecePosition, level);
+        isOnRight, tagPoses[findClosestTag(currentPose)], gamePiecePosition, level);
   }
 
   public Pose2d findCoralOffsetPose(
-      String side, Pose2d targetTag, double gamePiecePositionMet, int level) {
+      Boolean isOnRight, Pose2d targetTag, double gamePiecePositionMet, int level) {
     Transform2d coralOffset;
-    if (side == "Right") {
-       coralOffset =
+    if (isOnRight) {
+      coralOffset =
           new Transform2d(
               PositionConstants.reefLevel[level - 1],
               PositionConstants.reefY - gamePiecePositionMet,
               new Rotation2d(PositionConstants.reefRobotAngle));
 
-    } else if (side == "Left") {
+    } else {
       coralOffset =
           new Transform2d(
               PositionConstants.reefLevel[level - 1],
               -PositionConstants.reefY - gamePiecePositionMet,
               new Rotation2d(-PositionConstants.reefRobotAngle));
-    } else {
-      throw new IllegalArgumentException("Invalid side: " + side);
     }
     return targetTag.transformBy(coralOffset);
   }
 
   public double[] getPoseValuesTest(
-      String side, Pose2d currentPose, int level, double gamePiecePositionMet) {
-    Pose2d result = findTarget(side, currentPose, level, gamePiecePositionMet);
+      Boolean isOnRight, Pose2d currentPose, int level, double gamePiecePositionMet) {
+    Pose2d result = findTarget(isOnRight, currentPose, level, gamePiecePositionMet);
     double[] poseValues = {result.getX(), result.getY(), result.getRotation().getDegrees()};
     return poseValues;
   }

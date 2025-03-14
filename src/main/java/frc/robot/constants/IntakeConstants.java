@@ -5,6 +5,13 @@ public class IntakeConstants {
 
   public static final double intakeMotorCurrentLimit = 5;
 
+  public static final double intakeVoltage = 3;
+  public static final double ejectVoltage = -4;
+
+  // Used in auto. Teleop is just whileTrue.
+  public static final double intakeTimeout = 2.5;
+  public static final double ejectTimeout = 0.5;
+
   public static final int CANRANGE_ID = 16;
 
   public static final double canrangeOffset = -0.2721501143002286; // 9.125 ft approx.

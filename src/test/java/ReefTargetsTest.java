@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.util.ReefTargets;
 import org.junit.jupiter.api.Test;
 
@@ -14,12 +15,12 @@ public final class ReefTargetsTest {
 
   @Test
   void testReefTargetOffset() {
-    ReefTargets reefTargets = new ReefTargets();
+    ReefTargets reefTargets = new ReefTargets(Alliance.Blue);
 
     try {
       assertArrayEquals(
           new double[] {4.073905999999999, 3.3063179999999996, -120.00000000000001},
-          reefTargets.getPoseValuesTest("Left", new Pose2d(0, 0, new Rotation2d(0)), 1, 0.0),
+          reefTargets.getPoseValuesTest(false, new Pose2d(0, 0, new Rotation2d(0)), 1, 0.0),
           "Left L1, (0, 0), Coral 0.0, AprilTag 17");
     } catch (AssertionError e) {
       System.out.println(e.getMessage());
@@ -28,7 +29,7 @@ public final class ReefTargetsTest {
     try {
       assertArrayEquals(
           new double[] {3.6576, 4.0259, -180},
-          reefTargets.getPoseValuesTest("Left", new Pose2d(3.5, 4, new Rotation2d(0)), 1, 0.0),
+          reefTargets.getPoseValuesTest(false, new Pose2d(3.5, 4, new Rotation2d(0)), 1, 0.0),
           "Left L1, (3.5, 4), Coral 0.0, AprilTag 18");
     } catch (AssertionError e) {
       System.out.println(e.getMessage());
@@ -37,7 +38,7 @@ public final class ReefTargetsTest {
     try {
       assertArrayEquals(
           new double[] {3.6576, 4.0259 - 0.2, -180},
-          reefTargets.getPoseValuesTest("Left", new Pose2d(3.5, 4, new Rotation2d(0)), 1, 0.2),
+          reefTargets.getPoseValuesTest(false, new Pose2d(3.5, 4, new Rotation2d(0)), 1, 0.2),
           "Left L1, (3.5, 4), Coral 0.2, AprilTag 18");
     } catch (AssertionError e) {
       System.out.println(e.getMessage());
@@ -45,9 +46,8 @@ public final class ReefTargetsTest {
   }
 
   @Test
-  void testTarget() {
-
-    ReefTargets testCase = new ReefTargets();
+  void testTargetBlue() {
+    ReefTargets testCase = new ReefTargets(Alliance.Blue);
 
     try {
       assertEquals(0, testCase.findClosestTag(new Pose2d(1, 3, new Rotation2d(0))), "(1,3)");
@@ -117,6 +117,48 @@ public final class ReefTargetsTest {
 
     try {
       assertEquals(0, testCase.findClosestTag(new Pose2d(1, 5, new Rotation2d(0))), "(1,5)");
+    } catch (AssertionError e) {
+      System.out.println(e.getMessage());
+    }
+  }
+
+  @Test
+  void testTargetRed() {
+
+    ReefTargets testCase = new ReefTargets(Alliance.Red);
+
+    try {
+      assertEquals(0, testCase.findClosestTag(new Pose2d(15, 4, new Rotation2d(0))), "(15,4)");
+    } catch (AssertionError e) {
+      System.out.println(e.getMessage());
+    }
+
+    try {
+      assertEquals(2, testCase.findClosestTag(new Pose2d(14, 6, new Rotation2d(0))), "(14,6)");
+    } catch (AssertionError e) {
+      System.out.println(e.getMessage());
+    }
+
+    try {
+      assertEquals(3, testCase.findClosestTag(new Pose2d(10, 7, new Rotation2d(0))), "(10,7)");
+    } catch (AssertionError e) {
+      System.out.println(e.getMessage());
+    }
+
+    try {
+      assertEquals(4, testCase.findClosestTag(new Pose2d(7, 4, new Rotation2d(0))), "(7,4)");
+    } catch (AssertionError e) {
+      System.out.println(e.getMessage());
+    }
+
+    try {
+      assertEquals(5, testCase.findClosestTag(new Pose2d(11, 1, new Rotation2d(0))), "(11,1)");
+    } catch (AssertionError e) {
+      System.out.println(e.getMessage());
+    }
+
+    try {
+      assertEquals(1, testCase.findClosestTag(new Pose2d(14, 0, new Rotation2d(0))), "(14,0)");
     } catch (AssertionError e) {
       System.out.println(e.getMessage());
     }

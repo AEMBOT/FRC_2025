@@ -21,7 +21,7 @@ public final class ReefTargetsTest {
     try {
       AssertPoseWithin(
           new Pose2d(3.200, 4.205, Rotation2d.fromDegrees(0)),
-          reefTargetsBlue.findTargetTag(false, new Pose2d(3.5, 4, new Rotation2d(0)), 4, 0.0),
+          reefTargetsBlue.getReefPose(false, new Pose2d(3.5, 4, new Rotation2d(0)), 4, 0.0),
           "\n Left L4, (3.5, 4), Coral 0.0, AprilTag 18",
           tolerance);
     } catch (AssertionError e) {
@@ -30,7 +30,7 @@ public final class ReefTargetsTest {
     try {
       AssertPoseWithin(
           new Pose2d(3.200, 3.705, Rotation2d.fromDegrees(0)),
-          reefTargetsBlue.findTargetTag(false, new Pose2d(3.5, 4, new Rotation2d(0)), 4, 0.5),
+          reefTargetsBlue.getReefPose(false, new Pose2d(3.5, 4, new Rotation2d(0)), 4, 0.5),
           "Left L4, (3.5, 4), Coral 0.5, AprilTag 18",
           tolerance);
     } catch (AssertionError e) {
@@ -39,7 +39,7 @@ public final class ReefTargetsTest {
     try {
       AssertPoseWithin(
           new Pose2d(3.200, 3.847, Rotation2d.fromDegrees(0)),
-          reefTargetsBlue.findTargetTag(
+          reefTargetsBlue.getReefPose(
               true, new Pose2d(3.5, 4, Rotation2d.fromDegrees(0)), 4, 0.0),
           "Right L4, (3.5, 4), Coral 0.0, AprilTag 18",
           tolerance);
@@ -49,7 +49,7 @@ public final class ReefTargetsTest {
     try {
       AssertPoseWithin(
           new Pose2d(3.200, 3.347, Rotation2d.fromDegrees(0)),
-          reefTargetsBlue.findTargetTag(
+          reefTargetsBlue.getReefPose(
               true, new Pose2d(3.5, 4, Rotation2d.fromDegrees(0)), 4, 0.5),
           "Right L4, (3.5, 4), Coral 0.5, AprilTag 18",
           tolerance);
@@ -60,7 +60,7 @@ public final class ReefTargetsTest {
     try {
       AssertPoseWithin(
           new Pose2d(4.001, 5.231, Rotation2d.fromDegrees(-60)),
-          reefTargetsBlue.findTargetTag(
+          reefTargetsBlue.getReefPose(
               false, new Pose2d(4, 4.5, Rotation2d.fromDegrees(-60)), 4, 0.0),
           "\n Left L4, (4, 4.5), Coral 0.0, AprilTag 19",
           tolerance);
@@ -70,7 +70,7 @@ public final class ReefTargetsTest {
     try {
       AssertPoseWithin(
           new Pose2d(3.568, 4.981, Rotation2d.fromDegrees(-60)),
-          reefTargetsBlue.findTargetTag(
+          reefTargetsBlue.getReefPose(
               false, new Pose2d(4, 4.5, Rotation2d.fromDegrees(0)), 4, 0.5),
           "Left L4, (4, 4.5), Coral 0.5, AprilTag 19",
           tolerance);
@@ -81,7 +81,7 @@ public final class ReefTargetsTest {
     try {
       AssertPoseWithin(
           new Pose2d(5.778, 4.205, Rotation2d.fromDegrees(180)),
-          reefTargetsBlue.findTargetTag(true, new Pose2d(5, 4, Rotation2d.fromDegrees(0)), 4, 0.0),
+          reefTargetsBlue.getReefPose(true, new Pose2d(5, 4, Rotation2d.fromDegrees(0)), 4, 0.0),
           "\n Right L4, (5, 4), Coral 0.0, AprilTag 21",
           tolerance);
     } catch (AssertionError e) {
@@ -90,7 +90,7 @@ public final class ReefTargetsTest {
     try {
       AssertPoseWithin(
           new Pose2d(5.778, 4.705, Rotation2d.fromDegrees(180)),
-          reefTargetsBlue.findTargetTag(true, new Pose2d(5, 4, Rotation2d.fromDegrees(0)), 4, 0.5),
+          reefTargetsBlue.getReefPose(true, new Pose2d(5, 4, Rotation2d.fromDegrees(0)), 4, 0.5),
           "Right L4, (5, 4), Coral 0.5, AprilTag 21",
           tolerance);
     } catch (AssertionError e) {
@@ -100,7 +100,7 @@ public final class ReefTargetsTest {
     try {
       AssertPoseWithin(
           new Pose2d(5.778, 4.205, Rotation2d.fromDegrees(180)),
-          reefTargetsBlue.findTargetTag(true, new Pose2d(5, 4, Rotation2d.fromDegrees(0)), 1, 0.5),
+          reefTargetsBlue.getReefPose(true, new Pose2d(5, 4, Rotation2d.fromDegrees(0)), 1, 0.5),
           "\n Right L1, (5, 4), Coral 0.0, AprilTag 21",
           tolerance);
     } catch (AssertionError e) {

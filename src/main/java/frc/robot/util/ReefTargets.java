@@ -52,13 +52,13 @@ public final class ReefTargets {
   }
 
   /**
-   * @param isOnRight The side we are targetting to place on reef
+   * @param isOnRight If we want to place on right pole, as opposed to left
    * @param currentPose Current robot pose
    * @param level Target reef level
    * @param gamePiecePosition Position of our game piece from the center of intake in meters
-   * @return The function to transform our target tag (closest tag) to our robot
+   * @return The {@link Pose2d} to align to for reef placement
    */
-  public Pose2d findTargetTag(
+  public Pose2d getReefPose(
       Boolean isOnRight, Pose2d currentPose, int level, double gamePiecePosition) {
 
     Pose2d targetTag = tagPoses[findClosestTag(currentPose)];
@@ -66,10 +66,10 @@ public final class ReefTargets {
   }
 
   /**
-   * @param level Target reef level
+   * @param level if we want to place on right pole, as opposed to left.
    * @param isOnRight The side we are targetting to place on reef
    * @param gamePiecePosition Position of our game piece from the center of intake in meters
-   * @return The offset of our Robot position from the ApriLTag in a Transform2d
+   * @return The offset of our Robot position from the ApriLTag in a {@link Transform2d}
    */
   public Transform2d getTagOffset(int level, Boolean isOnRight, double gamePiecePosition) {
     double additionalOffset;

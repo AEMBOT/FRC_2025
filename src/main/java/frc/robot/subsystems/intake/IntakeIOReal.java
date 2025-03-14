@@ -12,6 +12,8 @@ public class IntakeIOReal implements IntakeIO {
 
   private final TalonFX motor = new TalonFX(intakeMotorID);
 
+  private boolean hasGamePiece;
+
   public IntakeIOReal() {
     CANRANGE = new CoreCANrange(CANRANGE_ID);
 
@@ -25,23 +27,23 @@ public class IntakeIOReal implements IntakeIO {
     inputs.intakeAppliedVolts = motor.getMotorVoltage().getValueAsDouble();
     inputs.gamePieceLocation = getGamePieceLocation();
     inputs.hasGamePiece = checkForGamePiece();
-    // inputs.lastMeasurementTime = CANRANGE.getMeasurementTime().getValueAsDouble();
   }
 
-  // gets coral location relative to the center of intake. gives a negative on the left side,
-  // positive value
-  // if on the right side of the intake
   private double getGamePieceLocation() {
     if (checkForGamePiece() == true) {
       return CANRANGE.getDistance().getValueAsDouble() + coralRadius - canrangeOffset;
     } else return 0.0;
   }
 
-  private boolean checkForGamePiece() {
-    if (CANRANGE.getDistance().getValueAsDouble() > 0.4) {
-      // left point of coral physically can't be past 0.4 meters of the intake
-      return false;
-    } else return true;
+  private boolean checkForGamePiece() { 
+    if ((motor.getMotorVoltage().getValueAsDouble() > 0) && (CANRANGE.getDistance().getValueAsDouble() < 0.4)) {
+      hasGamePiece = true; // If we run our intake inwards and then detect a coral, as long as we don't 
+      // detect that we threw out coral, we have a coral piece in our intake, even though we can't detect it.
+      // For horizontal coral pieces
+    } else if ((motor.getMotorVoltage().getValueAsDouble() < 0) && ((CANRANGE.getDistance().getValueAsDouble() < 0.4))) {
+      hasGamePiece = false; // detect that we threw out coral.
+    } 
+    return hasGamePiece;
   }
 
   @Override

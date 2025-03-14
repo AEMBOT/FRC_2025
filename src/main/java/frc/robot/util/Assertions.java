@@ -13,7 +13,7 @@ public class Assertions {
         expected.getRotation().getDegrees(),
         actual.getRotation().getDegrees(),
         tolerance,
-        message + " | Delta");
+        message + " | θ");
   }
 
   public static void assertPoseEquals(Pose2d expected, Pose2d actual, String message) {

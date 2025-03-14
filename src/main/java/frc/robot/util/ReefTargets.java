@@ -37,24 +37,6 @@ public final class ReefTargets {
     }
   }
 
-  public Pose2d transformTag(Boolean isOnRight, int level, int tag) {
-    return tagPoses[tag].transformBy(getOffset(level, isOnRight));
-  }
-
-  public Transform2d getOffset(int level, Boolean isOnRight) {
-    if (isOnRight) {
-      return new Transform2d(
-          PositionConstants.reefLevel[level - 1],
-          PositionConstants.reefY,
-          new Rotation2d(PositionConstants.reefRobotAngle));
-    } else {
-      return new Transform2d(
-          PositionConstants.reefLevel[level - 1],
-          -PositionConstants.reefY,
-          new Rotation2d(-PositionConstants.reefRobotAngle));
-    }
-  }
-
   public int findClosestTag(Pose2d robotCurrentPosition) {
     double closestDist = Double.MAX_VALUE;
     int closest = -1;
@@ -87,7 +69,6 @@ public final class ReefTargets {
               PositionConstants.reefLevel[level - 1],
               PositionConstants.reefY - gamePiecePositionMet,
               new Rotation2d(PositionConstants.reefRobotAngle));
-
     } else {
       coralOffset =
           new Transform2d(

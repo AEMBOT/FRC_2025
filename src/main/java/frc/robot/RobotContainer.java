@@ -149,12 +149,12 @@ public class RobotContainer {
 
     controller
         .leftTrigger(0.25)
-        .onTrue(intake.runIntakeCommand(() -> 3).alongWith(CompoundCommands.armToSource()))
-        .onFalse(intake.runIntakeCommand(() -> 0.5).alongWith(CompoundCommands.armToStow()));
+        .onTrue(intake.runIntakeCommand(() -> 3))
+        .onFalse(intake.runIntakeCommand(() -> 0.3).alongWith(CompoundCommands.armToStow()));
     controller
         .rightTrigger(0.25)
         .onTrue(intake.runIntakeCommand(() -> -4))
-        .onFalse(intake.runIntakeCommand(() -> 0).alongWith(CompoundCommands.armToStow()));
+        .onFalse(intake.runIntakeCommand(() -> 0).alongWith(CompoundCommands.armToStowSafely()));
 
     controller
         .rightStick()
@@ -201,7 +201,8 @@ public class RobotContainer {
 
     controller
         .leftBumper()
-        .whileTrue(CompoundCommands.deferArm(() -> CompoundCommands.armToReef(this.reef_level)));
+        .whileTrue(
+            CompoundCommands.deferArm(() -> CompoundCommands.armToReefSafely(this.reef_level)));
 
     controller.b().whileTrue(CompoundCommands.armToClimb());
     controller

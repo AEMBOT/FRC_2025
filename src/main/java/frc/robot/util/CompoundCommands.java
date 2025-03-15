@@ -166,6 +166,14 @@ public class CompoundCommands {
     return armToGoal(stowWristAngle, stowPivotAngle, stowElevatorExtension);
   }
 
+  public static Command armToReefSafely(int reefLevel) {
+    return pivot.setPosition(() -> safePivotPosition).andThen(armToReef(reefLevel));
+  }
+
+  public static Command armToStowSafely() {
+    return pivot.setPosition(() -> safePivotPosition).andThen(armToStow());
+  }
+
   /**
    * Paths the drivetrain to the proper position for the given level of the reef left pole.
    *
@@ -268,15 +276,15 @@ public class CompoundCommands {
   public static Command armToGoal(double wristSetPos, double pivotSetPos, double elevatorSetPos) {
 
     if (elevatorSetPos > elevator.getPosition().getAsDouble()) {
-      return pivot
-          .setPosition(() -> pivotSetPos)
-          .andThen(elevator.setPosition(() -> elevatorSetPos))
-          .alongWith(wrist.setGoalPosition(() -> wristSetPos));
-
-    } else {
       return elevator
           .setPosition(() -> elevatorSetPos)
-          .alongWith(wrist.setGoalPosition(() -> wristSetPos))
+          .andThen(wrist.setGoalPosition(() -> wristSetPos))
+          .andThen(pivot.setPosition(() -> pivotSetPos));
+
+    } else {
+      return wrist
+          .setGoalPosition(() -> wristSetPos)
+          .andThen(elevator.setPosition(() -> elevatorSetPos))
           .andThen(pivot.setPosition(() -> pivotSetPos));
     }
   }

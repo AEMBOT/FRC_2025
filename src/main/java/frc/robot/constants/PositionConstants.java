@@ -99,7 +99,7 @@ public class PositionConstants {
   public static final double L4ElevatorExtension = 1.0858944163602942 + 0.03;
 
   // Source Arm Setpoint Values
-  public static final double sourceWristAngle = 83.30000000000001;
+  public static final double sourceWristAngle = 90;
   public static final double sourcePivotAngle = 45.21778598044459;
   public static final double sourceElevatorExtension = 0;
 
@@ -109,9 +109,11 @@ public class PositionConstants {
   public static final double climbElevatorExtension = 0;
 
   // Starting Arm Setpoint Values
-  public static final double stowWristAngle = 89.69999999999999;
-  public static final double stowPivotAngle = 44.87178593679461;
+  public static final double stowWristAngle = 90;
+  public static final double stowPivotAngle = 70.73384351834608;
   public static final double stowElevatorExtension = 0;
+
+  public static final double safePivotPosition = 90;
 
   public static final double[][] reefArmPositions = {
     {L1WristAngle, L1PivotAngle, L1ElevatorExtension},

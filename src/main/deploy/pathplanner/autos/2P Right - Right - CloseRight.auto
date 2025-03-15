@@ -29,9 +29,21 @@
           }
         },
         {
-          "type": "race",
+          "type": "named",
           "data": {
-            "commands": []
+            "name": "AutoIntakeSourceRight"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "2 Piece Center Right.3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoPlaceLeft4"
           }
         }
       ]

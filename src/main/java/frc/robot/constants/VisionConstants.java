@@ -105,11 +105,30 @@ public class VisionConstants {
                 Units.degreesToRadians(-147)));
   }
 
+  /** Standard Deviations for when we see a single target with a high resolution camera. */
   public static final Matrix<N3, N1> highResSingleTagStdDev =
       VecBuilder.fill(0.4, 0.4, Double.MAX_VALUE);
+
+  /** Maximum distance to trust data when we see a single target with a high resolution camera. */
+  public static final double highResSingleTagMaxDist = 5; // TODO get new value
+
+  /** Standard Deviations for when we see a single target with a normal resolution camera. */
   public static final Matrix<N3, N1> normalSingleTagStdDev =
       VecBuilder.fill(0.8, 0.8, Double.MAX_VALUE);
+
+  /** Maximum distance to trust data when we see a single target with a normal resolution camera. */
+  public static final double normalSingleTagMaxDist = 5; // TODO get new value
+
+  /** Standard Deviations for when we see multiple targets with a high resolution camera. */
   public static final Matrix<N3, N1> highResMultiTagStdDev = VecBuilder.fill(0.2, 0.2, 3);
+
+  /** Maximum distance to trust data when we see multiple targets with a high resolution camera. */
+  public static final double highResMultiTagMaxDist = 5; // TODO get new value
+
+  /** Standard Deviations for when we see multiple targets with a normal resolution camera. */
   public static final Matrix<N3, N1> normalMultiTagStdDev =
       VecBuilder.fill(0.5, 0.5, Double.MAX_VALUE);
+
+  /** Maximum distance to trust data when we see multiple targets with a high resolution camera. */
+  public static final double normalMultiTagMaxDist = 5; // TODO get new value
 }

@@ -162,7 +162,7 @@ spotless {
             exclude "**/build/**", "**/build-*/**"
         }
         greclipse()
-        leadingTabsToSpaces(4)
+        indentWithSpaces(4)
         trimTrailingWhitespace()
         endWithNewline()
     }
@@ -179,7 +179,7 @@ spotless {
             exclude "**/build/**", "**/build-*/**"
         }
         trimTrailingWhitespace()
-        leadingTabsToSpaces(2)
+        indentWithSpaces(2)
         endWithNewline()
     }
     yaml {

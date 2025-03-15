@@ -23,7 +23,7 @@ public class Intake extends SubsystemBase {
 
   /** Runs the intake at the specified voltage. */
   public Command runIntakeCommand(DoubleSupplier volts) {
-    return run(() -> intake.setVoltage(volts.getAsDouble()));
+    return runOnce(() -> intake.setVoltage(volts.getAsDouble()));
   }
 
   public DoubleSupplier getGamePiecePosition() {

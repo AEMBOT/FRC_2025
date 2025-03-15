@@ -148,8 +148,14 @@ public class RobotContainer {
 
     backupController.a().whileTrue(CompoundCommands.armToReef(reef_level));
 
-    controller.rightTrigger(0.25).whileTrue(intake.ejectCommand());
-    controller.leftTrigger(0.25).whileTrue(intake.intakeCommand());
+    controller
+        .leftTrigger(0.25)
+        .onTrue(intake.runIntakeCommand(() -> 3))
+        .onFalse(intake.runIntakeCommand(() -> 0.3).alongWith(CompoundCommands.armToStow()));
+    controller
+        .rightTrigger(0.25)
+        .onTrue(intake.runIntakeCommand(() -> -4))
+        .onFalse(intake.runIntakeCommand(() -> 0).alongWith(CompoundCommands.armToStowSafely()));
 
     controller
         .rightStick()
@@ -195,13 +201,13 @@ public class RobotContainer {
         .whileTrue(
             new ParallelCommandGroup(
                 CompoundCommands.deferDrive(() -> CompoundCommands.driveToLeftReef(reef_level)),
-                CompoundCommands.deferArm(() -> CompoundCommands.armToReef(reef_level))));
+                CompoundCommands.deferArm(() -> CompoundCommands.armToReefSafely(reef_level))));
     controller
         .rightBumper()
         .whileTrue(
             new ParallelCommandGroup(
                 CompoundCommands.deferDrive(() -> CompoundCommands.driveToRightReef(reef_level)),
-                CompoundCommands.deferArm(() -> CompoundCommands.armToReef(reef_level))));
+                CompoundCommands.deferArm(() -> CompoundCommands.armToReefSafely(reef_level))));
 
     controller
         .a()

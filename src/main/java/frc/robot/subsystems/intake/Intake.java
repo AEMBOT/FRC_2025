@@ -5,12 +5,15 @@ import static frc.robot.constants.IntakeConstants.intakeVoltage;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.IntakeConstants;
+
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
 
 public class Intake extends SubsystemBase {
   IntakeIO intake;
   private final IntakeIOInputsAutoLogged intakeInputs = new IntakeIOInputsAutoLogged();
+  private IntakeIOReal IntakeIOReal = new IntakeIOReal();
 
   public Intake(IntakeIO intakeIO) {
     this.intake = intakeIO;
@@ -19,6 +22,9 @@ public class Intake extends SubsystemBase {
   public void periodic() {
     Logger.processInputs("Intake", intakeInputs);
     intake.updateInputs(intakeInputs);
+  }
+  public boolean HaveCoral(){
+    return IntakeIOReal.HaveCoral();
   }
 
   /** Runs the intake at the specified voltage. */

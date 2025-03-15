@@ -4,16 +4,23 @@
 
 package frc.robot;
 
-import static edu.wpi.first.wpilibj2.command.Commands.*;
+import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
 import static frc.robot.constants.GeneralConstants.currentMode;
 import static frc.robot.constants.GeneralConstants.currentRobot;
 
+import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+
 import com.pathplanner.lib.auto.AutoBuilder;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.GeneralConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -33,10 +40,8 @@ import frc.robot.subsystems.pivot.PivotIOReal;
 import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.subsystems.wrist.WristIO;
 import frc.robot.subsystems.wrist.WristIOReal;
+import frc.robot.subsystems.LEDcontroler.LEDcontroler;
 import frc.robot.util.CompoundCommands;
-import org.littletonrobotics.junction.AutoLogOutput;
-import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 public class RobotContainer {
 
@@ -46,6 +51,7 @@ public class RobotContainer {
   private final Pivot pivot;
   private final Elevator elevator;
   private final Wrist wrist;
+  private LEDcontroler LED = new LEDcontroler();
 
   // Controllers
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -119,7 +125,7 @@ public class RobotContainer {
 
     CompoundCommands.configure(drive, elevator, pivot, wrist, intake);
     configureBindings();
-
+    configureLEDTriggers();
     // Set up auto chooser
     autoChooser = new LoggedDashboardChooser<>("Auto Routines", AutoBuilder.buildAutoChooser());
   }
@@ -210,6 +216,25 @@ public class RobotContainer {
                           default -> Rotation2d.fromDegrees(0);
                         })));
   }
+
+      private boolean IsEndGame() {
+        return DriverStation.getMatchTime()<= 20 || DriverStation.isAutonomous() == Boolean.FALSE; // Endgame starts when match time is 20 seconds or less
+    }
+
+    private void configureLEDTriggers() {
+        new Trigger(()-> DriverStation.isFMSAttached())
+            .onTrue(Commands.runOnce(() -> LED.getalliance()));
+    
+        new Trigger(() -> intake.HaveCoral())
+            .onTrue(Commands.runOnce(() -> LED.LEDDO("o")));
+    
+        new Trigger(() -> controller.rightTrigger(0.25).getAsBoolean()||intake.HaveCoral())
+            .onTrue(Commands.runOnce(() -> LED.LEDDO("s")));
+    
+        new Trigger(this::IsEndGame)
+            .onTrue(Commands.runOnce(() -> LED.LEDDO("2")))
+            .onFalse(Commands.runOnce(() -> LED.LEDDO("1")));        
+      }
 
   public Command getAutonomousCommand() {
     return autoChooser.get();

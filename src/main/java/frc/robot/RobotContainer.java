@@ -7,6 +7,7 @@ package frc.robot;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 import static frc.robot.constants.GeneralConstants.currentMode;
 import static frc.robot.constants.GeneralConstants.currentRobot;
+import static org.littletonrobotics.junction.Logger.getTimestamp;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -54,6 +55,9 @@ public class RobotContainer {
 
   // Driver-assist variables
   @AutoLogOutput private int reef_level = 4; // Terminology: Trough is L1, top is L4
+
+  // The time we start holding button to disable vision
+  double visionDisableTimeStart = Double.MAX_VALUE;
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -146,7 +150,28 @@ public class RobotContainer {
         .whileTrue(elevator.changePosition(-0.25))
         .onFalse(elevator.changePosition(0));
 
+    backupController
+        .povUp()
+        .onTrue(
+            runOnce(
+                () -> {
+                  this.visionDisableTimeStart = getTimestamp();
+                }))
+        .whileTrue(
+            run(
+                () -> {
+                  if ((getTimestamp() - this.visionDisableTimeStart) * 1000000 > 1.0) {
+                    drive.disableVision();
+                  }
+                }))
+        .onFalse(
+            runOnce(
+                (() -> {
+                  this.visionDisableTimeStart = Double.MAX_VALUE;
+                })));
+
     backupController.a().whileTrue(CompoundCommands.armToReef(reef_level));
+    backupController.b().whileTrue(CompoundCommands.armToSource());
 
     controller.rightTrigger(0.25).whileTrue(intake.ejectCommand());
     controller.leftTrigger(0.25).whileTrue(intake.intakeCommand());

@@ -31,28 +31,37 @@ public class IntakeIOReal implements IntakeIO {
   }
 
   private double getGamePieceLocation() {
-    if (checkForGamePiece() == true) { 
+    if (checkForGamePiece() == true) {
 
-      if (CANRANGE.getDistance().getValueAsDouble() < 0.4) { //in this case, we have gamepiece and we can measure it
-          LAST_MEASUREMENT = CANRANGE.getDistance().getValueAsDouble() + coralRadius - canrangeOffset;
+      if (CANRANGE.getDistance().getValueAsDouble()
+          < 0.4) { // in this case, we have gamepiece and we can measure it
+        LAST_MEASUREMENT = CANRANGE.getDistance().getValueAsDouble() + coralRadius - canrangeOffset;
         return LAST_MEASUREMENT;
 
-      } else return LAST_MEASUREMENT - coralRadius + coralLength; //here, we know we have gamepiece but can not detect it
-      // code: "This gamepiece is a horizontal coral! I should change from radius to use coral length!"
+      } else
+        return LAST_MEASUREMENT
+            - coralRadius
+            + coralLength; // here, we know we have gamepiece but can not detect it
+      // code: "This gamepiece is a horizontal coral! I should change from radius to use coral
+      // length!"
 
-    } else { //in this case, we do not have gamepiece
+    } else { // in this case, we do not have gamepiece
       LAST_MEASUREMENT = 0.0;
       return 0.0;
     }
   }
 
-  private boolean checkForGamePiece() { 
-    if ((motor.getMotorVoltage().getValueAsDouble() > 0) && (CANRANGE.getDistance().getValueAsDouble() < 0.4)) {
-      hasGamePiece = true; // If we run our intake inwards and then detect a coral even once, as long as we don't 
+  private boolean checkForGamePiece() {
+    if ((motor.getMotorVoltage().getValueAsDouble() > 0)
+        && (CANRANGE.getDistance().getValueAsDouble() < 0.4)) {
+      hasGamePiece =
+          true; // If we run our intake inwards and then detect a coral even once, as long as we
+      // don't
       // detect that we threw out coral, we say we have a coral piece.
-    } else if ((motor.getMotorVoltage().getValueAsDouble() < 0) && ((CANRANGE.getDistance().getValueAsDouble() < 0.4))) {
+    } else if ((motor.getMotorVoltage().getValueAsDouble() < 0)
+        && ((CANRANGE.getDistance().getValueAsDouble() < 0.4))) {
       hasGamePiece = false; // detect that we threw out coral.
-    } //dont change our boolean if we don't do anything
+    } // dont change our boolean if we don't do anything
     return hasGamePiece;
   }
 

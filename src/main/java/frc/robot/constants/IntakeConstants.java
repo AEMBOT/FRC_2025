@@ -17,7 +17,7 @@ public class IntakeConstants {
   public static final double canrangeOffset = -0.2721501143002286; // 10.715 inches approx.
   // could look at cad measurements to get more accurate
 
-  public static final double coralRadius = 2.25 / 39.37; //meters, outer radius
+  public static final double coralRadius = 2.25 / 39.37; // meters, outer radius
 
-  public static final double coralLength = 11.875 / 39.37; //meters
+  public static final double coralLength = 11.875 / 39.37; // meters
 }

@@ -2,11 +2,13 @@ package frc.robot.subsystems.apriltagvision;
 
 import static frc.robot.constants.GeneralConstants.currentMode;
 import static frc.robot.constants.VisionConstants.*;
+import static org.littletonrobotics.junction.Logger.getTimestamp;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.numbers.N1;
@@ -39,6 +41,30 @@ public interface AprilTagVisionIO {
 
   /** Update the reference pose of the vision system. Currently only used in sim. */
   public default void updatePose(Pose2d pose) {}
+
+  /**
+   * Adds heading data to our poseEstimators. Used for constrained solve_pnp
+   *
+   * @param heading The heading.
+   */
+  public default void updateHeading(Rotation2d heading) {
+    // This has to be implemented in implementation layer. Just write `updateHeading(heading,
+    // poseEstimators);`.
+  }
+
+  /**
+   * Overflow of {@code updateHeading(Rotation2d heading)} meant to be called in implementation. If
+   * not in implementation, use {@code updateHeading(Rotation2d heading)} instead, which will call
+   * this method.
+   *
+   * @param heading
+   * @param poseEstimators
+   */
+  default void updateHeading(Rotation2d heading, CameraPoseEstimator[] poseEstimators) {
+    for (CameraPoseEstimator estimator : poseEstimators) {
+      estimator.poseEstimator.addHeadingData(getTimestamp(), heading);
+    }
+  }
 
   /**
    * The standard deviations of the estimated poses from vision cameras, for use with {@link

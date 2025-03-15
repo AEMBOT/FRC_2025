@@ -20,7 +20,7 @@ public class VisionConstants {
   public static final AprilTagFieldLayout aprilTagFieldLayout =
       AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
 
-  public static PoseStrategy poseStrategy = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
+  public static PoseStrategy poseStrategy = PoseStrategy.CONSTRAINED_SOLVEPNP;
 
   public static enum CameraResolution {
     HIGH_RES,

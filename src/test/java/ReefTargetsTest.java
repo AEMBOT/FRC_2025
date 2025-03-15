@@ -19,7 +19,6 @@ public final class ReefTargetsTest {
     ReefTargets reefTargetsBlue = new ReefTargets(Alliance.Blue);
 
     // AprilTag 18
-
     assertPoseWithin(
         new Pose2d(3.200, 4.205, Rotation2d.fromDegrees(0)),
         reefTargetsBlue.getReefPose(false, new Pose2d(3.5, 4, new Rotation2d(0)), 4, 0.0),
@@ -193,5 +192,6 @@ public final class ReefTargetsTest {
         testCase.findClosestTagPose(new Pose2d(14, 0, new Rotation2d(0))),
         "(14,0)",
         tolerance);
+
   }
 }

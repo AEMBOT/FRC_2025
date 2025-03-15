@@ -20,11 +20,8 @@ public class ElevatorIOReal implements ElevatorIO {
   private final TalonFX followingMotor = new TalonFX(BOTTOM_MOTOR_ID);
   private double elevatorGoal;
   private TrapezoidProfile.State elevatorSetpoint;
-  private double lastTime;
-  private final MotionMagicVoltage m_request;
   private double motorOffset;
   private double maxExtension;
-  private double i;
 
   public ElevatorIOReal() {
 
@@ -65,8 +62,6 @@ public class ElevatorIOReal implements ElevatorIO {
     elevatorGoal = 0;
     elevatorSetpoint = new TrapezoidProfile.State(getAbsoluteMotorPosition(), 0);
 
-    m_request = new MotionMagicVoltage(0).withSlot(0);
-
     delay(1);
 
     motorOffset = -getAbsoluteMotorPosition();
@@ -92,7 +87,7 @@ public class ElevatorIOReal implements ElevatorIO {
 
   @Override
   public void limitHeight(double pivotAngle) {
-    ++i;
+
     Logger.recordOutput("i", pivotAngle);
     maxExtension =
         (pivotAngle > 90)

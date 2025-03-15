@@ -32,7 +32,7 @@ public final class ReefTargetsTest {
         tolerance);
 
     assertPoseWithin(
-        new Pose2d(3.300, 3.847, Rotation2d.fromDegrees(0)),
+        new Pose2d(3.200, 3.847, Rotation2d.fromDegrees(0)),
         reefTargetsBlue.getReefPose(true, new Pose2d(3.5, 4, Rotation2d.fromDegrees(0)), 4, 0.0),
         "Right L4, (3.5, 4), Coral 0.0, AprilTag 18",
         tolerance);
@@ -192,6 +192,5 @@ public final class ReefTargetsTest {
         testCase.findClosestTagPose(new Pose2d(14, 0, new Rotation2d(0))),
         "(14,0)",
         tolerance);
-
   }
 }

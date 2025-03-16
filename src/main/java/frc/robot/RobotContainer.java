@@ -146,15 +146,17 @@ public class RobotContainer {
         .whileTrue(elevator.changePosition(-0.25))
         .onFalse(elevator.changePosition(0));
 
-    backupController.a().whileTrue(CompoundCommands.armToReef(reef_level));
+    backupController
+        .a()
+        .whileTrue(CompoundCommands.deferArm(() -> CompoundCommands.armToReefSafely(reef_level)));
 
     controller
         .leftTrigger(0.25)
-        .onTrue(intake.runIntakeCommand(() -> 3))
-        .onFalse(intake.runIntakeCommand(() -> 0.3).alongWith(CompoundCommands.armToStow()));
+        .whileTrue(intake.intakeCommand())
+        .onFalse(CompoundCommands.armToStow());
     controller
         .rightTrigger(0.25)
-        .onTrue(intake.runIntakeCommand(() -> -4))
+        .whileTrue(intake.ejectCommand())
         .onFalse(intake.runIntakeCommand(() -> 0).alongWith(CompoundCommands.armToStowSafely()));
 
     controller

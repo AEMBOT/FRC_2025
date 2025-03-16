@@ -6,6 +6,7 @@ import static edu.wpi.first.units.Units.Radians;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.util.FieldUtil;
@@ -24,9 +25,10 @@ public class PositionConstants {
   public static final double reefCenterX = 4.489323;
   public static final double reefCenterY = 4.0259;
 
+  // 0.4318 + 0.3429
   // Define source targets
   public static final Transform2d sourceOffset =
-      new Transform2d(0.4318 + 0.3429, 0.0, Rotation2d.fromDegrees(180));
+      new Transform2d(Units.inchesToMeters(31.5), 0.0, Rotation2d.fromDegrees(180));
 
   public static final Pose2d sourcePoseRightBlue =
       VisionConstants.aprilTagFieldLayout.getTagPose(12).get().toPose2d().transformBy(sourceOffset);
@@ -76,24 +78,24 @@ public class PositionConstants {
   }
 
   // L1 Arm Setpoint Values
-  public static final double L1WristAngle = -26.745;
-  public static final double L1PivotAngle = 38.702;
+  public static final double L1WristAngle = 42.199999999999996;
+  public static final double L1PivotAngle = 38.10199999999999;
   public static final double L1ElevatorExtension = 0;
 
   // L2 Arm Setpoint Values
-  public static final double L2WristAngle = -8.799999999999983;
-  public static final double L2PivotAngle = 74.54070861351771;
+  public static final double L2WristAngle = -6.000000000000183;
+  public static final double L2PivotAngle = 85.20000000000013;
   public static final double L2ElevatorExtension = 0;
 
   // L3 Arm Setpoint Values
-  public static final double L3WristAngle = -10.44;
-  public static final double L3PivotAngle = 79.20000000000005;
-  public static final double L3ElevatorExtension = 0.385498046875 + 0.03;
+  public static final double L3WristAngle = -10;
+  public static final double L3PivotAngle = 85.20000000000013;
+  public static final double L3ElevatorExtension = 0.46500000000000263;
 
   // L4 Arm Setpoint Values
-  public static final double L4WristAngle = -25;
-  public static final double L4PivotAngle = 82.6000000000001;
-  public static final double L4ElevatorExtension = 1.0858944163602942 + 0.03;
+  public static final double L4WristAngle = -18.950836422872456;
+  public static final double L4PivotAngle = 85.20000000000013;
+  public static final double L4ElevatorExtension = 1.1500315946691175;
 
   // Source Arm Setpoint Values
   public static final double sourceWristAngle = 90;
@@ -110,7 +112,7 @@ public class PositionConstants {
   public static final double stowPivotAngle = 70.73384351834608;
   public static final double stowElevatorExtension = 0;
 
-  public static final double safePivotPosition = 90;
+  public static final double safePivotPosition = 85.20000000000013;
 
   public static final double[][] reefArmPositions = {
     {L1WristAngle, L1PivotAngle, L1ElevatorExtension},

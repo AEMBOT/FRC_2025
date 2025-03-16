@@ -77,7 +77,8 @@ public class ElevatorIOReal implements ElevatorIO {
   public void updateInputs(ElevatorIOInputs inputs) {
     Logger.recordOutput("Elevator/maxExtension", maxExtension);
     inputs.elevatorAbsolutePosition = getAbsoluteMotorPosition();
-    inputs.elevatorAbsoluteVelocity = leadingMotor.getVelocity().getValueAsDouble();
+    inputs.elevatorAbsoluteVelocity =
+        leadingMotor.getVelocity().getValueAsDouble() / rotToMetMultFactor;
     inputs.elevatorAppliedVolts = leadingMotor.getMotorVoltage().getValueAsDouble();
     inputs.elevatorCurrentAmps =
         new double[] {

@@ -39,8 +39,8 @@ public class WristIOReal implements WristIO {
     motorConfig.Slot0.kI = 0;
     motorConfig.Slot0.kD = 0;
 
-    motorConfig.MotionMagic.MotionMagicCruiseVelocity = 25;
-    motorConfig.MotionMagic.MotionMagicAcceleration = 25;
+    motorConfig.MotionMagic.MotionMagicCruiseVelocity = MOTOR_RATIO * 4;
+    motorConfig.MotionMagic.MotionMagicAcceleration = MOTOR_RATIO * 8;
 
     motorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 

@@ -32,6 +32,17 @@ public class Intake extends SubsystemBase {
     return run(() -> intake.setVoltage(volts.getAsDouble()));
   }
 
+  public DoubleSupplier getGamePiecePosition() {
+    return () -> intakeInputs.gamePieceLocation;
+  }
+
+  /**
+   * @return True if there is a game piece in the intake.
+   */
+  public boolean getHasGamePiece() {
+    return intakeInputs.hasGamePiece;
+  }
+
   /**
    * Runs the intake at intake voltage specified in {@link IntakeConstants}.
    *

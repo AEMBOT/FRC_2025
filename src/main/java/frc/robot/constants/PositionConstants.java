@@ -14,12 +14,9 @@ public class PositionConstants {
   // Defines new variables for the x/y translations for the target positions (currently at
   // placeholders)
   // Origin to bumper ~0.4572 m
-  public static final double reefLevel1X = 0.4572;
-  public static final double reefLevel2X = 0.4572;
-  public static final double reefLevel3X = 0.4572;
-  public static final double reefLevel4X = 0.4572;
 
-  public static final double reefY = 0.1793875;
+  public static final double[] reefOffsetsX = {0.4572, 0.4572, 0.4572, 0.4572};
+  public static final double reefOffsetY = 0.1793875;
 
   public static final double reefRobotAngle = Radians.convertFrom(180, Degrees);
 

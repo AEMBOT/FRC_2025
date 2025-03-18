@@ -5,8 +5,6 @@ import static frc.robot.constants.IntakeConstants.intakeVoltage;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-//import frc.robot.constants.IntakeConstants;
-
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
 
@@ -22,7 +20,7 @@ public class Intake extends SubsystemBase {
     Logger.processInputs("Intake", intakeInputs);
     intake.updateInputs(intakeInputs);
   }
-  
+
   /** Runs the intake at the specified voltage. */
   public Command runIntakeCommand(DoubleSupplier volts) {
     return run(() -> intake.setVoltage(volts.getAsDouble()));

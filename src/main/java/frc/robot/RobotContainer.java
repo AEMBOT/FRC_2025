@@ -4,13 +4,9 @@
 
 package frc.robot;
 
-import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
+import static edu.wpi.first.wpilibj2.command.Commands.*;
 import static frc.robot.constants.GeneralConstants.currentMode;
 import static frc.robot.constants.GeneralConstants.currentRobot;
-
-import org.littletonrobotics.junction.AutoLogOutput;
-import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 
@@ -43,6 +39,9 @@ import frc.robot.subsystems.wrist.WristIO;
 import frc.robot.subsystems.wrist.WristIOReal;
 import frc.robot.subsystems.LEDcontroler.LEDcontroler;
 import frc.robot.util.CompoundCommands;
+import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 public class RobotContainer {
 
@@ -239,10 +238,10 @@ public class RobotContainer {
         new Trigger(()-> DriverStation.isFMSAttached())
             .onTrue(Commands.runOnce(() -> LED.getalliance()));
     
-        new Trigger(() -> intake.HaveCoral())
+        new Trigger(() -> intake.getHasGamePiece())
             .onTrue(Commands.runOnce(() -> LED.LEDDO("o")));
     
-        new Trigger(() -> controller.rightTrigger(0.25).getAsBoolean()||intake.HaveCoral())
+        new Trigger(() -> controller.rightTrigger(0.25).getAsBoolean()||intake.getHasGamePiece())
             .onTrue(Commands.runOnce(() -> LED.LEDDO("s")));
     
         new Trigger(this::IsEndGame)

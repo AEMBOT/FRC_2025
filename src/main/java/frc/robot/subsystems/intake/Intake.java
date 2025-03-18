@@ -13,7 +13,6 @@ import org.littletonrobotics.junction.Logger;
 public class Intake extends SubsystemBase {
   IntakeIO intake;
   private final IntakeIOInputsAutoLogged intakeInputs = new IntakeIOInputsAutoLogged();
-  private IntakeIOReal IntakeIOReal = new IntakeIOReal();
 
   public Intake(IntakeIO intakeIO) {
     this.intake = intakeIO;
@@ -23,10 +22,6 @@ public class Intake extends SubsystemBase {
     Logger.processInputs("Intake", intakeInputs);
     intake.updateInputs(intakeInputs);
   }
-  public boolean HaveCoral(){
-    return IntakeIOReal.HaveCoral();
-  }
-
   /** Runs the intake at the specified voltage. */
   public Command runIntakeCommand(DoubleSupplier volts) {
     return run(() -> intake.setVoltage(volts.getAsDouble()));

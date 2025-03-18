@@ -4,7 +4,6 @@ import edu.wpi.first.math.util.Units;
 
 public class IntakeConstants {
   public static final int intakeMotorID = 15;
-  public static final int CANrangeID = 16;
 
   public static final double intakeMotorCurrentLimit = 5;
 

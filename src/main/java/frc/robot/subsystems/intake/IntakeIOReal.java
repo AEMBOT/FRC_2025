@@ -13,7 +13,6 @@ public class IntakeIOReal implements IntakeIO {
   private CoreCANrange CANRANGE;
 
   private final TalonFX motor = new TalonFX(intakeMotorID);
-  public final CANrange CANrange = new CANrange(CANrangeID);
 
   private boolean hasGamePiece;
   private double LAST_MEASUREMENT;
@@ -42,14 +41,6 @@ public class IntakeIOReal implements IntakeIO {
       return true;
     } else {
       return false;
-    }
-  }
-
-  public boolean HaveCoral() { // gets CANrange distance and returns true or false depending on a distance
-    if (CANrange.getDistance().getValueAsDouble() >= Units.inchesToMeters(8)) {
-      return Boolean.TRUE;
-    } else {
-      return Boolean.FALSE;
     }
   }
 

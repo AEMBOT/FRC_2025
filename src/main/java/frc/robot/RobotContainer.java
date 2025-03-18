@@ -9,16 +9,16 @@ import static frc.robot.constants.GeneralConstants.currentMode;
 import static frc.robot.constants.GeneralConstants.currentRobot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.GeneralConstants;
+import frc.robot.subsystems.LEDcontroler.LEDcontroler;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONavX;
@@ -37,7 +37,6 @@ import frc.robot.subsystems.pivot.PivotIOReal;
 import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.subsystems.wrist.WristIO;
 import frc.robot.subsystems.wrist.WristIOReal;
-import frc.robot.subsystems.LEDcontroler.LEDcontroler;
 import frc.robot.util.CompoundCommands;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
@@ -230,25 +229,25 @@ public class RobotContainer {
                         })));
   }
 
-      private boolean IsEndGame() {
-        return DriverStation.getMatchTime()<= 20 || DriverStation.isAutonomous() == Boolean.FALSE; // Endgame starts when match time is 20 seconds or less
-    }
+  private boolean IsEndGame() {// Endgame starts when match time is 20 seconds or less
+    return DriverStation.getMatchTime() <= 20 || DriverStation.isAutonomous()== Boolean.FALSE;
+  }
 
-    private void configureLEDTriggers() {
-        // Set "defalt" color for alliance to red or blue
-        new Trigger(()-> DriverStation.isFMSAttached())
-            .onTrue(Commands.runOnce(() -> LED.getalliance()));
-        // If intake Has Game Piece set color to orange  
-        new Trigger(() -> intake.getHasGamePiece())
-            .onTrue(Commands.runOnce(() -> LED.LEDDO("o")));
-        // If intake Has a Game Piece and actively shooting set the color to "S" which is "gay shoot"(Alton named it that, why? idk)  
-        new Trigger(() -> controller.rightTrigger(0.25).getAsBoolean()||intake.getHasGamePiece()) 
-            .onTrue(Commands.runOnce(() -> LED.LEDDO("s")));
-        // on end game set speed to "2"
-        new Trigger(this::IsEndGame)
-            .onTrue(Commands.runOnce(() -> LED.LEDDO("2")))
-            .onFalse(Commands.runOnce(() -> LED.LEDDO("1")));        
-      }
+  private void configureLEDTriggers() {
+    // Set "defalt" color for alliance to red or blue
+    new Trigger(() -> DriverStation.isFMSAttached())
+        .onTrue(Commands.runOnce(() -> LED.getalliance()));
+    // If intake Has Game Piece set color to orange
+    new Trigger(() -> intake.getHasGamePiece())
+    .onTrue(Commands.runOnce(() -> LED.LEDDO("o")));
+    // If intake Has a Game Piece and actively shooting set the color to "S" which is "gay shoot"(Alton named it that, why? idk)
+    new Trigger(() -> controller.rightTrigger(0.25).getAsBoolean() || intake.getHasGamePiece())
+        .onTrue(Commands.runOnce(() -> LED.LEDDO("s")));
+    // on end game set speed to "2"
+    new Trigger(this::IsEndGame)
+        .onTrue(Commands.runOnce(() -> LED.LEDDO("2")))
+        .onFalse(Commands.runOnce(() -> LED.LEDDO("1")));
+  }
 
   public Command getAutonomousCommand() {
     return autoChooser.get();

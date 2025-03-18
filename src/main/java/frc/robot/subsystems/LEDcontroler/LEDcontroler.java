@@ -12,7 +12,7 @@ public class LEDcontroler {
     LEDs = new SerialPort(115200, SerialPort.Port.kMXP); // init the LEDs Serial Port
   }
 
-  public void getalliance(){
+  public void getalliance() {
     Optional<Alliance> alliance = DriverStation.getAlliance();
     if (alliance.get() == Alliance.Red) { // found red Alliance and sets the Alliance color to red
       LEDDO("r");

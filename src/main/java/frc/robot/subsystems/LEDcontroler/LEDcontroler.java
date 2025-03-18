@@ -8,9 +8,8 @@ import java.util.Optional;
 public class LEDcontroler {
   private final SerialPort LEDs; // init the LEDs variable
 
-
   public LEDcontroler() {
-    LEDs = new SerialPort(115200, SerialPort.Port.kMXP);
+    LEDs = new SerialPort(115200, SerialPort.Port.kMXP); // init the LEDs Serial Port
   }
 
   public void getalliance(){

@@ -17,7 +17,8 @@ public class LEDcontroler {
     if (alliance.get() == Alliance.Red) { // found red Alliance and sets the Alliance color to red
       LEDDO("r");
     }
-    if (alliance.get() == Alliance.Blue) { // found blue Alliance and sets the Alliance color to blue
+    if (alliance.get()
+        == Alliance.Blue) { // found blue Alliance and sets the Alliance color to blue
       LEDDO("b");
     }
   }

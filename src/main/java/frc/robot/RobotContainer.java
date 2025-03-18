@@ -229,8 +229,8 @@ public class RobotContainer {
                         })));
   }
 
-  private boolean IsEndGame() {// Endgame starts when match time is 20 seconds or less
-    return DriverStation.getMatchTime() <= 20 || DriverStation.isAutonomous()== Boolean.FALSE;
+  private boolean IsEndGame() { // Endgame starts when match time is 20 seconds or less
+    return DriverStation.getMatchTime() <= 20 || DriverStation.isAutonomous() == Boolean.FALSE;
   }
 
   private void configureLEDTriggers() {
@@ -238,9 +238,9 @@ public class RobotContainer {
     new Trigger(() -> DriverStation.isFMSAttached())
         .onTrue(Commands.runOnce(() -> LED.getalliance()));
     // If intake Has Game Piece set color to orange
-    new Trigger(() -> intake.getHasGamePiece())
-    .onTrue(Commands.runOnce(() -> LED.LEDDO("o")));
-    // If intake Has a Game Piece and actively shooting set the color to "S" which is "gay shoot"(Alton named it that, why? idk)
+    new Trigger(() -> intake.getHasGamePiece()).onTrue(Commands.runOnce(() -> LED.LEDDO("o")));
+    // If intake Has a Game Piece and actively shooting set the color to "S" which is "gay
+    // shoot"(Alton named it that, why? idk)
     new Trigger(() -> controller.rightTrigger(0.25).getAsBoolean() || intake.getHasGamePiece())
         .onTrue(Commands.runOnce(() -> LED.LEDDO("s")));
     // on end game set speed to "2"

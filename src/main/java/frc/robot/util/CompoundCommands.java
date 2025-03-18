@@ -138,6 +138,20 @@ public class CompoundCommands {
         reefArmPositions[reefLevel - 1][2]);
   }
 
+  public static Command armToAlgae(boolean upper) {
+    if (upper) {
+      return armToGoal(
+          upperAlgaeRemovalWristAngle,
+          upperAlgaeRemovalPivotAngle,
+          upperAlgaeRemovalElevatorHeight);
+    } else {
+      return armToGoal(
+          lowerAlgaeRemovalWristAngle,
+          lowerAlgaeRemovalPivotAngle,
+          lowerAlgaeRemovalElevatorHeight);
+    }
+  }
+
   /**
    * Moves the arm to the proper position for source intake, assuming drivetrain is aligned
    * correctly.

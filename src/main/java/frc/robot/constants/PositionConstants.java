@@ -79,22 +79,22 @@ public class PositionConstants {
 
   // L1 Arm Setpoint Values
   public static final double L1WristAngle = 42.199999999999996;
-  public static final double L1PivotAngle = 38.10199999999999;
+  public static final double L1PivotAngle = 33.10199999999992;
   public static final double L1ElevatorExtension = 0;
 
   // L2 Arm Setpoint Values
-  public static final double L2WristAngle = -6.000000000000183;
-  public static final double L2PivotAngle = 85.20000000000013;
+  public static final double L2WristAngle = 6.799999999999816;
+  public static final double L2PivotAngle = 72.79999999999995;
   public static final double L2ElevatorExtension = 0;
 
   // L3 Arm Setpoint Values
-  public static final double L3WristAngle = -10;
-  public static final double L3PivotAngle = 85.20000000000013;
+  public static final double L3WristAngle = -5.199999999999999;
+  public static final double L3PivotAngle = 76.2;
   public static final double L3ElevatorExtension = 0.46500000000000263;
 
   // L4 Arm Setpoint Values
   public static final double L4WristAngle = -18.950836422872456;
-  public static final double L4PivotAngle = 85.20000000000013;
+  public static final double L4PivotAngle = 80.40000000000006;
   public static final double L4ElevatorExtension = 1.1500315946691175;
 
   // Source Arm Setpoint Values
@@ -112,7 +112,15 @@ public class PositionConstants {
   public static final double stowPivotAngle = 70.73384351834608;
   public static final double stowElevatorExtension = 0;
 
-  public static final double safePivotPosition = 85.20000000000013;
+  public static final double safePivotPosition = 80.40000000000006;
+
+  public static final double lowerAlgaeRemovalPivotAngle = 32.33384351834553;
+  public static final double lowerAlgaeRemovalWristAngle = 90;
+  public static final double lowerAlgaeRemovalElevatorHeight = 0;
+
+  public static final double upperAlgaeRemovalPivotAngle = 58.533843518345904;
+  public static final double upperAlgaeRemovalWristAngle = 71.60000000000007;
+  public static final double upperAlgaeRemovalElevatorHeight = 0.15000000000000005;
 
   public static final double[][] reefArmPositions = {
     {L1WristAngle, L1PivotAngle, L1ElevatorExtension},

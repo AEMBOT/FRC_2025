@@ -146,6 +146,9 @@ public class RobotContainer {
         .whileTrue(elevator.changePosition(-0.25))
         .onFalse(elevator.changePosition(0));
 
+    backupController.povUp().onTrue(CompoundCommands.armToAlgae(true));
+    backupController.povDown().onTrue(CompoundCommands.armToAlgae(false));
+
     backupController
         .a()
         .whileTrue(CompoundCommands.deferArm(() -> CompoundCommands.armToReefSafely(reef_level)));

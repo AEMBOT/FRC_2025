@@ -35,12 +35,12 @@ public class WristIOReal implements WristIO {
     motorConfig.CurrentLimits.StatorCurrentLimit = MOTOR_CURRENT_LIMIT;
     motorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
 
-    motorConfig.Slot0.kP = 5;
+    motorConfig.Slot0.kP = 10;
     motorConfig.Slot0.kI = 0;
     motorConfig.Slot0.kD = 0;
 
-    motorConfig.MotionMagic.MotionMagicCruiseVelocity = 9;
-    motorConfig.MotionMagic.MotionMagicAcceleration = 16;
+    motorConfig.MotionMagic.MotionMagicCruiseVelocity = MOTOR_RATIO * 4;
+    motorConfig.MotionMagic.MotionMagicAcceleration = MOTOR_RATIO * 8;
 
     motorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 

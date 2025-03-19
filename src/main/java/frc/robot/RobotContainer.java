@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.GeneralConstants;
-import frc.robot.subsystems.LEDcontroler.LEDcontroler;
+import frc.robot.subsystems.LEDcontroller.LedController;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONavX;
@@ -50,7 +50,7 @@ public class RobotContainer {
   private final Pivot pivot;
   private final Elevator elevator;
   private final Wrist wrist;
-  private LEDcontroler LED = new LEDcontroler();
+  private LedController LED = new LedController();
 
   // Controllers
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -230,7 +230,7 @@ public class RobotContainer {
   }
 
   private boolean IsEndGame() { // Endgame starts when match time is 20 seconds or less
-    return DriverStation.getMatchTime() <= 20 || DriverStation.isAutonomous() == Boolean.FALSE;
+    return DriverStation.getMatchTime() <= 20 && DriverStation.isAutonomous() == Boolean.FALSE;
   }
 
   private void configureLEDTriggers() {
@@ -241,7 +241,7 @@ public class RobotContainer {
     new Trigger(() -> intake.getHasGamePiece()).onTrue(Commands.runOnce(() -> LED.LEDDO("o")));
     // If intake Has a Game Piece and actively shooting set the color to "S" which is "gay
     // shoot"(Alton named it that, why? idk)
-    new Trigger(() -> controller.rightTrigger(0.25).getAsBoolean() || intake.getHasGamePiece())
+    new Trigger(() -> controller.rightTrigger(0.25).getAsBoolean() && intake.getHasGamePiece())
         .onTrue(Commands.runOnce(() -> LED.LEDDO("s")));
     // on end game set speed to "2"
     new Trigger(this::IsEndGame)

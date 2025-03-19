@@ -1,14 +1,14 @@
-package frc.robot.subsystems.LEDcontroller ;
+package frc.robot.subsystems.LEDcontroller;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.SerialPort;
 import java.util.Optional;
 
-public class LedController  {
+public class LedController {
   private final SerialPort LEDs; // init the LEDs variable
 
-  public LedController () {
+  public LedController() {
     LEDs = new SerialPort(115200, SerialPort.Port.kMXP); // init the LEDs Serial Port
   }
 
@@ -22,9 +22,12 @@ public class LedController  {
       LEDDO("b");
     }
   }
-  /** sets led the color or patern of the leds
-  * @param what the character so send to the arduino
-  */
+
+  /**
+   * sets led the color or patern of the leds
+   *
+   * @param what the character so send to the arduino
+   */
   public void LEDDO(String what) {
     LEDs.writeString(what); // sends a character through Serial
   }

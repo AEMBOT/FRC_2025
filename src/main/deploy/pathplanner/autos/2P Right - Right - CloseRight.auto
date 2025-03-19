@@ -17,6 +17,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "ArmToStow"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "2 Piece Center Right.1"

@@ -7,7 +7,6 @@ package frc.robot;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 import static frc.robot.constants.GeneralConstants.currentMode;
 import static frc.robot.constants.GeneralConstants.currentRobot;
-
 import static frc.robot.constants.LedConstants.InkakeHaveCoral;
 import static frc.robot.constants.LedConstants.shoot;
 import static frc.robot.constants.LedConstants.speed1;
@@ -243,7 +242,8 @@ public class RobotContainer {
     new Trigger(() -> DriverStation.isFMSAttached())
         .onTrue(Commands.runOnce(() -> LED.getalliance()));
 
-    new Trigger(() -> intake.getHasGamePiece()).onTrue(Commands.runOnce(() -> LED.LEDDO(InkakeHaveCoral)));
+    new Trigger(() -> intake.getHasGamePiece())
+        .onTrue(Commands.runOnce(() -> LED.LEDDO(InkakeHaveCoral)));
 
     new Trigger(() -> controller.rightTrigger(0.25).getAsBoolean() && intake.getHasGamePiece())
         .onTrue(Commands.runOnce(() -> LED.LEDDO(shoot)));

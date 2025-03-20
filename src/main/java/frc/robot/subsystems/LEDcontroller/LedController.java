@@ -1,14 +1,13 @@
 package frc.robot.subsystems.LEDcontroller;
 
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.SerialPort;
-
 import static frc.robot.constants.LedConstants.LEDSerialPort;
 import static frc.robot.constants.LedConstants.LEDSerialPortBaudRate;
 import static frc.robot.constants.LedConstants.blue;
 import static frc.robot.constants.LedConstants.red;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.SerialPort;
 import java.util.Optional;
 
 public class LedController {

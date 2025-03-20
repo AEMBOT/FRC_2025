@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.constants.PathingConstants;
 import frc.robot.subsystems.drive.Drive;
 import java.util.List;
+import org.littletonrobotics.junction.Logger;
 
 public class PathGenerator {
   /**
@@ -144,14 +145,22 @@ public class PathGenerator {
                   drive.getPose().getTranslation().getDistance(target.getTranslation());
               double rotationError =
                   Math.abs(drive.getPose().getRotation().minus(target.getRotation()).getRadians());
-              return translationError < translationTolerance
-                  && rotationError < rotationTolerance.getRadians();
+              boolean inTolerance =
+                  translationError < translationTolerance
+                      && rotationError < rotationTolerance.getRadians();
+
+              Logger.recordOutput("/Pathing/inAcceptableError", inTolerance);
+              Logger.recordOutput("/Pathing/translationError", translationError);
+              Logger.recordOutput("/Pathing/rotationError", rotationError);
+              return inTolerance;
             })
         .finallyDo(
             () -> {
               translationPID.close();
               thetaPID.close();
               drive.stop();
+              // FIXME Print for debug, remove
+              System.out.println("\n\n\n\n\n\nStopped =)\n");
             });
   }
 

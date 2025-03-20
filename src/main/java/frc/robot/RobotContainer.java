@@ -8,6 +8,11 @@ import static edu.wpi.first.wpilibj2.command.Commands.*;
 import static frc.robot.constants.GeneralConstants.currentMode;
 import static frc.robot.constants.GeneralConstants.currentRobot;
 
+import static frc.robot.constants.LedConstants.InkakeHaveCoral;
+import static frc.robot.constants.LedConstants.shoot;
+import static frc.robot.constants.LedConstants.speed1;
+import static frc.robot.constants.LedConstants.speed2;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -229,7 +234,7 @@ public class RobotContainer {
                         })));
   }
 
-  private boolean IsEndGame() { // Endgame starts when match time is 20 seconds or less
+  private boolean IsEndGame() {
     return DriverStation.getMatchTime() <= 20 && DriverStation.isAutonomous() == Boolean.FALSE;
   }
 
@@ -237,16 +242,15 @@ public class RobotContainer {
     // Set "defalt" color for alliance to red or blue
     new Trigger(() -> DriverStation.isFMSAttached())
         .onTrue(Commands.runOnce(() -> LED.getalliance()));
-    // If intake Has Game Piece set color to orange
-    new Trigger(() -> intake.getHasGamePiece()).onTrue(Commands.runOnce(() -> LED.LEDDO("o")));
-    // If intake Has a Game Piece and actively shooting set the color to "S" which is "gay
-    // shoot"(Alton named it that, why? idk)
+
+    new Trigger(() -> intake.getHasGamePiece()).onTrue(Commands.runOnce(() -> LED.LEDDO(InkakeHaveCoral)));
+
     new Trigger(() -> controller.rightTrigger(0.25).getAsBoolean() && intake.getHasGamePiece())
-        .onTrue(Commands.runOnce(() -> LED.LEDDO("s")));
-    // on end game set speed to "2"
+        .onTrue(Commands.runOnce(() -> LED.LEDDO(shoot)));
+
     new Trigger(this::IsEndGame)
-        .onTrue(Commands.runOnce(() -> LED.LEDDO("2")))
-        .onFalse(Commands.runOnce(() -> LED.LEDDO("1")));
+        .onTrue(Commands.runOnce(() -> LED.LEDDO(speed1)))
+        .onFalse(Commands.runOnce(() -> LED.LEDDO(speed2)));
   }
 
   public Command getAutonomousCommand() {

@@ -3,23 +3,29 @@ package frc.robot.subsystems.LEDcontroller;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.SerialPort;
+
+import static frc.robot.constants.LedConstants.LEDSerialPort;
+import static frc.robot.constants.LedConstants.LEDSerialPortBaudRate;
+import static frc.robot.constants.LedConstants.blue;
+import static frc.robot.constants.LedConstants.red;
+
 import java.util.Optional;
 
 public class LedController {
   private final SerialPort LEDs; // init the LEDs variable
 
   public LedController() {
-    LEDs = new SerialPort(115200, SerialPort.Port.kMXP); // init the LEDs Serial Port
+    LEDs = new SerialPort(LEDSerialPortBaudRate, LEDSerialPort); // init the LEDs Serial Port
   }
 
   public void getalliance() {
     Optional<Alliance> alliance = DriverStation.getAlliance();
     if (alliance.get() == Alliance.Red) { // found red Alliance and sets the Alliance color to red
-      LEDDO("r");
+      LEDDO(red);
     }
     if (alliance.get()
         == Alliance.Blue) { // found blue Alliance and sets the Alliance color to blue
-      LEDDO("b");
+      LEDDO(blue);
     }
   }
 

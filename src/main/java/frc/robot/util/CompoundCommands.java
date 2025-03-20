@@ -106,10 +106,10 @@ public class CompoundCommands {
     }
 
     Command alignCommand =
-        new ParallelCommandGroup(driveCommand, armToReef(level)).withTimeout(5.0);
+        new ParallelCommandGroup(driveCommand, armToReefSafely(level)).withTimeout(5.0);
 
     // Wait after alignment so drivers can A-Stop if needed.
-    return alignCommand.andThen(waitSeconds(3.0)).andThen(ejectCoral());
+    return alignCommand.andThen(ejectCoral());
   }
 
   public static Command intakeSource(boolean isOnRight) {
@@ -121,7 +121,7 @@ public class CompoundCommands {
     }
 
     Command alignCommand = new ParallelCommandGroup(driveCommand, armToSource());
-    return alignCommand.andThen(intakeCoral());
+    return alignCommand.alongWith(intakeCoral());
   }
 
   /**
@@ -254,7 +254,10 @@ public class CompoundCommands {
 
   /** Run outtake with IntakeConstants.ejectTime. */
   public static Command ejectCoral() {
-    return intake.ejectCommand().withTimeout(IntakeConstants.ejectTimeout);
+    return intake
+        .ejectCommand()
+        .withTimeout(IntakeConstants.ejectTimeout)
+        .andThen(armToStowSafely());
   }
 
   /** Run intake until we have coral or timeout (IntakeConstants.intakeTimeout) runs out */

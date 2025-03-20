@@ -188,6 +188,10 @@ public class RobotContainer {
         .whileTrue(intake.ejectCommand())
         .onFalse(intake.runIntakeCommand(() -> 0).alongWith(CompoundCommands.armToStow()));
 
+    backupController.leftBumper().whileTrue(intake.intakeCommand());
+
+    backupController.rightBumper().whileTrue(intake.ejectCommand());
+
     controller
         .rightStick()
         .whileTrue(wrist.changeGoalPosition(40))

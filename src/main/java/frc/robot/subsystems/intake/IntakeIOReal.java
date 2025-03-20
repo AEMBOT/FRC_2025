@@ -26,7 +26,7 @@ public class IntakeIOReal implements IntakeIO {
   }
 
   public void updateInputs(IntakeIOInputs inputs) {
-    inputs.intakeAppliedVolts = motor.getMotorVoltage().getValueAsDouble() / MOTOR_RATIO;
+    inputs.intakeAppliedVolts = motor.getMotorVoltage().getValueAsDouble();
     inputs.gamePieceLocation = getGamePieceLocation();
     inputs.hasGamePiece = hasGamePiece();
   }

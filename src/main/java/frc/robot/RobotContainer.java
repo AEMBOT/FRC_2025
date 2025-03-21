@@ -276,7 +276,7 @@ public class RobotContainer {
   // Purple = reef 4
   // Arduino:
   // Rainbow isn't smoothly moving
-  // Back half of upper LEDs are staying the same color
+  // Potential fix deployed? -> Back half of upper LEDs are staying the same color
 
   public Command getAutonomousCommand() {
     return autoChooser.get();

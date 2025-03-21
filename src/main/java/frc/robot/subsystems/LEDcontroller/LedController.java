@@ -1,30 +1,30 @@
 package frc.robot.subsystems.LEDcontroller;
 
-import static frc.robot.constants.LedConstants.LEDSerialPort;
-import static frc.robot.constants.LedConstants.LEDSerialPortBaudRate;
-import static frc.robot.constants.LedConstants.blue;
-import static frc.robot.constants.LedConstants.red;
-
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.SerialPort;
+import frc.robot.constants.LedConstants;
 import java.util.Optional;
 
 public class LedController {
   private final SerialPort LEDs; // init the LEDs variable
 
   public LedController() {
-    LEDs = new SerialPort(LEDSerialPortBaudRate, LEDSerialPort); // init the LEDs Serial Port
+    LEDs =
+        new SerialPort(
+            LedConstants.LEDSerialPortBaudRate,
+            LedConstants.LEDSerialPort); // init the LEDs Serial Port
   }
 
   public void getalliance() {
     Optional<Alliance> alliance = DriverStation.getAlliance();
     if (alliance.get() == Alliance.Red) { // found red Alliance and sets the Alliance color to red
-      LEDDO(red);
-    }
-    if (alliance.get()
+      LEDDO(LedConstants.RED);
+    } else if (alliance.get()
         == Alliance.Blue) { // found blue Alliance and sets the Alliance color to blue
-      LEDDO(blue);
+      LEDDO(LedConstants.BLUE);
+    } else {
+      LEDDO(LedConstants.TEST_2);
     }
   }
 
@@ -35,5 +35,9 @@ public class LedController {
    */
   public void LEDDO(String what) {
     LEDs.writeString(what); // sends a character through Serial
+    System.out.println(
+        "\n\n\n\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\nSending LED command! "
+            + what
+            + "\n\n\n\n\n\n\n");
   }
 }

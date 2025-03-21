@@ -106,8 +106,7 @@ public class CompoundCommands {
     Command alignCommand =
         new ParallelCommandGroup(driveCommand, armToReef(level)).withTimeout(5.0);
 
-    // Wait after alignment so drivers can A-Stop if needed.
-    return alignCommand.andThen(waitSeconds(3.0)).andThen(ejectCoral());
+    return alignCommand.andThen(ejectCoral());
   }
 
   public static Command intakeSource(boolean isOnRight) {
@@ -119,7 +118,7 @@ public class CompoundCommands {
     }
 
     Command alignCommand = new ParallelCommandGroup(driveCommand, armToSource());
-    return alignCommand.andThen(intakeCoral());
+    return alignCommand.alongWith(intakeCoral());
   }
 
   /**

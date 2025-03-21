@@ -29,9 +29,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "2 - L.2"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "ArmToStow"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "2 - L.2"
+                }
+              }
+            ]
           }
         },
         {

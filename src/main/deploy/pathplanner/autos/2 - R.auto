@@ -41,9 +41,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "2 Piece Center Right.3"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "ArmToStow"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "2 Piece Center Right.3"
+                }
+              }
+            ]
           }
         },
         {

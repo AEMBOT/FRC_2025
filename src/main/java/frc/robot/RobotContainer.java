@@ -164,7 +164,7 @@ public class RobotContainer {
         .whileTrue(
             run(
                 () -> {
-                  if ((getTimestamp() - this.visionDisableTimeStart) * 1000000 > 1.0) {
+                  if ((getTimestamp() - this.visionDisableTimeStart) / 1000000 > 1.0) {
                     drive.disableVision();
                   }
                 }))

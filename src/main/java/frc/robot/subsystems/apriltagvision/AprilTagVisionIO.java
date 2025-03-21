@@ -69,34 +69,30 @@ public interface AprilTagVisionIO {
               .getNorm();
     }
 
+    // If we see no tags, return inf
     if (numTags == 0) return VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
     avgDist /= numTags;
 
-    // Decrease std devs if multiple targets are visible
-    if (numTags > 1
-        && avgDist
-            > switch (resolution) {
-              case HIGH_RES -> 8;
-              case NORMAL -> 5;
-            }) {
+    // Set stdDevConstant based on resolution and tag count
+    Matrix<N3, N1> stdDevConstant =
+        switch (resolution) {
+          case HIGH_RES -> (numTags == 1) ? highResSingleTagStdDev : highResMultiTagStdDev;
+          case NORMAL -> (numTags == 1) ? normalSingleTagStdDev : normalMultiTagStdDev;
+        };
+    // Set max distance based on resolution and tag count
+    double maxDistance =
+        switch (resolution) {
+          case HIGH_RES -> (numTags == 1) ? highResSingleTagMaxDist : highResMultiTagMaxDist;
+          case NORMAL -> (numTags == 1) ? normalSingleTagMaxDist : normalMultiTagMaxDist;
+        };
+
+    // If the average distance is larger than the max distance, return inf
+    if (avgDist > maxDistance) {
       estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
+
+      // otherwise return stdDev multiplies by distance squared
     } else {
-      estStdDevs =
-          switch (resolution) {
-            case HIGH_RES -> highResMultiTagStdDev;
-            case NORMAL -> normalMultiTagStdDev;
-          };
-    }
-    // Increase std devs based on (average) distance
-    if (numTags == 1
-        && avgDist
-            > switch (resolution) {
-              case HIGH_RES -> 3;
-              case NORMAL -> 2;
-            }) {
-      estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
-    } else {
-      estStdDevs = estStdDevs.times(1 + (avgDist * avgDist * avgDist / 20));
+      estStdDevs = stdDevConstant.times(Math.pow(avgDist, 2));
     }
 
     return estStdDevs;

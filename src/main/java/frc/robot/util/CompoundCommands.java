@@ -181,7 +181,7 @@ public class CompoundCommands {
   }
 
   public static Command armToReefSafely(int reefLevel) {
-    return pivot.setPosition(() -> safePivotPosition).andThen(armToReefSafely(reefLevel));
+    return pivot.setPosition(() -> safePivotPosition).andThen(armToReef(reefLevel));
   }
 
   public static Command armToStowSafely() {
@@ -254,7 +254,10 @@ public class CompoundCommands {
 
   /** Run outtake with IntakeConstants.ejectTime. */
   public static Command ejectCoral() {
-    return intake.ejectCommand().withTimeout(IntakeConstants.ejectTimeout);
+    return intake
+        .ejectCommand()
+        .withTimeout(IntakeConstants.ejectTimeout)
+        .andThen(armToStowSafely());
   }
 
   /** Run intake until we have coral or timeout (IntakeConstants.intakeTimeout) runs out */

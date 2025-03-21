@@ -1,7 +1,6 @@
 package frc.robot.subsystems.intake;
 
 import static frc.robot.constants.IntakeConstants.*;
-import static frc.robot.constants.WristConstants.MOTOR_RATIO;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;

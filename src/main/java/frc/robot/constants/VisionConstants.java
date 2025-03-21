@@ -105,11 +105,10 @@ public class VisionConstants {
                 Units.degreesToRadians(-147)));
   }
 
-  public static final Matrix<N3, N1> highResSingleTagStdDev =
-      VecBuilder.fill(0.4, 0.4, Double.MAX_VALUE);
+  public static final Matrix<N3, N1> highResSingleTagStdDev = VecBuilder.fill(0.4, 0.4, 5);
   public static final Matrix<N3, N1> normalSingleTagStdDev =
       VecBuilder.fill(0.8, 0.8, Double.MAX_VALUE);
-  public static final Matrix<N3, N1> highResMultiTagStdDev = VecBuilder.fill(0.2, 0.2, 3);
+  public static final Matrix<N3, N1> highResMultiTagStdDev = VecBuilder.fill(0.1, 0.1, 1);
   public static final Matrix<N3, N1> normalMultiTagStdDev =
       VecBuilder.fill(0.5, 0.5, Double.MAX_VALUE);
 }

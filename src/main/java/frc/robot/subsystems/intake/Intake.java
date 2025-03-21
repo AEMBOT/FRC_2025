@@ -44,7 +44,7 @@ public class Intake extends SubsystemBase {
    *     Typically used in a whileTrue or withTimeout.
    */
   public Command intakeCommand() {
-    return runIntakeCommand(() -> intakeVoltage).finallyDo(() -> intake.setVoltage(0.0));
+    return runIntakeCommand(() -> intakeVoltage).finallyDo(() -> intake.setVoltage(0.3));
   }
 
   /**

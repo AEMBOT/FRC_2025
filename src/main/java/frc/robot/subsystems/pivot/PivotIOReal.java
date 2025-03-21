@@ -89,12 +89,12 @@ public class PivotIOReal implements PivotIO {
     // leftMotorConfig.Slot0.kS = -1;
     // leftMotorConfig.Slot0.kV = 0;
     // leftMotorConfig.Slot0.kA = 0;
-    leftMotorConfig.Slot0.kP = 1;
+    leftMotorConfig.Slot0.kP = 3;
     leftMotorConfig.Slot0.kI = 0;
     leftMotorConfig.Slot0.kD = 0;
 
-    leftMotorConfig.MotionMagic.MotionMagicCruiseVelocity = 35;
-    leftMotorConfig.MotionMagic.MotionMagicAcceleration = 70;
+    leftMotorConfig.MotionMagic.MotionMagicCruiseVelocity = GEAR_RATIO * 0.75;
+    leftMotorConfig.MotionMagic.MotionMagicAcceleration = GEAR_RATIO * 0.75;
     leftMotorConfig.MotionMagic.MotionMagicJerk = 0;
 
     leadingMotor.getConfigurator().apply(leftMotorConfig);
@@ -123,7 +123,7 @@ public class PivotIOReal implements PivotIO {
         "Pivot/absoluteMotorPosition",
         (((leadingMotor.getPosition().getValueAsDouble() + rotorOffset) / GEAR_RATIO) * 360));
     inputs.pivotAbsolutePosition = getAbsoluteEncoderPosition();
-    inputs.pivotAbsoluteVelocity = leadingMotor.getVelocity().getValueAsDouble();
+    inputs.pivotAbsoluteVelocity = leadingMotor.getVelocity().getValueAsDouble() / GEAR_RATIO;
     inputs.pivotAppliedVolts = leadingMotor.getMotorVoltage().getValueAsDouble();
     inputs.pivotCurrentAmps =
         new double[] {

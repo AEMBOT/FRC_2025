@@ -38,13 +38,13 @@ Send characters through the serial port at 115200 baud, not too fast though plea
 #include <Adafruit_NeoPixel.h>
 //include the NeoPixel library
 
-#define UnderglowPin 2
-#define UnderglowLength 40
+#define UnderglowPin 6
+#define UnderglowLength 41
 Adafruit_NeoPixel Underglow = Adafruit_NeoPixel(UnderglowLength, UnderglowPin, NEO_GRB + NEO_KHZ800);
 //define how long and what pin the Underglow LED strip is
 
-#define MountedPin 3
-#define MountedLength 43
+#define MountedPin 5
+#define MountedLength 41
 Adafruit_NeoPixel Mounted = Adafruit_NeoPixel(MountedLength, MountedPin, NEO_GRB + NEO_KHZ800);
 //define how long and what pin the Mounted LED strip is
 

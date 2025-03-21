@@ -312,7 +312,7 @@ void sawtoothFade(int red, int green, int blue) { //function that plays a sawtoo
   int finalRed, finalGreen, finalBlue;
   //declare the variables that will hold the final RGB values, so altering them doesn't mess with the ones declared at the beginning of the code
 
-  for (int i=0; i<UnderglowLength/2; i++) { //repeat through all of the Underglow strip pixel indexes
+  for (int i=0; i<UnderglowLength; i++) { //repeat through all of the Underglow strip pixel indexes
 
     subtractValRed = map(modulo(i + shift, setLength), 0, setLength, 0, red);
     //set the red subtract value to a number that was mapped from a number between 0 and the pattern langth to 0 and the stored red value

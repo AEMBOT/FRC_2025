@@ -64,10 +64,10 @@ public class CompoundCommands {
     NamedCommands.registerCommand("DriveReefL", driveToLeftReef(1));
     NamedCommands.registerCommand("DriveReefR", driveToRightReef(1));
 
-    NamedCommands.registerCommand("ArmReef4", armToReef(4));
-    NamedCommands.registerCommand("ArmReef3", armToReef(3));
-    NamedCommands.registerCommand("ArmReef2", armToReef(2));
-    NamedCommands.registerCommand("ArmReef1", armToReef(1));
+    NamedCommands.registerCommand("ArmReef4", armToReefSafely(4));
+    NamedCommands.registerCommand("ArmReef3", armToReefSafely(3));
+    NamedCommands.registerCommand("ArmReef2", armToReefSafely(2));
+    NamedCommands.registerCommand("ArmReef1", armToReefSafely(1));
 
     NamedCommands.registerCommand("AutoPlaceLeft4", placeReef(false, 4));
     NamedCommands.registerCommand("AutoPlaceLeft3", placeReef(false, 3));
@@ -86,6 +86,8 @@ public class CompoundCommands {
 
     NamedCommands.registerCommand("AutoIntakeSourceLeft", intakeSource(false));
     NamedCommands.registerCommand("AutoIntakeSourceRight", intakeSource(true));
+
+    NamedCommands.registerCommand("ArmStow", armToStow());
   }
 
   /**
@@ -104,10 +106,9 @@ public class CompoundCommands {
     }
 
     Command alignCommand =
-        new ParallelCommandGroup(driveCommand, armToReef(level)).withTimeout(5.0);
+        new ParallelCommandGroup(driveCommand, armToReefSafely(level)).withTimeout(5.0);
 
-    // Wait after alignment so drivers can A-Stop if needed.
-    return alignCommand.andThen(waitSeconds(3.0)).andThen(ejectCoral());
+    return alignCommand.andThen(ejectCoral());
   }
 
   public static Command intakeSource(boolean isOnRight) {
@@ -119,7 +120,7 @@ public class CompoundCommands {
     }
 
     Command alignCommand = new ParallelCommandGroup(driveCommand, armToSource());
-    return alignCommand.andThen(intakeCoral());
+    return alignCommand.alongWith(intakeCoral());
   }
 
   /**
@@ -130,10 +131,24 @@ public class CompoundCommands {
    * @return A command to move the arm to the desired position.
    */
   public static Command armToReef(int reefLevel) {
-    return wrist
-        .setGoalPosition(() -> reefArmPositions[reefLevel - 1][0])
-        .alongWith(pivot.setPosition(() -> reefArmPositions[reefLevel - 1][1]))
-        .alongWith(elevator.setPosition(() -> reefArmPositions[reefLevel - 1][2]));
+    return armToGoal(
+        reefArmPositions[reefLevel - 1][0],
+        reefArmPositions[reefLevel - 1][1],
+        reefArmPositions[reefLevel - 1][2]);
+  }
+
+  public static Command armToAlgae(boolean upper) {
+    if (upper) {
+      return armToGoal(
+          upperAlgaeRemovalWristAngle,
+          upperAlgaeRemovalPivotAngle,
+          upperAlgaeRemovalElevatorHeight);
+    } else {
+      return armToGoal(
+          lowerAlgaeRemovalWristAngle,
+          lowerAlgaeRemovalPivotAngle,
+          lowerAlgaeRemovalElevatorHeight);
+    }
   }
 
   /**
@@ -143,10 +158,7 @@ public class CompoundCommands {
    * @return A command to move the arm to the desired positon.
    */
   public static Command armToSource() {
-    return wrist
-        .setGoalPosition(() -> sourceWristAngle)
-        .alongWith(pivot.setPosition(() -> sourcePivotAngle))
-        .alongWith(elevator.setPosition(() -> sourceElevatorExtension));
+    return armToGoal(sourceWristAngle, sourcePivotAngle, sourceElevatorExtension);
   }
 
   /**
@@ -155,12 +167,24 @@ public class CompoundCommands {
    * @return A command to move the arm to the desired position.
    */
   public static Command armToClimb() {
-    return wrist
-        .setGoalPosition(() -> climbWristAngle)
-        .alongWith(
-            pivot
-                .setPosition(() -> climbPivotAngle)
-                .alongWith(elevator.setPosition(() -> climbElevatorExtension)));
+    return armToGoal(climbWristAngle, climbPivotAngle, climbElevatorExtension);
+  }
+
+  /**
+   * Moves the arm to the proper position for stowing in between travel.
+   *
+   * @return A command to move the arm to the desired position.
+   */
+  public static Command armToStow() {
+    return armToGoal(stowWristAngle, stowPivotAngle, stowElevatorExtension);
+  }
+
+  public static Command armToReefSafely(int reefLevel) {
+    return pivot.setPosition(() -> safePivotPosition).andThen(armToReef(reefLevel));
+  }
+
+  public static Command armToStowSafely() {
+    return pivot.setPosition(() -> safePivotPosition).andThen(armToStow());
   }
 
   /**
@@ -229,7 +253,10 @@ public class CompoundCommands {
 
   /** Run outtake with IntakeConstants.ejectTime. */
   public static Command ejectCoral() {
-    return intake.ejectCommand().withTimeout(IntakeConstants.ejectTimeout);
+    return intake
+        .ejectCommand()
+        .withTimeout(IntakeConstants.ejectTimeout)
+        .andThen(armToStowSafely());
   }
 
   /** Run intake until we have coral or timeout (IntakeConstants.intakeTimeout) runs out */
@@ -258,5 +285,32 @@ public class CompoundCommands {
    */
   public static DeferredCommand deferDrive(Supplier<Command> command) {
     return new DeferredCommand(command, Set.of(drive));
+  }
+
+  /**
+   * Generates a {@link Command} to move the arm to the specified position, ensuring to always stay
+   * in frame perimeter. If the goal position needs the elevator to extend, we first move pivot,
+   * then move the elevator and wrist. Otherwise, if the goal position needs the elevator to retract
+   * then moves elevator and wrist first then pivot.
+   *
+   * @param wristSetPos Angle in degrees to set the wrist
+   * @param pivotSetPos Angle in degrees to set the pivot
+   * @param elevatorSetPos Height in meters to set the elevator
+   * @return A {@link Command} to set the arm goal position to the specified position
+   */
+  public static Command armToGoal(double wristSetPos, double pivotSetPos, double elevatorSetPos) {
+
+    if (elevatorSetPos > elevator.getPosition().getAsDouble()) {
+      return elevator
+          .setPosition(() -> elevatorSetPos)
+          .andThen(wrist.setGoalPosition(() -> wristSetPos))
+          .andThen(pivot.setPosition(() -> pivotSetPos));
+
+    } else {
+      return wrist
+          .setGoalPosition(() -> wristSetPos)
+          .andThen(elevator.setPosition(() -> elevatorSetPos))
+          .andThen(pivot.setPosition(() -> pivotSetPos));
+    }
   }
 }

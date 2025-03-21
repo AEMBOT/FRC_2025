@@ -146,12 +146,21 @@ public class RobotContainer {
         .whileTrue(elevator.changePosition(-0.25))
         .onFalse(elevator.changePosition(0));
 
+    backupController.povUp().onTrue(CompoundCommands.armToAlgae(true));
+    backupController.povDown().onTrue(CompoundCommands.armToAlgae(false));
+
     backupController
         .a()
-        .whileTrue(CompoundCommands.deferArm(() -> CompoundCommands.armToReef(this.reef_level)));
+        .whileTrue(CompoundCommands.deferArm(() -> CompoundCommands.armToReefSafely(reef_level)));
 
-    controller.rightTrigger(0.25).whileTrue(intake.ejectCommand());
-    controller.leftTrigger(0.25).whileTrue(intake.intakeCommand());
+    controller
+        .leftTrigger(0.25)
+        .whileTrue(intake.intakeCommand())
+        .onFalse(CompoundCommands.armToStow());
+    controller
+        .rightTrigger(0.25)
+        .whileTrue(intake.ejectCommand())
+        .onFalse(intake.runIntakeCommand(() -> 0).alongWith(CompoundCommands.armToStow()));
 
     controller
         .rightStick()
@@ -197,13 +206,13 @@ public class RobotContainer {
         .whileTrue(
             new ParallelCommandGroup(
                 CompoundCommands.deferDrive(() -> CompoundCommands.driveToLeftReef(reef_level)),
-                CompoundCommands.deferArm(() -> CompoundCommands.armToReef(reef_level))));
+                CompoundCommands.deferArm(() -> CompoundCommands.armToReefSafely(reef_level))));
     controller
         .rightBumper()
         .whileTrue(
             new ParallelCommandGroup(
                 CompoundCommands.deferDrive(() -> CompoundCommands.driveToRightReef(reef_level)),
-                CompoundCommands.deferArm(() -> CompoundCommands.armToReef(reef_level))));
+                CompoundCommands.deferArm(() -> CompoundCommands.armToReefSafely(reef_level))));
 
     controller
         .a()

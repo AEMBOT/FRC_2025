@@ -268,13 +268,15 @@ public class RobotContainer {
         .onFalse(Commands.runOnce(() -> LED.LEDDO(LedConstants.SPEED_2)));
   }
 
+  // TODO:
+  // Robot-side:
   // Orange = reef 1
   // Yellow = reef 2
   // Green = reef 3
   // Purple = reef 4
-
+  // Arduino:
   // Rainbow isn't smoothly moving
-  //
+  // Back half of upper LEDs are staying the same color
 
   public Command getAutonomousCommand() {
     return autoChooser.get();

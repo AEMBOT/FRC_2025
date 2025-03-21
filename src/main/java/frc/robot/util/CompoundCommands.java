@@ -64,10 +64,10 @@ public class CompoundCommands {
     NamedCommands.registerCommand("DriveReefL", driveToLeftReef(1));
     NamedCommands.registerCommand("DriveReefR", driveToRightReef(1));
 
-    NamedCommands.registerCommand("ArmReef4", armToReef(4));
-    NamedCommands.registerCommand("ArmReef3", armToReef(3));
-    NamedCommands.registerCommand("ArmReef2", armToReef(2));
-    NamedCommands.registerCommand("ArmReef1", armToReef(1));
+    NamedCommands.registerCommand("ArmReef4", armToReefSafely(4));
+    NamedCommands.registerCommand("ArmReef3", armToReefSafely(3));
+    NamedCommands.registerCommand("ArmReef2", armToReefSafely(2));
+    NamedCommands.registerCommand("ArmReef1", armToReefSafely(1));
 
     NamedCommands.registerCommand("AutoPlaceLeft4", placeReef(false, 4));
     NamedCommands.registerCommand("AutoPlaceLeft3", placeReef(false, 3));
@@ -106,7 +106,7 @@ public class CompoundCommands {
     }
 
     Command alignCommand =
-        new ParallelCommandGroup(driveCommand, armToReef(level)).withTimeout(5.0);
+        new ParallelCommandGroup(driveCommand, armToReefSafely(level)).withTimeout(5.0);
 
     return alignCommand.andThen(ejectCoral());
   }
@@ -253,7 +253,10 @@ public class CompoundCommands {
 
   /** Run outtake with IntakeConstants.ejectTime. */
   public static Command ejectCoral() {
-    return intake.ejectCommand().withTimeout(IntakeConstants.ejectTimeout);
+    return intake
+        .ejectCommand()
+        .withTimeout(IntakeConstants.ejectTimeout)
+        .andThen(armToStowSafely());
   }
 
   /** Run intake until we have coral or timeout (IntakeConstants.intakeTimeout) runs out */

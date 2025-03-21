@@ -173,7 +173,12 @@ public class CompoundCommands {
     return new DeferredCommand(
         () ->
             PathGenerator.generateSimpleCorrectedPath(
-                drive, reefTargets.findTargetLeft(drive.getPose(), reefLevel)),
+                drive,
+                reefTargets.getReefPose(
+                    false,
+                    drive.getPose(),
+                    reefLevel,
+                    intake.getGamePiecePosition().getAsDouble())),
         Set.of(drive));
   }
 
@@ -187,7 +192,9 @@ public class CompoundCommands {
     return new DeferredCommand(
         () ->
             PathGenerator.generateSimpleCorrectedPath(
-                drive, reefTargets.findTargetRight(drive.getPose(), reefLevel)),
+                drive,
+                reefTargets.getReefPose(
+                    true, drive.getPose(), reefLevel, intake.getGamePiecePosition().getAsDouble())),
         Set.of(drive));
   }
 
@@ -225,10 +232,12 @@ public class CompoundCommands {
     return intake.ejectCommand().withTimeout(IntakeConstants.ejectTimeout);
   }
 
-  /** Run intake with IntakeConstants.intakeTime. */
+  /** Run intake until we have coral or timeout (IntakeConstants.intakeTimeout) runs out */
   public static Command intakeCoral() {
-    // Eventually, we probably want to run until the TOF sensor is activated.
-    return intake.intakeCommand().withTimeout(IntakeConstants.intakeTimeout);
+    return intake
+        .intakeCommand()
+        .until(() -> intake.getHasGamePiece())
+        .withTimeout(IntakeConstants.intakeTimeout);
   }
 
   /**

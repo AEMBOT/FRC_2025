@@ -12,6 +12,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.constants.GeneralConstants;
@@ -192,14 +193,27 @@ public class RobotContainer {
                 }));
 
     controller
-        .a()
-        .whileTrue(CompoundCommands.armToSource().alongWith(CompoundCommands.driveToSource()));
+        .leftBumper()
+        .whileTrue(
+            new ParallelCommandGroup(
+                CompoundCommands.deferDrive(() -> CompoundCommands.driveToLeftReef(reef_level)),
+                CompoundCommands.deferArm(() -> CompoundCommands.armToReef(reef_level))));
+    controller
+        .rightBumper()
+        .whileTrue(
+            new ParallelCommandGroup(
+                CompoundCommands.deferDrive(() -> CompoundCommands.driveToRightReef(reef_level)),
+                CompoundCommands.deferArm(() -> CompoundCommands.armToReef(reef_level))));
 
     controller
-        .leftBumper()
-        .whileTrue(CompoundCommands.deferArm(() -> CompoundCommands.armToReef(this.reef_level)));
+        .a()
+        .whileTrue(
+            new ParallelCommandGroup(
+                CompoundCommands.armToSource(),
+                CompoundCommands.deferDrive(() -> CompoundCommands.driveToSource())));
 
     controller.b().whileTrue(CompoundCommands.armToClimb());
+
     controller
         .start()
         .whileTrue(

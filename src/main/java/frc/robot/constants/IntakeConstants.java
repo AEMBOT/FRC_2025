@@ -12,7 +12,7 @@ public class IntakeConstants {
 
   // Used in auto. Teleop is just whileTrue.
   public static final double intakeTimeout = 2.5;
-  public static final double ejectTimeout = 0.5;
+  public static final double ejectTimeout = 1.0;
 
   public static final int CANRANGE_ID = 16;
 

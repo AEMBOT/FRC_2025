@@ -106,7 +106,7 @@ public class CompoundCommands {
     }
 
     Command alignCommand =
-        new ParallelCommandGroup(driveCommand, armToReefSafely(level)).withTimeout(5.0);
+        new ParallelCommandGroup(driveCommand, armToReefSafely(level)).withTimeout(5.0).andThen(waitSeconds(0.5));
 
     return alignCommand.andThen(ejectCoral());
   }

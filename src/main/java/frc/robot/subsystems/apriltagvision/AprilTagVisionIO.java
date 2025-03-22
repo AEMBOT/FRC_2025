@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.Timer;
+import frc.robot.constants.DriveConstants;
 import frc.robot.constants.GeneralConstants.Mode;
 import frc.robot.constants.VisionConstants.CameraResolution;
 import java.util.AbstractMap.SimpleEntry;
@@ -47,7 +48,7 @@ public interface AprilTagVisionIO {
    * @param estimatedPose The estimated pose to guess standard deviations for.
    */
   default Matrix<N3, N1> getEstimationStdDevs(
-      EstimatedRobotPose estimatedPose, CameraResolution resolution) {
+      EstimatedRobotPose estimatedPose, CameraResolution resolution, Pose2d previousPose, double previousTimestamp) {
     var estStdDevs =
         switch (resolution) {
           case HIGH_RES -> highResSingleTagStdDev;
@@ -87,6 +88,17 @@ public interface AprilTagVisionIO {
             case NORMAL -> normalMultiTagStdDev;
           };
     }
+
+    double deltaTime = (previousTimestamp - estimatedPose.timestampSeconds);
+    double distance = Math.hypot(
+      previousPose.getX() - estimatedPose.estimatedPose.getX(), previousPose.getY() - estimatedPose.estimatedPose.getY());
+    // Increase std devs if we've moved an unreasonable amount.
+    if (distance
+       / deltaTime+Double.MIN_VALUE // Just in case so we don't div by 0 or smth
+       > DriveConstants.MAX_LINEAR_SPEED * deltaTime) {
+        estStdDevs = estStdDevs.plus(distance*0.95);
+       }
+
     // Increase std devs based on (average) distance
     if (numTags == 1
         && avgDist
@@ -130,7 +142,7 @@ public interface AprilTagVisionIO {
             poseArray[index] = estimatedRobotPose.estimatedPose;
             timestampArray[index] = estimatedRobotPose.timestampSeconds;
             Matrix<N3, N1> stdDevs =
-                getEstimationStdDevs(estimatedRobotPose, poseEstimators[index].resolution);
+                getEstimationStdDevs(estimatedRobotPose, poseEstimators[index].resolution, poseArray[poseArray.length - 1].toPose2d(), timestampArray[timestampArray.length - 1]);
             System.arraycopy(stdDevs.getData(), 0, visionStdArray, index * 3, 3);
             if (currentMode == Mode.SIM) {
               // Report zero latency in sim. Sim latency doesn't work for some reason. TODO fix that

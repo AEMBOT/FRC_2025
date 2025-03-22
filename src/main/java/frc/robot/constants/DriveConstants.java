@@ -39,7 +39,7 @@ public class DriveConstants {
     public static final int TALON_TURN_MOTOR_3 = 2;
     public static final int TALON_CANCODER_3 = 23;
 
-    public static final double WHEEL_RADIUS = Units.inchesToMeters(1.9375); // Was 1.906 before
+    public static final double WHEEL_RADIUS = Units.inchesToMeters(1.9375); // Previously 1.906
     public static final double ODOMETRY_FREQUENCY = 200.0; // default 250, limited to 200 by NavX
 
     public static final Rotation2d[] absoluteEncoderOffset =

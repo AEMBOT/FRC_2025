@@ -65,4 +65,9 @@ public class GyroIONavX implements GyroIO {
     Logger.recordOutput("NavX Rotation", navX.getRotation2d());
     Logger.recordOutput("NavX Last Sensor Timestamp", navX.getLastSensorTimestamp());
   }
+
+  @Override
+  public void setYaw(Rotation2d yaw) {
+    navX.setAngleAdjustment(yaw.getDegrees() - navX.getAngle());
+  }
 }

@@ -271,6 +271,10 @@ public class RobotContainer {
                           case Red -> Rotation2d.fromDegrees(180);
                           default -> Rotation2d.fromDegrees(0);
                         })));
+
+    controller.back().onTrue(
+      runOnce(drive::zeroToGyro)
+    );
   }
 
   private boolean IsEndGame() {

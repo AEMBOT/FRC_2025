@@ -272,9 +272,7 @@ public class RobotContainer {
                           default -> Rotation2d.fromDegrees(0);
                         })));
 
-    controller.back().onTrue(
-      runOnce(drive::zeroToGyro)
-    );
+    controller.back().onTrue(runOnce(drive::zeroToGyro));
   }
 
   private boolean IsEndGame() {

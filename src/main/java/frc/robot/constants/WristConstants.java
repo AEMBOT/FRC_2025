@@ -34,7 +34,7 @@ public class WristConstants {
   public static final double MOTOR_RATIO = 25;
 
   /** */
-  public static final double ENCODER_POSITION_OFFSET = 47.02818267570456 * -1;
+  public static final double ENCODER_POSITION_OFFSET = 7.9121926978048265 * -1;
 
   /** */
   public static final double GEAR_RATIO = 6;

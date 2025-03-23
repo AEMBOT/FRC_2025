@@ -101,7 +101,7 @@ public interface AprilTagVisionIO {
 
     if (distance // Just in case so we don't div by 0 or smth
         > DriveConstants.MAX_LINEAR_SPEED * deltaTime) {
-      estStdDevs = estStdDevs.plus(distance * 0.95);
+      estStdDevs = estStdDevs.plus(distance);
     }
 
     // Increase std devs based on (average) distance

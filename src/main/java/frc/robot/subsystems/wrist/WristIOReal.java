@@ -102,6 +102,7 @@ public class WristIOReal implements WristIO {
   }
 
   private double getAbsoluteEncoderPosition() {
+    //     return ((ENCODER.get()) * 180) + ENCODER_POSITION_OFFSET;
     return ((((1 - ENCODER.get()) * 180) + ENCODER_POSITION_OFFSET + 90) % 360) - 90;
   }
 

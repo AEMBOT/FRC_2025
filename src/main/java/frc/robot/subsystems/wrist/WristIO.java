@@ -9,6 +9,9 @@ public interface WristIO {
     /** Current angle of the wrist in degrees */
     public double wristAbsolutePosition = 0.0;
 
+    /** Current angle reported by the wrist absolute encoder */
+    public double wristAbsoluteEncoderRawRotations = 0.0;
+
     /** Current velocity the wrist in travelling at in rotations per minute */
     public double wristAbsoluteVelocity = 0.0;
 

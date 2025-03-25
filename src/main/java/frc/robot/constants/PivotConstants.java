@@ -39,7 +39,8 @@ public class PivotConstants {
   /** */
   public static final int ENCODER_ID = 1;
 
-  // Procedure: Set offset to 0, move pivot to real 90 (vertical). Set encoder offset to 90 - output value.
+  // Procedure: Set offset to 0, move pivot to real 90 (vertical). Set encoder offset to 90 - output
+  // value.
   public static final double ENCODER_POSITION_OFFSET = 90 - 247.87962;
 
   /** */

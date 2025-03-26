@@ -22,18 +22,6 @@ public interface ElevatorIO {
 
     /** Goal position of the elevator in inches */
     public double elevatorGoalPosition = 45;
-
-    /** Setpoint position of the elevator in inches */
-    public double elevatorSetpointPosition = 45;
-
-    /**
-     * Setpoint position of the elevator in rotations per second TODO confirm that this is in rpm
-     * and not radpersec
-     */
-    public double elevatorSetpointVelocity = 0.0;
-
-    /** Whether the elevator subsystem is running in an openloop */
-    public boolean openLoopStatus = false;
   }
 
   /** Updates the set of loggable inputs. */
@@ -47,8 +35,8 @@ public interface ElevatorIO {
 
   public default void limitHeight(double pivotAngle) {}
 
-  /** Resets the elevator goal and setpoint to the current angle of the elevator */
-  public default void resetProfile() {}
+  /** Resets the elevator goal */
+  public default void resetGoal() {}
 
   public default void reZero() {}
 }

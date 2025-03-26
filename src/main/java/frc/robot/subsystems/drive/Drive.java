@@ -397,7 +397,7 @@ public class Drive extends SubsystemBase {
   }
 
   /** Command to run drive characterization */
-  public Command runDriveCharacterizationCmd() { // TODO Timing on this seems sus
+  public Command runDriveCharacterizationCmd() {
     return Commands.sequence(
         this.runOnce(SignalLogger::start),
         driveRoutine.quasistatic(kForward),

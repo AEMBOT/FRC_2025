@@ -1,7 +1,7 @@
 package frc.robot.subsystems.intake;
 
-import static frc.robot.constants.IntakeConstants.ejectVoltage;
-import static frc.robot.constants.IntakeConstants.intakeVoltage;
+import static edu.wpi.first.wpilibj2.command.Commands.waitSeconds;
+import static frc.robot.constants.IntakeConstants.*;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -26,10 +26,6 @@ public class Intake extends SubsystemBase {
     return run(() -> intake.setVoltage(volts.getAsDouble()));
   }
 
-  public DoubleSupplier getGamePiecePosition() {
-    return () -> intakeInputs.gamePieceLocation;
-  }
-
   /**
    * @return True if there is a game piece in the intake.
    */
@@ -40,21 +36,26 @@ public class Intake extends SubsystemBase {
   /**
    * Runs the intake at intake voltage specified in {@link IntakeConstants}.
    *
-   * @return Command that MUST BE TERMINATED EXTERNALLY and will stop intake once terminated.
-   *     Typically used in a whileTrue or withTimeout.
+   * @return Command that runs the intake until we sense a coral, then continues for a small time.
    */
   public Command intakeCommand() {
-    return runIntakeCommand(() -> intakeVoltage).finallyDo(() -> intake.setVoltage(0.3));
+    return runIntakeCommand(() -> intakeVoltage)
+        .until(() -> getHasGamePiece())
+        .andThen(() -> waitSeconds((intakeWaitTime)))
+        .finallyDo(() -> stopCommand());
   }
 
   /**
    * Runs the intake at eject voltage specified in {@link IntakeConstants}.
    *
-   * @return Command that MUST BE TERMINATED EXTERNALLY and will stop intake once terminated.
-   *     Typically used in a whileTrue or withTimeout.
+   * @return Command that runs the intake until we no longer sense a coral, then continues for a
+   *     small time.
    */
   public Command ejectCommand() {
-    return runIntakeCommand(() -> ejectVoltage).finallyDo(() -> intake.setVoltage(0.0));
+    return runIntakeCommand(() -> ejectVoltage)
+        .until(() -> !getHasGamePiece())
+        .andThen(() -> waitSeconds((ejectWaitTime)))
+        .finallyDo(() -> stopCommand());
   }
 
   /**

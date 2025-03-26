@@ -12,9 +12,6 @@ public class IntakeIOReal implements IntakeIO {
 
   private final TalonFX motor = new TalonFX(intakeMotorID);
 
-  private boolean hasGamePiece;
-  private double LAST_MEASUREMENT;
-
   public IntakeIOReal() {
     CANRANGE = new CoreCANrange(CANRANGE_ID);
 
@@ -26,20 +23,12 @@ public class IntakeIOReal implements IntakeIO {
 
   public void updateInputs(IntakeIOInputs inputs) {
     inputs.intakeAppliedVolts = motor.getMotorVoltage().getValueAsDouble();
-    inputs.gamePieceLocation = getGamePieceLocation();
     inputs.hasGamePiece = hasGamePiece();
   }
 
-  private double getGamePieceLocation() {
-    return CANRANGE.getDistance().getValueAsDouble() + coralRadius - canrangeOffset;
-  }
-
   private boolean hasGamePiece() {
-    if (CANRANGE.getDistance().getValueAsDouble() < 0.4) {
-      return true;
-    } else {
-      return false;
-    }
+
+    return CANRANGE.getDistance().getValueAsDouble() < hasCoralDistance;
   }
 
   @Override

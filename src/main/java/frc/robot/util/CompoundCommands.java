@@ -197,12 +197,7 @@ public class CompoundCommands {
     return new DeferredCommand(
         () ->
             PathGenerator.generateSimpleCorrectedPath(
-                drive,
-                reefTargets.getReefPose(
-                    false,
-                    drive.getPose(),
-                    reefLevel,
-                    intake.getGamePiecePosition().getAsDouble())),
+                drive, reefTargets.getReefPose(false, drive.getPose(), reefLevel)),
         Set.of(drive));
   }
 
@@ -216,9 +211,7 @@ public class CompoundCommands {
     return new DeferredCommand(
         () ->
             PathGenerator.generateSimpleCorrectedPath(
-                drive,
-                reefTargets.getReefPose(
-                    true, drive.getPose(), reefLevel, intake.getGamePiecePosition().getAsDouble())),
+                drive, reefTargets.getReefPose(true, drive.getPose(), reefLevel)),
         Set.of(drive));
   }
 

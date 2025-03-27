@@ -247,17 +247,14 @@ public class CompoundCommands {
   /** Run outtake with IntakeConstants.ejectTime. */
   public static Command ejectCoral() {
     return intake
-        .ejectCommand()
+        .ejectCoralCommand()
         .withTimeout(IntakeConstants.ejectTimeout)
         .andThen(armToStowSafely());
   }
 
   /** Run intake until we have coral or timeout (IntakeConstants.intakeTimeout) runs out */
   public static Command intakeCoral() {
-    return intake
-        .intakeCommand()
-        .until(() -> intake.getHasGamePiece())
-        .withTimeout(IntakeConstants.intakeTimeout);
+    return intake.intakeCoralCommand().withTimeout(IntakeConstants.intakeTimeout);
   }
 
   /**

@@ -5,6 +5,8 @@ import static frc.robot.constants.IntakeConstants.*;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.IntakeConstants;
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
 
@@ -21,50 +23,102 @@ public class Intake extends SubsystemBase {
     intake.updateInputs(intakeInputs);
   }
 
-  /** Runs the intake at the specified voltage. */
-  public Command runIntakeCommand(DoubleSupplier volts) {
-    return run(() -> intake.setVoltage(volts.getAsDouble()));
+  /** Runs the coral intake at the specified voltage. */
+  public Command runTopMotorCommand(DoubleSupplier volts) {
+    return run(() -> intake.setTopMotorVoltage(volts.getAsDouble()));
+  }
+
+  /** Runs the algae intake at the specified voltage. */
+  public Command runLowMotorCommand(DoubleSupplier volts) {
+    return run(() -> intake.setLowMotorVoltage(volts.getAsDouble()));
   }
 
   /**
    * @return True if there is a game piece in the intake.
    */
-  public boolean getHasGamePiece() {
-    return intakeInputs.hasGamePiece;
+  public BooleanSupplier getHasGamePiece() {
+    return () -> intakeInputs.hasGamePiece;
   }
 
   /**
-   * Runs the intake at intake voltage specified in {@link IntakeConstants}.
+   * Runs both intake motors at voltages specified in {@link IntakeConstants}.
    *
    * @return Command that runs the intake until we sense a coral, then continues for a small time.
    */
-  public Command intakeCommand() {
-    return runIntakeCommand(() -> intakeVoltage)
-        .until(() -> getHasGamePiece())
-        .andThen(() -> waitSeconds((intakeWaitTime)))
+  public Command intakeCoralCommand() {
+    return runTopMotorCommand(() -> intakeCoralTopMotorVoltage)
+        .alongWith(runLowMotorCommand(() -> intakeCoralLowMotorVoltage))
+        .until(getHasGamePiece())
+        .andThen(waitSeconds(intakeWaitTime))
         .finallyDo(() -> stopCommand());
   }
 
   /**
-   * Runs the intake at eject voltage specified in {@link IntakeConstants}.
+   * Runs the top intake motor at eject voltage specified in {@link IntakeConstants}.
    *
    * @return Command that runs the intake until we no longer sense a coral, then continues for a
    *     small time.
    */
-  public Command ejectCommand() {
-    return runIntakeCommand(() -> ejectVoltage)
-        .until(() -> !getHasGamePiece())
-        .andThen(() -> waitSeconds((ejectWaitTime)))
-        .finallyDo(() -> stopCommand());
+  public Command ejectCoralCommand() {
+    return runTopMotorCommand(() -> ejectCoralTopMotorVoltage)
+        .until(getHasGamePiece())
+        .andThen(waitSeconds(ejectWaitTime))
+        .finallyDo(() -> stopTopMotorCommand());
   }
 
   /**
-   * Sets the intake voltage to 0.
+   * MUST BE TERMINATED EXTERNALLY <p>
+   * 
+   * Runs the lower intake motor at voltage specified in {@link IntakeConstants}.
+   *
+   * @return Command that runs the intake and then runs it at the hold voltage when interrupted.
+   */
+  public Command intakeAlgaeCommand() {
+    return runLowMotorCommand(() -> intakeAlgaeLowMotorVoltage)
+        .finallyDo(() -> runLowMotorCommand(() -> holdAlgaeLowMotorVoltage));
+  }
+
+    /**
+   * MUST BE TERMINATED EXTERNALLY <p>
+   * 
+   * Runs the lower intake motor at voltage specified in {@link IntakeConstants}.
+   *
+   * @return Command that runs the intake and stops when interrupted
+   */
+  public Command ejectAlgaeCommand() {
+    return runLowMotorCommand(() -> ejectAlgaeLowMotorVoltage)
+        .finallyDo(() -> stopCommand());
+  }
+
+
+  /**
+   * Sets the voltage for both intake motors to zero.
    *
    * @return A command that will run once and terminate.
    */
   public Command stopCommand() {
-    return runOnce(() -> intake.setVoltage(0.0));
+    return runOnce(() -> intake.setLowMotorVoltage(0.0))
+        .alongWith(runOnce(() -> intake.setTopMotorVoltage(0.0)));
+  }
+
+  /**
+   * Sets the voltage for the top intake motor to zero.
+   *
+   * @return A command that will run once and terminate.
+   */
+  public Command stopTopMotorCommand() {
+    return 
+        runOnce(() -> intake.setTopMotorVoltage(0.0));
+  }
+
+  /**
+   * Sets the voltage for lower intake motor to zero.
+   *
+   * @return A command that will run once and terminate.
+   */
+  public Command stopLowMotorCommand() {
+    return 
+        runOnce(() -> intake.setLowMotorVoltage(0.0));
   }
 
   /**

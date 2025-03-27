@@ -248,13 +248,13 @@ public class CompoundCommands {
   public static Command ejectCoral() {
     return intake
         .ejectCoralCommand()
-        .withTimeout(IntakeConstants.ejectTimeout)
+        .withTimeout(IntakeConstants.EJECT_TIMEOUT)
         .andThen(armToStowSafely());
   }
 
   /** Run intake until we have coral or timeout (IntakeConstants.intakeTimeout) runs out */
   public static Command intakeCoral() {
-    return intake.intakeCoralCommand().withTimeout(IntakeConstants.intakeTimeout);
+    return intake.intakeCoralCommand().withTimeout(IntakeConstants.INTAKE_TIMEOUT);
   }
 
   /**

@@ -10,14 +10,14 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 public class IntakeIOReal implements IntakeIO {
   private CoreCANrange CANRANGE;
 
-  private final TalonFX topMotor = new TalonFX(intakeCoralMotorID);
-  private final TalonFX lowMotor = new TalonFX(intakeAlgaeMotorID);
+  private final TalonFX topMotor = new TalonFX(INTAKE_TOP_MOTOR_ID);
+  private final TalonFX lowMotor = new TalonFX(INTAKE_LOW_MOTOR_ID);
 
   public IntakeIOReal() {
     CANRANGE = new CoreCANrange(CANRANGE_ID);
 
     TalonFXConfiguration motorConfig = new TalonFXConfiguration();
-    motorConfig.CurrentLimits.StatorCurrentLimit = intakeMotorCurrentLimit;
+    motorConfig.CurrentLimits.StatorCurrentLimit = INTAKE_MOTOR_CURRENT_LIMIT;
     motorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
     topMotor.setNeutralMode(NeutralModeValue.Brake);
     lowMotor.setNeutralMode(NeutralModeValue.Brake);
@@ -31,7 +31,7 @@ public class IntakeIOReal implements IntakeIO {
 
   @Override
   public boolean hasGamePiece() {
-    return CANRANGE.getDistance().getValueAsDouble() < hasCoralDistance;
+    return CANRANGE.getDistance().getValueAsDouble() + CANRANGE_OFFSET < HAS_CORAL_DISTANCE;
   }
 
   @Override

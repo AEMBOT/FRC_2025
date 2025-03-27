@@ -46,10 +46,10 @@ public class Intake extends SubsystemBase {
    * @return Command that runs the intake until we sense a coral, then continues for a small time.
    */
   public Command intakeCoralCommand() {
-    return runTopMotorCommand(() -> intakeCoralTopMotorVoltage)
-        .alongWith(runLowMotorCommand(() -> intakeCoralLowMotorVoltage))
+    return runTopMotorCommand(() -> INTAKE_CORAL_TOP_MOTOR_VOLTAGE)
+        .alongWith(runLowMotorCommand(() -> INTAKE_CORAL_LOW_MOTOR_VOLTAGE))
         .until(getHasGamePiece())
-        .andThen(waitSeconds(intakeWaitTime))
+        .andThen(waitSeconds(INTAKE_WAIT_TIME))
         .finallyDo(() -> stopCommand());
   }
 
@@ -60,36 +60,34 @@ public class Intake extends SubsystemBase {
    *     small time.
    */
   public Command ejectCoralCommand() {
-    return runTopMotorCommand(() -> ejectCoralTopMotorVoltage)
+    return runTopMotorCommand(() -> EJECT_CORAL_TOP_MOTOR_VOLTAGE)
         .until(getHasGamePiece())
-        .andThen(waitSeconds(ejectWaitTime))
+        .andThen(waitSeconds(EJECT_WAIT_TIME))
         .finallyDo(() -> stopTopMotorCommand());
   }
 
   /**
-   * MUST BE TERMINATED EXTERNALLY <p>
-   * 
-   * Runs the lower intake motor at voltage specified in {@link IntakeConstants}.
+   * MUST BE TERMINATED EXTERNALLY
+   *
+   * <p>Runs the lower intake motor at voltage specified in {@link IntakeConstants}.
    *
    * @return Command that runs the intake and then runs it at the hold voltage when interrupted.
    */
   public Command intakeAlgaeCommand() {
-    return runLowMotorCommand(() -> intakeAlgaeLowMotorVoltage)
-        .finallyDo(() -> runLowMotorCommand(() -> holdAlgaeLowMotorVoltage));
+    return runLowMotorCommand(() -> INTAKE_ALGAE_LOW_MOTOR_VOLTAGE)
+        .finallyDo(() -> runLowMotorCommand(() -> HOLD_ALGAE_LOW_MOTOR_VOLTAGE));
   }
 
-    /**
-   * MUST BE TERMINATED EXTERNALLY <p>
-   * 
-   * Runs the lower intake motor at voltage specified in {@link IntakeConstants}.
+  /**
+   * MUST BE TERMINATED EXTERNALLY
+   *
+   * <p>Runs the lower intake motor at voltage specified in {@link IntakeConstants}.
    *
    * @return Command that runs the intake and stops when interrupted
    */
   public Command ejectAlgaeCommand() {
-    return runLowMotorCommand(() -> ejectAlgaeLowMotorVoltage)
-        .finallyDo(() -> stopCommand());
+    return runLowMotorCommand(() -> EJECT_ALGAE_LOW_MOTOR_VOLTAGE).finallyDo(() -> stopCommand());
   }
-
 
   /**
    * Sets the voltage for both intake motors to zero.
@@ -107,8 +105,7 @@ public class Intake extends SubsystemBase {
    * @return A command that will run once and terminate.
    */
   public Command stopTopMotorCommand() {
-    return 
-        runOnce(() -> intake.setTopMotorVoltage(0.0));
+    return runOnce(() -> intake.setTopMotorVoltage(0.0));
   }
 
   /**
@@ -117,8 +114,7 @@ public class Intake extends SubsystemBase {
    * @return A command that will run once and terminate.
    */
   public Command stopLowMotorCommand() {
-    return 
-        runOnce(() -> intake.setLowMotorVoltage(0.0));
+    return runOnce(() -> intake.setLowMotorVoltage(0.0));
   }
 
   /**

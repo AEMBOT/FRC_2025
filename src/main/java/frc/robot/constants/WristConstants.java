@@ -13,7 +13,7 @@ public class WristConstants {
   public static final double MAX_ANGLE = 135;
 
   /** Minimum angle for the wrist to move to, in degrees */
-  public static final double MIN_ANGLE = -25;
+  public static final double MIN_ANGLE = -40;
 
   /** */
   public static final float VOLTAGE_LIMIT = 5;
@@ -34,7 +34,7 @@ public class WristConstants {
   public static final double MOTOR_RATIO = 25;
 
   /** */
-  public static final double ENCODER_POSITION_OFFSET = 47.02818267570456 * -1;
+  public static final double ENCODER_POSITION_OFFSET = 105.3502 * -1;
 
   /** */
   public static final double GEAR_RATIO = 6;

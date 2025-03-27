@@ -95,7 +95,7 @@ public class CompoundCommands {
    *
    * @param isOnRight If we want to place on the right pole.
    * @param level The reef level.
-   * @return Command: Parallel {align drive, align arm}.timeout(5.0) -> wait(3.0) -> Eject
+   * @return Command: Parallel {align drive, align arm}.timeout(5.0) -> wait(0.5) -> Eject
    */
   public static Command placeReef(boolean isOnRight, int level) {
     Command driveCommand;
@@ -108,7 +108,8 @@ public class CompoundCommands {
     Command alignCommand =
         new ParallelCommandGroup(driveCommand, armToReefSafely(level)).withTimeout(5.0);
 
-    return alignCommand.andThen(ejectCoral());
+    // Small wait to ensure arm is stable before shooting
+    return alignCommand.andThen(waitSeconds(0.5)).andThen(ejectCoral());
   }
 
   public static Command intakeSource(boolean isOnRight) {

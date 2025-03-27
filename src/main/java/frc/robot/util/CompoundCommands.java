@@ -303,13 +303,14 @@ public class CompoundCommands {
     if (elevatorSetPos > elevator.getPosition().getAsDouble()) {
       return elevator
           .setPosition(() -> elevatorSetPos)
-          .andThen(wrist.setGoalPosition(() -> wristSetPos))
+          // .andThen(wrist.setGoalPosition(() -> wristSetPos))
           .andThen(pivot.setPosition(() -> pivotSetPos));
 
     } else {
-      return wrist
-          .setGoalPosition(() -> wristSetPos)
-          .andThen(elevator.setPosition(() -> elevatorSetPos))
+      // return wrist
+      //     .setGoalPosition(() -> wristSetPos)
+      return elevator
+          .setPosition(() -> elevatorSetPos)
           .andThen(pivot.setPosition(() -> pivotSetPos));
     }
   }

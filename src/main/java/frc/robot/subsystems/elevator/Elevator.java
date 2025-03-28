@@ -126,10 +126,14 @@ public class Elevator extends SubsystemBase {
   /** */
   public Command zeroElevator() {
 
-    double avgAmps = (inputs.elevatorCurrentAmps[0] + inputs.elevatorCurrentAmps[1]) / 2;
+    DoubleSupplier avgAmps =
+        () -> (inputs.elevatorCurrentAmps[0] + inputs.elevatorCurrentAmps[1]) / 2;
+
+    Logger.recordOutput("ElevatorAverageAmps", inputs.elevatorCurrentAmps);
 
     return run(() -> setVoltage(ZEROING_VOLTAGE))
-        .until(() -> avgAmps > ELEVATOR_ZEROING_MAX_AMPS)
-        .finallyDo(() -> runOnce(() -> io.setMotorZero()).alongWith(runOnce(() -> stopElevator())));
+        .until(() -> avgAmps.getAsDouble() > ELEVATOR_ZEROING_MAX_AMPS)
+        .andThen(runOnce(() -> io.setMotorZero()))
+        .andThen(runOnce(() -> stopElevator()));
   }
 }

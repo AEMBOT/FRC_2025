@@ -74,13 +74,13 @@ public class WristConstants {
   public static final double SIM_SETPOINT_POSITION = 1.05;
 
   /** */
-  public static final double ZERO_POSITION = 0; // TODO tune
+  public static final double ZERO_POSITION = -41.11875; // TODO tune
 
   /** */
-  public static final double ZEROING_VOLTAGE = -1; // TODO tune
+  public static final double ZEROING_VOLTAGE = 1; // TODO tune
 
   /** */
-  public static final double WRIST_ZEROING_MAX_AMPS = 5; // TODO tune
+  public static final double WRIST_ZEROING_MAX_AMPS = 10; // TODO tune
 
   /** */
   public static final SingleJointedArmSim SIM =

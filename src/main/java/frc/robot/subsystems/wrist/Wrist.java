@@ -119,6 +119,7 @@ public class Wrist extends SubsystemBase {
   public Command zeroWrist() {
     return run(() -> setVoltage(ZEROING_VOLTAGE))
         .until(() -> inputs.wristCurrentAmps > WRIST_ZEROING_MAX_AMPS)
-        .finallyDo(() -> runOnce(() -> io.setMotorZero()).alongWith(runOnce(() -> stopWrist())));
+        .andThen(runOnce(() -> io.setMotorZero()))
+        .andThen(runOnce(() -> stopWrist()));
   }
 }

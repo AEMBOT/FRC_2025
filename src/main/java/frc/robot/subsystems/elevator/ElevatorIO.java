@@ -18,7 +18,7 @@ public interface ElevatorIO {
     /**
      * Currents amps applied to each motor. Both motors are logged indivually to better find issues.
      */
-    public double[] elevatorCurrentAmps = new double[] {};
+    public double[] elevatorCurrentAmps = new double[] {0, 0};
 
     /** Goal position of the elevator in inches */
     public double elevatorGoalPosition = 45;

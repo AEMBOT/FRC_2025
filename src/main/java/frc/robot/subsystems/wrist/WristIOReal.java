@@ -57,11 +57,11 @@ public class WristIOReal implements WristIO {
      * in?"); delay(1); }
      */
     wristGoal = getAbsoluteMotorPosition();
-    wristSetpoint = new TrapezoidProfile.State(getAbsoluteEncoderPosition(), 0);
+    wristSetpoint = new TrapezoidProfile.State(getAbsoluteMotorPosition(), 0);
   }
 
   public void updateInputs(WristIOInputs inputs) {
-    inputs.wristAbsolutePosition = getAbsoluteEncoderPosition();
+    inputs.wristAbsolutePosition = getAbsoluteMotorPosition();
     inputs.wristAbsoluteEncoderRawRotations = ENCODER.get();
     Logger.recordOutput("Wrist/motorTemp", motor.getDeviceTemp().getValueAsDouble());
     Logger.recordOutput("rawWristMotorValue", ENCODER.get());

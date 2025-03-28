@@ -148,7 +148,6 @@ public class ElevatorIOReal implements ElevatorIO {
 
   @Override
   public void setMotorZero() {
-    motorOffset =
-        (rotToMetMultFactor * ZERO_POSITION / 360) - leadingMotor.getPosition().getValueAsDouble();
+    motorOffset = -leadingMotor.getPosition().getValueAsDouble();
   }
 }

@@ -16,6 +16,7 @@ import java.util.function.BooleanSupplier;
  */
 public class EnhancedTrigger extends Trigger {
   public Boolean toggle = false;
+  public Trigger toggleTrigger = new Trigger(() -> toggle);
 
   public EnhancedTrigger(BooleanSupplier condition) {
     super(condition);
@@ -56,6 +57,26 @@ public class EnhancedTrigger extends Trigger {
 
   public EnhancedTrigger onHeld(double requiredHoldTime, Command command) {
     this.whileTrue(defer(() -> untilHeld(requiredHoldTime), Set.of()).andThen(command::schedule));
+    return this;
+  }
+
+  public EnhancedTrigger onToggleTrue(Command command) {
+    toggleTrigger.onTrue(command);
+    return this;
+  }
+
+  public EnhancedTrigger onToggleFalse(Command command) {
+    toggleTrigger.onFalse(command);
+    return this;
+  }
+
+  public EnhancedTrigger whileToggleTrue(Command command) {
+    toggleTrigger.whileTrue(command);
+    return this;
+  }
+
+  public EnhancedTrigger whileToggleFalse(Command command) {
+    toggleTrigger.whileFalse(command);
     return this;
   }
 }

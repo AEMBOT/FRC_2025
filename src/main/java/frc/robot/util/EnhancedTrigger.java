@@ -1,6 +1,7 @@
 package frc.robot.util;
 
 import static edu.wpi.first.wpilibj2.command.Commands.defer;
+import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
 import static edu.wpi.first.wpilibj2.command.Commands.waitUntil;
 
 import edu.wpi.first.wpilibj.RobotController;
@@ -9,14 +10,25 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
 
-/** An extension of the {@link Trigger} class with a few additional trigger conditions */
+/** An extension of the {@link Trigger} class with a few additional trigger conditions.
+ * Note that an enhanced trigger has state. You generally don't want to make multiple
+ * enhanced instances of the same trigger.
+ */
 public class EnhancedTrigger extends Trigger {
+  public Boolean toggle = false;
+
   public EnhancedTrigger(BooleanSupplier condition) {
     super(condition);
+    configure();
   }
 
   public EnhancedTrigger(Trigger trigger) {
     super(trigger::getAsBoolean);
+    configure();
+  }
+
+  private void configure() {
+    this.onTrue(runOnce(() -> this.toggle = !this.toggle));
   }
 
   /**
@@ -37,12 +49,12 @@ public class EnhancedTrigger extends Trigger {
         });
   }
 
-  public Trigger whileHeld(double requiredHoldTime, Command command) {
+  public EnhancedTrigger whileHeld(double requiredHoldTime, Command command) {
     this.whileTrue(defer(() -> untilHeld(requiredHoldTime), Set.of()).andThen(command));
     return this;
   }
 
-  public Trigger onHeld(double requiredHoldTime, Command command) {
+  public EnhancedTrigger onHeld(double requiredHoldTime, Command command) {
     this.whileTrue(defer(() -> untilHeld(requiredHoldTime), Set.of()).andThen(command::schedule));
     return this;
   }

@@ -1,0 +1,74 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "2 Piece Center Right.0"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoPlaceLeft4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ArmToStow"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "2 Piece Center Right.1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "2 Piece Center Right.2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoIntakeSourceRight"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "ArmToStow"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "2 Piece Center Right.3"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoPlaceRight4"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": true
+}

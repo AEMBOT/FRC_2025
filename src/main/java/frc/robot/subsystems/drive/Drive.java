@@ -372,6 +372,11 @@ public class Drive extends SubsystemBase {
     setPose(new Pose2d(getPose().getTranslation(), yaw));
   }
 
+  /** Quick and dirty method of "re-zeroing". Sets odometry rotation to gyro reported rotation. */
+  public void zeroToGyro() {
+    setPose(new Pose2d(getPose().getTranslation(), gyroInputs.yawPosition));
+  }
+
   /** Returns an array of module translations. */
   public static Translation2d[] getModuleTranslations() {
     return new Translation2d[] {

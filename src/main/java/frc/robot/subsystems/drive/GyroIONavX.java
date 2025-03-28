@@ -54,8 +54,7 @@ public class GyroIONavX implements GyroIO {
                 (Double value) ->
                     Rotation2d.fromDegrees(
                         switch (currentRobot) {
-                          case DORY ->
-                              -value; // According to last years code, clef NavX is inverted
+                          case DORY -> value; // According to last years code, clef NavX is inverted
                           case NAUTILUS -> -value;
                         }))
             .toArray(Rotation2d[]::new);
@@ -64,5 +63,12 @@ public class GyroIONavX implements GyroIO {
 
     Logger.recordOutput("NavX Rotation", navX.getRotation2d());
     Logger.recordOutput("NavX Last Sensor Timestamp", navX.getLastSensorTimestamp());
+  }
+
+  @Override
+  public void setYaw(Rotation2d yaw) {
+    navX.setAngleAdjustment(0.0); // Reset angle adjustment so we can rezero
+
+    navX.setAngleAdjustment(yaw.getDegrees() - navX.getAngle());
   }
 }

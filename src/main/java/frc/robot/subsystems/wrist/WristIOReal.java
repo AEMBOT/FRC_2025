@@ -63,6 +63,7 @@ public class WristIOReal implements WristIO {
 
   public void updateInputs(WristIOInputs inputs) {
     inputs.wristAbsolutePosition = getAbsoluteEncoderPosition();
+    inputs.wristAbsoluteEncoderRawRotations = ENCODER.get();
     Logger.recordOutput("Wrist/motorTemp", motor.getDeviceTemp().getValueAsDouble());
     Logger.recordOutput("rawWristMotorValue", ENCODER.get());
     Logger.recordOutput(

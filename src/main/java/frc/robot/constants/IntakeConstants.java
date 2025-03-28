@@ -16,7 +16,7 @@ public class IntakeConstants {
 
   // Used in auto. Teleop is just whileTrue.
   public static final double INTAKE_TIMEOUT = 2.5;
-  public static final double EJECT_TIMEOUT = 0.5;
+  public static final double EJECT_TIMEOUT = 1.0;
 
   /* Time after we see a coral when intaking to ensure it gets sufficiently intaken */
   public static final double INTAKE_WAIT_TIME = 0.1;

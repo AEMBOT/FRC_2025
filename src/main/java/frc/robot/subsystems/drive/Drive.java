@@ -363,12 +363,12 @@ public class Drive extends SubsystemBase {
 
   /** Resets the current odometry pose. */
   public void setPose(Pose2d pose) {
+    gyroIO.setYaw(pose.getRotation());
     poseEstimator.resetPosition(rawGyroRotation, getModulePositions(), pose);
   }
 
   /** Sets the current odometry yaw. */
   public void setYaw(Rotation2d yaw) {
-    gyroIO.setYaw(yaw);
     setPose(new Pose2d(getPose().getTranslation(), yaw));
   }
 

@@ -110,6 +110,7 @@ public class AprilTagVision extends SubsystemBase {
 
   /**
    * Update the yaw for the vision system. Used for constrained solve pnp
+   *
    * @param heading The current heading of the robot. This should be the gyro output.
    */
   public void updateHeading(Rotation2d heading) {

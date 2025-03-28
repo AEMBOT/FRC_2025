@@ -7,7 +7,6 @@ package frc.robot;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 import static frc.robot.constants.GeneralConstants.currentMode;
 import static frc.robot.constants.GeneralConstants.currentRobot;
-import static org.littletonrobotics.junction.Logger.getTimestamp;
 import static frc.robot.util.EnhancedTrigger.enhanceTrigger;
 
 import com.pathplanner.lib.auto.AutoBuilder;

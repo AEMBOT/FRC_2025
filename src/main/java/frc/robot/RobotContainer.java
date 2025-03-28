@@ -150,9 +150,9 @@ public class RobotContainer {
         .whileTrue(elevator.changePosition(-0.25))
         .onFalse(elevator.changePosition(0));
 
-    backupController.leftBumper().whileTrue(intake.intakeCommand());
+    backupController.leftBumper().whileTrue(intake.intakeCoralCommand());
 
-    backupController.rightBumper().whileTrue(intake.ejectCommand());
+    backupController.rightBumper().whileTrue(intake.ejectCoralCommand());
 
     backupController
         .povUp()

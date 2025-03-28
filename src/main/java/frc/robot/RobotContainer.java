@@ -7,14 +7,20 @@ package frc.robot;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 import static frc.robot.constants.GeneralConstants.currentMode;
 import static frc.robot.constants.GeneralConstants.currentRobot;
+import static org.littletonrobotics.junction.Logger.getTimestamp;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.GeneralConstants;
+import frc.robot.constants.LedConstants;
+import frc.robot.subsystems.LEDcontroller.LedController;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONavX;
@@ -34,6 +40,7 @@ import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.subsystems.wrist.WristIO;
 import frc.robot.subsystems.wrist.WristIOReal;
 import frc.robot.util.CompoundCommands;
+import frc.robot.util.FieldUtil;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -46,6 +53,7 @@ public class RobotContainer {
   private final Pivot pivot;
   private final Elevator elevator;
   private final Wrist wrist;
+  private LedController LED = new LedController();
 
   // Controllers
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -53,6 +61,9 @@ public class RobotContainer {
 
   // Driver-assist variables
   @AutoLogOutput private int reef_level = 4; // Terminology: Trough is L1, top is L4
+
+  // The time we start holding button to disable vision
+  double visionDisableTimeStart = Double.MAX_VALUE;
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -120,6 +131,7 @@ public class RobotContainer {
     CompoundCommands.configure(drive, elevator, pivot, wrist, intake);
     configureBindings();
 
+    configureLEDTriggers();
     // Set up auto chooser
     autoChooser = new LoggedDashboardChooser<>("Auto Routines", AutoBuilder.buildAutoChooser());
   }
@@ -145,10 +157,46 @@ public class RobotContainer {
         .whileTrue(elevator.changePosition(-0.25))
         .onFalse(elevator.changePosition(0));
 
-    backupController.a().whileTrue(CompoundCommands.armToReef(reef_level));
+    backupController.leftBumper().whileTrue(intake.intakeCommand());
 
-    controller.rightTrigger(0.25).whileTrue(intake.ejectCommand());
-    controller.leftTrigger(0.25).whileTrue(intake.intakeCommand());
+    backupController.rightBumper().whileTrue(intake.ejectCommand());
+
+    backupController
+        .povUp()
+        .onTrue(
+            runOnce(
+                () -> {
+                  this.visionDisableTimeStart = getTimestamp();
+                }))
+        .whileTrue(
+            run(
+                () -> {
+                  if ((getTimestamp() - this.visionDisableTimeStart) / 1000000 > 1.0) {
+                    drive.disableVision();
+                  }
+                }))
+        .onFalse(
+            runOnce(
+                (() -> {
+                  this.visionDisableTimeStart = Double.MAX_VALUE;
+                })));
+
+    backupController.rightStick().onTrue(CompoundCommands.armToAlgae(true));
+    backupController.leftStick().onTrue(CompoundCommands.armToAlgae(false));
+
+    backupController
+        .a()
+        .whileTrue(CompoundCommands.deferArm(() -> CompoundCommands.armToReefSafely(reef_level)));
+    backupController.b().whileTrue(CompoundCommands.armToSource());
+
+    controller
+        .leftTrigger(0.25)
+        .whileTrue(intake.intakeCommand())
+        .onFalse(CompoundCommands.armToStow());
+    controller
+        .rightTrigger(0.25)
+        .whileTrue(intake.ejectCommand())
+        .onFalse(intake.runIntakeCommand(() -> 0).alongWith(CompoundCommands.armToStow()));
 
     controller
         .rightStick()
@@ -194,13 +242,13 @@ public class RobotContainer {
         .whileTrue(
             new ParallelCommandGroup(
                 CompoundCommands.deferDrive(() -> CompoundCommands.driveToLeftReef(reef_level)),
-                CompoundCommands.deferArm(() -> CompoundCommands.armToReef(reef_level))));
+                CompoundCommands.deferArm(() -> CompoundCommands.armToReefSafely(reef_level))));
     controller
         .rightBumper()
         .whileTrue(
             new ParallelCommandGroup(
                 CompoundCommands.deferDrive(() -> CompoundCommands.driveToRightReef(reef_level)),
-                CompoundCommands.deferArm(() -> CompoundCommands.armToReef(reef_level))));
+                CompoundCommands.deferArm(() -> CompoundCommands.armToReefSafely(reef_level))));
 
     controller
         .a()
@@ -225,6 +273,51 @@ public class RobotContainer {
 
     controller.back().onTrue(runOnce(drive::zeroToGyro));
   }
+
+  private boolean IsEndGame() {
+    return DriverStation.getMatchTime() <= 20 && DriverStation.isAutonomous() == Boolean.FALSE;
+  }
+
+  private void configureLEDTriggers() {
+    // Set "default" color for alliance to red or blue
+    // new Trigger(() -> (DriverStation.isFMSAttached() || DriverStation.isDSAttached()))
+    //     .whileTrue(Commands.runOnce(() -> LED.getalliance()))
+    //     .onFalse(Commands.runOnce(() -> LED.LEDDO(LedConstants.IDLE)));
+
+    new Trigger(() -> FieldUtil.getAllianceSafely() == Alliance.Blue)
+        .whileTrue(runOnce(() -> LED.LEDDO(LedConstants.BLUE)).ignoringDisable(true))
+        .whileFalse(runOnce(() -> LED.LEDDO(LedConstants.RED)).ignoringDisable(true));
+
+    new Trigger(() -> intake.getHasGamePiece())
+        .onTrue(Commands.runOnce(() -> LED.LEDDO(LedConstants.INTAKE_HAVE_CORAL)))
+        .onFalse(
+            Commands.runOnce(
+                    () -> {
+                      if (FieldUtil.getAllianceSafely() == Alliance.Blue) {
+                        LED.LEDDO(LedConstants.BLUE);
+                      } else {
+                        LED.LEDDO(LedConstants.RED);
+                      }
+                    })
+                .ignoringDisable(true));
+
+    new Trigger(() -> controller.rightTrigger(0.25).getAsBoolean() && intake.getHasGamePiece())
+        .onTrue(Commands.runOnce(() -> LED.LEDDO(LedConstants.SHOOT)));
+
+    new Trigger(this::IsEndGame)
+        .onTrue(Commands.runOnce(() -> LED.LEDDO(LedConstants.SPEED_1)))
+        .onFalse(Commands.runOnce(() -> LED.LEDDO(LedConstants.SPEED_2)));
+  }
+
+  // TODO:
+  // Robot-side:
+  // Orange = reef 1
+  // Yellow = reef 2
+  // Green = reef 3
+  // Purple = reef 4
+  // Arduino:
+  // Rainbow isn't smoothly moving
+  // Potential fix deployed? -> Back half of upper LEDs are staying the same color
 
   public Command getAutonomousCommand() {
     return autoChooser.get();

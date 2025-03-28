@@ -35,6 +35,9 @@ public interface ModuleIO {
     public Rotation2d[] odometryTurnPositions = new Rotation2d[] {};
 
     public boolean moduleDataValid = true;
+
+    public double driveMotorTemp = 0.0;
+    public double turnMotorTemp = 0.0;
   }
 
   /** Updates the set of loggable inputs. */

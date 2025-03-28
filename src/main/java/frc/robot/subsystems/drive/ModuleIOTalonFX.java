@@ -275,6 +275,9 @@ public class ModuleIOTalonFX implements ModuleIO {
     timestampQueue.clear();
     drivePositionQueue.clear();
     turnPositionQueue.clear();
+
+    inputs.driveMotorTemp = driveTalon.getDeviceTemp().getValueAsDouble();
+    inputs.turnMotorTemp = turnTalon.getDeviceTemp().getValueAsDouble();
   }
 
   @Override

@@ -158,6 +158,8 @@ public class RobotContainer {
         .whileTrue(elevator.changePosition(-0.25))
         .onFalse(elevator.changePosition(0));
 
+    backupController.povDown().onTrue(zeroArm());
+
     backupController.leftBumper().whileTrue(intake.intakeCommand());
 
     backupController.rightBumper().whileTrue(intake.ejectCommand());
@@ -320,5 +322,9 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     return autoChooser.get();
+  }
+
+  public Command zeroArm() {
+    return wrist.zeroWrist().andThen(elevator.zeroElevator());
   }
 }

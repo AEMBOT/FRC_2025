@@ -147,7 +147,7 @@ public class ElevatorIOReal implements ElevatorIO {
   }
 
   @Override
-  public void reZero() {
-    motorOffset = -getAbsoluteMotorPosition();
+  public void setMotorZero() {
+    motorOffset = -leadingMotor.getPosition().getValueAsDouble();
   }
 }

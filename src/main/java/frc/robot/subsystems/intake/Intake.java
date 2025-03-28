@@ -49,7 +49,7 @@ public class Intake extends SubsystemBase {
     return runTopMotorCommand(() -> INTAKE_CORAL_TOP_MOTOR_VOLTAGE)
         .alongWith(runLowMotorCommand(() -> INTAKE_CORAL_LOW_MOTOR_VOLTAGE))
         .until(getHasGamePiece())
-        .andThen(waitSeconds(INTAKE_WAIT_TIME))
+        .andThen(waitSeconds(INTAKE_INSERTION_DELAY))
         .finallyDo(() -> stopCommand());
   }
 
@@ -62,7 +62,7 @@ public class Intake extends SubsystemBase {
   public Command ejectCoralCommand() {
     return runTopMotorCommand(() -> EJECT_CORAL_TOP_MOTOR_VOLTAGE)
         .until(getHasGamePiece())
-        .andThen(waitSeconds(EJECT_WAIT_TIME))
+        .andThen(waitSeconds(EJECT_RELEASE_DELAY))
         .finallyDo(() -> stopTopMotorCommand());
   }
 

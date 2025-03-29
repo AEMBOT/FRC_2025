@@ -6,9 +6,9 @@ public class IntakeConstants {
 
   public static final double INTAKE_MOTOR_CURRENT_LIMIT = 5;
 
-  public static final double INTAKE_CORAL_TOP_MOTOR_VOLTAGE = 3;
+  public static final double INTAKE_CORAL_TOP_MOTOR_VOLTAGE = -3;
   public static final double INTAKE_CORAL_LOW_MOTOR_VOLTAGE = 3;
-  public static final double EJECT_CORAL_TOP_MOTOR_VOLTAGE = -4;
+  public static final double EJECT_CORAL_TOP_MOTOR_VOLTAGE = 4;
 
   public static final double INTAKE_ALGAE_LOW_MOTOR_VOLTAGE = -4;
   public static final double EJECT_ALGAE_LOW_MOTOR_VOLTAGE = 3;
@@ -19,9 +19,9 @@ public class IntakeConstants {
   public static final double EJECT_TIMEOUT = 1.0;
 
   /* Time after we see a coral when intaking to ensure it gets sufficiently intaken */
-  public static final double INTAKE_INSERTION_DELAY = 0.1;
+  public static final double INTAKE_INSERTION_DELAY = 0.2;
   /* Time after we stop seeing a coral when ejecting to ensure it gets sufficiently ejected */
-  public static final double EJECT_RELEASE_DELAY = 0.1;
+  public static final double EJECT_RELEASE_DELAY = 0.2;
 
   /* Distanse where if the can range returns less than it we must have a coral */
   public static final double HAS_CORAL_DISTANCE = 0.127;

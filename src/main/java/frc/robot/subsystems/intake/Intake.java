@@ -28,6 +28,15 @@ public class Intake extends SubsystemBase {
     return run(() -> intake.setTopMotorVoltage(volts.getAsDouble()));
   }
 
+  /** Runs the coral intake at the specified voltage. */
+  public Command runBothMotorsCommand(DoubleSupplier voltsTop, DoubleSupplier voltsBottom) {
+    return run(
+        () -> {
+          intake.setTopMotorVoltage(voltsTop.getAsDouble());
+          intake.setLowMotorVoltage(voltsBottom.getAsDouble());
+        });
+  }
+
   /** Runs the algae intake at the specified voltage. */
   public Command runLowMotorCommand(DoubleSupplier volts) {
     return run(() -> intake.setLowMotorVoltage(volts.getAsDouble()));
@@ -46,8 +55,8 @@ public class Intake extends SubsystemBase {
    * @return Command that runs the intake until we sense a coral, then continues for a small time.
    */
   public Command intakeCoralCommand() {
-    return runTopMotorCommand(() -> INTAKE_CORAL_TOP_MOTOR_VOLTAGE)
-        .alongWith(runLowMotorCommand(() -> INTAKE_CORAL_LOW_MOTOR_VOLTAGE))
+    return runBothMotorsCommand(
+            () -> INTAKE_CORAL_TOP_MOTOR_VOLTAGE, () -> INTAKE_CORAL_LOW_MOTOR_VOLTAGE)
         .until(getHasGamePiece())
         .andThen(waitSeconds(INTAKE_INSERTION_DELAY))
         .finallyDo(() -> stopCommand());
@@ -95,8 +104,11 @@ public class Intake extends SubsystemBase {
    * @return A command that will run once and terminate.
    */
   public Command stopCommand() {
-    return runOnce(() -> intake.setLowMotorVoltage(0.0))
-        .alongWith(runOnce(() -> intake.setTopMotorVoltage(0.0)));
+    return runOnce(
+        () -> {
+          intake.setLowMotorVoltage(0.0);
+          intake.setTopMotorVoltage(0.0);
+        });
   }
 
   /**

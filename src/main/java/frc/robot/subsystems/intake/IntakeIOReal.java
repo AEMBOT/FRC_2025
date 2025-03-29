@@ -31,7 +31,7 @@ public class IntakeIOReal implements IntakeIO {
 
   @Override
   public boolean hasGamePiece() {
-    return CANRANGE.getDistance().getValueAsDouble() + CANRANGE_OFFSET < HAS_CORAL_DISTANCE;
+    return CANRANGE.getDistance().getValueAsDouble() < HAS_CORAL_DISTANCE;
   }
 
   @Override

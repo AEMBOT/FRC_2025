@@ -16,16 +16,17 @@ package frc.robot.subsystems.drive;
 import static frc.robot.constants.DriveConstants.Module.ODOMETRY_FREQUENCY;
 import static frc.robot.constants.GeneralConstants.currentRobot;
 
-import com.kauailabs.navx.frc.AHRS;
+import com.studica.frc.AHRS;
+import com.studica.frc.AHRS.NavXComType;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.SPI;
 import java.util.Queue;
 import org.littletonrobotics.junction.Logger;
 
 /** IO implementation for NavX */
 public class GyroIONavX implements GyroIO {
-  private final AHRS navX = new AHRS(SPI.Port.kMXP, (byte) ODOMETRY_FREQUENCY); // 200Hz update rate
+  private final AHRS navX =
+      new AHRS(NavXComType.kMXP_SPI, (int) ODOMETRY_FREQUENCY); // 200Hz update rate
   private final Queue<Double> yawPositionQueue;
   private final Queue<Double> yawTimestampQueue;
 
@@ -54,8 +55,8 @@ public class GyroIONavX implements GyroIO {
                 (Double value) ->
                     Rotation2d.fromDegrees(
                         switch (currentRobot) {
-                          case DORY -> value; // According to last years code, clef NavX is inverted
-                          case NAUTILUS -> -value;
+                          case DORY -> value;
+                          case NAUTILUS -> value;
                         }))
             .toArray(Rotation2d[]::new);
     yawTimestampQueue.clear();

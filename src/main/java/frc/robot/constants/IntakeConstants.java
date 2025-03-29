@@ -2,7 +2,7 @@ package frc.robot.constants;
 
 public class IntakeConstants {
   public static final int INTAKE_TOP_MOTOR_ID = 15;
-  public static final int INTAKE_LOW_MOTOR_ID = 16; // TODO confirm this is the correct id
+  public static final int INTAKE_LOW_MOTOR_ID = 16;
 
   public static final double INTAKE_MOTOR_CURRENT_LIMIT = 5;
 

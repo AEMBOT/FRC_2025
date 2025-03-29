@@ -367,13 +367,19 @@ public class Drive extends SubsystemBase {
 
   /** Resets the current odometry pose. */
   public void setPose(Pose2d pose) {
-    poseEstimator.resetPosition(rawGyroRotation, getModulePositions(), pose);
+    gyroIO.setYaw(pose.getRotation());
+    // We just pass the desired pose for gyro yaw, since we've just re-zeroed it.
+    poseEstimator.resetPosition(pose.getRotation(), getModulePositions(), pose);
   }
 
   /** Sets the current odometry yaw. */
   public void setYaw(Rotation2d yaw) {
-    gyroIO.setYaw(yaw);
     setPose(new Pose2d(getPose().getTranslation(), yaw));
+  }
+
+  /** Quick and dirty method of "re-zeroing". Sets odometry rotation to gyro reported rotation. */
+  public void zeroToGyro() {
+    setPose(new Pose2d(getPose().getTranslation(), gyroInputs.yawPosition));
   }
 
   /** Returns an array of module translations. */

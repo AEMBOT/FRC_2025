@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "2 Piece Center Right.0"
+            "pathName": "Right 2P.0"
           }
         },
         {
@@ -25,13 +25,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "2 Piece Center Right.1"
+            "pathName": "Right 2P.1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "2 Piece Center Right.2"
+            "pathName": "Right 2P.2"
           }
         },
         {
@@ -53,7 +53,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "2 Piece Center Right.3"
+                  "pathName": "Right 2P.3"
                 }
               }
             ]

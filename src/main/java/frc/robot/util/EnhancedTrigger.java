@@ -10,9 +10,10 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
 
-/** An extension of the {@link Trigger} class with a few additional trigger conditions.
- * Note that an enhanced trigger has state. You generally don't want to make multiple
- * enhanced instances of the same trigger.
+/**
+ * An extension of the {@link Trigger} class with a few additional trigger conditions. Note that an
+ * enhanced trigger has state. You generally don't want to make multiple enhanced instances of the
+ * same trigger.
  */
 public class EnhancedTrigger extends Trigger {
   public Boolean toggle = false;

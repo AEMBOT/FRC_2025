@@ -9,7 +9,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 
 public class WristConstants {
-    // FIXME Put soft stops back when zeroing works
+  // FIXME Put soft stops back when zeroing works
   /** Maximum angle for the wrist to move to, in degrees */
   public static final double MAX_ANGLE = 360;
 

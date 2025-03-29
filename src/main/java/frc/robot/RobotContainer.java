@@ -76,7 +76,8 @@ public class RobotContainer {
           case NAUTILUS:
             intake = new Intake(new IntakeIOReal());
             pivot = new Pivot(new PivotIOReal());
-            elevator = new Elevator(new ElevatorIO() {}); // FIXME Change this to real when elevator fixed
+            elevator =
+                new Elevator(new ElevatorIO() {}); // FIXME Change this to real when elevator fixed
             wrist = new Wrist(new WristIOReal());
             break;
           default: // Dory doesn't have arm

@@ -60,7 +60,7 @@ public class Intake extends SubsystemBase {
             () -> INTAKE_CORAL_TOP_MOTOR_VOLTAGE, () -> INTAKE_CORAL_LOW_MOTOR_VOLTAGE)
         // .until(getHasGamePiece())
         // .andThen(waitSeconds(INTAKE_INSERTION_DELAY))
-        .finallyDo(() -> stopCommand().schedule());
+        .finallyDo(() -> {intake.setLowMotorVoltage(0); intake.setTopMotorVoltage(0);});
   }
 
   /**
@@ -73,7 +73,7 @@ public class Intake extends SubsystemBase {
     return runTopMotorCommand(() -> EJECT_CORAL_TOP_MOTOR_VOLTAGE)
         .until(getHasGamePiece())
         .andThen(waitSeconds(EJECT_RELEASE_DELAY))
-        .finallyDo(() -> stopTopMotorCommand().schedule());
+        .finallyDo(() -> {intake.setLowMotorVoltage(0); intake.setTopMotorVoltage(0);});
   }
 
   /**
@@ -85,7 +85,7 @@ public class Intake extends SubsystemBase {
    */
   public Command intakeAlgaeCommand() {
     return runLowMotorCommand(() -> INTAKE_ALGAE_LOW_MOTOR_VOLTAGE)
-        .finallyDo(() -> runLowMotorCommand(() -> HOLD_ALGAE_LOW_MOTOR_VOLTAGE));
+        .finallyDo(() -> intake.setLowMotorVoltage(HOLD_ALGAE_LOW_MOTOR_VOLTAGE));
   }
 
   /**
@@ -97,7 +97,7 @@ public class Intake extends SubsystemBase {
    */
   public Command ejectAlgaeCommand() {
     return runLowMotorCommand(() -> EJECT_ALGAE_LOW_MOTOR_VOLTAGE)
-        .finallyDo(() -> stopCommand().schedule());
+        .finallyDo(() -> intake.setLowMotorVoltage(0));
   }
 
   /**

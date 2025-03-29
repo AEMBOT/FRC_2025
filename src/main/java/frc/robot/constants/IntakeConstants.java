@@ -12,7 +12,7 @@ public class IntakeConstants {
 
   public static final double INTAKE_ALGAE_LOW_MOTOR_VOLTAGE = -4;
   public static final double EJECT_ALGAE_LOW_MOTOR_VOLTAGE = 3;
-  public static final double HOLD_ALGAE_LOW_MOTOR_VOLTAGE = -1;
+  public static final double HOLD_ALGAE_LOW_MOTOR_VOLTAGE = -2;
 
   // Used in auto. Teleop is just whileTrue.
   public static final double INTAKE_TIMEOUT = 2.5;

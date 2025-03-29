@@ -13,7 +13,7 @@ public class PivotConstants {
   public static final double MAX_ANGLE = 120;
 
   /** Minimum angle for the pivot to move to, in degrees */
-  public static final double MIN_ANGLE = 3;
+  public static final double MIN_ANGLE = 0.0;
 
   /** */
   public static final float VOLTAGE_LIMIT = 5;

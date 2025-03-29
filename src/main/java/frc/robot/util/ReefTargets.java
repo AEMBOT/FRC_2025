@@ -48,11 +48,10 @@ public final class ReefTargets {
    * @param gamePiecePosition Position of our game piece from the center of intake in meters
    * @return The {@link Pose2d} to align to for reef placement
    */
-  public Pose2d getReefPose(
-      Boolean isOnRight, Pose2d currentPose, int level, double gamePiecePosition) {
+  public Pose2d getReefPose(Boolean isOnRight, Pose2d currentPose, int level) {
 
     Pose2d targetTag = findClosestTagPose(currentPose);
-    return targetTag.transformBy(getTagOffset(level, isOnRight, gamePiecePosition));
+    return targetTag.transformBy(getTagOffset(level, isOnRight));
   }
 
   /**
@@ -61,26 +60,20 @@ public final class ReefTargets {
    * @param gamePiecePosition Position of our game piece from the center of intake in meters
    * @return The offset of our Robot position from the ApriLTag in a {@link Transform2d}
    */
-  public Transform2d getTagOffset(int level, Boolean isOnRight, double gamePiecePosition) {
-    double additionalOffset;
-    if (level == 1) {
-      additionalOffset = 0;
-    } else {
-      additionalOffset = gamePiecePosition;
-    }
+  public Transform2d getTagOffset(int level, Boolean isOnRight) {
 
     Transform2d coralOffset;
     if (isOnRight) {
       coralOffset =
           new Transform2d(
               PositionConstants.reefOffsetsX[level - 1],
-              PositionConstants.reefOffsetY + additionalOffset,
+              PositionConstants.reefOffsetY,
               new Rotation2d(PositionConstants.reefRobotAngle));
     } else {
       coralOffset =
           new Transform2d(
               PositionConstants.reefOffsetsX[level - 1],
-              -PositionConstants.reefOffsetY + additionalOffset,
+              -PositionConstants.reefOffsetY,
               new Rotation2d(-PositionConstants.reefRobotAngle));
     }
     return coralOffset;

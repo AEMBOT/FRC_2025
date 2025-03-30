@@ -56,9 +56,7 @@ public class VisionConstants {
     public static final Transform3d backRightFromRobot =
         new Transform3d(
             new Translation3d(
-                Units.inchesToMeters(-12),
-                Units.inchesToMeters(-7.5),
-                Units.inchesToMeters(10.5)),
+                Units.inchesToMeters(-12), Units.inchesToMeters(-7.5), Units.inchesToMeters(10.5)),
             new Rotation3d(
                 Units.degreesToRadians(180),
                 Units.degreesToRadians(-11.75),

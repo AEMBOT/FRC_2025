@@ -287,7 +287,7 @@ public class RobotContainer {
         .whileTrue(runOnce(() -> LED.LEDDO(LedConstants.BLUE)).ignoringDisable(true))
         .whileFalse(runOnce(() -> LED.LEDDO(LedConstants.RED)).ignoringDisable(true));
 
-    new Trigger(() -> intake.getHasGamePiece())
+    new Trigger(() -> intake.getHasGamePiece().getAsBoolean())
         .onTrue(Commands.runOnce(() -> LED.LEDDO(LedConstants.INTAKE_HAVE_CORAL)))
         .onFalse(
             Commands.runOnce(
@@ -300,7 +300,10 @@ public class RobotContainer {
                     })
                 .ignoringDisable(true));
 
-    new Trigger(() -> controller.rightTrigger(0.25).getAsBoolean() && intake.getHasGamePiece())
+    new Trigger(
+            () ->
+                controller.rightTrigger(0.25).getAsBoolean()
+                    && intake.getHasGamePiece().getAsBoolean())
         .onTrue(Commands.runOnce(() -> LED.LEDDO(LedConstants.SHOOT)));
 
     new Trigger(this::IsEndGame)

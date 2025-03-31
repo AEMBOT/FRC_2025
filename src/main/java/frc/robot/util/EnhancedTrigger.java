@@ -80,4 +80,13 @@ public class EnhancedTrigger extends Trigger {
     toggleTrigger.whileFalse(command);
     return this;
   }
+
+  /**
+   * Runs the given command while the toggle is true. When the command terminates, set toggle to
+   * false.
+   */
+  public EnhancedTrigger whileToggleAndThenUntoggle(Command command) {
+    toggleTrigger.whileTrue(command.finallyDo(() -> this.toggle = false));
+    return this;
+  }
 }

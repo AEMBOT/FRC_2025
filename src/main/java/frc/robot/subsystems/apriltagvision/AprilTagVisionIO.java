@@ -15,6 +15,7 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.constants.GeneralConstants.Mode;
+import frc.robot.constants.VisionConstants;
 import frc.robot.constants.VisionConstants.CameraResolution;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.List;
@@ -242,7 +243,14 @@ public interface AprilTagVisionIO {
                           - 1)); // TODO Make sure this is the latest result, rather than oldest
 
       return new SimpleEntry<Optional<EstimatedRobotPose>, Optional<PhotonPipelineResult>>(
-          result.flatMap(poseEstimator::update), result);
+          result.flatMap(
+              (resultUnwrapped) ->
+                  poseEstimator.update(
+                      resultUnwrapped,
+                      Optional.empty(),
+                      Optional.empty(),
+                      Optional.of(VisionConstants.constrainedPnpParams))),
+          result);
     }
   }
 }

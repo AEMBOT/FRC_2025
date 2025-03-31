@@ -1,13 +1,10 @@
 package frc.robot.util;
 
-import static edu.wpi.first.wpilibj2.command.Commands.defer;
 import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
-import static edu.wpi.first.wpilibj2.command.Commands.waitUntil;
+import static edu.wpi.first.wpilibj2.command.Commands.waitSeconds;
 
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import java.util.Set;
 import java.util.function.BooleanSupplier;
 
 /**
@@ -41,23 +38,13 @@ public class EnhancedTrigger extends Trigger {
     return new EnhancedTrigger(trigger);
   }
 
-  private Command untilHeld(double requiredHoldTime) {
-    double startTime = RobotController.getFPGATime() / 1000000;
-
-    return waitUntil(
-        () -> {
-          double deltaTime = (RobotController.getFPGATime() / 1000000) - startTime;
-          return (deltaTime > requiredHoldTime);
-        });
-  }
-
   public EnhancedTrigger whileHeld(double requiredHoldTime, Command command) {
-    this.whileTrue(defer(() -> untilHeld(requiredHoldTime), Set.of()).andThen(command));
+    this.whileTrue(waitSeconds(requiredHoldTime).andThen(command));
     return this;
   }
 
   public EnhancedTrigger onHeld(double requiredHoldTime, Command command) {
-    this.whileTrue(defer(() -> untilHeld(requiredHoldTime), Set.of()).andThen(command::schedule));
+    this.whileTrue(waitSeconds(requiredHoldTime).andThen(command::schedule));
     return this;
   }
 

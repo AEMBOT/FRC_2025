@@ -70,7 +70,8 @@ public class EnhancedTrigger extends Trigger {
 
   /**
    * Runs the given command while the toggle is true. When the command terminates, set toggle to
-   * false.
+   * false. This works sort of like a version of onTrue that allows the user to terminate the
+   * command by re-pressing the button
    */
   public EnhancedTrigger whileToggleAndThenUntoggle(Command command) {
     toggleTrigger.whileTrue(command.finallyDo(() -> this.toggle = false));

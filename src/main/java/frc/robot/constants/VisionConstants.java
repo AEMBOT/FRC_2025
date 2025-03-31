@@ -23,7 +23,7 @@ public class VisionConstants {
 
   public static PoseStrategy poseStrategy = PoseStrategy.CONSTRAINED_SOLVEPNP;
   public static ConstrainedSolvepnpParams constrainedPnpParams =
-      new ConstrainedSolvepnpParams(false, 0.5e4);
+      new ConstrainedSolvepnpParams(false, 1.0e4);
 
   public static enum CameraResolution {
     HIGH_RES,

@@ -69,22 +69,22 @@ public class AprilTagVision extends SubsystemBase {
                   new PhotonCamera(DoryCameras.frontLeftName),
                   DoryCameras.frontLeftFromRobot,
                   VisionConstants.poseStrategy,
-                  CameraResolution.NORMAL),
+                  CameraResolution.HIGH_RES),
               new CameraPoseEstimator(
                   new PhotonCamera(DoryCameras.frontRightName),
                   DoryCameras.frontRightFromRobot,
                   VisionConstants.poseStrategy,
-                  CameraResolution.NORMAL),
+                  CameraResolution.HIGH_RES),
               new CameraPoseEstimator(
                   new PhotonCamera(DoryCameras.backLeftName),
                   DoryCameras.backLeftFromRobot,
                   VisionConstants.poseStrategy,
-                  CameraResolution.NORMAL),
+                  CameraResolution.HIGH_RES),
               new CameraPoseEstimator(
                   new PhotonCamera(DoryCameras.backRightName),
                   DoryCameras.backRightFromRobot,
                   VisionConstants.poseStrategy,
-                  CameraResolution.NORMAL),
+                  CameraResolution.HIGH_RES),
             };
         break;
     }

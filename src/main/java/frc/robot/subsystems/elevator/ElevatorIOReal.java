@@ -41,12 +41,12 @@ public class ElevatorIOReal implements ElevatorIO {
     leftMotorConfig.Slot0.kS = 0.15;
     leftMotorConfig.Slot0.kV = 0;
     leftMotorConfig.Slot0.kA = 0;
-    leftMotorConfig.Slot0.kP = 5;
+    leftMotorConfig.Slot0.kP = 9;
     leftMotorConfig.Slot0.kI = 0;
     leftMotorConfig.Slot0.kD = 0;
 
-    leftMotorConfig.MotionMagic.MotionMagicCruiseVelocity = 0.5 / rotToMetMultFactor;
-    leftMotorConfig.MotionMagic.MotionMagicAcceleration = 1 / rotToMetMultFactor;
+    leftMotorConfig.MotionMagic.MotionMagicCruiseVelocity = 4 / rotToMetMultFactor;
+    leftMotorConfig.MotionMagic.MotionMagicAcceleration = 4 / rotToMetMultFactor;
     leftMotorConfig.MotionMagic.MotionMagicJerk = 0 / rotToMetMultFactor;
 
     leadingMotor.getConfigurator().apply(leftMotorConfig);
@@ -77,7 +77,8 @@ public class ElevatorIOReal implements ElevatorIO {
   public void updateInputs(ElevatorIOInputs inputs) {
     Logger.recordOutput("Elevator/maxExtension", maxExtension);
     inputs.elevatorAbsolutePosition = getAbsoluteMotorPosition();
-    inputs.elevatorAbsoluteVelocity = leadingMotor.getVelocity().getValueAsDouble();
+    inputs.elevatorAbsoluteVelocity =
+        leadingMotor.getVelocity().getValueAsDouble() / rotToMetMultFactor;
     inputs.elevatorAppliedVolts = leadingMotor.getMotorVoltage().getValueAsDouble();
     inputs.elevatorCurrentAmps =
         new double[] {
@@ -107,6 +108,7 @@ public class ElevatorIOReal implements ElevatorIO {
 
   @Override
   public void setHeight(double height) {
+
     height = clamp(height, MIN_HEIGHT, MAX_HEIGHT);
     height = clamp(height, MIN_HEIGHT, maxExtension);
 
@@ -142,5 +144,10 @@ public class ElevatorIOReal implements ElevatorIO {
   public void resetProfile() {
     elevatorGoal = getAbsoluteMotorPosition();
     elevatorSetpoint = new TrapezoidProfile.State(getAbsoluteMotorPosition(), 0);
+  }
+
+  @Override
+  public void reZero() {
+    motorOffset = -getAbsoluteMotorPosition();
   }
 }

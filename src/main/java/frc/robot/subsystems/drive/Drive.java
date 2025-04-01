@@ -271,6 +271,10 @@ public class Drive extends SubsystemBase {
         () -> ChassisSpeeds.fromFieldRelativeSpeeds(speeds.get(), getRotation()));
   }
 
+  public void disableVision() {
+    aprilTagVision.useVision = false;
+  }
+
   /**
    * Stops the drive and turns the modules to an X arrangement to resist movement. The modules will
    * return to their normal orientations the next time a nonzero velocity is requested.
@@ -455,15 +459,15 @@ public class Drive extends SubsystemBase {
               ChassisSpeeds.fromFieldRelativeSpeeds(
                   slowmode.getAsBoolean()
                       ? linearVelocity.getX() * DriveConstants.SLOWMODE_MAX_METERS_PER_SEC
-                      : linearVelocity.getX() * DriveConstants.MAX_LINEAR_SPEED,
+                      : linearVelocity.getX() * DriveConstants.DESIRED_MAX_LINEAR_SPEED,
                   slowmode.getAsBoolean()
                       ? linearVelocity.getY() * DriveConstants.SLOWMODE_MAX_METERS_PER_SEC
-                      : linearVelocity.getY() * DriveConstants.MAX_LINEAR_SPEED,
+                      : linearVelocity.getY() * DriveConstants.DESIRED_MAX_LINEAR_SPEED,
                   slowmode.getAsBoolean()
                       ? omega
                           * DriveConstants.MAX_ANGULAR_SPEED
                           * DriveConstants.SLOWMODE_ROTATION_SPEED_FACTOR
-                      : omega * DriveConstants.MAX_ANGULAR_SPEED,
+                      : omega * DriveConstants.DESIRED_MAX_ANGULAR_SPEED,
                   isFlipped
                       ? drive.getRotation().plus(new Rotation2d(Math.PI))
                       : drive.getRotation()));

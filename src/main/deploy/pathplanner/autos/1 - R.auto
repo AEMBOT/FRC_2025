@@ -7,7 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "A-Drive"
+            "pathName": "2 Piece Center Right.0"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoPlaceLeft4"
           }
         }
       ]

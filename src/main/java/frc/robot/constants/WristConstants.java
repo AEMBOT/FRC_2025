@@ -13,7 +13,7 @@ public class WristConstants {
   public static final double MAX_ANGLE = 135;
 
   /** Minimum angle for the wrist to move to, in degrees */
-  public static final double MIN_ANGLE = -15;
+  public static final double MIN_ANGLE = -40;
 
   /** */
   public static final float VOLTAGE_LIMIT = 5;
@@ -31,10 +31,10 @@ public class WristConstants {
   public static final int ENCODER_ID = 2;
 
   /** */
-  public static final double MOTOR_RATIO = 7;
+  public static final double MOTOR_RATIO = 25;
 
   /** */
-  public static final double ENCODER_POSITION_OFFSET = -279.59280098982003 / 2;
+  public static final double ENCODER_POSITION_OFFSET = 105.3502 * -1;
 
   /** */
   public static final double GEAR_RATIO = 6;
@@ -59,7 +59,7 @@ public class WristConstants {
   public static final double SYS_ID_TIMEOUT = 30;
 
   /** How many degrees the wrist can be off its goal position for it to be sufficient */
-  public static final double ALLOWED_DEVIANCE = 1.15;
+  public static final double ALLOWED_DEVIANCE = 6;
 
   /** */
   public static final Translation3d TRANSLATION_FROM_ROBOT = new Translation3d(-0.2, 0, 0.255);

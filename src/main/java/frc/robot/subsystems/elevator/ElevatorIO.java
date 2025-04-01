@@ -49,4 +49,6 @@ public interface ElevatorIO {
 
   /** Resets the elevator goal and setpoint to the current angle of the elevator */
   public default void resetProfile() {}
+
+  public default void reZero() {}
 }

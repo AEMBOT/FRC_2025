@@ -3,11 +3,13 @@ package frc.robot.subsystems.pivot;
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.constants.GeneralConstants.UPDATE_PERIOD;
+import static frc.robot.constants.PivotConstants.ALLOWED_DEVIANCE;
 import static frc.robot.constants.PivotConstants.SYS_ID_RAMP_RATE;
 import static frc.robot.constants.PivotConstants.SYS_ID_STEP_VALUE;
 import static frc.robot.constants.PivotConstants.SYS_ID_TIMEOUT;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -91,7 +93,12 @@ public class Pivot extends SubsystemBase {
    * @return A {@link RunCommand} to set the pivot setpoint to posDeg.
    */
   public Command setPosition(DoubleSupplier posDeg) {
-    return run(() -> io.setAngle(posDeg.getAsDouble()));
+    return runOnce(() -> io.setAngle(posDeg.getAsDouble()))
+        .andThen(
+            Commands.waitUntil(
+                () ->
+                    Math.abs(inputs.pivotPosition - inputs.pivotAbsolutePosition)
+                        < ALLOWED_DEVIANCE));
   }
 
   /**
@@ -102,7 +109,7 @@ public class Pivot extends SubsystemBase {
    *     pivot dampening profile after completion.
    */
   public Command changePosition(double velocityDegPerSec) {
-    return setPosition(() -> inputs.pivotPosition + (velocityDegPerSec * UPDATE_PERIOD))
+    return run(() -> io.setAngle(inputs.pivotPosition + (velocityDegPerSec * UPDATE_PERIOD)))
         .finallyDo(io::resetProfile);
   }
 

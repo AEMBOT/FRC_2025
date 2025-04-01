@@ -3,20 +3,129 @@ package frc.robot.constants;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Radians;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import frc.robot.util.FieldUtil;
+
 public class PositionConstants {
   // Defines new variables for the x/y translations for the target positions (currently at
   // placeholders)
   // Origin to bumper ~0.4572 m
-  public static final double reefLevel1X = 0.3048 + 0.4572; // TODO: Measure
-  public static final double reefLevel2X = 0.3048 + 0.4572; // TODO: Measure
-  public static final double reefLevel3X = 0.3048 + 0.4572; // TODO: Measure
-  public static final double reefLevel4X = 0.4064 + 0.4572; // Measured but not exact
 
-  public static final double reefY = 0.1793875;
+  public static final double[] reefOffsetsX = {0.4318, 0.4318, 0.4318, 0.4318};
+  public static final double reefOffsetY = 0.1793875;
 
   public static final double reefRobotAngle = Radians.convertFrom(180, Degrees);
 
   // Define reef centerpoints (blue alliance)
   public static final double reefCenterX = 4.489323;
   public static final double reefCenterY = 4.0259;
+
+  // 0.4318 + 0.3429
+  // Define source targets
+  public static final Transform2d sourceOffset =
+      new Transform2d(Units.inchesToMeters(29), 0.0, Rotation2d.fromDegrees(180));
+
+  public static final Pose2d sourcePoseRightBlue =
+      VisionConstants.aprilTagFieldLayout.getTagPose(12).get().toPose2d().transformBy(sourceOffset);
+  public static final Pose2d sourcePoseLeftBlue =
+      VisionConstants.aprilTagFieldLayout.getTagPose(13).get().toPose2d().transformBy(sourceOffset);
+  public static final Pose2d sourcePoseRightRed = FieldUtil.applyAllianceFlip(sourcePoseRightBlue);
+  public static final Pose2d sourcePoseLeftRed = FieldUtil.applyAllianceFlip(sourcePoseLeftBlue);
+
+  public static Pose2d getLeftSourcePose() {
+    Alliance alliance = DriverStation.getAlliance().orElseGet(() -> Alliance.Blue);
+
+    switch (alliance) {
+      case Blue:
+        return sourcePoseLeftBlue;
+      case Red:
+        return sourcePoseLeftRed;
+      default:
+        return sourcePoseLeftBlue;
+    }
+  }
+
+  public static Pose2d getRightSourcePose() {
+    Alliance alliance = DriverStation.getAlliance().orElseGet(() -> Alliance.Blue);
+
+    switch (alliance) {
+      case Blue:
+        return sourcePoseRightBlue;
+      case Red:
+        return sourcePoseRightRed;
+      default:
+        return sourcePoseRightBlue;
+    }
+  }
+
+  /**
+   * Gets the pose for left or right source on our alliance.
+   *
+   * @param isOnRight If we want the right source rather than left. Usually from {@link
+   *     FieldUtil}.isOnRightSide
+   */
+  public static Pose2d getSourcePose(boolean isOnRight) {
+    if (isOnRight) {
+      return getRightSourcePose();
+    } else {
+      return getLeftSourcePose();
+    }
+  }
+
+  // L1 Arm Setpoint Values
+  public static final double L1WristAngle = 42.199999999999996;
+  public static final double L1PivotAngle = 33.10199999999992;
+  public static final double L1ElevatorExtension = 0;
+
+  // L2 Arm Setpoint Values
+  public static final double L2WristAngle = 6.799999999999816;
+  public static final double L2PivotAngle = 72.79999999999995;
+  public static final double L2ElevatorExtension = 0;
+
+  // L3 Arm Setpoint Values
+  public static final double L3WristAngle = -5.199999999999999;
+  public static final double L3PivotAngle = 76.2;
+  public static final double L3ElevatorExtension = 0.46500000000000263;
+
+  // L4 Arm Setpoint Values
+  public static final double L4WristAngle = -30.95;
+  public static final double L4PivotAngle = 80.40000000000006;
+  public static final double L4ElevatorExtension = 1.1500315946691175;
+
+  // Source Arm Setpoint Values
+  public static final double sourceWristAngle = 90;
+  public static final double sourcePivotAngle = 45.21778598044459;
+  public static final double sourceElevatorExtension = 0;
+
+  // Climb Arm Setpoint Values
+  public static final double climbWristAngle = -26.745;
+  public static final double climbPivotAngle = 24;
+  public static final double climbElevatorExtension = 0;
+
+  // Starting Arm Setpoint Values
+  public static final double stowWristAngle = 90;
+  public static final double stowPivotAngle = 70.73384351834608;
+  public static final double stowElevatorExtension = 0;
+
+  public static final double safePivotPosition = 80.40000000000006;
+
+  public static final double lowerAlgaeRemovalPivotAngle = 32.33384351834553;
+  public static final double lowerAlgaeRemovalWristAngle = 90;
+  public static final double lowerAlgaeRemovalElevatorHeight = 0;
+
+  public static final double upperAlgaeRemovalPivotAngle = 58.533843518345904;
+  public static final double upperAlgaeRemovalWristAngle = 71.60000000000007;
+  public static final double upperAlgaeRemovalElevatorHeight = 0.15000000000000005;
+
+  public static final double[][] reefArmPositions = {
+    {L1WristAngle, L1PivotAngle, L1ElevatorExtension},
+    {L2WristAngle, L2PivotAngle, L2ElevatorExtension},
+    {L3WristAngle, L3PivotAngle, L3ElevatorExtension},
+    {L4WristAngle, L4PivotAngle, L4ElevatorExtension}
+  };
 }

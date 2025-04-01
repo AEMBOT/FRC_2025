@@ -50,7 +50,7 @@ public class VisionConstants {
             new Rotation3d(
                 Units.degreesToRadians(180),
                 Units.degreesToRadians(-11.75),
-                Units.degreesToRadians(147)));
+                Units.degreesToRadians(180)));
 
     public static final String backRightName = "back-right";
     public static final Transform3d backRightFromRobot =
@@ -60,7 +60,7 @@ public class VisionConstants {
             new Rotation3d(
                 Units.degreesToRadians(180),
                 Units.degreesToRadians(-11.75),
-                Units.degreesToRadians(-147)));
+                Units.degreesToRadians(-180)));
   }
 
   public final class DoryCameras {

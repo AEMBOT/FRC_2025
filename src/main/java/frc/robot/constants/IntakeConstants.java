@@ -26,7 +26,7 @@ public class IntakeConstants {
   /* Distanse where if the can range returns less than it we must have a coral */
   public static final double HAS_CORAL_DISTANCE = 0.127;
 
-  public static final int CANRANGE_ID = 16;
+  public static final int CANRANGE_ID = 17;
 
   public static final double CANRANGE_OFFSET = 0.2721501143002286;
 }

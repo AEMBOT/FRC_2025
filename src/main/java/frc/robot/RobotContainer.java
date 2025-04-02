@@ -30,6 +30,7 @@ import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorIO;
+import frc.robot.subsystems.elevator.ElevatorIOReal;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeIOReal;
@@ -84,7 +85,7 @@ public class RobotContainer {
             intake = new Intake(new IntakeIOReal());
             pivot = new Pivot(new PivotIOReal());
             elevator =
-                new Elevator(new ElevatorIO() {}); // FIXME Change this to real when elevator fixed
+                new Elevator(new ElevatorIOReal() {});
             wrist = new Wrist(new WristIOReal());
             break;
           default: // Dory doesn't have arm
@@ -201,11 +202,11 @@ public class RobotContainer {
 
     controller
         .rightStick()
-        .whileTrue(wrist.changeGoalPosition(40))
+        .whileTrue(wrist.changeGoalPosition(-40))
         .onFalse(wrist.changeGoalPosition(0));
     controller
         .leftStick()
-        .whileTrue(wrist.changeGoalPosition(-40))
+        .whileTrue(wrist.changeGoalPosition(40))
         .onFalse(wrist.changeGoalPosition(0));
 
     // Path controller bindings

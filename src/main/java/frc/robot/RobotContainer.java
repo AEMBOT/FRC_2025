@@ -33,6 +33,7 @@ import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorIO;
 import frc.robot.subsystems.elevator.ElevatorIOReal;
+import frc.robot.subsystems.elevator.ElevatorIOSim;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeIOReal;
@@ -112,7 +113,7 @@ public class RobotContainer {
                 new ModuleIOSim());
         intake = new Intake(new IntakeIO() {});
         pivot = new Pivot(new PivotIOSim() {});
-        elevator = new Elevator(new ElevatorIO() {});
+        elevator = new Elevator(new ElevatorIOSim() {});
         wrist = new Wrist(new WristIOSim() {});
         break;
 
@@ -298,75 +299,127 @@ public class RobotContainer {
 
     keyboardController
         .button(5)
-        .whileTrue(pivot.setPosition(() -> 90))
-        .onFalse(pivot.setPosition(() -> 0));
+        .whileTrue(pivot.changePosition(10))
+        .onFalse(pivot.changePosition(0));
     keyboardController
         .button(6)
-        .whileTrue(pivot.setPosition(() -> 360))
-        .onFalse(pivot.setPosition(() -> 0));
+        .whileTrue(pivot.changePosition(-10))
+        .onFalse(pivot.changePosition(0));
+
     keyboardController
         .button(7)
-        .whileTrue(wrist.setAngleDeg(() -> 90))
-        .onFalse(wrist.setAngleDeg(() -> 0));
+        .whileTrue(elevator.changePosition(0.25))
+        .onFalse(elevator.changePosition(0));
+    keyboardController
+        .button(8)
+        .whileTrue(elevator.changePosition(-0.25))
+        .onFalse(elevator.changePosition(0));
 
     keyboardController
-        .button(8)
-        .whileTrue(wrist.setAngleDeg(() -> 45))
-        .onFalse(wrist.setAngleDeg(() -> 0));
+        .povUp()
+        .onTrue(
+            runOnce(
+                () -> {
+                  this.visionDisableTimeStart = getTimestamp();
+                }))
+        .whileTrue(
+            run(
+                () -> {
+                  if ((getTimestamp() - this.visionDisableTimeStart) / 1000000 > 1.0) {
+                    drive.disableVision();
+                  }
+                }))
+        .onFalse(
+            runOnce(
+                (() -> {
+                  this.visionDisableTimeStart = Double.MAX_VALUE;
+                })));
+
+    keyboardController.button(11).onTrue(CompoundCommands.armToAlgae(true));
+    keyboardController.button(12).onTrue(CompoundCommands.armToAlgae(false));
+
     keyboardController
-        .button(8)
-        .whileTrue(pivot.setPosition(() -> 70))
-        .onFalse(pivot.setPosition(() -> 0));
+        .button(13)
+        .whileTrue(CompoundCommands.deferArm(() -> CompoundCommands.armToReefSafely(reef_level)));
+    keyboardController.button(14).whileTrue(CompoundCommands.armToSource());
+
+    keyboardController.button(15).onFalse(CompoundCommands.armToStow());
+    keyboardController
+        .button(16)
+        .onFalse(intake.runIntakeCommand(() -> 0).alongWith(CompoundCommands.armToStow()));
+
+    keyboardController
+        .button(17)
+        .whileTrue(wrist.changeGoalPosition(40))
+        .onFalse(wrist.changeGoalPosition(0));
+    keyboardController
+        .button(18)
+        .whileTrue(wrist.changeGoalPosition(-40))
+        .onFalse(wrist.changeGoalPosition(0));
 
     // Path controller bindings
-    // ReefTargets reefTargets = new ReefTargets();
-
     keyboardController
-        .povDown()
-        .whileTrue( // onTrue results in the button only working once.
-            new RunCommand(
+        .button(19)
+        .onTrue(
+            runOnce(
                 () -> {
                   this.reef_level = 1;
                 }));
     keyboardController
-        .povLeft()
-        .whileTrue(
-            new RunCommand(
+        .button(20)
+        .onTrue(
+            runOnce(
                 () -> {
                   this.reef_level = 2;
                 }));
     keyboardController
-        .povRight()
-        .whileTrue(
-            new RunCommand(
+        .button(21)
+        .onTrue(
+            runOnce(
                 () -> {
                   this.reef_level = 3;
                 }));
     keyboardController
-        .povUp()
-        .whileTrue(
-            new RunCommand(
+        .button(22)
+        .onTrue(
+            runOnce(
                 () -> {
                   this.reef_level = 4;
                 }));
 
     keyboardController
-        .button(3)
+        .button(23)
         .whileTrue(
-            new DeferredCommand(
-                () ->
-                    PathGenerator.generateSimplePath(
-                        drive.getPose(), reefTargets.findTargetLeft(drive.getPose(), reef_level)),
-                Set.of(drive)));
+            new ParallelCommandGroup(
+                CompoundCommands.deferDrive(() -> CompoundCommands.driveToLeftReef(reef_level)),
+                CompoundCommands.deferArm(() -> CompoundCommands.armToReefSafely(reef_level))));
+    keyboardController
+        .button(24)
+        .whileTrue(
+            new ParallelCommandGroup(
+                CompoundCommands.deferDrive(() -> CompoundCommands.driveToRightReef(reef_level)),
+                CompoundCommands.deferArm(() -> CompoundCommands.armToReefSafely(reef_level))));
 
     keyboardController
-        .button(4)
+        .button(25)
         .whileTrue(
-            new DeferredCommand(
+            new ParallelCommandGroup(
+                CompoundCommands.armToSource(),
+                CompoundCommands.deferDrive(() -> CompoundCommands.driveToSource())));
+
+    keyboardController.button(26).whileTrue(CompoundCommands.armToClimb());
+
+    keyboardController
+        .button(27)
+        .whileTrue(
+            new RunCommand(
                 () ->
-                    PathGenerator.generateSimplePath(
-                        drive.getPose(), reefTargets.findTargetRight(drive.getPose(), reef_level)),
-                Set.of(drive)));
+                    drive.setYaw(
+                        switch (DriverStation.getAlliance().get()) {
+                          case Blue -> Rotation2d.fromDegrees(0);
+                          case Red -> Rotation2d.fromDegrees(180);
+                          default -> Rotation2d.fromDegrees(0);
+                        })));
   }
 
   private boolean IsEndGame() {

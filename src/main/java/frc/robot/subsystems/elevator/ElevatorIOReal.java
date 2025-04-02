@@ -63,7 +63,6 @@ public class ElevatorIOReal implements ElevatorIO {
      * Busyloop because elevator position invalid! Is the Motor plugged in?"); delay(1); }
      */
     elevatorGoal = 0;
-    elevatorSetpoint = new TrapezoidProfile.State(getAbsoluteMotorPosition(), 0);
 
     m_request = new MotionMagicVoltage(0).withSlot(0);
 
@@ -86,8 +85,6 @@ public class ElevatorIOReal implements ElevatorIO {
           followingMotor.getStatorCurrent().getValueAsDouble()
         };
     inputs.elevatorGoalPosition = elevatorGoal;
-    inputs.elevatorSetpointPosition = elevatorSetpoint.position;
-    inputs.elevatorSetpointVelocity = elevatorSetpoint.velocity;
     inputs.openLoopStatus = openLoop;
   }
 

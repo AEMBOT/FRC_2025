@@ -12,7 +12,6 @@ import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import org.littletonrobotics.junction.Logger;
@@ -25,7 +24,6 @@ public class PivotIOReal implements PivotIO {
   private final DigitalOutput ratchetPin1;
   private final DigitalOutput ratchetPin2;
   private double pivotGoal;
-  private TrapezoidProfile.State pivotSetpoint;
   private double lastTime;
   private TalonFXConfiguration leftMotorConfig = new TalonFXConfiguration();
   private DutyCycleEncoder ENCODER;
@@ -112,7 +110,6 @@ public class PivotIOReal implements PivotIO {
      * in?"); delay(1); }
      */
     pivotGoal = getAbsoluteEncoderPosition();
-    pivotSetpoint = new TrapezoidProfile.State(getAbsoluteEncoderPosition(), 0);
 
     ratchetPin1 = new DigitalOutput(RATCHET_PIN_1_ID);
     ratchetPin2 = new DigitalOutput(RATCHET_PIN_2_ID);
@@ -131,8 +128,6 @@ public class PivotIOReal implements PivotIO {
           followingMotor.getStatorCurrent().getValueAsDouble()
         };
     inputs.pivotPosition = pivotGoal;
-    inputs.pivotSetpointPosition = pivotSetpoint.position;
-    inputs.pivotSetpointVelocity = pivotSetpoint.velocity;
     inputs.openLoopStatus = openLoop;
     inputs.ratchetEngaged = ratchetEngaged;
   }
@@ -173,7 +168,6 @@ public class PivotIOReal implements PivotIO {
   @Override
   public void resetProfile() {
     pivotGoal = getAbsoluteEncoderPosition();
-    pivotSetpoint = new TrapezoidProfile.State(getAbsoluteEncoderPosition(), 0);
   }
 
   @Override

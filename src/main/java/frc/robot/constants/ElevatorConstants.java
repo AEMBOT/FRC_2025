@@ -6,7 +6,7 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
+import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 
 public class ElevatorConstants {
   /** Maximum height for the elevator to move to, in meters */
@@ -72,16 +72,9 @@ public class ElevatorConstants {
   public static final double SIM_SETPOINT_POSITION = 1.05;
 
   /** */
-  public static final SingleJointedArmSim SIM =
-      new SingleJointedArmSim(
-          DCMotor.getNEO(2),
-          300,
-          0.17,
-          0.500,
-          Units.degreesToRadians(MIN_HEIGHT),
-          Units.degreesToRadians(MAX_HEIGHT),
-          true,
-          Units.degreesToRadians(45));
+  public static final ElevatorSim SIM =
+      new ElevatorSim(
+          DCMotor.getNEO(2), 1, 1, 0.500, MIN_HEIGHT, MAX_HEIGHT, true, Units.degreesToRadians(45));
 
   /* Absolute highest point from the base the elevator can reach in inches*/
   public static final double absoluteMaxExtension = 6;

@@ -23,15 +23,6 @@ public interface ElevatorIO {
     /** Goal position of the elevator in inches */
     public double elevatorGoalPosition = 45;
 
-    /** Setpoint position of the elevator in inches */
-    public double elevatorSetpointPosition = 45;
-
-    /**
-     * Setpoint position of the elevator in rotations per second TODO confirm that this is in rpm
-     * and not radpersec
-     */
-    public double elevatorSetpointVelocity = 0.0;
-
     /** Whether the elevator subsystem is running in an openloop */
     public boolean openLoopStatus = false;
   }
@@ -51,4 +42,6 @@ public interface ElevatorIO {
   public default void resetProfile() {}
 
   public default void reZero() {}
+
+  public default void simulationPeriodic() {}
 }

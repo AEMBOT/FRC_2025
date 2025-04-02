@@ -114,7 +114,7 @@ public class Pivot extends SubsystemBase {
   }
 
   public DoubleSupplier getPosition() {
-    return () -> inputs.pivotPosition;
+    return () -> inputs.pivotAbsolutePosition;
   }
 
   /** */

@@ -31,6 +31,9 @@ public class GyroIONavX implements GyroIO {
   private final Queue<Double> yawTimestampQueue;
 
   public GyroIONavX() {
+    while (navX.isCalibrating()) {
+      Thread.yield();
+    }
     navX.reset();
     yawPositionQueue = SparkMaxOdometryThread.getInstance().registerSignal(() -> navX.getAngle());
     yawTimestampQueue =

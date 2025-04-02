@@ -163,6 +163,26 @@ public class PathGenerator {
   }
 
   /**
+   * Uses simple PID control to drive to the target pose. The command will terminate once the robot
+   * is within the {@code translationTolerance} and {@code rotationTolerance}.
+   *
+   * @param drive The {@link Drive drivetrain}
+   * @param target The target pose
+   * @param translationTolerance The maximum distance to the target considered acceptable to
+   *     terminate the command, measured in meters.
+   * @param rotationTolerance The maximum rotational error to the target considered acceptable to
+   *     terminate the command.
+   * @return A command to drive to the target pose, terminating once at acceptable error.
+   */
+  public static Command simpleGoToPoint(Drive drive, Pose2d target) {
+    return simpleGoToPoint(
+        drive,
+        target,
+        PathingConstants.defaultTranslationTolerance,
+        PathingConstants.defaultRotationTolerance);
+  }
+
+  /**
    * Chain commands from {@code generateSimplePath} to {@code simpleGoToPoint}, resulting in a
    * command that will not terminate until at acceptable error.
    *

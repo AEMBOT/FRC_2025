@@ -195,7 +195,7 @@ public class RobotContainer {
     controller
         .leftTrigger(0.25)
         .whileTrue(intake.intakeCoralCommand())
-        .onFalse(CompoundCommands.armToStow());
+        .onFalse(CompoundCommands.armToStowSafely());
     controller
         .rightTrigger(0.25)
         .whileTrue(intake.ejectCoralCommand())
@@ -328,6 +328,6 @@ public class RobotContainer {
   }
 
   public Command zeroArm() {
-    return wrist.zeroWrist().andThen(elevator.zeroElevator());
+    return wrist.zeroWrist();
   }
 }

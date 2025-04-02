@@ -10,6 +10,7 @@ public interface IntakeIO {
     public double intakeAlgaeMotorAppliedVolts = 0.0;
 
     public boolean hasGamePiece = true;
+    public double canRangeDistance = 0.0;
   }
 
   public default void updateInputs(IntakeIOInputs inputs) {}

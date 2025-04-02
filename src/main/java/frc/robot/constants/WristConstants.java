@@ -11,10 +11,10 @@ import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 public class WristConstants {
   // FIXME Put soft stops back when zeroing works
   /** Maximum angle for the wrist to move to, in degrees */
-  public static final double MAX_ANGLE = 360;
+  public static final double MAX_ANGLE = 160;
 
   /** Minimum angle for the wrist to move to, in degrees */
-  public static final double MIN_ANGLE = -360;
+  public static final double MIN_ANGLE = -18;
 
   /** */
   public static final float VOLTAGE_LIMIT = 5;
@@ -75,13 +75,13 @@ public class WristConstants {
   public static final double SIM_SETPOINT_POSITION = 1.05;
 
   /** */
-  public static final double ZERO_POSITION = -41.11875; // TODO tune
+  public static final double ZERO_POSITION = 29.734375 * -1; // TODO tune
 
   /** */
   public static final double ZEROING_VOLTAGE = 1; // TODO tune
 
   /** */
-  public static final double WRIST_ZEROING_MAX_AMPS = 10; // TODO tune
+  public static final double WRIST_ZEROING_MAX_AMPS = 20; // TODO tune
 
   /** */
   public static final SingleJointedArmSim SIM =

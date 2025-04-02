@@ -27,11 +27,13 @@ public class IntakeIOReal implements IntakeIO {
     inputs.intakeCoralMotorAppliedVolts = topMotor.getMotorVoltage().getValueAsDouble();
     inputs.intakeAlgaeMotorAppliedVolts = lowMotor.getMotorVoltage().getValueAsDouble();
     inputs.hasGamePiece = hasGamePiece();
+    inputs.canRangeDistance = CANRANGE.getDistance().getValueAsDouble();
   }
 
   @Override
   public boolean hasGamePiece() {
-    return CANRANGE.getDistance().getValueAsDouble() < HAS_CORAL_DISTANCE;
+    return CANRANGE.getDistance().getValueAsDouble() < HAS_CORAL_DISTANCE
+        && CANRANGE.getDistance().getValueAsDouble() > CANRANGE_MINIMUM;
   }
 
   @Override

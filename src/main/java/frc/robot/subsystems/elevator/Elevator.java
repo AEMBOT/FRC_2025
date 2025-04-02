@@ -129,7 +129,7 @@ public class Elevator extends SubsystemBase {
     DoubleSupplier avgAmps =
         () -> (inputs.elevatorCurrentAmps[0] + inputs.elevatorCurrentAmps[1]) / 2;
 
-    Logger.recordOutput("ElevatorAverageAmps", inputs.elevatorCurrentAmps);
+    Logger.recordOutput("ElevatorAverageAmps", avgAmps.getAsDouble());
 
     return run(() -> setVoltage(ZEROING_VOLTAGE))
         .until(() -> avgAmps.getAsDouble() > ELEVATOR_ZEROING_MAX_AMPS)

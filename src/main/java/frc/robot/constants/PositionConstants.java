@@ -25,10 +25,10 @@ public class PositionConstants {
   public static final double reefCenterX = 4.489323;
   public static final double reefCenterY = 4.0259;
 
-  // 0.4318 + 0.3429
   // Define source targets
+  // Bumpers against source
   public static final Transform2d sourceOffset =
-      new Transform2d(Units.inchesToMeters(29), 0.0, Rotation2d.fromDegrees(180));
+      new Transform2d(0.4318, 0.0, Rotation2d.fromDegrees(180));
 
   public static final Pose2d sourcePoseRightBlue =
       VisionConstants.aprilTagFieldLayout.getTagPose(12).get().toPose2d().transformBy(sourceOffset);

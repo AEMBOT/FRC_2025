@@ -25,6 +25,7 @@ import org.littletonrobotics.junction.Logger;
 
 /** IO implementation for NavX */
 public class GyroIONavX implements GyroIO {
+  // TODO NavX documentation is not good and running into a lot of issues. Please get Pidgeon 2 next year
   private final AHRS navX =
       new AHRS(NavXComType.kMXP_SPI, (int) ODOMETRY_FREQUENCY); // 200Hz update rate
   private final Queue<Double> yawPositionQueue;

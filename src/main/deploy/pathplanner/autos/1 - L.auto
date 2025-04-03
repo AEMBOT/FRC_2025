@@ -5,6 +5,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "ZeroWrist"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Left - Reef Left"

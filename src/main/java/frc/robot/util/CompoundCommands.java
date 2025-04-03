@@ -280,6 +280,10 @@ public class CompoundCommands {
     return new DeferredCommand(command, Set.of(drive));
   }
 
+  public static Command armToNet() {
+    return armToGoal(NetWristAngle, NetPivotAngle, NetElevatorExtension);
+  }
+
   /**
    * Generates a {@link Command} to move the arm to the specified position, ensuring to always stay
    * in frame perimeter. If the goal position needs the elevator to extend, we first move pivot,

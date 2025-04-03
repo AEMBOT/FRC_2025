@@ -127,4 +127,8 @@ public class PositionConstants {
     {L3WristAngle, L3PivotAngle, L3ElevatorExtension},
     {L4WristAngle, L4PivotAngle, L4ElevatorExtension}
   };
+
+  public static final double NetWristAngle = 139.11;
+  public static final double NetPivotAngle = 87.81;
+  public static final double NetElevatorExtension = 1.15;
 }

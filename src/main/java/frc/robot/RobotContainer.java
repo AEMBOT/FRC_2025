@@ -160,6 +160,8 @@ public class RobotContainer {
 
     backupController.povDown().onTrue(zeroArm());
 
+    backupController.start().whileTrue(CompoundCommands.armToNet());
+
     backupController.leftBumper().whileTrue(intake.ejectCoralCommand());
 
     backupController.rightBumper().whileTrue(intake.intakeCoralCommand());

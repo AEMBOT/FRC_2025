@@ -93,8 +93,8 @@ public class PivotIOReal implements PivotIO {
     leftMotorConfig.Slot0.kI = 0;
     leftMotorConfig.Slot0.kD = 0;
 
-    leftMotorConfig.MotionMagic.MotionMagicCruiseVelocity = GEAR_RATIO * 0.75;
-    leftMotorConfig.MotionMagic.MotionMagicAcceleration = GEAR_RATIO * 0.75;
+    leftMotorConfig.MotionMagic.MotionMagicCruiseVelocity = GEAR_RATIO * 0.75 * 0.8;
+    leftMotorConfig.MotionMagic.MotionMagicAcceleration = GEAR_RATIO * 0.75 * 0.8;
     leftMotorConfig.MotionMagic.MotionMagicJerk = 0;
 
     leadingMotor.getConfigurator().apply(leftMotorConfig);

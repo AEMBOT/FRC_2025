@@ -116,9 +116,7 @@ public class CompoundCommands {
     return alignCommand.andThen(waitSeconds(0.5)).andThen(intakeCoral());
   }
 
-  /**
-   * placeReef but it doesn't drive. For pit testing
-   */
+  /** placeReef but it doesn't drive. For pit testing */
   public static Command immobilePlaceReef(boolean isOnRight, int level) {
     Command driveCommand;
     driveCommand = waitSeconds(3);

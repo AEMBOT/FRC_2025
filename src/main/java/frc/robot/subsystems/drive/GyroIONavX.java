@@ -56,7 +56,7 @@ public class GyroIONavX implements GyroIO {
                         switch (currentRobot) {
                           case DORY ->
                               -value; // According to last years code, clef NavX is inverted
-                          case NAUTILUS -> value;
+                          case NAUTILUS -> -value;
                         }))
             .toArray(Rotation2d[]::new);
     yawTimestampQueue.clear();

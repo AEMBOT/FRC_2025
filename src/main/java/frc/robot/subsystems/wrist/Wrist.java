@@ -4,6 +4,7 @@ import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
 import static edu.wpi.first.wpilibj2.command.Commands.waitUntil;
 import static frc.robot.constants.GeneralConstants.UPDATE_PERIOD;
+import static frc.robot.constants.PositionConstants.stowWristAngle;
 import static frc.robot.constants.WristConstants.*;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -120,6 +121,7 @@ public class Wrist extends SubsystemBase {
     return run(() -> setVoltage(ZEROING_VOLTAGE))
         .until(() -> inputs.wristCurrentAmps > WRIST_ZEROING_MAX_AMPS)
         .andThen(runOnce(() -> io.setMotorZero()))
-        .andThen(runOnce(() -> stopWrist()));
+        .andThen(runOnce(() -> stopWrist()))
+        .andThen(setGoalPosition(() -> stowWristAngle));
   }
 }

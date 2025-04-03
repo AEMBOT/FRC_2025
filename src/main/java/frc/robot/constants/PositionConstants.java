@@ -111,7 +111,7 @@ public class PositionConstants {
   public static final double stowPivotAngle = 81.81999599249039;
   public static final double stowElevatorExtension = 0;
 
-  public static final double safePivotPosition = 80.40000000000006;
+  public static final double safePivotPosition = 90.0;
 
   public static final double lowerAlgaeRemovalPivotAngle = 32.33384351834553;
   public static final double lowerAlgaeRemovalWristAngle = 90;

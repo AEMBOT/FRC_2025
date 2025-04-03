@@ -107,4 +107,9 @@ public class AprilTagVisionIOSim implements AprilTagVisionIO {
   public void updatePose(Pose2d pose) {
     visionSim.update(pose);
   }
+
+  @Override
+  public void updateHeading(Rotation2d heading) {
+    updateHeading(heading, poseEstimators);
+  }
 }

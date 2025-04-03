@@ -205,6 +205,7 @@ public class Drive extends SubsystemBase {
     aprilTagVision.updatePose(
         getPose()); // This is kinda funky because vision affects our PoseEstimator. This is a
     // feedback loop.
+    aprilTagVision.updateHeading(gyroInputs.yawPosition);
   }
 
   /**

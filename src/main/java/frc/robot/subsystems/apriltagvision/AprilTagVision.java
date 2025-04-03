@@ -7,6 +7,7 @@ import static org.littletonrobotics.junction.Logger.getTimestamp;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.GeneralConstants;
 import frc.robot.constants.VisionConstants;
@@ -68,22 +69,22 @@ public class AprilTagVision extends SubsystemBase {
                   new PhotonCamera(DoryCameras.frontLeftName),
                   DoryCameras.frontLeftFromRobot,
                   VisionConstants.poseStrategy,
-                  CameraResolution.NORMAL),
+                  CameraResolution.HIGH_RES),
               new CameraPoseEstimator(
                   new PhotonCamera(DoryCameras.frontRightName),
                   DoryCameras.frontRightFromRobot,
                   VisionConstants.poseStrategy,
-                  CameraResolution.NORMAL),
+                  CameraResolution.HIGH_RES),
               new CameraPoseEstimator(
                   new PhotonCamera(DoryCameras.backLeftName),
                   DoryCameras.backLeftFromRobot,
                   VisionConstants.poseStrategy,
-                  CameraResolution.NORMAL),
+                  CameraResolution.HIGH_RES),
               new CameraPoseEstimator(
                   new PhotonCamera(DoryCameras.backRightName),
                   DoryCameras.backRightFromRobot,
                   VisionConstants.poseStrategy,
-                  CameraResolution.NORMAL),
+                  CameraResolution.HIGH_RES),
             };
         break;
     }
@@ -105,6 +106,15 @@ public class AprilTagVision extends SubsystemBase {
 
   public void updatePose(Pose2d pose) {
     io.updatePose(pose);
+  }
+
+  /**
+   * Update the yaw for the vision system. Used for constrained solve pnp
+   *
+   * @param heading The current heading of the robot. This should be the gyro output.
+   */
+  public void updateHeading(Rotation2d heading) {
+    io.updateHeading(heading);
   }
 
   @Override

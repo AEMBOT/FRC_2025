@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
+import org.photonvision.PhotonPoseEstimator.ConstrainedSolvepnpParams;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
 public class VisionConstants {
@@ -20,7 +21,9 @@ public class VisionConstants {
   public static final AprilTagFieldLayout aprilTagFieldLayout =
       AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
 
-  public static PoseStrategy poseStrategy = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
+  public static PoseStrategy poseStrategy = PoseStrategy.CONSTRAINED_SOLVEPNP;
+  public static ConstrainedSolvepnpParams constrainedPnpParams =
+      new ConstrainedSolvepnpParams(false, 1.0e4);
 
   public static enum CameraResolution {
     HIGH_RES,

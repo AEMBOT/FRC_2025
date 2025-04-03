@@ -21,6 +21,12 @@
           "data": {
             "name": "AutoPlaceRight4"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ArmToStow"
+          }
         }
       ]
     }

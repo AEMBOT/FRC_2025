@@ -113,13 +113,13 @@ public class PositionConstants {
 
   public static final double safePivotPosition = 90.0;
 
-  public static final double lowerAlgaeRemovalPivotAngle = 32.33384351834553;
-  public static final double lowerAlgaeRemovalWristAngle = 90;
+  public static final double lowerAlgaeRemovalPivotAngle = 54.9999999999995;
+  public static final double lowerAlgaeRemovalWristAngle = 143.11;
   public static final double lowerAlgaeRemovalElevatorHeight = 0;
 
-  public static final double upperAlgaeRemovalPivotAngle = 58.533843518345904;
-  public static final double upperAlgaeRemovalWristAngle = 71.60000000000007;
-  public static final double upperAlgaeRemovalElevatorHeight = 0.15000000000000005;
+  public static final double upperAlgaeRemovalPivotAngle = 78.51970529998351;
+  public static final double upperAlgaeRemovalWristAngle = 159.2;
+  public static final double upperAlgaeRemovalElevatorHeight = 0.31000000000000016;
 
   public static final double[][] reefArmPositions = {
     {L1WristAngle, L1PivotAngle, L1ElevatorExtension},

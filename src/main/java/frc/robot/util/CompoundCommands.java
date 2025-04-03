@@ -111,7 +111,7 @@ public class CompoundCommands {
         new ParallelCommandGroup(driveCommand, armToReefSafely(level)).withTimeout(5.0);
 
     // Small wait to ensure arm is stable before shooting
-    return alignCommand.andThen(waitSeconds(0.5)).andThen(ejectCoral());
+    return alignCommand.andThen(waitSeconds(0.5)).andThen(intakeCoral());
   }
 
   public static Command intakeSource(boolean isOnRight) {

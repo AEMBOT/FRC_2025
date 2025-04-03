@@ -21,7 +21,7 @@ public interface ElevatorIO {
     public double[] elevatorCurrentAmps = new double[] {};
 
     /** Goal position of the elevator in inches */
-    public double elevatorGoalPosition = 45;
+    public double elevatorGoalPosition = 0.0;
 
     /** Whether the elevator subsystem is running in an openloop */
     public boolean openLoopStatus = false;

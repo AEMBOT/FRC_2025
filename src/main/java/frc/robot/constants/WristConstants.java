@@ -4,7 +4,6 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 
@@ -43,20 +42,7 @@ public class WristConstants {
   public static final ArmFeedforward FF_MODEL = new ArmFeedforward(0, 0, 0, 0);
 
   /** */
-  public static final PIDController PID_CONTROLLER = new PIDController(0, 0, 0);
-
-  /** */
-  public static final TrapezoidProfile TRAPEZOID_PROFILE =
-      new TrapezoidProfile(new TrapezoidProfile.Constraints(1, 2));
-
-  /** Ramp Rate of the wrist System ID in volts per second */
-  public static final double SYS_ID_RAMP_RATE = 1;
-
-  /** Setp Voltage of the wrist System ID in volts */
-  public static final double SYS_ID_STEP_VALUE = 7;
-
-  /** Timeout of the wrist System ID in volts */
-  public static final double SYS_ID_TIMEOUT = 30;
+  public static final PIDController PID_CONTROLLER = new PIDController(5, 0, 0);
 
   /** How many degrees the wrist can be off its goal position for it to be sufficient */
   public static final double ALLOWED_DEVIANCE = 6;
@@ -78,10 +64,10 @@ public class WristConstants {
       new SingleJointedArmSim(
           DCMotor.getNEO(1),
           6,
-          SingleJointedArmSim.estimateMOI(0.5, 4),
+          SingleJointedArmSim.estimateMOI(0.5, 1),
           0.5,
           Units.degreesToRadians(MIN_ANGLE),
           Units.degreesToRadians(MAX_ANGLE),
           true,
-          Units.degreesToRadians(0));
+          0);
 }

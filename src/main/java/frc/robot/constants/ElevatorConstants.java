@@ -2,10 +2,8 @@ package frc.robot.constants;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 
 public class ElevatorConstants {
@@ -43,24 +41,8 @@ public class ElevatorConstants {
   /** */
   public static final PIDController PID_CONTROLLER = new PIDController(1, 0, 0);
 
-  /** */
-  public static final TrapezoidProfile TRAPEZOID_PROFILE =
-      new TrapezoidProfile(new TrapezoidProfile.Constraints(1, 2));
-
-  /** Ramp Rate of the elevator System ID in volts per second */
-  public static final double SYS_ID_RAMP_RATE = 0.2;
-
-  /** Setp Voltage of the elevator System ID in volts */
-  public static final double SYS_ID_STEP_VALUE = 7;
-
-  /** Timeout of the elevator System ID in volts */
-  public static final double SYS_ID_TIMEOUT = 30;
-
   /** How many meters the elevator can be off its goal position for it to be sufficient */
   public static final double ALLOWED_DEVIANCE = 0.01;
-
-  /** */
-  public static final Translation3d TRANSLATION_FROM_ROBOT = new Translation3d(-0.2, 0, 0.255);
 
   /** */
   public static final double DEFAULT_HEIGHT = 90;
@@ -73,8 +55,7 @@ public class ElevatorConstants {
 
   /** */
   public static final ElevatorSim SIM =
-      new ElevatorSim(
-          DCMotor.getNEO(2), 1, 1, 0.500, MIN_HEIGHT, MAX_HEIGHT, true, Units.degreesToRadians(45));
+      new ElevatorSim(DCMotor.getNEO(2), 1, 0.5, 0.1, 0.1, MAX_HEIGHT, true, 0.1);
 
   /* Absolute highest point from the base the elevator can reach in inches*/
   public static final double absoluteMaxExtension = 6;

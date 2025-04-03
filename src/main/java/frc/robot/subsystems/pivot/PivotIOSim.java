@@ -1,5 +1,6 @@
 package frc.robot.subsystems.pivot;
 
+import static edu.wpi.first.math.MathUtil.clamp;
 import static frc.robot.constants.PivotConstants.*;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -20,7 +21,7 @@ public class PivotIOSim implements PivotIO {
   private final TrapezoidProfile.Constraints pivotProfile =
       new TrapezoidProfile.Constraints(100, 250);
   private final ProfiledPIDController pivotController =
-      new ProfiledPIDController(1.5, 0, 0, pivotProfile, 0.02);
+      new ProfiledPIDController(10, 0, 0, pivotProfile, 0.02);
   private final EncoderSim pivotEncoderSim = new EncoderSim(encoder);
   private final MechanismRoot2d pivotRoot;
 
@@ -31,7 +32,7 @@ public class PivotIOSim implements PivotIO {
     pivotRoot = pivotCanvas.getRoot("PivotRoot", 2, 0.1);
     pivotMech =
         pivotRoot.append(
-            new MechanismLigament2d("PivotMech", 1, 0, 10, new Color8Bit(Color.kLavender)));
+            new MechanismLigament2d("PivotMech", 1, 0, 12, new Color8Bit(Color.kLightBlue)));
   }
 
   public void updateInputs(PivotIOInputs inputs) {
@@ -48,6 +49,7 @@ public class PivotIOSim implements PivotIO {
 
   @Override
   public void setAngle(double angle) {
+    angle = clamp(angle, MIN_ANGLE, MAX_ANGLE);
     pivotGoal = angle;
 
     double pidOutput = pivotController.calculate(getAbsoluteEncoderPosition(), angle);

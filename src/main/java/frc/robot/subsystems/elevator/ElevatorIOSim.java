@@ -1,11 +1,11 @@
 package frc.robot.subsystems.elevator;
 
+import static edu.wpi.first.math.MathUtil.clamp;
 import static frc.robot.constants.ElevatorConstants.*;
 import static frc.robot.subsystems.pivot.PivotIOSim.*;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
@@ -18,7 +18,7 @@ public class ElevatorIOSim implements ElevatorIO {
   private final TrapezoidProfile.Constraints elevatorProfile =
       new TrapezoidProfile.Constraints(2, 5);
   private final ProfiledPIDController elevatorController =
-      new ProfiledPIDController(10, 0, 0, elevatorProfile, 0.02);
+      new ProfiledPIDController(4, 0, 1, elevatorProfile, 0.02);
 
   private final EncoderSim elevatorEncoderSim = new EncoderSim(encoder);
 
@@ -27,8 +27,7 @@ public class ElevatorIOSim implements ElevatorIO {
   public ElevatorIOSim() {
     elevatorMech =
         pivotMech.append(
-            new MechanismLigament2d(
-                "ElevatorMech", 0.1, 0, 10, new Color8Bit(Color.kMediumPurple)));
+            new MechanismLigament2d("ElevatorMech", 0.1, 0, 10, new Color8Bit(Color.kLightBlue)));
   }
 
   public void updateInputs(ElevatorIOInputs inputs) {
@@ -40,7 +39,9 @@ public class ElevatorIOSim implements ElevatorIO {
 
   @Override
   public void setHeight(double height) {
-    double pidOutput = elevatorController.calculate(getAbsoluteEncoderPosition(), height);
+    height = clamp(height, MIN_HEIGHT, MAX_HEIGHT);
+    double pidOutput =
+        elevatorController.calculate((getAbsoluteEncoderPosition() * rotToMetMultFactor), height);
 
     elevatorGoal = height;
     setVoltage(pidOutput);
@@ -52,7 +53,7 @@ public class ElevatorIOSim implements ElevatorIO {
   }
 
   private double getAbsoluteEncoderPosition() {
-    return elevatorEncoderSim.getDistance() * rotToMetMultFactor;
+    return elevatorEncoderSim.getDistance();
   }
 
   private void setMotorVoltage(double volts) {
@@ -62,14 +63,13 @@ public class ElevatorIOSim implements ElevatorIO {
   @Override
   public void simulationPeriodic() {
     SIM.update(0.02);
-    elevatorEncoderSim.setDistance(Units.radiansToDegrees(SIM.getPositionMeters()));
+    elevatorEncoderSim.setDistance(SIM.getPositionMeters() / rotToMetMultFactor);
     elevatorMech.setLength(SIM.getPositionMeters());
-    elevatorMech.setAngle(pivotMech.getAngle());
   }
 
   @Override
   public void resetProfile() {
-    elevatorGoal = getAbsoluteEncoderPosition();
-    elevatorController.reset(getAbsoluteEncoderPosition());
+    elevatorGoal = getAbsoluteEncoderPosition() * rotToMetMultFactor;
+    elevatorController.reset(getAbsoluteEncoderPosition() * rotToMetMultFactor);
   }
 }

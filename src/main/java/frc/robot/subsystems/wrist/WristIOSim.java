@@ -1,5 +1,6 @@
 package frc.robot.subsystems.wrist;
 
+import static edu.wpi.first.math.MathUtil.clamp;
 import static frc.robot.constants.WristConstants.*;
 import static frc.robot.subsystems.elevator.ElevatorIOSim.*;
 import static frc.robot.subsystems.pivot.PivotIOSim.*;
@@ -20,7 +21,7 @@ public class WristIOSim implements WristIO {
   private final TrapezoidProfile.Constraints wristProfile =
       new TrapezoidProfile.Constraints(100, 250);
   private final ProfiledPIDController wristController =
-      new ProfiledPIDController(0.5, 0, 0, wristProfile, 0.02);
+      new ProfiledPIDController(0.2, 0, 0.07, wristProfile, 0.02);
 
   private final EncoderSim wristEncoderSim = new EncoderSim(encoder);
   private final MechanismLigament2d wristMech;
@@ -28,7 +29,7 @@ public class WristIOSim implements WristIO {
   public WristIOSim() {
     wristMech =
         elevatorMech.append(
-            new MechanismLigament2d("WristMech", 0.2, 0, 10, new Color8Bit(Color.kPurple)));
+            new MechanismLigament2d("WristMech", 0.2, 0, 10, new Color8Bit(Color.kLightGray)));
     SmartDashboard.putData("ArmMech", pivotCanvas);
   }
 
@@ -45,6 +46,7 @@ public class WristIOSim implements WristIO {
 
   @Override
   public void setAngle(double angle) {
+    angle = clamp(angle, MIN_ANGLE, MAX_ANGLE);
     wristGoal = angle;
 
     double pidOutput = wristController.calculate(getAbsoluteEncoderPosition(), angle);

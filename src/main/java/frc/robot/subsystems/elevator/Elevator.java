@@ -1,7 +1,5 @@
 package frc.robot.subsystems.elevator;
 
-import static edu.wpi.first.units.Units.Second;
-import static edu.wpi.first.units.Units.Volts;
 import static edu.wpi.first.wpilibj2.command.Commands.waitUntil;
 import static frc.robot.constants.ElevatorConstants.ALLOWED_DEVIANCE;
 import static frc.robot.constants.GeneralConstants.UPDATE_PERIOD;
@@ -10,7 +8,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
 
@@ -18,19 +15,9 @@ public class Elevator extends SubsystemBase {
 
   ElevatorIO io;
   private final ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
-  private final SysIdRoutine sysId;
 
   public Elevator(ElevatorIO io) {
     this.io = io;
-
-    sysId =
-        new SysIdRoutine(
-            new SysIdRoutine.Config(
-                Volts.of(0.3).per(Second),
-                Volts.of(3),
-                Second.of(30),
-                (state) -> Logger.recordOutput(this.getName() + "/SysIdState", state.toString())),
-            new SysIdRoutine.Mechanism((voltage) -> setVoltage(voltage.in(Volts)), null, this));
 
     new Trigger(() -> inputs.openLoopStatus).onFalse(runOnce(io::resetProfile));
   }
@@ -50,28 +37,8 @@ public class Elevator extends SubsystemBase {
   //    return run(() -> io.setAngle(posIn.getAsDouble()));
   // }
 
-  /**
-   * Applies an increasing voltage to the elevator and logs the sysId state.
-   *
-   * @param direction Direction to run the sysId, needs to be either kForward or kReverse
-   * @return A {@link RunCommand} to run the quasistaic elevator sysId test.
-   */
-  public Command sysIdQuastistatic(SysIdRoutine.Direction direction) {
-    return sysId.quasistatic(direction);
-  }
-
   public Command limitHeight(DoubleSupplier pivotAngle) {
     return run(() -> io.limitHeight(pivotAngle.getAsDouble()));
-  }
-
-  /**
-   * Applies a constant voltage to the elevator and logs the sysId state.
-   *
-   * @param direction Direction to run the sysId, needs to be either kForward or kReverse
-   * @return A {@link RunCommand} to run the dynamic elevator sysId test.
-   */
-  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-    return sysId.dynamic(direction);
   }
 
   /**
@@ -122,5 +89,9 @@ public class Elevator extends SubsystemBase {
     return run(() -> io.setVoltage(-2))
         .until(() -> ((inputs.elevatorCurrentAmps[0] + inputs.elevatorCurrentAmps[1]) / 2) > 20)
         .andThen(run(() -> io.reZero()));
+  }
+
+  public void simulationPeriodic() {
+    io.simulationPeriodic();
   }
 }

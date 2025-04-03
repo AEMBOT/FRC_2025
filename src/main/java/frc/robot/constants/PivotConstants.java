@@ -2,9 +2,7 @@ package frc.robot.constants;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 
@@ -53,24 +51,8 @@ public class PivotConstants {
   /** */
   public static final PIDController PID_CONTROLLER = new PIDController(.09361, 0, 0);
 
-  /** */
-  public static final TrapezoidProfile TRAPEZOID_PROFILE =
-      new TrapezoidProfile(new TrapezoidProfile.Constraints(1, 2));
-
-  /** Ramp Rate of the pivot System ID in volts per second */
-  public static final double SYS_ID_RAMP_RATE = 1;
-
-  /** Setp Voltage of the pivot System ID in volts */
-  public static final double SYS_ID_STEP_VALUE = 7;
-
-  /** Timeout of the pivot System ID in volts */
-  public static final double SYS_ID_TIMEOUT = 30;
-
   /** How many degrees the pivot can be off its goal position for it to be sufficient */
   public static final double ALLOWED_DEVIANCE = 1.15;
-
-  /** */
-  public static final Translation3d TRANSLATION_FROM_ROBOT = new Translation3d(-0.2, 0, 0.255);
 
   /** */
   public static final double DEFAULT_ANGLE = 90;
@@ -91,10 +73,10 @@ public class PivotConstants {
       new SingleJointedArmSim(
           DCMotor.getNEO(2),
           378,
-          SingleJointedArmSim.estimateMOI(2, 20),
-          2,
+          SingleJointedArmSim.estimateMOI(2, 1),
+          1,
           Units.degreesToRadians(MIN_ANGLE),
           Units.degreesToRadians(MAX_ANGLE),
           true,
-          Units.degreesToRadians(45));
+          0);
 }

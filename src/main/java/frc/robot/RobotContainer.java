@@ -316,6 +316,15 @@ public class RobotContainer {
         .onFalse(elevator.changePosition(0));
 
     keyboardController
+        .button(17)
+        .whileTrue(wrist.changeGoalPosition(40))
+        .onFalse(wrist.changeGoalPosition(0));
+    keyboardController
+        .button(18)
+        .whileTrue(wrist.changeGoalPosition(-40))
+        .onFalse(wrist.changeGoalPosition(0));
+
+    keyboardController
         .povUp()
         .onTrue(
             runOnce(
@@ -347,15 +356,6 @@ public class RobotContainer {
     keyboardController
         .button(16)
         .onFalse(intake.runIntakeCommand(() -> 0).alongWith(CompoundCommands.armToStow()));
-
-    keyboardController
-        .button(17)
-        .whileTrue(wrist.changeGoalPosition(40))
-        .onFalse(wrist.changeGoalPosition(0));
-    keyboardController
-        .button(18)
-        .whileTrue(wrist.changeGoalPosition(-40))
-        .onFalse(wrist.changeGoalPosition(0));
 
     // Path controller bindings
     keyboardController

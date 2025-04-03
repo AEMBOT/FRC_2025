@@ -83,7 +83,7 @@ public class RobotContainer {
           case NAUTILUS:
             intake = new Intake(new IntakeIOReal());
             pivot = new Pivot(new PivotIOReal());
-            elevator = new Elevator(new ElevatorIOReal());
+            elevator = new Elevator(new ElevatorIOReal() {});
             wrist = new Wrist(new WristIOReal());
             break;
           default: // Dory doesn't have arm
@@ -157,9 +157,11 @@ public class RobotContainer {
         .whileTrue(elevator.changePosition(-0.25))
         .onFalse(elevator.changePosition(0));
 
-    backupController.leftBumper().whileTrue(intake.intakeCommand());
+    backupController.povDown().onTrue(zeroArm());
 
-    backupController.rightBumper().whileTrue(intake.ejectCommand());
+    backupController.leftBumper().whileTrue(intake.ejectCoralCommand());
+
+    backupController.rightBumper().whileTrue(intake.intakeCoralCommand());
 
     backupController
         .povUp()
@@ -191,20 +193,20 @@ public class RobotContainer {
 
     controller
         .leftTrigger(0.25)
-        .whileTrue(intake.intakeCommand())
-        .onFalse(CompoundCommands.armToStow());
+        .whileTrue(intake.intakeCoralCommand())
+        .onFalse(CompoundCommands.armToStowSafely());
     controller
         .rightTrigger(0.25)
-        .whileTrue(intake.ejectCommand())
-        .onFalse(intake.runIntakeCommand(() -> 0).alongWith(CompoundCommands.armToStow()));
+        .whileTrue(intake.ejectCoralCommand())
+        .onFalse(intake.stopCommand().alongWith(CompoundCommands.armToStow()));
 
     controller
         .rightStick()
-        .whileTrue(wrist.changeGoalPosition(40))
+        .whileTrue(wrist.changeGoalPosition(-40))
         .onFalse(wrist.changeGoalPosition(0));
     controller
         .leftStick()
-        .whileTrue(wrist.changeGoalPosition(-40))
+        .whileTrue(wrist.changeGoalPosition(40))
         .onFalse(wrist.changeGoalPosition(0));
 
     // Path controller bindings
@@ -288,7 +290,7 @@ public class RobotContainer {
         .whileTrue(runOnce(() -> LED.LEDDO(LedConstants.BLUE)).ignoringDisable(true))
         .whileFalse(runOnce(() -> LED.LEDDO(LedConstants.RED)).ignoringDisable(true));
 
-    new Trigger(() -> intake.getHasGamePiece())
+    new Trigger(() -> intake.getHasGamePiece().getAsBoolean())
         .onTrue(Commands.runOnce(() -> LED.LEDDO(LedConstants.INTAKE_HAVE_CORAL)))
         .onFalse(
             Commands.runOnce(
@@ -301,7 +303,10 @@ public class RobotContainer {
                     })
                 .ignoringDisable(true));
 
-    new Trigger(() -> controller.rightTrigger(0.25).getAsBoolean() && intake.getHasGamePiece())
+    new Trigger(
+            () ->
+                controller.rightTrigger(0.25).getAsBoolean()
+                    && intake.getHasGamePiece().getAsBoolean())
         .onTrue(Commands.runOnce(() -> LED.LEDDO(LedConstants.SHOOT)));
 
     new Trigger(this::IsEndGame)
@@ -321,5 +326,9 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     return autoChooser.get();
+  }
+
+  public Command zeroArm() {
+    return wrist.zeroWrist();
   }
 }

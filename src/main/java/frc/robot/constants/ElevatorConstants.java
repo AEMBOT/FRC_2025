@@ -102,7 +102,7 @@ public class ElevatorConstants {
   public static final double ZERO_POSITION = 0; // TODO tune
 
   /** */
-  public static final double ZEROING_VOLTAGE = 1.75; // TODO tune
+  public static final double ZEROING_VOLTAGE = 0.5; // TODO tune
 
   /** */
   public static final double ELEVATOR_ZEROING_MAX_AMPS = 5; // TODO tune

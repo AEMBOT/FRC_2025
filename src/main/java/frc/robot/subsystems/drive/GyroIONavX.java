@@ -25,7 +25,8 @@ import org.littletonrobotics.junction.Logger;
 
 /** IO implementation for NavX */
 public class GyroIONavX implements GyroIO {
-  // TODO NavX documentation is not good and running into a lot of issues. Please get Pidgeon 2 next year
+  // TODO NavX documentation is not good and running into a lot of issues. Please get Pidgeon 2 next
+  // year
   private final AHRS navX =
       new AHRS(NavXComType.kMXP_SPI, (int) ODOMETRY_FREQUENCY); // 200Hz update rate
   private final Queue<Double> yawPositionQueue;
@@ -33,8 +34,11 @@ public class GyroIONavX implements GyroIO {
 
   public GyroIONavX() {
     while (navX.isCalibrating()) {
+      System.out.println("Waiting for NavX calibration");
+      Logger.recordOutput("Gyro/NavXCalibrating", true);
       Thread.yield();
     }
+    Logger.recordOutput("Gyro/NavXCalibrating", false);
     navX.reset();
     yawPositionQueue = SparkMaxOdometryThread.getInstance().registerSignal(() -> navX.getAngle());
     yawTimestampQueue =

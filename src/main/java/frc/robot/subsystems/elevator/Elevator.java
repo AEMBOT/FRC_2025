@@ -27,7 +27,8 @@ public class Elevator extends SubsystemBase {
   public Command limitHeight(DoubleSupplier pivotAngle) {
     return run(() -> io.limitHeight(pivotAngle.getAsDouble()));
   }
-    /**
+
+  /**
    * Directly sets the voltage of the elevator, use ONLY FOR COMMAND MUTEXTING, LIKE SYSID.
    *
    * @param volts Voltage to apply to the elevator.

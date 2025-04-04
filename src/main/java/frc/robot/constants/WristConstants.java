@@ -31,7 +31,7 @@ public class WristConstants {
 
   /** How many degrees the wrist can be off its goal position for it to be sufficient */
   public static final double ALLOWED_DEVIANCE = 6;
-  
+
   /** */
   public static final double ZERO_POSITION = 29.734375 * -1; // TODO tune
 

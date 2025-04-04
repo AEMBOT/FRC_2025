@@ -36,7 +36,7 @@ public interface ElevatorIO {
   public default void limitHeight(double pivotAngle) {}
 
   /** Resets the elevator goal */
-  public default void resetGoal() {}
+  public default void resetProfile() {}
 
   /** Sets the offset of the elevator to a known position */
   public default void setMotorZero() {}

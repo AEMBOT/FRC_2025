@@ -58,7 +58,7 @@ public class Pivot extends SubsystemBase {
    */
   public Command changePosition(double velocityDegPerSec) {
     return run(() -> io.setAngle(inputs.pivotGoalPosition + (velocityDegPerSec * UPDATE_PERIOD)))
-        .finallyDo(io::resetGoal);
+        .finallyDo(io::resetProfile);
   }
 
   public DoubleSupplier getPosition() { // should be the absolute position not goal position right?

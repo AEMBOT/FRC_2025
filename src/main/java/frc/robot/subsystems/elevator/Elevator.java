@@ -67,7 +67,7 @@ public class Elevator extends SubsystemBase {
   public Command changePosition(double velocityMetPerSec) {
     return run(() ->
             io.setHeight(inputs.elevatorGoalPosition + (velocityMetPerSec * UPDATE_PERIOD)))
-        .finallyDo(() -> io.resetGoal());
+        .finallyDo(() -> io.resetProfile());
   }
 
   /**

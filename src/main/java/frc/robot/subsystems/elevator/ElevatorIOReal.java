@@ -125,7 +125,7 @@ public class ElevatorIOReal implements ElevatorIO {
   }
 
   @Override
-  public void resetGoal() {
+  public void resetProfile() {
     elevatorGoal = getAbsoluteMotorPosition();
   }
 

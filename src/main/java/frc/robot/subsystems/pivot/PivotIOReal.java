@@ -154,7 +154,7 @@ public class PivotIOReal implements PivotIO {
   }
 
   @Override
-  public void resetGoal() {
+  public void resetProfile() {
     pivotGoal = getAbsoluteEncoderPosition();
   }
 

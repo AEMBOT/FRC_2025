@@ -37,7 +37,7 @@ public interface PivotIO {
   public default void setVoltage(double volts) {}
 
   /** Resets the pivot goal during manual control */
-  public default void resetGoal() {}
+  public default void resetProfile() {}
 
   /** */
   public default void runRatchetForward() {}

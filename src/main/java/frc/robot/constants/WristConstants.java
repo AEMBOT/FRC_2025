@@ -62,10 +62,10 @@ public class WristConstants {
   /** */
   public static final SingleJointedArmSim SIM =
       new SingleJointedArmSim(
-          DCMotor.getNEO(1),
-          6,
-          SingleJointedArmSim.estimateMOI(0.5, 1),
-          0.5,
+          DCMotor.getKrakenX60(2),
+          378,
+          SingleJointedArmSim.estimateMOI(2, 1),
+          1,
           Units.degreesToRadians(MIN_ANGLE),
           Units.degreesToRadians(MAX_ANGLE),
           true,

@@ -71,7 +71,7 @@ public class PivotConstants {
   /** */
   public static final SingleJointedArmSim SIM =
       new SingleJointedArmSim(
-          DCMotor.getNEO(2),
+          DCMotor.getKrakenX60(2),
           378,
           SingleJointedArmSim.estimateMOI(2, 1),
           1,

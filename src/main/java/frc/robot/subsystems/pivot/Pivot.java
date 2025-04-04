@@ -61,7 +61,7 @@ public class Pivot extends SubsystemBase {
         .andThen(
             Commands.waitUntil(
                 () ->
-                    Math.abs(inputs.pivotPosition - inputs.pivotAbsolutePosition)
+                    Math.abs(inputs.pivotGoalPosition - inputs.pivotAbsolutePosition)
                         < ALLOWED_DEVIANCE));
   }
 
@@ -73,7 +73,7 @@ public class Pivot extends SubsystemBase {
    *     pivot dampening profile after completion.
    */
   public Command changePosition(double velocityDegPerSec) {
-    return run(() -> io.setAngle(inputs.pivotPosition + (velocityDegPerSec * UPDATE_PERIOD)))
+    return run(() -> io.setAngle(inputs.pivotGoalPosition + (velocityDegPerSec * UPDATE_PERIOD)))
         .finallyDo(io::resetProfile);
   }
 

@@ -344,15 +344,14 @@ public class RobotContainer {
                   this.visionDisableTimeStart = Double.MAX_VALUE;
                 })));
 
-    keyboardController.button(11).onTrue(CompoundCommands.armToAlgae(true));
-    keyboardController.button(12).onTrue(CompoundCommands.armToAlgae(false));
-
     keyboardController
         .button(13)
         .whileTrue(CompoundCommands.deferArm(() -> CompoundCommands.armToReefSafely(reef_level)));
+
     keyboardController.button(14).whileTrue(CompoundCommands.armToSource());
 
     keyboardController.button(15).onFalse(CompoundCommands.armToStow());
+
     keyboardController
         .button(16)
         .onFalse(intake.runIntakeCommand(() -> 0).alongWith(CompoundCommands.armToStow()));

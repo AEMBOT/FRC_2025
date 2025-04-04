@@ -21,7 +21,7 @@ public interface PivotIO {
     public double[] pivotCurrentAmps = new double[] {};
 
     /** Goal position of the pivot in degrees */
-    public double pivotPosition = 45;
+    public double pivotGoalPosition = 45;
 
     /** Setpoint position of the pivot in degrees */
     public double pivotSetpointPosition = 45;

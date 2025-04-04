@@ -82,7 +82,7 @@ public class PositionConstants {
   public static final double L1ElevatorExtension = 0;
 
   // L2 Arm Setpoint Values
-  public static final double L2WristAngle = 22.31;
+  public static final double L2WristAngle = 39.109999999999985;
   public static final double L2PivotAngle = 51.82;
   public static final double L2ElevatorExtension = 0;
 

@@ -123,7 +123,7 @@ public class Wrist extends SubsystemBase {
         .until(() -> inputs.wristCurrentAmps > WRIST_ZEROING_MAX_AMPS)
         .andThen(runOnce(() -> io.setMotorZero()))
         .andThen(runOnce(() -> stopWrist()))
-        .andThen(setGoalPosition(() -> stowWristAngle))
-        .finallyDo(() -> Logger.recordOutput("Wrist/rezeroing", false));
+        .finallyDo(() -> Logger.recordOutput("Wrist/rezeroing", false))
+        .andThen(setGoalPosition(() -> stowWristAngle));
   }
 }

@@ -89,7 +89,7 @@ public class CompoundCommands {
     NamedCommands.registerCommand("AutoIntakeSourceLeft", intakeSource(false));
     NamedCommands.registerCommand("AutoIntakeSourceRight", intakeSource(true));
 
-    NamedCommands.registerCommand("ArmStow", armToStow());
+    NamedCommands.registerCommand("ArmToStow", armToStow());
 
     NamedCommands.registerCommand("ZeroWrist", wrist.zeroWrist());
   }

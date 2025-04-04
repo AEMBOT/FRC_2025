@@ -60,7 +60,6 @@ public class CompoundCommands {
   }
 
   private static void configureNamedCommands() {
-    // TODO: Change auto routines to work with different NamedCommands
     NamedCommands.registerCommand("DriveReefL", driveToLeftReef(1));
     NamedCommands.registerCommand("DriveReefR", driveToRightReef(1));
 

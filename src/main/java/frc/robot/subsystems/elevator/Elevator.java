@@ -3,11 +3,12 @@ package frc.robot.subsystems.elevator;
 import static edu.wpi.first.wpilibj2.command.Commands.waitUntil;
 import static frc.robot.constants.ElevatorConstants.ALLOWED_DEVIANCE;
 import static frc.robot.constants.GeneralConstants.UPDATE_PERIOD;
+import static frc.robot.constants.GeneralConstants.currentMode;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.constants.GeneralConstants.Mode;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
 
@@ -18,8 +19,6 @@ public class Elevator extends SubsystemBase {
 
   public Elevator(ElevatorIO io) {
     this.io = io;
-
-    new Trigger(() -> inputs.openLoopStatus).onFalse(runOnce(io::resetProfile));
   }
 
   public void periodic() {
@@ -57,12 +56,21 @@ public class Elevator extends SubsystemBase {
    * @return A {@link RunCommand} to set the elevator setpoint to posIn.
    */
   public Command setPosition(DoubleSupplier posMet) {
-    return runOnce(() -> io.setHeight(posMet.getAsDouble()))
-        .andThen(
-            waitUntil(
-                () ->
-                    Math.abs(inputs.elevatorGoalPosition - inputs.elevatorAbsolutePosition)
-                        < ALLOWED_DEVIANCE));
+    if (currentMode == Mode.REAL) {
+      return runOnce(() -> io.setHeight(posMet.getAsDouble()))
+          .andThen(
+              waitUntil(
+                  () ->
+                      Math.abs(inputs.elevatorGoalPosition - inputs.elevatorAbsolutePosition)
+                          < ALLOWED_DEVIANCE));
+    } else {
+      return runOnce(() -> io.setHeight(posMet.getAsDouble()))
+          .andThen(
+              waitUntil(
+                  () ->
+                      Math.abs(inputs.elevatorGoalPosition - inputs.elevatorAbsolutePosition)
+                          < ALLOWED_DEVIANCE * 4));
+    }
   }
 
   /**

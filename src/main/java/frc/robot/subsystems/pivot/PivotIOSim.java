@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 
 public class PivotIOSim implements PivotIO {
-  private boolean openLoop = true;
   private double pivotGoal;
 
   private final Encoder encoder = new Encoder(3, 4);
@@ -32,7 +31,7 @@ public class PivotIOSim implements PivotIO {
   public static MechanismLigament2d pivotMech;
 
   public PivotIOSim() {
-    pivotRoot = pivotCanvas.getRoot("PivotRoot", 2.4, 0.1);
+    pivotRoot = pivotCanvas.getRoot("PivotRoot", 2.7, 0.1);
     pivotMech =
         pivotRoot.append(
             new MechanismLigament2d("PivotMech", 0.8, 0, 12, new Color8Bit(Color.kLightBlue)));
@@ -43,7 +42,6 @@ public class PivotIOSim implements PivotIO {
     inputs.pivotAbsoluteVelocity = Units.radiansToDegrees(SIM.getVelocityRadPerSec());
     inputs.pivotAppliedVolts = SIM.getInput(0);
     inputs.pivotGoalPosition = pivotGoal;
-    inputs.openLoopStatus = openLoop;
   }
 
   @Override
@@ -53,7 +51,6 @@ public class PivotIOSim implements PivotIO {
 
   @Override
   public void setAngle(double angle) {
-    openLoop = false;
     angle = clamp(angle, MIN_ANGLE, MAX_ANGLE);
     pivotController.setGoal(angle);
     pivotGoal = angle;
@@ -64,7 +61,6 @@ public class PivotIOSim implements PivotIO {
   }
 
   private void setMotorVoltage(double volts) {
-    openLoop = false;
     SIM.setInput(volts);
   }
 

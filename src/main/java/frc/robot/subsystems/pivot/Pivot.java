@@ -1,13 +1,14 @@
 package frc.robot.subsystems.pivot;
 
+import static edu.wpi.first.wpilibj2.command.Commands.waitUntil;
 import static frc.robot.constants.GeneralConstants.UPDATE_PERIOD;
+import static frc.robot.constants.GeneralConstants.currentMode;
 import static frc.robot.constants.PivotConstants.ALLOWED_DEVIANCE;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.constants.GeneralConstants.Mode;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
 
@@ -18,8 +19,6 @@ public class Pivot extends SubsystemBase {
 
   public Pivot(PivotIO io) {
     this.io = io;
-
-    new Trigger(() -> inputs.openLoopStatus).onFalse(runOnce(io::resetProfile));
   }
 
   public void periodic() {
@@ -57,12 +56,21 @@ public class Pivot extends SubsystemBase {
    * @return A {@link RunCommand} to set the pivot setpoint to posDeg.
    */
   public Command setPosition(DoubleSupplier posDeg) {
-    return runOnce(() -> io.setAngle(posDeg.getAsDouble()))
-        .andThen(
-            Commands.waitUntil(
-                () ->
-                    Math.abs(inputs.pivotGoalPosition - inputs.pivotAbsolutePosition)
-                        < ALLOWED_DEVIANCE));
+    if (currentMode == Mode.REAL) {
+      return runOnce(() -> io.setAngle(posDeg.getAsDouble()))
+          .andThen(
+              waitUntil(
+                  () ->
+                      Math.abs(inputs.pivotGoalPosition - inputs.pivotAbsolutePosition)
+                          < ALLOWED_DEVIANCE));
+    } else {
+      return runOnce(() -> io.setAngle(posDeg.getAsDouble()))
+          .andThen(
+              waitUntil(
+                  () ->
+                      Math.abs(inputs.pivotGoalPosition - inputs.pivotAbsolutePosition)
+                          < ALLOWED_DEVIANCE * 1.25));
+    }
   }
 
   /**

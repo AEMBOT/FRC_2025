@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
 import org.littletonrobotics.junction.Logger;
 
 public class ElevatorIOSim implements ElevatorIO {
-  private boolean openLoop = true;
   private double elevatorGoal;
   private final Encoder encoder = new Encoder(5, 6);
   private final ElevatorFeedforward elevFF = new ElevatorFeedforward(0, 1.66, 0.1, 0);
@@ -35,7 +34,7 @@ public class ElevatorIOSim implements ElevatorIO {
   public ElevatorIOSim() {
     elevatorMech =
         pivotMech.append(
-            new MechanismLigament2d("ElevatorMech", 0.01, 0, 10, new Color8Bit(Color.kLightBlue)));
+            new MechanismLigament2d("ElevatorMech", 0.001, 0, 10, new Color8Bit(Color.kLightBlue)));
   }
 
   public void updateInputs(ElevatorIOInputs inputs) {
@@ -43,7 +42,6 @@ public class ElevatorIOSim implements ElevatorIO {
     inputs.elevatorAbsoluteVelocity = SIM.getVelocityMetersPerSecond();
     inputs.elevatorAppliedVolts = SIM.getInput(0);
     inputs.elevatorGoalPosition = elevatorGoal;
-    inputs.openLoopStatus = openLoop;
   }
 
   @Override
@@ -63,7 +61,6 @@ public class ElevatorIOSim implements ElevatorIO {
 
   @Override
   public void setHeight(double height) {
-    openLoop = false;
     height = clamp(height, MIN_HEIGHT, MAX_HEIGHT);
     elevatorGoal = height;
     elevatorController.setGoal(height);
@@ -79,7 +76,6 @@ public class ElevatorIOSim implements ElevatorIO {
   }
 
   private void setMotorVoltage(double volts) {
-    openLoop = false;
     SIM.setInput(volts);
   }
 

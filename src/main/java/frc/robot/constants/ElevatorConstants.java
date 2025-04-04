@@ -55,7 +55,7 @@ public class ElevatorConstants {
 
   /** */
   public static final ElevatorSim SIM =
-      new ElevatorSim(DCMotor.getKrakenX60(2), 1, 2, 0.1, 0.01, MAX_HEIGHT, true, 0.1);
+      new ElevatorSim(DCMotor.getKrakenX60(2), 1, 2, 0.1, 0.001, MAX_HEIGHT, true, 0.1);
 
   /* Absolute highest point from the base the elevator can reach in inches*/
   public static final double absoluteMaxExtension = 6;

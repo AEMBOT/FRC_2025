@@ -17,8 +17,6 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 
 public class WristIOSim implements WristIO {
-  private boolean openLoop = true;
-
   private double wristGoal;
   private final Encoder encoder = new Encoder(1, 2);
   private final ArmFeedforward wristFF = new ArmFeedforward(0, 0.0002, 0.0722, 0);
@@ -42,7 +40,6 @@ public class WristIOSim implements WristIO {
     inputs.wristAbsoluteVelocity = Units.radiansToDegrees(SIM.getVelocityRadPerSec());
     inputs.wristAppliedVolts = SIM.getInput(0);
     inputs.wristGoalPosition = wristGoal;
-    inputs.openLoopStatus = openLoop;
   }
 
   private double getAbsoluteEncoderPosition() {
@@ -51,7 +48,6 @@ public class WristIOSim implements WristIO {
 
   @Override
   public void setAngle(double angle) {
-    openLoop = false;
     angle = clamp(angle, MIN_ANGLE, MAX_ANGLE);
     wristController.setGoal(angle);
     wristGoal = angle;
@@ -63,7 +59,6 @@ public class WristIOSim implements WristIO {
   }
 
   private void setMotorVoltage(double volts) {
-    openLoop = true;
     SIM.setInput(volts);
   }
 

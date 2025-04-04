@@ -316,11 +316,11 @@ public class RobotContainer {
         .onFalse(elevator.changePosition(0));
 
     keyboardController
-        .button(17)
+        .button(9)
         .whileTrue(wrist.changeGoalPosition(40))
         .onFalse(wrist.changeGoalPosition(0));
     keyboardController
-        .button(18)
+        .button(10)
         .whileTrue(wrist.changeGoalPosition(-40))
         .onFalse(wrist.changeGoalPosition(0));
 
@@ -345,41 +345,37 @@ public class RobotContainer {
                 })));
 
     keyboardController
-        .button(13)
+        .button(11)
         .whileTrue(CompoundCommands.deferArm(() -> CompoundCommands.armToReefSafely(reef_level)));
 
-    keyboardController.button(14).whileTrue(CompoundCommands.armToSource());
+    keyboardController.button(12).whileTrue(CompoundCommands.armToSource());
 
-    keyboardController.button(15).onFalse(CompoundCommands.armToStow());
-
-    keyboardController
-        .button(16)
-        .onFalse(intake.runIntakeCommand(() -> 0).alongWith(CompoundCommands.armToStow()));
+    keyboardController.button(13).onFalse(CompoundCommands.armToStow());
 
     // Path controller bindings
     keyboardController
-        .button(19)
+        .button(14)
         .onTrue(
             runOnce(
                 () -> {
                   this.reef_level = 1;
                 }));
     keyboardController
-        .button(20)
+        .button(15)
         .onTrue(
             runOnce(
                 () -> {
                   this.reef_level = 2;
                 }));
     keyboardController
-        .button(21)
+        .button(16)
         .onTrue(
             runOnce(
                 () -> {
                   this.reef_level = 3;
                 }));
     keyboardController
-        .button(22)
+        .button(17)
         .onTrue(
             runOnce(
                 () -> {
@@ -387,29 +383,29 @@ public class RobotContainer {
                 }));
 
     keyboardController
-        .button(23)
+        .button(18)
         .whileTrue(
             new ParallelCommandGroup(
                 CompoundCommands.deferDrive(() -> CompoundCommands.driveToLeftReef(reef_level)),
                 CompoundCommands.deferArm(() -> CompoundCommands.armToReefSafely(reef_level))));
     keyboardController
-        .button(24)
+        .button(19)
         .whileTrue(
             new ParallelCommandGroup(
                 CompoundCommands.deferDrive(() -> CompoundCommands.driveToRightReef(reef_level)),
                 CompoundCommands.deferArm(() -> CompoundCommands.armToReefSafely(reef_level))));
 
     keyboardController
-        .button(25)
+        .button(20)
         .whileTrue(
             new ParallelCommandGroup(
                 CompoundCommands.armToSource(),
                 CompoundCommands.deferDrive(() -> CompoundCommands.driveToSource())));
 
-    keyboardController.button(26).whileTrue(CompoundCommands.armToClimb());
+    keyboardController.button(21).whileTrue(CompoundCommands.armToClimb());
 
     keyboardController
-        .button(27)
+        .button(22)
         .whileTrue(
             new RunCommand(
                 () ->

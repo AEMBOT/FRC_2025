@@ -81,7 +81,7 @@ public class WristConstants {
   public static final double ZEROING_VOLTAGE = 1; // TODO tune
 
   /** Rising debounce time for amperage at max */
-  public static final double ZEROING_DEBOUNCE_TIME = 1.0;
+  public static final double ZEROING_DEBOUNCE_TIME = 0.5;
 
   /** */
   public static final double WRIST_ZEROING_MAX_AMPS = 20; // TODO tune

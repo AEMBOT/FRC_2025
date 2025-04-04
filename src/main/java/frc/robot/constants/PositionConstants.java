@@ -92,8 +92,11 @@ public class PositionConstants {
   public static final double L3ElevatorExtension = 0.26;
 
   // L4 Arm Setpoint Values
-  public static final double L4WristAngle = 52.74921875000003;
-  public static final double L4PivotAngle = 74.399999999999781;
+  public static final double L4WristAngleAuto = 52.74921875000003;
+  public static final double L4PivotAngleAuto = 74.399999999999781;
+
+  public static final double L4WristAngle = 59.94921875000001;
+  public static final double L4PivotAngle = 74.72634881514921;
   public static final double L4ElevatorExtension = 0.9051441865808824;
 
   // Source Arm Setpoint Values

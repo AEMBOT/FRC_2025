@@ -119,11 +119,7 @@ public class CompoundCommands {
   public static Command armToReefAvoidAlgae(int reefLevel) {
     return pivot
         .setPosition(() -> safePivotPosition)
-        .andThen(
-            armToGoal(
-                reefArmPositions[reefLevel - 1][0],
-                safePivotPosition,
-                reefArmPositions[reefLevel - 1][2]))
+        .andThen(armToGoal(L4WristAngleAuto, safePivotPosition, reefArmPositions[reefLevel - 1][2]))
         .andThen(pivot.setPosition(() -> reefArmPositions[reefLevel - 1][1]));
   }
 

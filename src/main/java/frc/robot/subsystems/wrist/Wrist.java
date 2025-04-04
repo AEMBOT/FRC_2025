@@ -7,6 +7,8 @@ import static frc.robot.constants.GeneralConstants.UPDATE_PERIOD;
 import static frc.robot.constants.PositionConstants.stowWristAngle;
 import static frc.robot.constants.WristConstants.*;
 
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -20,6 +22,8 @@ public class Wrist extends SubsystemBase {
   WristIO io;
   private final WristIOInputsAutoLogged inputs = new WristIOInputsAutoLogged();
   private final SysIdRoutine sysId;
+
+  private final Debouncer currentDebouncer = new Debouncer(ZEROING_DEBOUNCE_TIME, DebounceType.kRising);
 
   public Wrist(WristIO io) {
     this.io = io;
@@ -120,10 +124,13 @@ public class Wrist extends SubsystemBase {
   public Command zeroWrist() {
     return runOnce(() -> Logger.recordOutput("Wrist/rezeroing", true))
         .andThen(run(() -> setVoltage(ZEROING_VOLTAGE)))
-        .until(() -> inputs.wristCurrentAmps > WRIST_ZEROING_MAX_AMPS)
+        .until(() -> currentDebouncer.calculate(inputs.wristCurrentAmps > WRIST_ZEROING_MAX_AMPS))
         .andThen(runOnce(() -> io.setMotorZero()))
         .andThen(runOnce(() -> stopWrist()))
-        .finallyDo(() -> Logger.recordOutput("Wrist/rezeroing", false))
+        .finallyDo(() -> {
+          Logger.recordOutput("Wrist/rezeroing", false);
+          currentDebouncer.calculate(false);
+        })
         .andThen(setGoalPosition(() -> stowWristAngle));
   }
 }

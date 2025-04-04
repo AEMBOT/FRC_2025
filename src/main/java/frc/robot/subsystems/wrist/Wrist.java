@@ -23,7 +23,8 @@ public class Wrist extends SubsystemBase {
   private final WristIOInputsAutoLogged inputs = new WristIOInputsAutoLogged();
   private final SysIdRoutine sysId;
 
-  private final Debouncer currentDebouncer = new Debouncer(ZEROING_DEBOUNCE_TIME, DebounceType.kRising);
+  private final Debouncer currentDebouncer =
+      new Debouncer(ZEROING_DEBOUNCE_TIME, DebounceType.kRising);
 
   public Wrist(WristIO io) {
     this.io = io;
@@ -127,10 +128,11 @@ public class Wrist extends SubsystemBase {
         .until(() -> currentDebouncer.calculate(inputs.wristCurrentAmps > WRIST_ZEROING_MAX_AMPS))
         .andThen(runOnce(() -> io.setMotorZero()))
         .andThen(runOnce(() -> stopWrist()))
-        .finallyDo(() -> {
-          Logger.recordOutput("Wrist/rezeroing", false);
-          currentDebouncer.calculate(false);
-        })
+        .finallyDo(
+            () -> {
+              Logger.recordOutput("Wrist/rezeroing", false);
+              currentDebouncer.calculate(false);
+            })
         .andThen(setGoalPosition(() -> stowWristAngle));
   }
 }

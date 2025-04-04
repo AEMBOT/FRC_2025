@@ -110,10 +110,21 @@ public class CompoundCommands {
     }
 
     Command alignCommand =
-        new ParallelCommandGroup(driveCommand, armToReefSafely(level)).withTimeout(5.0);
+        new ParallelCommandGroup(driveCommand, armToReefAvoidAlgae(level)).withTimeout(5.0);
 
     // Small wait to ensure arm is stable before shooting
     return alignCommand.andThen(waitSeconds(0.5)).andThen(intakeCoral());
+  }
+
+  public static Command armToReefAvoidAlgae(int reefLevel) {
+    return pivot
+        .setPosition(() -> safePivotPosition)
+        .andThen(
+            armToGoal(
+                reefArmPositions[reefLevel - 1][0],
+                safePivotPosition,
+                reefArmPositions[reefLevel - 1][2]))
+        .andThen(pivot.setPosition(() -> reefArmPositions[reefLevel - 1][1]));
   }
 
   /** placeReef but it doesn't drive. For pit testing */

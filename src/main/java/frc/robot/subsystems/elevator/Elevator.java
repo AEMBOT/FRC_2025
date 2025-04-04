@@ -24,27 +24,8 @@ public class Elevator extends SubsystemBase {
     io.updateInputs(inputs);
   }
 
-  /**
-   * Sets the setpoint of the elevator to a certain height.
-   *
-   * @param posIn Position in inches to set the elevator to.
-   * @return A {@link RunCommand} to set the elevator setpoint to posIn.
-   */
-  // public Command setAngleDeg(DoubleSupplier posIn) {
-  //    return run(() -> io.setAngle(posIn.getAsDouble()));
-  // }
-
   public Command limitHeight(DoubleSupplier pivotAngle) {
     return run(() -> io.limitHeight(pivotAngle.getAsDouble()));
-  }
-
-  /**
-   * Directly sets the voltage of the elevator, used for SysId.
-   *
-   * @param volts Voltage to apply to the elevator.
-   */
-  public void setVoltage(double volts) {
-    io.setVoltage(volts);
   }
 
   /**

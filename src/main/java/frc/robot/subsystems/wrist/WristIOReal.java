@@ -45,13 +45,7 @@ public class WristIOReal implements WristIO {
     motor.getConfigurator().apply(motorConfig);
 
     motor.setNeutralMode(NeutralModeValue.Brake);
-
-    /**
-     * while (getAbsoluteEncoderPosition() < MIN_ANGLE || getAbsoluteEncoderPosition() > MAX_ANGLE)
-     * { // todo Look into better solutions for invalid encoder initial pose
-     * System.out.println("ERROR: Busyloop because wrist position invalid! Is the encoder plugged
-     * in?"); delay(1); }
-     */
+    
     wristGoal = getAbsoluteMotorPosition();
   }
 

@@ -35,15 +35,6 @@ public class Wrist extends SubsystemBase {
   }
 
   /**
-   * Directly sets the voltage of the wrist, used for SysId.
-   *
-   * @param volts Voltage to apply to the wrist.
-   */
-  public void setVoltage(double volts) {
-    io.setVoltage(volts);
-  }
-
-  /**
    * Sets the setpoint of the wrist to a certain degree.
    *
    * @param posDeg Position in degrees to set the wrist to.

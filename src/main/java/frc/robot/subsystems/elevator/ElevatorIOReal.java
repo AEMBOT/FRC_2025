@@ -51,11 +51,6 @@ public class ElevatorIOReal implements ElevatorIO {
 
     followingMotor.setControl(new Follower(TOP_MOTOR_ID, false));
 
-    /**
-     * while (getAbsoluteMotorPosition() < MIN_HEIGHT || getAbsoluteMotorPosition() > MAX_HEIGHT) {
-     * // todo Look into better solutions for invalid Motor initial pose System.out.println("ERROR:
-     * Busyloop because elevator position invalid! Is the Motor plugged in?"); delay(1); }
-     */
     elevatorGoal = 0;
 
     m_request = new MotionMagicVoltage(0).withSlot(0);

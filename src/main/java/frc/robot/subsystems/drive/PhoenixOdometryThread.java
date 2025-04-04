@@ -69,8 +69,9 @@ public class PhoenixOdometryThread extends Thread {
     signalsLock.lock();
     Drive.odometryLock.lock();
     try {
-      CANBus canBus = new CANBus();
-      isCANFD = canBus.isNetworkFD();
+      isCANFD = new CANBus(device.getNetwork()).isNetworkFD(); // Not sure if this works, but it
+      // could be a fix for the deprecated line below v v v
+      // CANBus.isNetworkFD(device.getNetwork());
       BaseStatusSignal[] newSignals = new BaseStatusSignal[signals.length + 1];
       System.arraycopy(signals, 0, newSignals, 0, signals.length);
       newSignals[signals.length] = signal;

@@ -35,15 +35,6 @@ public class Pivot extends SubsystemBase {
   }
 
   /**
-   * Directly sets the voltage of the pivot, used for SysId.
-   *
-   * @param volts Voltage to apply to the pivot.
-   */
-  public void setVoltage(double volts) {
-    io.setVoltage(volts);
-  }
-
-  /**
    * Sets the setpoint of the pivot to a certain degree.
    *
    * @param posDeg Position in degrees to set the pivot to.

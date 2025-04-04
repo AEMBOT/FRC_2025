@@ -100,12 +100,6 @@ public class PivotIOReal implements PivotIO {
 
     followingMotor.setControl(new Follower(LEFT_MOTOR_ID, true));
 
-    /**
-     * while (getAbsoluteEncoderPosition() < MIN_ANGLE || getAbsoluteEncoderPosition() > MAX_ANGLE)
-     * { // todo Look into better solutions for invalid encoder initial pose
-     * System.out.println("ERROR: Busyloop because pivot position invalid! Is the encoder plugged
-     * in?"); delay(1); }
-     */
     pivotGoal = getAbsoluteEncoderPosition();
 
     ratchetPin1 = new DigitalOutput(RATCHET_PIN_1_ID);

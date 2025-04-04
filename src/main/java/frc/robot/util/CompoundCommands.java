@@ -311,17 +311,11 @@ public class CompoundCommands {
    */
   public static Command armToGoal(double wristSetPos, double pivotSetPos, double elevatorSetPos) {
 
-    if (elevatorSetPos > elevator.getPosition().getAsDouble()) {
-      return elevator
-          .setPosition(() -> elevatorSetPos)
-          .andThen(wrist.setGoalPosition(() -> wristSetPos))
-          .andThen(pivot.setPosition(() -> pivotSetPos));
+    return pivot
+        .setPosition(() -> pivotSetPos)
+        .alongWith(wrist.setGoalPosition(() -> wristSetPos))
+        .alongWith(elevator.setPosition((() -> elevatorSetPos)));
 
-    } else {
-      return wrist
-          .setGoalPosition(() -> wristSetPos)
-          .andThen(elevator.setPosition(() -> elevatorSetPos))
-          .andThen(pivot.setPosition(() -> pivotSetPos));
-    }
+    //
   }
 }

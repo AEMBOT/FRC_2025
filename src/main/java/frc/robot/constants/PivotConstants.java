@@ -5,7 +5,7 @@ public class PivotConstants {
   public static final double MAX_ANGLE = 120;
 
   /** Minimum angle for the pivot to move to, in degrees */
-  public static final double MIN_ANGLE = 3;
+  public static final double MIN_ANGLE = 0.0;
 
   /** ID of the left pivot sparkmax */
   public static final int LEFT_MOTOR_ID = 10;
@@ -28,9 +28,9 @@ public class PivotConstants {
   /** */
   public static final int ENCODER_ID = 1;
 
-  // Procedure: Set offset to -90, move pivot to real 90 (Vertical). Output value with flipped sign
-  // is new offset.
-  public static final double ENCODER_POSITION_OFFSET = 90 - 248.22256220556403;
+  // Procedure: Set offset to 0, move pivot to real 90 (vertical). Set encoder offset to 90 - output
+  // value.
+  public static final double ENCODER_POSITION_OFFSET = 90 - 247.87962;
 
   /** */
   public static final double GEAR_RATIO = 378;

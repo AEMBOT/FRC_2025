@@ -95,7 +95,7 @@ public class CompoundCommands {
    *
    * @param isOnRight If we want to place on the right pole.
    * @param level The reef level.
-   * @return Command: Parallel {align drive, align arm}.timeout(5.0) -> wait(3.0) -> Eject
+   * @return Command: Parallel {align drive, align arm}.timeout(5.0) -> wait(0.5) -> Eject
    */
   public static Command placeReef(boolean isOnRight, int level) {
     Command driveCommand;
@@ -108,7 +108,8 @@ public class CompoundCommands {
     Command alignCommand =
         new ParallelCommandGroup(driveCommand, armToReefSafely(level)).withTimeout(5.0);
 
-    return alignCommand.andThen(ejectCoral());
+    // Small wait to ensure arm is stable before shooting
+    return alignCommand.andThen(waitSeconds(0.5)).andThen(ejectCoral());
   }
 
   public static Command intakeSource(boolean isOnRight) {
@@ -197,12 +198,7 @@ public class CompoundCommands {
     return new DeferredCommand(
         () ->
             PathGenerator.generateSimpleCorrectedPath(
-                drive,
-                reefTargets.getReefPose(
-                    false,
-                    drive.getPose(),
-                    reefLevel,
-                    intake.getGamePiecePosition().getAsDouble())),
+                drive, reefTargets.getReefPose(false, drive.getPose(), reefLevel)),
         Set.of(drive));
   }
 
@@ -216,9 +212,7 @@ public class CompoundCommands {
     return new DeferredCommand(
         () ->
             PathGenerator.generateSimpleCorrectedPath(
-                drive,
-                reefTargets.getReefPose(
-                    true, drive.getPose(), reefLevel, intake.getGamePiecePosition().getAsDouble())),
+                drive, reefTargets.getReefPose(true, drive.getPose(), reefLevel)),
         Set.of(drive));
   }
 
@@ -254,17 +248,14 @@ public class CompoundCommands {
   /** Run outtake with IntakeConstants.ejectTime. */
   public static Command ejectCoral() {
     return intake
-        .ejectCommand()
-        .withTimeout(IntakeConstants.ejectTimeout)
+        .ejectCoralCommand()
+        .withTimeout(IntakeConstants.EJECT_TIMEOUT)
         .andThen(armToStowSafely());
   }
 
   /** Run intake until we have coral or timeout (IntakeConstants.intakeTimeout) runs out */
   public static Command intakeCoral() {
-    return intake
-        .intakeCommand()
-        .until(() -> intake.getHasGamePiece())
-        .withTimeout(IntakeConstants.intakeTimeout);
+    return intake.intakeCoralCommand().withTimeout(IntakeConstants.INTAKE_TIMEOUT);
   }
 
   /**

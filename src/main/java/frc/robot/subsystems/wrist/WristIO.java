@@ -9,16 +9,17 @@ public interface WristIO {
     /** Current angle of the wrist in degrees */
     public double wristAbsolutePosition = 0.0;
 
+    /** Current angle measured by wrist abs encoder, in rotations */
+    public double wristAbsoluteEncoderRawRotations = 0.0;
+
     /** Current velocity the wrist in travelling at in rotations per minute */
     public double wristAbsoluteVelocity = 0.0;
 
     /** */
     public double wristAppliedVolts = 0.0;
 
-    /**
-     * Currents amps applied to each motor. Both motors are logged indivually to better find issues.
-     */
-    public double[] wristCurrentAmps = new double[] {};
+    /** Currents amps applied to the motor */
+    public double wristCurrentAmps = 0.0;
 
     /** Goal position of the wrist in degrees */
     public double wristGoalPosition = 45;
@@ -33,6 +34,9 @@ public interface WristIO {
   /** Run open loop at the specified voltage. */
   public default void setVoltage(double volts) {}
 
-  /** Resets the wrist goal during manual control */
-  public default void resetGoal() {}
+  /** Resets the wrist goal and setpoint to the current angle of the wrist */
+  public default void resetProfile() {}
+
+  /** Sets the offset of the wrist to a known position */
+  public default void setMotorZero() {}
 }

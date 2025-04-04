@@ -27,8 +27,9 @@ public class PositionConstants {
 
   // 0.4318 + 0.3429
   // Define source targets
+  // Bumpers against source
   public static final Transform2d sourceOffset =
-      new Transform2d(Units.inchesToMeters(31.5), 0.0, Rotation2d.fromDegrees(180));
+      new Transform2d(0.4318, 0.0, Rotation2d.fromDegrees(180));
 
   public static final Pose2d sourcePoseRightBlue =
       VisionConstants.aprilTagFieldLayout.getTagPose(12).get().toPose2d().transformBy(sourceOffset);
@@ -93,13 +94,13 @@ public class PositionConstants {
   public static final double L3ElevatorExtension = 0.46500000000000263;
 
   // L4 Arm Setpoint Values
-  public static final double L4WristAngle = -18.950836422872456;
-  public static final double L4PivotAngle = 80.40000000000006;
-  public static final double L4ElevatorExtension = 1.1500315946691175;
+  public static final double L4WristAngle = 59.94921875000001;
+  public static final double L4PivotAngle = 74.72634881514921;
+  public static final double L4ElevatorExtension = 0.9051441865808824;
 
   // Source Arm Setpoint Values
-  public static final double sourceWristAngle = 90;
-  public static final double sourcePivotAngle = 45.21778598044459;
+  public static final double sourceWristAngle = 108.275;
+  public static final double sourcePivotAngle = 65.88248059405254;
   public static final double sourceElevatorExtension = 0;
 
   // Climb Arm Setpoint Values
@@ -108,8 +109,8 @@ public class PositionConstants {
   public static final double climbElevatorExtension = 0;
 
   // Starting Arm Setpoint Values
-  public static final double stowWristAngle = 90;
-  public static final double stowPivotAngle = 70.73384351834608;
+  public static final double stowWristAngle = 111.91015625000001;
+  public static final double stowPivotAngle = 81.81999599249039;
   public static final double stowElevatorExtension = 0;
 
   public static final double safePivotPosition = 80.40000000000006;

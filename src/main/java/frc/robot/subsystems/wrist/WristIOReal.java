@@ -39,8 +39,7 @@ public class WristIOReal implements WristIO {
 
     motorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
-    rotorOffset =
-        (MOTOR_RATIO * getAbsoluteEncoderPosition() / 360) - motor.getPosition().getValueAsDouble();
+    setMotorZero();
 
     motor.getConfigurator().apply(motorConfig);
 
@@ -50,7 +49,8 @@ public class WristIOReal implements WristIO {
   }
 
   public void updateInputs(WristIOInputs inputs) {
-    inputs.wristAbsolutePosition = getAbsoluteEncoderPosition();
+    inputs.wristAbsolutePosition = getAbsoluteMotorPosition();
+    inputs.wristAbsoluteEncoderRawRotations = ENCODER.get();
     Logger.recordOutput("Wrist/motorTemp", motor.getDeviceTemp().getValueAsDouble());
     Logger.recordOutput("rawWristMotorValue", ENCODER.get());
     Logger.recordOutput(
@@ -58,10 +58,7 @@ public class WristIOReal implements WristIO {
         360 * ((motor.getPosition().getValueAsDouble() - rotorOffset) / 6));
     inputs.wristAbsoluteVelocity = motor.getVelocity().getValueAsDouble();
     inputs.wristAppliedVolts = motor.getMotorVoltage().getValueAsDouble();
-    inputs.wristCurrentAmps =
-        new double[] {
-          motor.getStatorCurrent().getValueAsDouble(), motor.getStatorCurrent().getValueAsDouble()
-        };
+    inputs.wristCurrentAmps = motor.getStatorCurrent().getValueAsDouble();
     inputs.wristGoalPosition = wristGoal;
   }
 
@@ -101,7 +98,12 @@ public class WristIOReal implements WristIO {
   }
 
   @Override
-  public void resetGoal() {
+  public void setMotorZero() {
+    rotorOffset = (MOTOR_RATIO * ZERO_POSITION / 360) - motor.getPosition().getValueAsDouble();
+  }
+
+  @Override
+  public void resetProfile() {
     wristGoal = getAbsoluteMotorPosition();
   }
 }

@@ -10,40 +10,39 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 public class IntakeIOReal implements IntakeIO {
   private CoreCANrange CANRANGE;
 
-  private final TalonFX motor = new TalonFX(MOTOR_ID);
-
-  private boolean hasGamePiece;
-  private double LAST_MEASUREMENT;
+  private final TalonFX topMotor = new TalonFX(INTAKE_TOP_MOTOR_ID);
+  private final TalonFX lowMotor = new TalonFX(INTAKE_LOW_MOTOR_ID);
 
   public IntakeIOReal() {
     CANRANGE = new CoreCANrange(CANRANGE_ID);
 
     TalonFXConfiguration motorConfig = new TalonFXConfiguration();
-    motorConfig.CurrentLimits.StatorCurrentLimit = intakeMotorCurrentLimit;
+    motorConfig.CurrentLimits.StatorCurrentLimit = INTAKE_MOTOR_CURRENT_LIMIT;
     motorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-    motor.setNeutralMode(NeutralModeValue.Brake);
+    topMotor.setNeutralMode(NeutralModeValue.Brake);
+    lowMotor.setNeutralMode(NeutralModeValue.Brake);
   }
 
   public void updateInputs(IntakeIOInputs inputs) {
-    inputs.intakeAppliedVolts = motor.getMotorVoltage().getValueAsDouble();
-    inputs.gamePieceLocation = getGamePieceLocation();
+    inputs.intakeCoralMotorAppliedVolts = topMotor.getMotorVoltage().getValueAsDouble();
+    inputs.intakeAlgaeMotorAppliedVolts = lowMotor.getMotorVoltage().getValueAsDouble();
     inputs.hasGamePiece = hasGamePiece();
-  }
-
-  private double getGamePieceLocation() {
-    return CANRANGE.getDistance().getValueAsDouble() + coralRadius - canrangeOffset;
-  }
-
-  private boolean hasGamePiece() {
-    if (CANRANGE.getDistance().getValueAsDouble() < 0.4) {
-      return true;
-    } else {
-      return false;
-    }
+    inputs.canRangeDistance = CANRANGE.getDistance().getValueAsDouble();
   }
 
   @Override
-  public void setVoltage(double volts) {
-    motor.setVoltage(volts);
+  public boolean hasGamePiece() {
+    return CANRANGE.getDistance().getValueAsDouble() < HAS_CORAL_DISTANCE
+        && CANRANGE.getDistance().getValueAsDouble() > CANRANGE_MINIMUM;
+  }
+
+  @Override
+  public void setTopMotorVoltage(double volts) {
+    topMotor.setVoltage(volts);
+  }
+
+  @Override
+  public void setLowMotorVoltage(double volts) {
+    lowMotor.setVoltage(volts);
   }
 }

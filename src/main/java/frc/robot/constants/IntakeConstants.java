@@ -3,7 +3,7 @@ package frc.robot.constants;
 import edu.wpi.first.math.util.Units;
 
 public class IntakeConstants {
-  public static final int intakeMotorID = 15;
+  public static final int MOTOR_ID = 15;
 
   public static final double intakeMotorCurrentLimit = 5;
 
@@ -19,6 +19,4 @@ public class IntakeConstants {
   public static final double canrangeOffset = 0.2721501143002286;
 
   public static final double coralRadius = Units.inchesToMeters(2.25); // outer radius
-
-  public static final double coralLength = Units.inchesToMeters(11.875);
 }

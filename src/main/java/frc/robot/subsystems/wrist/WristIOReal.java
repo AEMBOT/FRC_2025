@@ -45,7 +45,7 @@ public class WristIOReal implements WristIO {
     motor.getConfigurator().apply(motorConfig);
 
     motor.setNeutralMode(NeutralModeValue.Brake);
-    
+
     wristGoal = getAbsoluteMotorPosition();
   }
 

@@ -7,9 +7,6 @@ public class ElevatorConstants {
   /** Minimum height for the elevator to move to, in meters */
   public static final double MIN_HEIGHT = 0;
 
-  /** */
-  public static final float VOLTAGE_LIMIT = 5;
-
   /** ID of the bottom elevator kraken */
   public static final int BOTTOM_MOTOR_ID = 12;
 
@@ -30,12 +27,6 @@ public class ElevatorConstants {
 
   /** How many meters the elevator can be off its goal position for it to be sufficient */
   public static final double ALLOWED_DEVIANCE = 0.01;
-
-  /* Absolute highest point from the base the elevator can reach in inches*/
-  public static final double absoluteMaxExtension = 6;
-
-  /* Device IDs */
-  public static final int motorID = 12;
 
   public static final double rotToMetMultFactor = 1.25 / 42.5;
 }

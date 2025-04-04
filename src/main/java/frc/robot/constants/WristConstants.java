@@ -7,14 +7,8 @@ public class WristConstants {
   /** Minimum angle for the wrist to move to, in degrees */
   public static final double MIN_ANGLE = -25;
 
-  /** */
-  public static final float VOLTAGE_LIMIT = 5;
-
   /** ID of the wrist sparkmax */
   public static final int MOTOR_ID = 14;
-
-  /** */
-  public static final boolean MOTOR_INVERTED = false;
 
   /** */
   public static final int MOTOR_CURRENT_LIMIT = 120;

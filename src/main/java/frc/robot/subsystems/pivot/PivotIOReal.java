@@ -98,7 +98,7 @@ public class PivotIOReal implements PivotIO {
     leadingMotor.setNeutralMode(NeutralModeValue.Brake);
     followingMotor.setNeutralMode(NeutralModeValue.Brake);
 
-    followingMotor.setControl(new Follower(LEFT_MOTOR_ID, true));
+    followingMotor.setControl(new Follower(LEFT_MOTOR_ID, LEFT_MOTOR_INVERTED));
 
     pivotGoal = getAbsoluteEncoderPosition();
 

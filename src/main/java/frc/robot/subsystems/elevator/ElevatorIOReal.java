@@ -49,7 +49,7 @@ public class ElevatorIOReal implements ElevatorIO {
     leadingMotor.setNeutralMode(NeutralModeValue.Brake);
     followingMotor.setNeutralMode(NeutralModeValue.Brake);
 
-    followingMotor.setControl(new Follower(TOP_MOTOR_ID, false));
+    followingMotor.setControl(new Follower(TOP_MOTOR_ID, TOP_MOTOR_INVERTED));
 
     elevatorGoal = 0;
 

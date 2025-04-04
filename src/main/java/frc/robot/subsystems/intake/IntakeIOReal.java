@@ -10,7 +10,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 public class IntakeIOReal implements IntakeIO {
   private CoreCANrange CANRANGE;
 
-  private final TalonFX motor = new TalonFX(intakeMotorID);
+  private final TalonFX motor = new TalonFX(MOTOR_ID);
 
   private boolean hasGamePiece;
   private double LAST_MEASUREMENT;

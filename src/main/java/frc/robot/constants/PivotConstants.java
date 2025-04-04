@@ -7,9 +7,6 @@ public class PivotConstants {
   /** Minimum angle for the pivot to move to, in degrees */
   public static final double MIN_ANGLE = 3;
 
-  /** */
-  public static final float VOLTAGE_LIMIT = 5;
-
   /** ID of the left pivot sparkmax */
   public static final int LEFT_MOTOR_ID = 10;
 

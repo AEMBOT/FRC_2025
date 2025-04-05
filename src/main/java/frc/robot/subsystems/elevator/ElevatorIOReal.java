@@ -9,22 +9,16 @@ import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import org.littletonrobotics.junction.Logger;
 
 public class ElevatorIOReal implements ElevatorIO {
-
-  private boolean openLoop = true;
   private final TalonFX leadingMotor = new TalonFX(TOP_MOTOR_ID);
   private final TalonFX followingMotor = new TalonFX(BOTTOM_MOTOR_ID);
   private double elevatorGoal;
-  private TrapezoidProfile.State elevatorSetpoint;
-  private double lastTime;
   private final MotionMagicVoltage m_request;
   private double motorOffset;
   private double maxExtension;
-  private double i;
 
   public ElevatorIOReal() {
 
@@ -45,7 +39,7 @@ public class ElevatorIOReal implements ElevatorIO {
     leftMotorConfig.Slot0.kI = 0;
     leftMotorConfig.Slot0.kD = 0;
 
-    leftMotorConfig.MotionMagic.MotionMagicCruiseVelocity = 4 / rotToMetMultFactor;
+    leftMotorConfig.MotionMagic.MotionMagicCruiseVelocity = 3 * 1.20 / rotToMetMultFactor;
     leftMotorConfig.MotionMagic.MotionMagicAcceleration = 4 / rotToMetMultFactor;
     leftMotorConfig.MotionMagic.MotionMagicJerk = 0 / rotToMetMultFactor;
 
@@ -55,15 +49,9 @@ public class ElevatorIOReal implements ElevatorIO {
     leadingMotor.setNeutralMode(NeutralModeValue.Brake);
     followingMotor.setNeutralMode(NeutralModeValue.Brake);
 
-    followingMotor.setControl(new Follower(TOP_MOTOR_ID, false));
+    followingMotor.setControl(new Follower(TOP_MOTOR_ID, TOP_MOTOR_INVERTED));
 
-    /**
-     * while (getAbsoluteMotorPosition() < MIN_HEIGHT || getAbsoluteMotorPosition() > MAX_HEIGHT) {
-     * // TODO Look into better solutions for invalid Motor initial pose System.out.println("ERROR:
-     * Busyloop because elevator position invalid! Is the Motor plugged in?"); delay(1); }
-     */
     elevatorGoal = 0;
-    elevatorSetpoint = new TrapezoidProfile.State(getAbsoluteMotorPosition(), 0);
 
     m_request = new MotionMagicVoltage(0).withSlot(0);
 
@@ -86,14 +74,11 @@ public class ElevatorIOReal implements ElevatorIO {
           followingMotor.getStatorCurrent().getValueAsDouble()
         };
     inputs.elevatorGoalPosition = elevatorGoal;
-    inputs.elevatorSetpointPosition = elevatorSetpoint.position;
-    inputs.elevatorSetpointVelocity = elevatorSetpoint.velocity;
-    inputs.openLoopStatus = openLoop;
   }
 
   @Override
   public void limitHeight(double pivotAngle) {
-    ++i;
+
     Logger.recordOutput("i", pivotAngle);
     maxExtension =
         (pivotAngle > 90)
@@ -120,7 +105,6 @@ public class ElevatorIOReal implements ElevatorIO {
 
   @Override
   public void setVoltage(double volts) {
-    openLoop = true;
     setMotorVoltage(volts);
   }
 
@@ -143,7 +127,6 @@ public class ElevatorIOReal implements ElevatorIO {
   @Override
   public void resetProfile() {
     elevatorGoal = getAbsoluteMotorPosition();
-    elevatorSetpoint = new TrapezoidProfile.State(getAbsoluteMotorPosition(), 0);
   }
 
   @Override

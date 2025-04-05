@@ -17,9 +17,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.GeneralConstants;
+import frc.robot.constants.GeneralConstants.Mode;
 import frc.robot.constants.LedConstants;
 import frc.robot.subsystems.LEDcontroller.LedController;
 import frc.robot.subsystems.drive.Drive;
@@ -31,15 +33,18 @@ import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorIO;
 import frc.robot.subsystems.elevator.ElevatorIOReal;
+import frc.robot.subsystems.elevator.ElevatorIOSim;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeIOReal;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.pivot.PivotIO;
 import frc.robot.subsystems.pivot.PivotIOReal;
+import frc.robot.subsystems.pivot.PivotIOSim;
 import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.subsystems.wrist.WristIO;
 import frc.robot.subsystems.wrist.WristIOReal;
+import frc.robot.subsystems.wrist.WristIOSim;
 import frc.robot.util.CompoundCommands;
 import frc.robot.util.FieldUtil;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -59,6 +64,8 @@ public class RobotContainer {
   // Controllers
   private final CommandXboxController controller = new CommandXboxController(0);
   private final CommandXboxController backupController = new CommandXboxController(1);
+  // * Keyboard controller to be used in SIM */
+  private final CommandGenericHID keyboardController = new CommandGenericHID(2);
 
   // Driver-assist variables
   @AutoLogOutput private int reef_level = 4; // Terminology: Trough is L1, top is L4
@@ -105,9 +112,9 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim());
         intake = new Intake(new IntakeIO() {});
-        pivot = new Pivot(new PivotIO() {});
-        elevator = new Elevator(new ElevatorIO() {});
-        wrist = new Wrist(new WristIO() {});
+        pivot = new Pivot(new PivotIOSim() {});
+        elevator = new Elevator(new ElevatorIOSim() {});
+        wrist = new Wrist(new WristIOSim() {});
         break;
 
       default:
@@ -128,9 +135,16 @@ public class RobotContainer {
 
     Logger.recordOutput("currentRobot", currentRobot.ordinal());
     System.out.println("Running on robot: " + currentRobot);
-
     CompoundCommands.configure(drive, elevator, pivot, wrist, intake);
-    configureBindings();
+
+    if (currentMode == Mode.SIM) {
+      configureKeyboardBindings();
+
+      // If an Xbox controller connects, switch to that.
+      new Trigger(() -> controller.isConnected()).onTrue(new RunCommand(() -> configureBindings()));
+    } else {
+      configureBindings();
+    }
 
     configureLEDTriggers();
     // Set up auto chooser
@@ -160,9 +174,15 @@ public class RobotContainer {
 
     backupController.povDown().onTrue(zeroArm());
 
+    backupController.start().whileTrue(CompoundCommands.armToNet());
+
     backupController.leftBumper().whileTrue(intake.ejectCoralCommand());
 
     backupController.rightBumper().whileTrue(intake.intakeCoralCommand());
+
+    backupController.x().whileTrue(intake.intakeAlgaeCommand());
+
+    backupController.y().whileTrue(intake.ejectAlgaeCommand());
 
     backupController
         .povUp()
@@ -198,8 +218,9 @@ public class RobotContainer {
         .onFalse(CompoundCommands.armToStowSafely());
     controller
         .rightTrigger(0.25)
-        .whileTrue(intake.ejectCoralCommand())
-        .onFalse(intake.stopCommand().alongWith(CompoundCommands.armToStow()));
+        .whileTrue(intake.intakeCoralCommand())
+        .onFalse(
+            intake.stopCommand().alongWith(CompoundCommands.armToStowSafely()).andThen(zeroArm()));
 
     controller
         .rightStick()
@@ -264,6 +285,136 @@ public class RobotContainer {
 
     controller
         .start()
+        .whileTrue(
+            new RunCommand(
+                () ->
+                    drive.setYaw(
+                        switch (DriverStation.getAlliance().get()) {
+                          case Blue -> Rotation2d.fromDegrees(0);
+                          case Red -> Rotation2d.fromDegrees(180);
+                          default -> Rotation2d.fromDegrees(0);
+                        })));
+  }
+
+  private void configureKeyboardBindings() {
+    // Wanna make this easier to handle eventually, but not super high priority atm
+    drive.setDefaultCommand(
+        drive.joystickDrive(
+            drive,
+            () -> -keyboardController.getRawAxis(1),
+            () -> -keyboardController.getRawAxis(0),
+            () -> -keyboardController.getRawAxis(4),
+            () -> keyboardController.getRawAxis(2) > 0.5));
+
+    keyboardController
+        .button(5)
+        .whileTrue(pivot.changePosition(10))
+        .onFalse(pivot.changePosition(0));
+    keyboardController
+        .button(6)
+        .whileTrue(pivot.changePosition(-10))
+        .onFalse(pivot.changePosition(0));
+
+    keyboardController
+        .button(7)
+        .whileTrue(elevator.changePosition(0.25))
+        .onFalse(elevator.changePosition(0));
+    keyboardController
+        .button(8)
+        .whileTrue(elevator.changePosition(-0.25))
+        .onFalse(elevator.changePosition(0));
+
+    keyboardController
+        .button(9)
+        .whileTrue(wrist.changeGoalPosition(40))
+        .onFalse(wrist.changeGoalPosition(0));
+    keyboardController
+        .button(10)
+        .whileTrue(wrist.changeGoalPosition(-40))
+        .onFalse(wrist.changeGoalPosition(0));
+
+    keyboardController
+        .povUp()
+        .onTrue(
+            runOnce(
+                () -> {
+                  this.visionDisableTimeStart = getTimestamp();
+                }))
+        .whileTrue(
+            run(
+                () -> {
+                  if ((getTimestamp() - this.visionDisableTimeStart) / 1000000 > 1.0) {
+                    drive.disableVision();
+                  }
+                }))
+        .onFalse(
+            runOnce(
+                (() -> {
+                  this.visionDisableTimeStart = Double.MAX_VALUE;
+                })));
+
+    keyboardController
+        .button(11)
+        .whileTrue(CompoundCommands.deferArm(() -> CompoundCommands.armToReefSafely(reef_level)));
+
+    keyboardController.button(12).whileTrue(CompoundCommands.armToSource());
+
+    keyboardController.button(13).onFalse(CompoundCommands.armToStow());
+
+    // Path controller bindings
+    keyboardController
+        .button(14)
+        .onTrue(
+            runOnce(
+                () -> {
+                  this.reef_level = 1;
+                }));
+    keyboardController
+        .button(15)
+        .onTrue(
+            runOnce(
+                () -> {
+                  this.reef_level = 2;
+                }));
+    keyboardController
+        .button(16)
+        .onTrue(
+            runOnce(
+                () -> {
+                  this.reef_level = 3;
+                }));
+    keyboardController
+        .button(17)
+        .onTrue(
+            runOnce(
+                () -> {
+                  this.reef_level = 4;
+                }));
+
+    keyboardController
+        .button(18)
+        .whileTrue(
+            new ParallelCommandGroup(
+                CompoundCommands.deferDrive(() -> CompoundCommands.driveToLeftReef(reef_level)),
+                CompoundCommands.deferArm(() -> CompoundCommands.armToReefSafely(reef_level))));
+    keyboardController
+        .button(19)
+        .whileTrue(
+            new ParallelCommandGroup(
+                CompoundCommands.deferDrive(() -> CompoundCommands.driveToRightReef(reef_level)),
+                CompoundCommands.deferArm(() -> CompoundCommands.armToReefSafely(reef_level))));
+
+    keyboardController
+        .button(20)
+        .whileTrue(
+            new ParallelCommandGroup(
+                CompoundCommands.armToSource(),
+                CompoundCommands.deferDrive(() -> CompoundCommands.driveToSource())));
+
+    keyboardController.button(21).whileTrue(CompoundCommands.armToClimb());
+
+    keyboardController
+        .button(22)
         .whileTrue(
             new RunCommand(
                 () ->

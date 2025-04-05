@@ -12,20 +12,16 @@ import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import org.littletonrobotics.junction.Logger;
 
 public class PivotIOReal implements PivotIO {
-
-  private boolean openLoop = true;
   private final TalonFX leadingMotor = new TalonFX(LEFT_MOTOR_ID);
   private final TalonFX followingMotor = new TalonFX(RIGHT_MOTOR_ID);
   private final DigitalOutput ratchetPin1;
   private final DigitalOutput ratchetPin2;
   private double pivotGoal;
-  private TrapezoidProfile.State pivotSetpoint;
   private double lastTime;
   private TalonFXConfiguration leftMotorConfig = new TalonFXConfiguration();
   private DutyCycleEncoder ENCODER;
@@ -77,7 +73,7 @@ public class PivotIOReal implements PivotIO {
 
     // cc_cfg.MagnetSensor.MagnetOffset = 0.4;
 
-    // m_cc.getConfigurator().apply(cc_cfg); Dont know what m_cc is but hey its here
+    // m_cc.getConfigurator().apply(cc_cfg); m_cc is cancoder that belongs to this class
 
     // Apply cancoder to feedback motor config
     // leftMotorConfig.Feedback.FeedbackRemoteSensorID = 1;
@@ -93,8 +89,8 @@ public class PivotIOReal implements PivotIO {
     leftMotorConfig.Slot0.kI = 0;
     leftMotorConfig.Slot0.kD = 0;
 
-    leftMotorConfig.MotionMagic.MotionMagicCruiseVelocity = GEAR_RATIO * 0.75;
-    leftMotorConfig.MotionMagic.MotionMagicAcceleration = GEAR_RATIO * 0.75;
+    leftMotorConfig.MotionMagic.MotionMagicCruiseVelocity = GEAR_RATIO * 0.75 * 0.7;
+    leftMotorConfig.MotionMagic.MotionMagicAcceleration = GEAR_RATIO * 0.75 * 0.3;
     leftMotorConfig.MotionMagic.MotionMagicJerk = 0;
 
     leadingMotor.getConfigurator().apply(leftMotorConfig);
@@ -103,16 +99,9 @@ public class PivotIOReal implements PivotIO {
     leadingMotor.setNeutralMode(NeutralModeValue.Brake);
     followingMotor.setNeutralMode(NeutralModeValue.Brake);
 
-    followingMotor.setControl(new Follower(LEFT_MOTOR_ID, true));
+    followingMotor.setControl(new Follower(LEFT_MOTOR_ID, LEFT_MOTOR_INVERTED));
 
-    /**
-     * while (getAbsoluteEncoderPosition() < MIN_ANGLE || getAbsoluteEncoderPosition() > MAX_ANGLE)
-     * { // TODO Look into better solutions for invalid encoder initial pose
-     * System.out.println("ERROR: Busyloop because pivot position invalid! Is the encoder plugged
-     * in?"); delay(1); }
-     */
     pivotGoal = getAbsoluteEncoderPosition();
-    pivotSetpoint = new TrapezoidProfile.State(getAbsoluteEncoderPosition(), 0);
 
     ratchetPin1 = new DigitalOutput(RATCHET_PIN_1_ID);
     ratchetPin2 = new DigitalOutput(RATCHET_PIN_2_ID);
@@ -130,10 +119,7 @@ public class PivotIOReal implements PivotIO {
           leadingMotor.getStatorCurrent().getValueAsDouble(),
           followingMotor.getStatorCurrent().getValueAsDouble()
         };
-    inputs.pivotPosition = pivotGoal;
-    inputs.pivotSetpointPosition = pivotSetpoint.position;
-    inputs.pivotSetpointVelocity = pivotSetpoint.velocity;
-    inputs.openLoopStatus = openLoop;
+    inputs.pivotGoalPosition = pivotGoal;
     inputs.ratchetEngaged = ratchetEngaged;
   }
 
@@ -150,7 +136,6 @@ public class PivotIOReal implements PivotIO {
 
   @Override
   public void setVoltage(double volts) {
-    openLoop = true;
     setMotorVoltage(volts);
   }
 
@@ -159,7 +144,6 @@ public class PivotIOReal implements PivotIO {
   }
 
   private void setMotorVoltage(double volts) {
-
     if (getAbsoluteEncoderPosition() < MIN_ANGLE) {
       volts = clamp(volts, 0, Double.MAX_VALUE);
     }
@@ -173,7 +157,6 @@ public class PivotIOReal implements PivotIO {
   @Override
   public void resetProfile() {
     pivotGoal = getAbsoluteEncoderPosition();
-    pivotSetpoint = new TrapezoidProfile.State(getAbsoluteEncoderPosition(), 0);
   }
 
   @Override

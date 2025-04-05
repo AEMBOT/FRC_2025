@@ -23,7 +23,7 @@ public class GeneralConstants {
   public static final Mode currentMode =
       RobotBase.isReal()
           ? Mode.REAL
-          : Mode.SIM; // You need to manually switch betweeen SIM and REPLAY.
+          : Mode.REPLAY; // You need to manually switch betweeen SIM and REPLAY.
 
   public static enum Mode {
     /** Running on a real robot. */

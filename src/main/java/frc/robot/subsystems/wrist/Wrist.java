@@ -2,8 +2,8 @@ package frc.robot.subsystems.wrist;
 
 import static edu.wpi.first.wpilibj2.command.Commands.waitUntil;
 import static frc.robot.constants.GeneralConstants.UPDATE_PERIOD;
-import static frc.robot.constants.PositionConstants.stowWristAngle;
 import static frc.robot.constants.GeneralConstants.currentMode;
+import static frc.robot.constants.PositionConstants.stowWristAngle;
 import static frc.robot.constants.WristConstants.*;
 import static frc.robot.constants.WristConstants.ALLOWED_DEVIANCE;
 

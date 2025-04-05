@@ -69,7 +69,9 @@ public class PhoenixOdometryThread extends Thread {
     signalsLock.lock();
     Drive.odometryLock.lock();
     try {
-      isCANFD = new CANBus(device.getNetwork()).isNetworkFD(); // Not sure if this works, but it
+      isCANFD =
+          new CANBus(device.getNetwork())
+              .isNetworkFD(); // TODO check this, not sure if this works, but it
       // could be a fix for the deprecated line below v v v
       // CANBus.isNetworkFD(device.getNetwork());
       BaseStatusSignal[] newSignals = new BaseStatusSignal[signals.length + 1];
@@ -120,7 +122,7 @@ public class PhoenixOdometryThread extends Thread {
       // Save new data to queues
       Drive.odometryLock.lock();
       try {
-        double timestamp = RobotController.getFPGATime() / 1e6;
+        double timestamp = RobotController.getFPGATime() / 1e6; // TODO check if this works
         double totalLatency = 0.0;
         for (BaseStatusSignal signal : signals) {
           totalLatency += signal.getTimestamp().getLatency();

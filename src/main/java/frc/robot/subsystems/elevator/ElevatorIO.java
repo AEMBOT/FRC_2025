@@ -18,13 +18,10 @@ public interface ElevatorIO {
     /**
      * Currents amps applied to each motor. Both motors are logged indivually to better find issues.
      */
-    public double[] elevatorCurrentAmps = new double[] {};
+    public double[] elevatorCurrentAmps = new double[] {0, 0};
 
     /** Goal position of the elevator in inches */
-    public double elevatorGoalPosition = 0.0;
-
-    /** Whether the elevator subsystem is running in an openloop */
-    public boolean openLoopStatus = false;
+    public double elevatorGoalPosition = 45;
   }
 
   /** Updates the set of loggable inputs. */
@@ -38,10 +35,11 @@ public interface ElevatorIO {
 
   public default void limitHeight(double pivotAngle) {}
 
-  /** Resets the elevator goal and setpoint to the current angle of the elevator */
+  /** Resets the elevator goal */
   public default void resetProfile() {}
 
-  public default void reZero() {}
+  /** Sets the offset of the elevator to a known position */
+  public default void setMotorZero() {}
 
   public default void simulationPeriodic() {}
 }

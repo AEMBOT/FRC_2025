@@ -9,19 +9,14 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import org.littletonrobotics.junction.Logger;
 
 public class WristIOReal implements WristIO {
-
-  private boolean openLoop = true;
   private final TalonFX motor = new TalonFX(MOTOR_ID);
 
   private DutyCycleEncoder ENCODER;
   private double wristGoal;
-  private TrapezoidProfile.State wristSetpoint;
-  private double lastTime;
   private double rotorOffset;
 
   public WristIOReal() {
@@ -44,25 +39,17 @@ public class WristIOReal implements WristIO {
 
     motorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
-    rotorOffset =
-        (MOTOR_RATIO * getAbsoluteEncoderPosition() / 360) - motor.getPosition().getValueAsDouble();
+    setMotorZero();
 
     motor.getConfigurator().apply(motorConfig);
 
     motor.setNeutralMode(NeutralModeValue.Brake);
 
-    /**
-     * while (getAbsoluteEncoderPosition() < MIN_ANGLE || getAbsoluteEncoderPosition() > MAX_ANGLE)
-     * { // TODO Look into better solutions for invalid encoder initial pose
-     * System.out.println("ERROR: Busyloop because wrist position invalid! Is the encoder plugged
-     * in?"); delay(1); }
-     */
     wristGoal = getAbsoluteMotorPosition();
-    wristSetpoint = new TrapezoidProfile.State(getAbsoluteEncoderPosition(), 0);
   }
 
   public void updateInputs(WristIOInputs inputs) {
-    inputs.wristAbsolutePosition = getAbsoluteEncoderPosition();
+    inputs.wristAbsolutePosition = getAbsoluteMotorPosition();
     inputs.wristAbsoluteEncoderRawRotations = ENCODER.get();
     Logger.recordOutput("Wrist/motorTemp", motor.getDeviceTemp().getValueAsDouble());
     Logger.recordOutput("rawWristMotorValue", ENCODER.get());
@@ -71,14 +58,8 @@ public class WristIOReal implements WristIO {
         360 * ((motor.getPosition().getValueAsDouble() - rotorOffset) / 6));
     inputs.wristAbsoluteVelocity = motor.getVelocity().getValueAsDouble();
     inputs.wristAppliedVolts = motor.getMotorVoltage().getValueAsDouble();
-    inputs.wristCurrentAmps =
-        new double[] {
-          motor.getStatorCurrent().getValueAsDouble(), motor.getStatorCurrent().getValueAsDouble()
-        };
+    inputs.wristCurrentAmps = motor.getStatorCurrent().getValueAsDouble();
     inputs.wristGoalPosition = wristGoal;
-    inputs.wristSetpointPosition = wristSetpoint.position;
-    inputs.wristSetpointVelocity = wristSetpoint.velocity;
-    inputs.openLoopStatus = openLoop;
   }
 
   @Override
@@ -93,7 +74,6 @@ public class WristIOReal implements WristIO {
 
   @Override
   public void setVoltage(double volts) {
-    openLoop = true;
     setMotorVoltage(volts);
   }
 
@@ -118,8 +98,12 @@ public class WristIOReal implements WristIO {
   }
 
   @Override
+  public void setMotorZero() {
+    rotorOffset = (MOTOR_RATIO * ZERO_POSITION / 360) - motor.getPosition().getValueAsDouble();
+  }
+
+  @Override
   public void resetProfile() {
     wristGoal = getAbsoluteMotorPosition();
-    wristSetpoint = new TrapezoidProfile.State(getAbsoluteEncoderPosition(), 0);
   }
 }

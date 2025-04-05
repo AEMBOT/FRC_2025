@@ -35,9 +35,5 @@ public class LedController {
    */
   public void LEDDO(String what) {
     LEDs.writeString(what); // sends a character through Serial
-    System.out.println(
-        "\n\n\n\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\nSending LED command! "
-            + what
-            + "\n\n\n\n\n\n\n");
   }
 }

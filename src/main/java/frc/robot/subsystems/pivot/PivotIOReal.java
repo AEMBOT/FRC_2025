@@ -17,8 +17,6 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import org.littletonrobotics.junction.Logger;
 
 public class PivotIOReal implements PivotIO {
-
-  private boolean openLoop = true;
   private final TalonFX leadingMotor = new TalonFX(LEFT_MOTOR_ID);
   private final TalonFX followingMotor = new TalonFX(RIGHT_MOTOR_ID);
   private final DigitalOutput ratchetPin1;
@@ -101,14 +99,8 @@ public class PivotIOReal implements PivotIO {
     leadingMotor.setNeutralMode(NeutralModeValue.Brake);
     followingMotor.setNeutralMode(NeutralModeValue.Brake);
 
-    followingMotor.setControl(new Follower(LEFT_MOTOR_ID, true));
+    followingMotor.setControl(new Follower(LEFT_MOTOR_ID, LEFT_MOTOR_INVERTED));
 
-    /**
-     * while (getAbsoluteEncoderPosition() < MIN_ANGLE || getAbsoluteEncoderPosition() > MAX_ANGLE)
-     * { // TODO Look into better solutions for invalid encoder initial pose
-     * System.out.println("ERROR: Busyloop because pivot position invalid! Is the encoder plugged
-     * in?"); delay(1); }
-     */
     pivotGoal = getAbsoluteEncoderPosition();
 
     ratchetPin1 = new DigitalOutput(RATCHET_PIN_1_ID);
@@ -128,7 +120,6 @@ public class PivotIOReal implements PivotIO {
           followingMotor.getStatorCurrent().getValueAsDouble()
         };
     inputs.pivotGoalPosition = pivotGoal;
-    inputs.openLoopStatus = openLoop;
     inputs.ratchetEngaged = ratchetEngaged;
   }
 
@@ -145,7 +136,6 @@ public class PivotIOReal implements PivotIO {
 
   @Override
   public void setVoltage(double volts) {
-    openLoop = true;
     setMotorVoltage(volts);
   }
 
@@ -154,7 +144,6 @@ public class PivotIOReal implements PivotIO {
   }
 
   private void setMotorVoltage(double volts) {
-
     if (getAbsoluteEncoderPosition() < MIN_ANGLE) {
       volts = clamp(volts, 0, Double.MAX_VALUE);
     }

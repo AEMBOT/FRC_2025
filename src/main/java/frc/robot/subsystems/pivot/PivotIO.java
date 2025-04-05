@@ -23,18 +23,6 @@ public interface PivotIO {
     /** Goal position of the pivot in degrees */
     public double pivotGoalPosition = 45;
 
-    /** Setpoint position of the pivot in degrees */
-    public double pivotSetpointPosition = 45;
-
-    /**
-     * Setpoint position of the pivot in rotations per second TODO confirm that this is in rpm and
-     * not radpersec
-     */
-    public double pivotSetpointVelocity = 0.0;
-
-    /** Whether the pivot subsystem is running in an openloop */
-    public boolean openLoopStatus = false;
-
     /** */
     public boolean ratchetEngaged = false;
   }
@@ -48,7 +36,7 @@ public interface PivotIO {
   /** Run open loop at the specified voltage. */
   public default void setVoltage(double volts) {}
 
-  /** Resets the pivot goal and setpoint to the current angle of the pivot */
+  /** Resets the pivot goal during manual control */
   public default void resetProfile() {}
 
   /** */

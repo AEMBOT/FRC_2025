@@ -3,6 +3,7 @@ package frc.robot.subsystems.wrist;
 import static edu.wpi.first.wpilibj2.command.Commands.waitUntil;
 import static frc.robot.constants.GeneralConstants.UPDATE_PERIOD;
 import static frc.robot.constants.GeneralConstants.currentMode;
+import static frc.robot.constants.WristConstants.*;
 import static frc.robot.constants.WristConstants.ALLOWED_DEVIANCE;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -41,12 +42,21 @@ public class Wrist extends SubsystemBase {
   }
 
   /**
-   * Directly sets the voltage of the wrist, used for SysId.
+   * Directly sets the voltage of the wrist, use ONLY FOR mutexting.
    *
    * @param volts Voltage to apply to the wrist.
    */
   public void setVoltage(double volts) {
     io.setVoltage(volts);
+  }
+
+  /**
+   * Directly sets the voltage of the wrist, used for SysId.
+   *
+   * @param volts Voltage to apply to the wrist.
+   */
+  public void stopWrist() {
+    io.setVoltage(0);
   }
 
   /**
@@ -83,5 +93,13 @@ public class Wrist extends SubsystemBase {
   public Command changeGoalPosition(double velocityDegPerSec) {
     return run(() -> io.setAngle(inputs.wristGoalPosition + (velocityDegPerSec * UPDATE_PERIOD)))
         .finallyDo(io::resetProfile);
+  }
+
+  /** */
+  public Command zeroWrist() {
+    return run(() -> setVoltage(ZEROING_VOLTAGE))
+        .until(() -> inputs.wristCurrentAmps > WRIST_ZEROING_MAX_AMPS)
+        .andThen(runOnce(() -> io.setMotorZero()))
+        .andThen(runOnce(() -> stopWrist()));
   }
 }

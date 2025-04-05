@@ -1,7 +1,7 @@
 package frc.robot.subsystems.elevator;
 
 import static edu.wpi.first.wpilibj2.command.Commands.waitUntil;
-import static frc.robot.constants.ElevatorConstants.ALLOWED_DEVIANCE;
+import static frc.robot.constants.ElevatorConstants.*;
 import static frc.robot.constants.GeneralConstants.UPDATE_PERIOD;
 import static frc.robot.constants.GeneralConstants.currentMode;
 
@@ -26,16 +26,6 @@ public class Elevator extends SubsystemBase {
     io.updateInputs(inputs);
   }
 
-  /**
-   * Sets the setpoint of the elevator to a certain height.
-   *
-   * @param posIn Position in inches to set the elevator to.
-   * @return A {@link RunCommand} to set the elevator setpoint to posIn.
-   */
-  // public Command setAngleDeg(DoubleSupplier posIn) {
-  //    return run(() -> io.setAngle(posIn.getAsDouble()));
-  // }
-
   public Command limitHeight(DoubleSupplier pivotAngle) {
     return run(() -> io.limitHeight(pivotAngle.getAsDouble()));
   }
@@ -47,6 +37,11 @@ public class Elevator extends SubsystemBase {
    */
   public void setVoltage(double volts) {
     io.setVoltage(volts);
+  }
+
+  /** */
+  public void stopElevator() {
+    io.setVoltage(0);
   }
 
   /**
@@ -93,10 +88,18 @@ public class Elevator extends SubsystemBase {
     return () -> inputs.elevatorAbsolutePosition;
   }
 
+  /** */
   public Command zeroElevator() {
-    return run(() -> io.setVoltage(-2))
-        .until(() -> ((inputs.elevatorCurrentAmps[0] + inputs.elevatorCurrentAmps[1]) / 2) > 20)
-        .andThen(run(() -> io.reZero()));
+
+    DoubleSupplier avgAmps =
+        () -> (inputs.elevatorCurrentAmps[0] + inputs.elevatorCurrentAmps[1]) / 2;
+
+    Logger.recordOutput("ElevatorAverageAmps", avgAmps.getAsDouble());
+
+    return run(() -> setVoltage(ZEROING_VOLTAGE))
+        .until(() -> avgAmps.getAsDouble() > ELEVATOR_ZEROING_MAX_AMPS)
+        .andThen(runOnce(() -> io.setMotorZero()))
+        .andThen(runOnce(() -> stopElevator()));
   }
 
   public void simulationPeriodic() {

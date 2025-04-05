@@ -80,7 +80,7 @@ public class SparkMaxOdometryThread {
 
   private void periodic() {
     Drive.odometryLock.lock();
-    double timestamp = RobotController.getFPGATime() / 1e6;
+    double timestamp = RobotController.getFPGATime() / 1e6; // TODO check if this works
     try {
       for (int i = 0; i < signals.size(); i++) {
         queues.get(i).offer(signals.get(i).getAsDouble());

@@ -18,6 +18,7 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.List;
 import java.util.Optional;
 import org.littletonrobotics.junction.AutoLog;
+import org.littletonrobotics.junction.Logger;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
@@ -190,6 +191,8 @@ public interface AprilTagVisionIO {
 
       this.poseEstimator =
           new PhotonPoseEstimator(aprilTagFieldLayout, poseStrategy, robotToCamera);
+
+      Logger.recordOutput("AprilTagVision/CameraOffsets/" + camera.getName(), robotToCamera);
     }
 
     /**

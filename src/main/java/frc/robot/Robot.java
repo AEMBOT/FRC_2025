@@ -87,6 +87,8 @@ public class Robot extends LoggedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
+    m_robotContainer.zeroArm().schedule();
   }
 
   @Override

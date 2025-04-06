@@ -1,7 +1,6 @@
 package frc.robot.util;
 
 import com.ctre.phoenix6.Orchestra;
-import com.ctre.phoenix6.StatusCode;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
@@ -12,16 +11,16 @@ public class MusicController {
     return Commands.runOnce(() -> playSong());
   }
 
-  public static StatusCode playSong() {
-    return orchestra.play();
+  public static void playSong() {
+    orchestra.play();
   }
 
   public static Command pauseSongCommand() {
     return Commands.runOnce(() -> pauseSong());
   }
 
-  public static StatusCode pauseSong() {
-    return orchestra.pause();
+  public static void pauseSong() {
+    orchestra.pause();
   }
 
   public static Command endSongCommand() {

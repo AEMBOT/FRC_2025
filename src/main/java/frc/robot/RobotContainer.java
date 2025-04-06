@@ -318,6 +318,14 @@ public class RobotContainer {
     new Trigger(this::IsEndGame)
         .onTrue(Commands.runOnce(() -> LED.LEDDO(LedConstants.SPEED_1)))
         .onFalse(Commands.runOnce(() -> LED.LEDDO(LedConstants.SPEED_2)));
+
+    // Music lights
+    new Trigger(() -> backupController.x().getAsBoolean())
+        .onTrue(runOnce(() -> LED.LEDDO(LedConstants.BLUE)));
+    new Trigger(() -> backupController.y().getAsBoolean()).onTrue(runOnce(() -> LED.LEDDO("w")));
+    new Trigger(() -> backupController.y().getAsBoolean()).onTrue(runOnce(() -> LED.LEDDO("f")));
+    new Trigger(() -> backupController.rightTrigger().getAsBoolean())
+        .onTrue(runOnce(() -> LED.LEDDO("0")));
   }
 
   // TODO:

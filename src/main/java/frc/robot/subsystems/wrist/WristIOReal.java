@@ -30,8 +30,8 @@ public class WristIOReal implements WristIO {
     ENCODER = new DutyCycleEncoder(ENCODER_ID);
 
     delay(3);
-    
-    orchestra.addInstrument(motor, 10);
+
+    orchestra.addInstrument(motor, 9);
 
     TalonFXConfiguration motorConfig = new TalonFXConfiguration();
 

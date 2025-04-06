@@ -16,8 +16,8 @@ public class IntakeIOReal implements IntakeIO {
 
   public IntakeIOReal() {
     CANRANGE = new CoreCANrange(CANRANGE_ID);
-    orchestra.addInstrument(topMotor, 3);
-    orchestra.addInstrument(lowMotor, 3);
+    orchestra.addInstrument(topMotor, 6);
+    orchestra.addInstrument(lowMotor, 6);
 
     TalonFXConfiguration motorConfig = new TalonFXConfiguration();
     motorConfig.CurrentLimits.StatorCurrentLimit = INTAKE_MOTOR_CURRENT_LIMIT;

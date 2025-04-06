@@ -28,8 +28,8 @@ public class ElevatorIOReal implements ElevatorIO {
   private double i;
 
   public ElevatorIOReal() {
-    orchestra.addInstrument(leadingMotor, 2);
-    orchestra.addInstrument(followingMotor, 2);
+    orchestra.addInstrument(leadingMotor, 5);
+    orchestra.addInstrument(followingMotor, 5);
     TalonFXConfiguration leftMotorConfig = new TalonFXConfiguration();
     TalonFXConfiguration rightMotorConfig = new TalonFXConfiguration();
 

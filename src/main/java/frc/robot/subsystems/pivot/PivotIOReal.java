@@ -36,8 +36,8 @@ public class PivotIOReal implements PivotIO {
   public PivotIOReal() {
     ENCODER = new DutyCycleEncoder(ENCODER_ID);
 
-    orchestra.addInstrument(leadingMotor, 4);
-    orchestra.addInstrument(followingMotor, 4);
+    orchestra.addInstrument(leadingMotor, 7);
+    orchestra.addInstrument(followingMotor, 8);
 
     delay(3);
 

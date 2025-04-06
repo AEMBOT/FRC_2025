@@ -13,12 +13,11 @@
 
 package frc.robot.subsystems.drive;
 
-import static frc.robot.util.MusicController.*;
-
 import static edu.wpi.first.wpilibj.Timer.delay;
 import static frc.robot.constants.DriveConstants.Module.WHEEL_RADIUS;
 import static frc.robot.constants.DriveConstants.Module.driveMotorInversion;
 import static frc.robot.constants.DriveConstants.Module.turnMotorInversion;
+import static frc.robot.util.MusicController.*;
 import static java.lang.Math.abs;
 
 import com.ctre.phoenix6.BaseStatusSignal;
@@ -121,7 +120,7 @@ public class ModuleIOTalonFX implements ModuleIO {
         absoluteEncoderOffset = DriveConstants.Module.absoluteEncoderOffset[2];
         isDriveMotorInverted = driveMotorInversion[2];
         isTurnMotorInverted = turnMotorInversion[2];
-        
+
         orchestra.addInstrument(driveTalon, 3);
         orchestra.addInstrument(turnTalon, 3);
         break;
@@ -132,7 +131,7 @@ public class ModuleIOTalonFX implements ModuleIO {
         absoluteEncoderOffset = DriveConstants.Module.absoluteEncoderOffset[3];
         isDriveMotorInverted = driveMotorInversion[3];
         isTurnMotorInverted = turnMotorInversion[3];
-        
+
         orchestra.addInstrument(driveTalon, 4);
         orchestra.addInstrument(turnTalon, 4);
         break;

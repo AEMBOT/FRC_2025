@@ -276,8 +276,7 @@ public class RobotContainer {
                           default -> Rotation2d.fromDegrees(0);
                         })));
 
-                        
-    //Song Commands
+    // Song Commands
     backupController.x().onTrue(MusicController.loadSongCommand(song2_pigstep));
     backupController.y().onTrue(MusicController.playSongCommand());
     backupController.rightTrigger().onTrue(MusicController.endSongCommand());

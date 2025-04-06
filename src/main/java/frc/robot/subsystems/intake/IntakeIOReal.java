@@ -1,6 +1,7 @@
 package frc.robot.subsystems.intake;
 
 import static frc.robot.constants.IntakeConstants.*;
+import static frc.robot.util.MusicController.*;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -15,6 +16,8 @@ public class IntakeIOReal implements IntakeIO {
 
   public IntakeIOReal() {
     CANRANGE = new CoreCANrange(CANRANGE_ID);
+    orchestra.addInstrument(topMotor, 3);
+    orchestra.addInstrument(lowMotor, 3);
 
     TalonFXConfiguration motorConfig = new TalonFXConfiguration();
     motorConfig.CurrentLimits.StatorCurrentLimit = INTAKE_MOTOR_CURRENT_LIMIT;

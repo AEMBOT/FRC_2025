@@ -3,6 +3,7 @@ package frc.robot.subsystems.wrist;
 import static edu.wpi.first.math.MathUtil.clamp;
 import static edu.wpi.first.wpilibj.Timer.delay;
 import static frc.robot.constants.WristConstants.*;
+import static frc.robot.util.MusicController.*;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
@@ -29,6 +30,8 @@ public class WristIOReal implements WristIO {
     ENCODER = new DutyCycleEncoder(ENCODER_ID);
 
     delay(3);
+    
+    orchestra.addInstrument(motor, 10);
 
     TalonFXConfiguration motorConfig = new TalonFXConfiguration();
 

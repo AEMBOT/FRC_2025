@@ -3,6 +3,7 @@ package frc.robot.subsystems.elevator;
 import static edu.wpi.first.math.MathUtil.clamp;
 import static edu.wpi.first.wpilibj.Timer.delay;
 import static frc.robot.constants.ElevatorConstants.*;
+import static frc.robot.util.MusicController.*;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
@@ -27,7 +28,8 @@ public class ElevatorIOReal implements ElevatorIO {
   private double i;
 
   public ElevatorIOReal() {
-
+    orchestra.addInstrument(leadingMotor, 2);
+    orchestra.addInstrument(followingMotor, 2);
     TalonFXConfiguration leftMotorConfig = new TalonFXConfiguration();
     TalonFXConfiguration rightMotorConfig = new TalonFXConfiguration();
 

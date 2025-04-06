@@ -8,6 +8,7 @@ import static frc.robot.constants.PivotConstants.SYS_ID_RAMP_RATE;
 import static frc.robot.constants.PivotConstants.SYS_ID_STEP_VALUE;
 import static frc.robot.constants.PivotConstants.SYS_ID_TIMEOUT;
 
+import com.ctre.phoenix6.Orchestra;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;

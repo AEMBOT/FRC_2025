@@ -13,6 +13,8 @@
 
 package frc.robot.subsystems.drive;
 
+import static frc.robot.util.MusicController.*;
+
 import static edu.wpi.first.wpilibj.Timer.delay;
 import static frc.robot.constants.DriveConstants.Module.WHEEL_RADIUS;
 import static frc.robot.constants.DriveConstants.Module.driveMotorInversion;
@@ -97,6 +99,9 @@ public class ModuleIOTalonFX implements ModuleIO {
         absoluteEncoderOffset = DriveConstants.Module.absoluteEncoderOffset[0];
         isDriveMotorInverted = driveMotorInversion[0];
         isTurnMotorInverted = turnMotorInversion[0];
+
+        orchestra.addInstrument(driveTalon, 1);
+        orchestra.addInstrument(turnTalon, 1);
         break;
       case 1:
         driveTalon = new TalonFX(DriveConstants.Module.TALON_DRIVE_MOTOR_1, "*");
@@ -105,6 +110,9 @@ public class ModuleIOTalonFX implements ModuleIO {
         absoluteEncoderOffset = DriveConstants.Module.absoluteEncoderOffset[1];
         isDriveMotorInverted = driveMotorInversion[1];
         isTurnMotorInverted = turnMotorInversion[1];
+
+        orchestra.addInstrument(driveTalon, 2);
+        orchestra.addInstrument(turnTalon, 2);
         break;
       case 2:
         driveTalon = new TalonFX(DriveConstants.Module.TALON_DRIVE_MOTOR_2, "*");
@@ -113,6 +121,9 @@ public class ModuleIOTalonFX implements ModuleIO {
         absoluteEncoderOffset = DriveConstants.Module.absoluteEncoderOffset[2];
         isDriveMotorInverted = driveMotorInversion[2];
         isTurnMotorInverted = turnMotorInversion[2];
+        
+        orchestra.addInstrument(driveTalon, 3);
+        orchestra.addInstrument(turnTalon, 3);
         break;
       case 3:
         driveTalon = new TalonFX(DriveConstants.Module.TALON_DRIVE_MOTOR_3, "*");
@@ -121,6 +132,9 @@ public class ModuleIOTalonFX implements ModuleIO {
         absoluteEncoderOffset = DriveConstants.Module.absoluteEncoderOffset[3];
         isDriveMotorInverted = driveMotorInversion[3];
         isTurnMotorInverted = turnMotorInversion[3];
+        
+        orchestra.addInstrument(driveTalon, 4);
+        orchestra.addInstrument(turnTalon, 4);
         break;
       default:
         throw new RuntimeException("Invalid module index");

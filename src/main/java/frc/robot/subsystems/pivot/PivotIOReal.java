@@ -3,6 +3,7 @@ package frc.robot.subsystems.pivot;
 import static edu.wpi.first.math.MathUtil.clamp;
 import static edu.wpi.first.wpilibj.Timer.delay;
 import static frc.robot.constants.PivotConstants.*;
+import static frc.robot.util.MusicController.*;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
@@ -33,8 +34,10 @@ public class PivotIOReal implements PivotIO {
   private boolean ratchetEngaged;
 
   public PivotIOReal() {
-
     ENCODER = new DutyCycleEncoder(ENCODER_ID);
+
+    orchestra.addInstrument(leadingMotor, 4);
+    orchestra.addInstrument(followingMotor, 4);
 
     delay(3);
 

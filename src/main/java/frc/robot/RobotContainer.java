@@ -7,6 +7,7 @@ package frc.robot;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 import static frc.robot.constants.GeneralConstants.currentMode;
 import static frc.robot.constants.GeneralConstants.currentRobot;
+import static frc.robot.constants.SongFileConstants.*;
 import static org.littletonrobotics.junction.Logger.getTimestamp;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -42,6 +43,7 @@ import frc.robot.subsystems.wrist.WristIO;
 import frc.robot.subsystems.wrist.WristIOReal;
 import frc.robot.util.CompoundCommands;
 import frc.robot.util.FieldUtil;
+import frc.robot.util.MusicController;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -54,6 +56,7 @@ public class RobotContainer {
   private final Pivot pivot;
   private final Elevator elevator;
   private final Wrist wrist;
+
   private LedController LED = new LedController();
 
   // Controllers
@@ -70,7 +73,6 @@ public class RobotContainer {
   private final LoggedDashboardChooser<Command> autoChooser;
 
   public RobotContainer() {
-
     switch (currentMode) {
       case REAL:
         drive =
@@ -273,6 +275,12 @@ public class RobotContainer {
                           case Red -> Rotation2d.fromDegrees(180);
                           default -> Rotation2d.fromDegrees(0);
                         })));
+
+                        
+    //Song Commands
+    backupController.x().onTrue(MusicController.loadSongCommand(song2_pigstep));
+    backupController.y().onTrue(MusicController.playSongCommand());
+    backupController.rightTrigger().onTrue(MusicController.endSongCommand());
   }
 
   private boolean IsEndGame() {

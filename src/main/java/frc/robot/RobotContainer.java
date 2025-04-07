@@ -174,9 +174,15 @@ public class RobotContainer {
 
     backupController.povDown().onTrue(zeroArm());
 
+    backupController.start().whileTrue(CompoundCommands.armToNet());
+
     backupController.leftBumper().whileTrue(intake.ejectCoralCommand());
 
     backupController.rightBumper().whileTrue(intake.intakeCoralCommand());
+
+    backupController.x().whileTrue(intake.intakeAlgaeCommand());
+
+    backupController.y().whileTrue(intake.ejectAlgaeCommand());
 
     backupController
         .povUp()
@@ -212,8 +218,9 @@ public class RobotContainer {
         .onFalse(CompoundCommands.armToStowSafely());
     controller
         .rightTrigger(0.25)
-        .whileTrue(intake.ejectCoralCommand())
-        .onFalse(intake.stopCommand().alongWith(CompoundCommands.armToStow()));
+        .whileTrue(intake.intakeCoralCommand())
+        .onFalse(
+            intake.stopCommand().alongWith(CompoundCommands.armToStowSafely()).andThen(zeroArm()));
 
     controller
         .rightStick()

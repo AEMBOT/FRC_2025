@@ -39,7 +39,7 @@ public class ElevatorIOReal implements ElevatorIO {
     leftMotorConfig.Slot0.kI = 0;
     leftMotorConfig.Slot0.kD = 0;
 
-    leftMotorConfig.MotionMagic.MotionMagicCruiseVelocity = 4 / rotToMetMultFactor;
+    leftMotorConfig.MotionMagic.MotionMagicCruiseVelocity = 3 * 1.20 / rotToMetMultFactor;
     leftMotorConfig.MotionMagic.MotionMagicAcceleration = 4 / rotToMetMultFactor;
     leftMotorConfig.MotionMagic.MotionMagicJerk = 0 / rotToMetMultFactor;
 

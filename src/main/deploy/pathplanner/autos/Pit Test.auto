@@ -5,21 +5,15 @@
     "data": {
       "commands": [
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "ZeroWrist"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Center - ReefCenter"
+            "waitTime": 5.0
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "AutoPlaceLeft4"
+            "name": "TestPlaceReefImmobile"
           }
         },
         {

@@ -24,6 +24,7 @@ public class PositionConstants {
   public static final double reefCenterX = 4.489323;
   public static final double reefCenterY = 4.0259;
 
+  // 0.4318 + 0.3429
   // Define source targets
   // Bumpers against source
   public static final Transform2d sourceOffset =
@@ -77,32 +78,35 @@ public class PositionConstants {
   }
 
   // L1 Arm Setpoint Values
-  public static final double L1WristAngle = 42.199999999999996;
-  public static final double L1PivotAngle = 33.10199999999992;
+  public static final double L1WristAngle = 63.11;
+  public static final double L1PivotAngle = 22.81;
   public static final double L1ElevatorExtension = 0;
 
   // L2 Arm Setpoint Values
-  public static final double L2WristAngle = 6.799999999999816;
-  public static final double L2PivotAngle = 72.79999999999995;
+  public static final double L2WristAngle = 39.109999999999985;
+  public static final double L2PivotAngle = 51.82;
   public static final double L2ElevatorExtension = 0;
 
   // L3 Arm Setpoint Values
-  public static final double L3WristAngle = -5.199999999999999;
-  public static final double L3PivotAngle = 76.2;
-  public static final double L3ElevatorExtension = 0.46500000000000263;
+  public static final double L3WristAngle = 22.31;
+  public static final double L3PivotAngle = 61.62;
+  public static final double L3ElevatorExtension = 0.26;
 
   // L4 Arm Setpoint Values
-  public static final double L4WristAngle = 59.94921875000001;
+  public static final double L4WristAngleAuto = 52.74921875000003;
+  public static final double L4PivotAngleAuto = 74.399999999999781;
+
+  public static final double L4WristAngle = 54.349;
   public static final double L4PivotAngle = 74.72634881514921;
   public static final double L4ElevatorExtension = 0.9051441865808824;
 
   // Source Arm Setpoint Values
-  public static final double sourceWristAngle = 108.275;
+  public static final double sourceWristAngle = 111.475;
   public static final double sourcePivotAngle = 65.88248059405254;
   public static final double sourceElevatorExtension = 0;
 
   // Climb Arm Setpoint Values
-  public static final double climbWristAngle = -26.745;
+  public static final double climbWristAngle = 12.4;
   public static final double climbPivotAngle = 24;
   public static final double climbElevatorExtension = 0;
 
@@ -111,15 +115,15 @@ public class PositionConstants {
   public static final double stowPivotAngle = 81.81999599249039;
   public static final double stowElevatorExtension = 0;
 
-  public static final double safePivotPosition = 80.40000000000006;
+  public static final double safePivotPosition = 90.0;
 
-  public static final double lowerAlgaeRemovalPivotAngle = 32.33384351834553;
-  public static final double lowerAlgaeRemovalWristAngle = 90;
+  public static final double lowerAlgaeRemovalPivotAngle = 54.9999999999995;
+  public static final double lowerAlgaeRemovalWristAngle = 143.11;
   public static final double lowerAlgaeRemovalElevatorHeight = 0;
 
-  public static final double upperAlgaeRemovalPivotAngle = 58.533843518345904;
-  public static final double upperAlgaeRemovalWristAngle = 71.60000000000007;
-  public static final double upperAlgaeRemovalElevatorHeight = 0.15000000000000005;
+  public static final double upperAlgaeRemovalPivotAngle = 78.51970529998351;
+  public static final double upperAlgaeRemovalWristAngle = 159.2;
+  public static final double upperAlgaeRemovalElevatorHeight = 0.31000000000000016;
 
   public static final double[][] reefArmPositions = {
     {L1WristAngle, L1PivotAngle, L1ElevatorExtension},
@@ -127,4 +131,8 @@ public class PositionConstants {
     {L3WristAngle, L3PivotAngle, L3ElevatorExtension},
     {L4WristAngle, L4PivotAngle, L4ElevatorExtension}
   };
+
+  public static final double NetWristAngle = 139.11;
+  public static final double NetPivotAngle = 87.81;
+  public static final double NetElevatorExtension = 1.15;
 }

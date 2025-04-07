@@ -23,18 +23,6 @@ public interface WristIO {
 
     /** Goal position of the wrist in degrees */
     public double wristGoalPosition = 45;
-
-    /** Setpoint position of the wrist in degrees */
-    public double wristSetpointPosition = 45;
-
-    /**
-     * Setpoint position of the wrist in rotations per second TODO confirm that this is in rpm and
-     * not radpersec
-     */
-    public double wristSetpointVelocity = 0.0;
-
-    /** Whether the wrist subsystem is running in an openloop */
-    public boolean openLoopStatus = false;
   }
 
   /** Updates the set of loggable inputs. */
@@ -45,6 +33,8 @@ public interface WristIO {
 
   /** Run open loop at the specified voltage. */
   public default void setVoltage(double volts) {}
+
+  public default void simulationPeriodic() {}
 
   /** Resets the wrist goal and setpoint to the current angle of the wrist */
   public default void resetProfile() {}

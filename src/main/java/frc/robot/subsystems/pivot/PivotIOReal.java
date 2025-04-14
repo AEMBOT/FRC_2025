@@ -61,29 +61,6 @@ public class PivotIOReal implements PivotIO {
 
     leftMotorConfig.Feedback.RotorToSensorRatio = GEAR_RATIO;
 
-    // Integrating CANcoder
-    /* Configure CANcoder to zero the magnet appropriately */
-
-    // CANcoderConfiguration cc_cfg = new CANcoderConfiguration();
-
-    // cc_cfg.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
-
-    // cc_cfg.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
-
-    // cc_cfg.MagnetSensor.MagnetOffset = 0.4;
-
-    // m_cc.getConfigurator().apply(cc_cfg); Dont know what m_cc is but hey its here
-
-    // Apply cancoder to feedback motor config
-    // leftMotorConfig.Feedback.FeedbackRemoteSensorID = 1;
-    // leftMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
-    // leftMotorConfig.Feedback.RotorToSensorRatio = GEAR_RATIO;
-    // leftMotorConfig.Feedback.FeedbackRotorOffset = 0;
-
-    // leftMotorConfig.Slot0.kG = -0.3;
-    // leftMotorConfig.Slot0.kS = -1;
-    // leftMotorConfig.Slot0.kV = 0;
-    // leftMotorConfig.Slot0.kA = 0;
     leftMotorConfig.Slot0.kP = 3;
     leftMotorConfig.Slot0.kI = 0;
     leftMotorConfig.Slot0.kD = 0;

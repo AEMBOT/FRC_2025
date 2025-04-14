@@ -21,5 +21,5 @@ public interface IntakeIO {
 
   public default void setTopMotorVoltage(double volts) {}
 
-  public default void setLowMotorVoltage(double volts) {}
+  public default void setBotMotorVoltage(double volts) {}
 }

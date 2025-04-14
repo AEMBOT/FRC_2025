@@ -16,12 +16,10 @@ public class ElevatorIOReal implements ElevatorIO {
   private final TalonFX leadingMotor = new TalonFX(TOP_MOTOR_ID);
   private final TalonFX followingMotor = new TalonFX(BOTTOM_MOTOR_ID);
   private double elevatorGoal;
-  private final MotionMagicVoltage m_request;
   private double motorOffset;
   private double maxExtension;
 
   public ElevatorIOReal() {
-
     TalonFXConfiguration leftMotorConfig = new TalonFXConfiguration();
     TalonFXConfiguration rightMotorConfig = new TalonFXConfiguration();
 
@@ -53,8 +51,6 @@ public class ElevatorIOReal implements ElevatorIO {
 
     elevatorGoal = 0;
 
-    m_request = new MotionMagicVoltage(0).withSlot(0);
-
     delay(1);
 
     motorOffset = -getAbsoluteMotorPosition();
@@ -66,7 +62,7 @@ public class ElevatorIOReal implements ElevatorIO {
     Logger.recordOutput("Elevator/maxExtension", maxExtension);
     inputs.elevatorAbsolutePosition = getAbsoluteMotorPosition();
     inputs.elevatorAbsoluteVelocity =
-        leadingMotor.getVelocity().getValueAsDouble() / rotToMetMultFactor;
+        leadingMotor.getVelocity().getValueAsDouble() * rotToMetMultFactor;
     inputs.elevatorAppliedVolts = leadingMotor.getMotorVoltage().getValueAsDouble();
     inputs.elevatorCurrentAmps =
         new double[] {
@@ -74,6 +70,30 @@ public class ElevatorIOReal implements ElevatorIO {
           followingMotor.getStatorCurrent().getValueAsDouble()
         };
     inputs.elevatorGoalPosition = elevatorGoal;
+  }
+
+  /**
+   * Get our absolute motor position in meters.
+   *
+   * @return Absolute motor position in meters.
+   */
+  private double getAbsoluteMotorPosition() {
+    return (leadingMotor.getPosition().getValueAsDouble() * rotToMetMultFactor) + motorOffset;
+  }
+
+  /**
+   * Take our volts and then clamp them if we are at our min/max height.
+   *
+   * @param volts Volts to feed in.
+   */
+  private void setMotorVoltage(double volts) {
+    if (getAbsoluteMotorPosition() < MIN_HEIGHT) {
+      volts = clamp(volts, 0, Double.MAX_VALUE);
+    }
+    if (getAbsoluteMotorPosition() > MAX_HEIGHT) {
+      volts = clamp(volts, -Double.MAX_VALUE, 0);
+    }
+    leadingMotor.setVoltage(-volts);
   }
 
   @Override
@@ -106,22 +126,6 @@ public class ElevatorIOReal implements ElevatorIO {
   @Override
   public void setVoltage(double volts) {
     setMotorVoltage(volts);
-  }
-
-  private double getAbsoluteMotorPosition() {
-    return (leadingMotor.getPosition().getValueAsDouble() * rotToMetMultFactor) + motorOffset;
-  }
-
-  private void setMotorVoltage(double volts) {
-
-    if (getAbsoluteMotorPosition() < MIN_HEIGHT) {
-      volts = clamp(volts, 0, Double.MAX_VALUE);
-    }
-    if (getAbsoluteMotorPosition() > MAX_HEIGHT) {
-      volts = clamp(volts, -Double.MAX_VALUE, 0);
-    }
-
-    leadingMotor.setVoltage(-volts);
   }
 
   @Override

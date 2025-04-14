@@ -24,12 +24,8 @@ public class Elevator extends SubsystemBase {
     io.updateInputs(inputs);
   }
 
-  public Command limitHeight(DoubleSupplier pivotAngle) {
-    return run(() -> io.limitHeight(pivotAngle.getAsDouble()));
-  }
-
   /**
-   * Directly sets the voltage of the elevator, use ONLY FOR COMMAND MUTEXTING, LIKE SYSID.
+   * Directly sets the voltage of the elevator. Don't use this without reason.
    *
    * @param volts Voltage to apply to the elevator.
    */
@@ -37,7 +33,7 @@ public class Elevator extends SubsystemBase {
     io.setVoltage(volts);
   }
 
-  /** */
+  /** Sets our elevator voltage to 0. */
   public void stopElevator() {
     io.setVoltage(0);
   }
@@ -58,7 +54,7 @@ public class Elevator extends SubsystemBase {
   }
 
   /**
-   * Changes the setpoint of the elevator by a certain amount per second.
+   * Changes the setpoint of the elevator by the given meters per second.
    *
    * @param velocityDegPerSec Speed to move the elevator in degrees per second.
    * @return A {@link RunCommand} to change the elevator setpoint by velocityDegPerSec. Resets the
@@ -71,15 +67,20 @@ public class Elevator extends SubsystemBase {
   }
 
   /**
-   * @return The current position of elevator
+   * Limits our elevator height based on our pivot's angle.
+   *
+   * @param pivotAngle
+   * @return Our maximum height limit, given our pivot angle.
    */
-  public DoubleSupplier getPosition() {
-    return () -> inputs.elevatorAbsolutePosition;
+  public Command limitHeight(DoubleSupplier pivotAngle) {
+    return run(() -> io.limitHeight(pivotAngle.getAsDouble()));
   }
 
-  /** */
+  /**
+   * Directly gives the elevator voltage until we detect hitting a hardstop by measuring our amps.
+   * Then, set the position as the new motor zero and then stop the elevator.
+   */
   public Command zeroElevator() {
-
     DoubleSupplier avgAmps =
         () -> (inputs.elevatorCurrentAmps[0] + inputs.elevatorCurrentAmps[1]) / 2;
 
@@ -89,5 +90,12 @@ public class Elevator extends SubsystemBase {
         .until(() -> avgAmps.getAsDouble() > ELEVATOR_ZEROING_MAX_AMPS)
         .andThen(runOnce(() -> io.setMotorZero()))
         .andThen(runOnce(() -> stopElevator()));
+  }
+
+  /**
+   * @return The current position of elevator.
+   */
+  public DoubleSupplier getPosition() {
+    return () -> inputs.elevatorAbsolutePosition;
   }
 }

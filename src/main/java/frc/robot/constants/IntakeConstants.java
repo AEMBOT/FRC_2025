@@ -2,17 +2,17 @@ package frc.robot.constants;
 
 public class IntakeConstants {
   public static final int INTAKE_TOP_MOTOR_ID = 15;
-  public static final int INTAKE_LOW_MOTOR_ID = 16;
+  public static final int INTAKE_BOT_MOTOR_ID = 16;
 
   public static final double INTAKE_MOTOR_CURRENT_LIMIT = 5;
 
   public static final double INTAKE_CORAL_TOP_MOTOR_VOLTAGE = -3;
-  public static final double INTAKE_CORAL_LOW_MOTOR_VOLTAGE = 3;
+  public static final double INTAKE_CORAL_BOT_MOTOR_VOLTAGE = 3;
   public static final double EJECT_CORAL_TOP_MOTOR_VOLTAGE = 4;
 
-  public static final double INTAKE_ALGAE_LOW_MOTOR_VOLTAGE = -4;
-  public static final double EJECT_ALGAE_LOW_MOTOR_VOLTAGE = 3;
-  public static final double HOLD_ALGAE_LOW_MOTOR_VOLTAGE = -2;
+  public static final double INTAKE_ALGAE_BOT_MOTOR_VOLTAGE = -4;
+  public static final double EJECT_ALGAE_BOT_MOTOR_VOLTAGE = 3;
+  public static final double HOLD_ALGAE_BOT_MOTOR_VOLTAGE = -2;
 
   // Used in auto. Teleop is just whileTrue.
   public static final double INTAKE_TIMEOUT = 2.5;

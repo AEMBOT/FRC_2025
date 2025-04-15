@@ -5,6 +5,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "ZeroWrist"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Center - ReefCenter"
@@ -14,6 +20,12 @@
           "type": "named",
           "data": {
             "name": "AutoPlaceRight4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ArmToStow"
           }
         }
       ]

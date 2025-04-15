@@ -60,7 +60,6 @@ public class CompoundCommands {
   }
 
   private static void configureNamedCommands() {
-    // TODO: Change auto routines to work with different NamedCommands
     NamedCommands.registerCommand("DriveReefL", driveToLeftReef(1));
     NamedCommands.registerCommand("DriveReefR", driveToRightReef(1));
 
@@ -79,6 +78,8 @@ public class CompoundCommands {
     NamedCommands.registerCommand("AutoPlaceRight2", placeReef(true, 2));
     NamedCommands.registerCommand("AutoPlaceRight1", placeReef(true, 1));
 
+    NamedCommands.registerCommand("TestPlaceReefImmobile", immobilePlaceReef(false, 4));
+
     NamedCommands.registerCommand("Eject", ejectCoral());
 
     NamedCommands.registerCommand("DriveSourceLeft", driveToLeftSource());
@@ -87,7 +88,9 @@ public class CompoundCommands {
     NamedCommands.registerCommand("AutoIntakeSourceLeft", intakeSource(false));
     NamedCommands.registerCommand("AutoIntakeSourceRight", intakeSource(true));
 
-    NamedCommands.registerCommand("ArmStow", armToStow());
+    NamedCommands.registerCommand("ArmToStow", armToStow());
+
+    NamedCommands.registerCommand("ZeroWrist", wrist.zeroWrist());
   }
 
   /**
@@ -104,6 +107,25 @@ public class CompoundCommands {
     } else {
       driveCommand = driveToLeftReef(level);
     }
+
+    Command alignCommand =
+        new ParallelCommandGroup(driveCommand, armToReefAvoidAlgae(level)).withTimeout(5.0);
+
+    // Small wait to ensure arm is stable before shooting
+    return alignCommand.andThen(waitSeconds(0.5)).andThen(intakeCoral());
+  }
+
+  public static Command armToReefAvoidAlgae(int reefLevel) {
+    return pivot
+        .setPosition(() -> safePivotPosition)
+        .andThen(armToGoal(L4WristAngleAuto, safePivotPosition, reefArmPositions[reefLevel - 1][2]))
+        .andThen(pivot.setPosition(() -> reefArmPositions[reefLevel - 1][1]));
+  }
+
+  /** placeReef but it doesn't drive. For pit testing */
+  public static Command immobilePlaceReef(boolean isOnRight, int level) {
+    Command driveCommand;
+    driveCommand = waitSeconds(3);
 
     Command alignCommand =
         new ParallelCommandGroup(driveCommand, armToReefSafely(level)).withTimeout(5.0);

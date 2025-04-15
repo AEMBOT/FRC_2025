@@ -283,6 +283,21 @@ public class CompoundCommands {
   }
 
   /**
+   * Generates a {@link Command} to move the arm to the specified position, moving all mechanisms simultaneously.
+   *
+   * @param wristSetPos Angle in degrees to set the wrist
+   * @param pivotSetPos Angle in degrees to set the pivot
+   * @param elevatorSetPos Height in meters to set the elevator
+   * @return A {@link Command} to set the arm goal position to the specified position
+   */
+  public static Command armToGoal(double wristSetPos, double pivotSetPos, double elevatorSetPos) {
+    return pivot
+      .setPosition(() -> pivotSetPos)
+      .alongWith(wrist.setGoalPosition(() -> wristSetPos))
+      .alongWith(elevator.setPosition((() -> elevatorSetPos)))
+  }
+
+  /**
    * Generates a {@link Command} to move the arm to the specified position, ensuring to always stay
    * in frame perimeter. If the goal position needs the elevator to extend, we first move pivot,
    * then move the elevator and wrist. Otherwise, if the goal position needs the elevator to retract
@@ -293,8 +308,7 @@ public class CompoundCommands {
    * @param elevatorSetPos Height in meters to set the elevator
    * @return A {@link Command} to set the arm goal position to the specified position
    */
-  public static Command armToGoal(double wristSetPos, double pivotSetPos, double elevatorSetPos) {
-
+  public static Command armToGoalSafely(double wristSetPos, double pivotSetPos, double elevatorSetPos) {
     if (elevatorSetPos > elevator.getPosition().getAsDouble()) {
       return elevator
           .setPosition(() -> elevatorSetPos)

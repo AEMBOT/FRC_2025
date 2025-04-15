@@ -1,5 +1,7 @@
 package frc.robot.util;
 
+import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.FollowPathCommand;
 import com.pathplanner.lib.path.GoalEndState;
@@ -138,27 +140,43 @@ public class PathGenerator {
             },
             drive);
 
-    return stepCommand
-        .until(
+    return runOnce(
             () -> {
-              double translationError =
-                  drive.getPose().getTranslation().getDistance(target.getTranslation());
-              double rotationError =
-                  Math.abs(drive.getPose().getRotation().minus(target.getRotation()).getRadians());
-              boolean inTolerance =
-                  translationError < translationTolerance
-                      && rotationError < rotationTolerance.getRadians();
-              Logger.recordOutput("/Pathing/inAcceptableError", inTolerance);
-              Logger.recordOutput("/Pathing/translationError", translationError);
-              Logger.recordOutput("/Pathing/rotationError", rotationError);
-
-              return inTolerance;
+              Logger.recordOutput("/Pathing/TargetPose", target);
+              Logger.recordOutput("/Pathing/Pathing", true);
             })
+        .andThen(
+            stepCommand.until(
+                () -> {
+                  double translationError =
+                      drive.getPose().getTranslation().getDistance(target.getTranslation());
+                  double rotationError =
+                      Math.abs(
+                          drive.getPose().getRotation().minus(target.getRotation()).getRadians());
+                  boolean inTolerance =
+                      translationError < translationTolerance
+                          && rotationError < rotationTolerance.getRadians();
+
+                  Logger.recordOutput("/Pathing/inAcceptableError", inTolerance);
+                  Logger.recordOutput("/Pathing/translationError", translationError);
+                  Logger.recordOutput(
+                      "/Pathing/rotationError", Rotation2d.fromRadians(rotationError));
+
+                  return inTolerance;
+                }))
         .finallyDo(
             () -> {
               translationPID.close();
               thetaPID.close();
               drive.stop();
+
+              Logger.recordOutput("/Pathing/translationError", Double.NaN);
+              Logger.recordOutput("/Pathing/rotationError", new Rotation2d(Double.NaN));
+              Logger.recordOutput("/Pathing/inAcceptableError", false);
+              Logger.recordOutput(
+                  "/Pathing/TargetPose",
+                  new Pose2d(Double.NaN, Double.NaN, new Rotation2d(Double.NaN)));
+              Logger.recordOutput("/Pathing/Pathing", false);
             });
   }
 

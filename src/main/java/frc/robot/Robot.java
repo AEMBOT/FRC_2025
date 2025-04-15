@@ -23,12 +23,6 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void robotInit() {
-
-    Logger.addDataReceiver(new WPILOGWriter("U/logs"));
-    Logger.addDataReceiver(new NT4Publisher());
-
-    Logger.start();
-
     m_robotContainer = new RobotContainer();
 
     // Set up data receivers & replay source

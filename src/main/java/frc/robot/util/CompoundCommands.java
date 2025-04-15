@@ -138,6 +138,10 @@ public class CompoundCommands {
         reefArmPositions[reefLevel - 1][2]);
   }
 
+  public static Command armToNet() {
+    return armToGoal(NetWristAngle, NetPivotAngle, NetElevatorExtension);
+  }
+
   public static Command armToAlgae(boolean upper) {
     if (upper) {
       return armToGoal(

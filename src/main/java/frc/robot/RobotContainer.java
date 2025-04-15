@@ -164,6 +164,12 @@ public class RobotContainer {
 
     backupController.rightBumper().whileTrue(intake.intakeCoralCommand());
 
+    backupController.start().whileTrue(CompoundCommands.armToNet());
+
+    backupController.x().whileTrue(intake.intakeAlgaeCommand());
+
+    backupController.y().whileTrue(intake.ejectAlgaeCommand());
+
     backupController
         .povUp()
         .onTrue(

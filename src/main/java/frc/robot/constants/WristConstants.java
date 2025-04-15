@@ -22,6 +22,9 @@ public class WristConstants {
   /** ID of the wrist sparkmax */
   public static final int MOTOR_ID = 14;
 
+  public static final double MAX_SPEED = 0.5
+  public static final double MAX_ACCELERATION = 1.0
+
   /** */
   public static final boolean MOTOR_INVERTED = false;
 

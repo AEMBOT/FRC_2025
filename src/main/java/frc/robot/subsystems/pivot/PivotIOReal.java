@@ -130,7 +130,7 @@ public class PivotIOReal implements PivotIO {
           leadingMotor.getStatorCurrent().getValueAsDouble(),
           followingMotor.getStatorCurrent().getValueAsDouble()
         };
-    inputs.pivotPosition = pivotGoal;
+    inputs.pivotGoalPosition = pivotGoal;
     inputs.pivotSetpointPosition = pivotSetpoint.position;
     inputs.pivotSetpointVelocity = pivotSetpoint.velocity;
     inputs.openLoopStatus = openLoop;

@@ -198,8 +198,9 @@ public class RobotContainer {
         .onFalse(CompoundCommands.armToStowSafely());
     controller
         .rightTrigger(0.25)
-        .whileTrue(intake.ejectCoralCommand())
-        .onFalse(intake.stopCommand().alongWith(CompoundCommands.armToStow()));
+        .whileTrue(intake.intakeCoralCommand())
+        .onFalse(
+            intake.stopCommand().alongWith(CompoundCommands.armToStowSafely()).andThen(zeroArm()));
 
     controller
         .rightStick()

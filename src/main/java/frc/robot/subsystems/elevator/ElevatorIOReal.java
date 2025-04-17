@@ -98,8 +98,6 @@ public class ElevatorIOReal implements ElevatorIO {
 
   @Override
   public void limitHeight(double pivotAngle) {
-
-    Logger.recordOutput("i", pivotAngle);
     maxExtension =
         (pivotAngle > 90)
             ? Units.inchesToMeters(20) / Math.cos(Units.degreesToRadians(180 - pivotAngle))

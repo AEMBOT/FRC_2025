@@ -24,6 +24,7 @@ public class PositionConstants {
   public static final double reefCenterX = 4.489323;
   public static final double reefCenterY = 4.0259;
 
+  // 0.4318 + 0.3429
   // Define source targets
   // Bumpers against source
   public static final Transform2d sourceOffset =

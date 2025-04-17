@@ -11,7 +11,7 @@ public class IntakeIOReal implements IntakeIO {
   private CoreCANrange CANRANGE;
 
   private final TalonFX topMotor = new TalonFX(INTAKE_TOP_MOTOR_ID);
-  private final TalonFX lowMotor = new TalonFX(INTAKE_LOW_MOTOR_ID);
+  private final TalonFX botMotor = new TalonFX(INTAKE_BOT_MOTOR_ID);
 
   public IntakeIOReal() {
     CANRANGE = new CoreCANrange(CANRANGE_ID);
@@ -20,12 +20,12 @@ public class IntakeIOReal implements IntakeIO {
     motorConfig.CurrentLimits.StatorCurrentLimit = INTAKE_MOTOR_CURRENT_LIMIT;
     motorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
     topMotor.setNeutralMode(NeutralModeValue.Brake);
-    lowMotor.setNeutralMode(NeutralModeValue.Brake);
+    botMotor.setNeutralMode(NeutralModeValue.Brake);
   }
 
   public void updateInputs(IntakeIOInputs inputs) {
     inputs.intakeCoralMotorAppliedVolts = topMotor.getMotorVoltage().getValueAsDouble();
-    inputs.intakeAlgaeMotorAppliedVolts = lowMotor.getMotorVoltage().getValueAsDouble();
+    inputs.intakeAlgaeMotorAppliedVolts = botMotor.getMotorVoltage().getValueAsDouble();
     inputs.hasGamePiece = hasGamePiece();
     inputs.canRangeDistance = CANRANGE.getDistance().getValueAsDouble();
   }
@@ -42,7 +42,7 @@ public class IntakeIOReal implements IntakeIO {
   }
 
   @Override
-  public void setLowMotorVoltage(double volts) {
-    lowMotor.setVoltage(volts);
+  public void setBotMotorVoltage(double volts) {
+    botMotor.setVoltage(volts);
   }
 }

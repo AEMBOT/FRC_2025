@@ -46,6 +46,10 @@ public class PivotConstants {
   /** */
   public static final double GEAR_RATIO = 378;
 
+  public static final double MAX_SPEED = 0.525;
+
+  public static final double MAX_ACCELERATION = 0.225;
+
   /** */
   public static final ArmFeedforward FF_MODEL =
       new ArmFeedforward(0.11164, 0.0090459, 0.11954, 0.0090459);

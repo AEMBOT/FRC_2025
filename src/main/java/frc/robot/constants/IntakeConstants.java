@@ -8,7 +8,11 @@ public class IntakeConstants {
 
   public static final double INTAKE_CORAL_TOP_MOTOR_VOLTAGE = -3;
   public static final double INTAKE_CORAL_LOW_MOTOR_VOLTAGE = 3;
-  public static final double EJECT_CORAL_TOP_MOTOR_VOLTAGE = 4;
+
+  public static final double BACKWARD_EJECT_CORAL_TOP_MOTOR_VOLTAGE = 3;
+  public static final double FOREWARD_EJECT_CORAL_TOP_MOTOR_VOLTAGE = -3;
+  public static final double BACKWARD_EJECT_CORAL_LOW_MOTOR_VOLTAGE = -3;
+  public static final double FOREWARD_EJECT_CORAL_LOW_MOTOR_VOLTAGE = 3;
 
   public static final double INTAKE_ALGAE_LOW_MOTOR_VOLTAGE = -4;
   public static final double EJECT_ALGAE_LOW_MOTOR_VOLTAGE = 3;

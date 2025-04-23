@@ -22,8 +22,11 @@ public class WristConstants {
   /** ID of the wrist sparkmax */
   public static final int MOTOR_ID = 14;
 
-  public static final double MAX_SPEED = 0.5;
-  public static final double MAX_ACCELERATION = 1.0;
+  /** The maximum speed of the wrist in rot per sec */
+  public static final double MAX_SPEED = Units.degreesToRotations(180);
+
+  /** The maximum acceleration of the wrist in rot per sec² */
+  public static final double MAX_ACCELERATION = Units.degreesToRotations(360);
 
   /** */
   public static final boolean MOTOR_INVERTED = false;

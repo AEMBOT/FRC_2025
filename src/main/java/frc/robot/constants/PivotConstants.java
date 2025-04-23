@@ -49,7 +49,7 @@ public class PivotConstants {
   /** Maximum speed of pivot in rot per sec */
   public static final double MAX_SPEED = Units.degreesToRotations(189);
 
-/** Maximum acceleration of pivot in rot per sec² */
+  /** Maximum acceleration of pivot in rot per sec² */
   public static final double MAX_ACCELERATION = Units.degreesToRotations(81);
 
   /** */

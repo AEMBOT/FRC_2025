@@ -105,6 +105,22 @@ public class Intake extends SubsystemBase {
   }
 
   /**
+   * Runs both motors at forward eject voltage specified in {@link IntakeConstants}.
+   *
+   * @return Command that runs the intake until we terminate.
+   */
+  public Command runEjectCommand() {
+    return runBothMotorsCommand(
+            () -> FOREWARD_EJECT_CORAL_TOP_MOTOR_VOLTAGE,
+            () -> FOREWARD_EJECT_CORAL_LOW_MOTOR_VOLTAGE)
+        .finallyDo(
+            () -> {
+              intake.setLowMotorVoltage(0);
+              intake.setTopMotorVoltage(0);
+            });
+  }
+
+  /**
    * MUST BE TERMINATED EXTERNALLY
    *
    * <p>Runs the lower intake motor at voltage specified in {@link IntakeConstants}.

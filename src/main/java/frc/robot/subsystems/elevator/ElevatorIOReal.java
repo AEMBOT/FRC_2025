@@ -51,6 +51,9 @@ public class ElevatorIOReal implements ElevatorIO {
     leftMotorConfig.MotionMagic.MotionMagicAcceleration = 4 / rotToMetMultFactor;
     leftMotorConfig.MotionMagic.MotionMagicJerk = 0 / rotToMetMultFactor;
 
+    leftMotorConfig.Audio.AllowMusicDurDisable = true;
+    rightMotorConfig.Audio.AllowMusicDurDisable = true;
+
     leadingMotor.getConfigurator().apply(leftMotorConfig);
     followingMotor.getConfigurator().apply(rightMotorConfig);
 

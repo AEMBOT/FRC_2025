@@ -161,6 +161,8 @@ public class ModuleIOTalonFX implements ModuleIO {
     driveConfig.Slot0.kP = 2.0; // TODO hand tune
     driveConfig.Slot0.kD = 0.005;
 
+    driveConfig.Audio.AllowMusicDurDisable = true;
+
     driveTalon.getConfigurator().apply(driveConfig);
     delay(0.1);
     setDriveBrakeMode(true);
@@ -186,6 +188,8 @@ public class ModuleIOTalonFX implements ModuleIO {
     turnConfig.Slot0.kD = 0;
 
     turnConfig.ClosedLoopGeneral.ContinuousWrap = true;
+
+    turnConfig.Audio.AllowMusicDurDisable = true;
 
     turnTalon.getConfigurator().apply(turnConfig);
     delay(0.1);

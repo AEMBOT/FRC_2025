@@ -100,6 +100,9 @@ public class PivotIOReal implements PivotIO {
     leftMotorConfig.MotionMagic.MotionMagicAcceleration = GEAR_RATIO * 0.75;
     leftMotorConfig.MotionMagic.MotionMagicJerk = 0;
 
+    rightMotorConfig.Audio.AllowMusicDurDisable = true;
+    leftMotorConfig.Audio.AllowMusicDurDisable = true;
+
     leadingMotor.getConfigurator().apply(leftMotorConfig);
     followingMotor.getConfigurator().apply(rightMotorConfig);
 

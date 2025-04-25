@@ -1,7 +1,6 @@
 package frc.robot.constants;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.RobotBase;
 
 public class GeneralConstants {
   /**
@@ -20,10 +19,7 @@ public class GeneralConstants {
     }
   }
 
-  public static final Mode currentMode =
-      RobotBase.isReal()
-          ? Mode.REAL
-          : Mode.SIM; // You need to manually switch betweeen SIM and REPLAY.
+  public static final Mode currentMode = Mode.REPLAY;
 
   public static enum Mode {
     /** Running on a real robot. */
@@ -31,7 +27,7 @@ public class GeneralConstants {
     /** Running a physics simulator. */
     SIM,
     /** Replaying from a log file. */
-    REPLAY
+    REPLAY,
   }
 
   public enum Robot {

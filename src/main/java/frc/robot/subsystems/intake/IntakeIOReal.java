@@ -22,6 +22,12 @@ public class IntakeIOReal implements IntakeIO {
     TalonFXConfiguration motorConfig = new TalonFXConfiguration();
     motorConfig.CurrentLimits.StatorCurrentLimit = INTAKE_MOTOR_CURRENT_LIMIT;
     motorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+
+    motorConfig.Audio.AllowMusicDurDisable = true;
+
+    topMotor.getConfigurator().apply(motorConfig);
+    lowMotor.getConfigurator().apply(motorConfig);
+
     topMotor.setNeutralMode(NeutralModeValue.Brake);
     lowMotor.setNeutralMode(NeutralModeValue.Brake);
   }

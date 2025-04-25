@@ -47,6 +47,8 @@ public class WristIOReal implements WristIO {
 
     motorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
+    motorConfig.Audio.AllowMusicDurDisable = true;
+
     setMotorZero();
 
     motor.getConfigurator().apply(motorConfig);
@@ -71,6 +73,8 @@ public class WristIOReal implements WristIO {
     Logger.recordOutput(
         "Pivot/directMotorValue",
         360 * ((motor.getPosition().getValueAsDouble() - rotorOffset) / 6));
+
+    Logger.recordOutput("WristCurrentControl", motor.getAppliedControl().getName());
     inputs.wristAbsoluteVelocity = motor.getVelocity().getValueAsDouble();
     inputs.wristAppliedVolts = motor.getMotorVoltage().getValueAsDouble();
     inputs.wristCurrentAmps = motor.getStatorCurrent().getValueAsDouble();

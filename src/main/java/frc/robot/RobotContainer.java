@@ -73,6 +73,8 @@ public class RobotContainer {
   private final LoggedDashboardChooser<Command> autoChooser;
 
   public RobotContainer() {
+    MusicController.init();
+
     switch (currentMode) {
       case REAL:
         drive =
@@ -155,10 +157,10 @@ public class RobotContainer {
         .rightTrigger()
         .whileTrue(elevator.changePosition(0.25))
         .onFalse(elevator.changePosition(0));
-    backupController
-        .leftTrigger()
-        .whileTrue(elevator.changePosition(-0.25))
-        .onFalse(elevator.changePosition(0));
+    // backupController
+    //     .leftTrigger()
+    //     .whileTrue(elevator.changePosition(-0.25))
+    //     .onFalse(elevator.changePosition(0));
 
     backupController.povDown().onTrue(zeroArm());
 
@@ -280,6 +282,16 @@ public class RobotContainer {
     backupController.x().onTrue(MusicController.loadSongCommand(song2_pigstep));
     backupController.y().onTrue(MusicController.playSongCommand());
     backupController.rightTrigger().onTrue(MusicController.endSongCommand());
+
+    MusicController.loadSongCommand(song2_pigstep)
+        .andThen(MusicController.playSongCommand())
+        .schedule();
+
+    new Trigger(() -> intake.getHasGamePiece().getAsBoolean())
+        .onTrue(
+            MusicController.loadSongCommand(song2_pigstep)
+                .andThen(MusicController.playSongCommand())
+                .ignoringDisable(true));
   }
 
   private boolean IsEndGame() {

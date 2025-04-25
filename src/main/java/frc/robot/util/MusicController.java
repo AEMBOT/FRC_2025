@@ -8,9 +8,11 @@ import edu.wpi.first.wpilibj2.command.Commands;
 
 public class MusicController {
   public static Orchestra orchestra;
-  private static final TalonFX motor = new TalonFX(14);
+  private static TalonFX motor;
 
   public static void init() {
+    motor = new TalonFX(14);
+
     orchestra = new Orchestra();
     orchestra.addInstrument(motor, 1);
   }

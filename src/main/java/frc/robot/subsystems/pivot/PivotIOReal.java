@@ -151,7 +151,7 @@ public class PivotIOReal implements PivotIO {
     pivotGoal = angle;
     final MotionMagicVoltage request =
         new MotionMagicVoltage((GEAR_RATIO * ((angle) / 360)) - rotorOffset);
-    leadingMotor.setControl(request);
+    // leadingMotor.setControl(request);
   }
 
   @Override

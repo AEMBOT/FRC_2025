@@ -91,7 +91,7 @@ public class WristIOReal implements WristIO {
 
     final MotionMagicVoltage request =
         new MotionMagicVoltage((MOTOR_RATIO * ((angle) / 360)) - rotorOffset);
-    motor.setControl(request);
+    // motor.setControl(request);
   }
 
   @Override

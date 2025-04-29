@@ -120,7 +120,7 @@ public class ElevatorIOReal implements ElevatorIO {
     elevatorGoal = height;
     final MotionMagicVoltage request =
         new MotionMagicVoltage((height - motorOffset) / rotToMetMultFactor);
-    leadingMotor.setControl(request);
+    // leadingMotor.setControl(request);
   }
 
   @Override

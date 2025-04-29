@@ -93,6 +93,12 @@ public class ElevatorConstants {
 
   public static final double moveVoltage = 5.0;
 
+  /** Maximum speed of elevator in m/s */
+  public static final double MAX_SPEED = 3.6;
+
+  /** Maximum acceleration of elevator in m/s² */
+  public static final double MAX_ACCELERATION = 4.0;
+
   /* Device IDs */
   public static final int motorID = 12;
 

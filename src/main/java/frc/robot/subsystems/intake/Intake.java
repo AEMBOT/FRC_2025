@@ -67,15 +67,52 @@ public class Intake extends SubsystemBase {
   }
 
   /**
-   * Runs the top intake motor at eject voltage specified in {@link IntakeConstants}.
+   * Runs the top intake motor at backwards eject voltage specified in {@link IntakeConstants}.
+   *
+   * @return Command that runs the intake until we no longer sense a coral, then continues for a
+   *     small time.
+   */
+  public Command backEjectCoralCommand() {
+    return runBothMotorsCommand(
+            () -> BACKWARD_EJECT_CORAL_TOP_MOTOR_VOLTAGE,
+            () -> BACKWARD_EJECT_CORAL_LOW_MOTOR_VOLTAGE)
+        .until(() -> !getHasGamePiece().getAsBoolean())
+        .andThen(waitSeconds(EJECT_RELEASE_DELAY))
+        .finallyDo(
+            () -> {
+              intake.setLowMotorVoltage(0);
+              intake.setTopMotorVoltage(0);
+            });
+  }
+
+  /**
+   * Runs the top intake motor at forward eject voltage specified in {@link IntakeConstants}.
    *
    * @return Command that runs the intake until we no longer sense a coral, then continues for a
    *     small time.
    */
   public Command ejectCoralCommand() {
-    return runTopMotorCommand(() -> EJECT_CORAL_TOP_MOTOR_VOLTAGE)
-        .until(getHasGamePiece())
+    return runBothMotorsCommand(
+            () -> FOREWARD_EJECT_CORAL_TOP_MOTOR_VOLTAGE,
+            () -> FOREWARD_EJECT_CORAL_LOW_MOTOR_VOLTAGE)
+        .until(() -> !getHasGamePiece().getAsBoolean())
         .andThen(waitSeconds(EJECT_RELEASE_DELAY))
+        .finallyDo(
+            () -> {
+              intake.setLowMotorVoltage(0);
+              intake.setTopMotorVoltage(0);
+            });
+  }
+
+  /**
+   * Runs both motors at forward eject voltage specified in {@link IntakeConstants}.
+   *
+   * @return Command that runs the intake until we terminate.
+   */
+  public Command runEjectCommand() {
+    return runBothMotorsCommand(
+            () -> FOREWARD_EJECT_CORAL_TOP_MOTOR_VOLTAGE,
+            () -> FOREWARD_EJECT_CORAL_LOW_MOTOR_VOLTAGE)
         .finallyDo(
             () -> {
               intake.setLowMotorVoltage(0);

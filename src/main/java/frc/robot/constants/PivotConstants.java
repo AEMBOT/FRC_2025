@@ -46,6 +46,12 @@ public class PivotConstants {
   /** */
   public static final double GEAR_RATIO = 378;
 
+  /** Maximum speed of pivot in rot per sec */
+  public static final double MAX_SPEED = Units.degreesToRotations(189);
+
+  /** Maximum acceleration of pivot in rot per sec² */
+  public static final double MAX_ACCELERATION = Units.degreesToRotations(81);
+
   /** */
   public static final ArmFeedforward FF_MODEL =
       new ArmFeedforward(0.11164, 0.0090459, 0.11954, 0.0090459);

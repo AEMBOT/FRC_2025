@@ -151,10 +151,10 @@ public class RobotContainer {
     controller.y().whileTrue(pivot.changePosition(10)).onFalse(pivot.changePosition(0));
     controller.x().whileTrue(pivot.changePosition(-10)).onFalse(pivot.changePosition(0));
 
-    backupController
-        .rightTrigger()
-        .whileTrue(elevator.changePosition(0.25))
-        .onFalse(elevator.changePosition(0));
+    // backupController
+    //     .rightTrigger()
+    //     .whileTrue(elevator.changePosition(0.25))
+    //     .onFalse(elevator.changePosition(0));
     backupController
         .leftTrigger()
         .whileTrue(elevator.changePosition(-0.25))

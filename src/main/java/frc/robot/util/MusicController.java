@@ -1,6 +1,7 @@
 package frc.robot.util;
 
 import com.ctre.phoenix6.Orchestra;
+import com.ctre.phoenix6.StatusCode;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
@@ -12,7 +13,12 @@ public class MusicController {
   }
 
   public static void playSong() {
-    orchestra.play();
+    StatusCode status = orchestra.play();
+    if (!status.isOK()) {
+      System.out.println("Orchestra song playing error. \n" + status.toString() + "\n");
+    } else {
+      System.out.println("Song playing.");
+    }
   }
 
   public static Command pauseSongCommand() {
@@ -36,6 +42,12 @@ public class MusicController {
   }
 
   private static void loadSong(String trackFilePath) {
-    orchestra.loadMusic(trackFilePath);
+    StatusCode status = orchestra.loadMusic(trackFilePath);
+
+    if (!status.isOK()) {
+      System.out.println("Orchestra song loading error. \n" + status.toString() + "\n");
+    } else {
+      System.out.println("Song loaded: " + trackFilePath + "\n");
+    }
   }
 }

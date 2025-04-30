@@ -41,11 +41,11 @@ public class IntakeIOReal implements IntakeIO {
 
   @Override
   public void setTopMotorVoltage(double volts) {
-    topMotor.setVoltage(volts);
+    // topMotor.setVoltage(volts);
   }
 
   @Override
   public void setLowMotorVoltage(double volts) {
-    lowMotor.setVoltage(volts);
+    // lowMotor.setVoltage(volts);
   }
 }

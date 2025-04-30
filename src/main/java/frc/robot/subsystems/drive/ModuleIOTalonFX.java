@@ -295,22 +295,22 @@ public class ModuleIOTalonFX implements ModuleIO {
 
   @Override
   public void setDriveVoltage(double volts) {
-    driveTalon.setControl(driveVoltage.withOutput(volts));
+    // driveTalon.setControl(driveVoltage.withOutput(volts));
   }
 
   @Override
   public void setTurnVoltage(double volts) {
-    turnTalon.setControl(turnVoltage.withOutput(volts));
+    // turnTalon.setControl(turnVoltage.withOutput(volts));
   }
 
   @Override
   public void setDriveSetpoint(double metersPerSecond) {
-    driveTalon.setControl(drivePIDF.withVelocity(metersPerSecond));
+    // driveTalon.setControl(drivePIDF.withVelocity(metersPerSecond));
   }
 
   @Override
   public void setTurnSetpoint(Rotation2d rotation) {
-    turnTalon.setControl(turnPID.withPosition(rotation.getRotations()));
+    // turnTalon.setControl(turnPID.withPosition(rotation.getRotations()));
   }
 
   @Override

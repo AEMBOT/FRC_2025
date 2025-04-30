@@ -6,7 +6,6 @@ import static frc.robot.constants.PivotConstants.*;
 import static frc.robot.util.MusicController.*;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
@@ -106,7 +105,7 @@ public class PivotIOReal implements PivotIO {
     leadingMotor.setNeutralMode(NeutralModeValue.Brake);
     followingMotor.setNeutralMode(NeutralModeValue.Brake);
 
-    followingMotor.setControl(new Follower(LEFT_MOTOR_ID, true));
+    // followingMotor.setControl(new Follower(LEFT_MOTOR_ID, true));
 
     /**
      * while (getAbsoluteEncoderPosition() < MIN_ANGLE || getAbsoluteEncoderPosition() > MAX_ANGLE)
@@ -148,7 +147,7 @@ public class PivotIOReal implements PivotIO {
     pivotGoal = angle;
     final MotionMagicVoltage request =
         new MotionMagicVoltage((GEAR_RATIO * ((angle) / 360)) - rotorOffset);
-    leadingMotor.setControl(request);
+    // leadingMotor.setControl(request);
   }
 
   @Override
@@ -170,7 +169,7 @@ public class PivotIOReal implements PivotIO {
       volts = clamp(volts, -Double.MAX_VALUE, 0);
     }
 
-    leadingMotor.setVoltage(-volts);
+    // leadingMotor.setVoltage(-volts);
   }
 
   @Override
@@ -181,15 +180,15 @@ public class PivotIOReal implements PivotIO {
 
   @Override
   public void runRatchetForward() {
-    ratchetPin1.set(false);
-    ratchetPin2.set(true);
+    // ratchetPin1.set(false);
+    // ratchetPin2.set(true);
     ratchetEngaged = true;
   }
 
   @Override
   public void runRatchetReverse() {
-    ratchetPin1.set(true);
-    ratchetPin2.set(false);
+    // ratchetPin1.set(true);
+    // ratchetPin2.set(false);
     ratchetEngaged = false;
   }
 

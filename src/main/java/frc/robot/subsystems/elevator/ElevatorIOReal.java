@@ -6,7 +6,6 @@ import static frc.robot.constants.ElevatorConstants.*;
 import static frc.robot.util.MusicController.*;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -22,7 +21,7 @@ public class ElevatorIOReal implements ElevatorIO {
   private double elevatorGoal;
   private TrapezoidProfile.State elevatorSetpoint;
   private double lastTime;
-  private final MotionMagicVoltage m_request;
+  // private final MotionMagicVoltage m_request;
   private double motorOffset;
   private double maxExtension;
   private double i;
@@ -57,7 +56,7 @@ public class ElevatorIOReal implements ElevatorIO {
     leadingMotor.setNeutralMode(NeutralModeValue.Brake);
     followingMotor.setNeutralMode(NeutralModeValue.Brake);
 
-    followingMotor.setControl(new Follower(TOP_MOTOR_ID, false));
+    // followingMotor.setControl(new Follower(TOP_MOTOR_ID, false));
 
     /**
      * while (getAbsoluteMotorPosition() < MIN_HEIGHT || getAbsoluteMotorPosition() > MAX_HEIGHT) {
@@ -67,7 +66,7 @@ public class ElevatorIOReal implements ElevatorIO {
     elevatorGoal = 0;
     elevatorSetpoint = new TrapezoidProfile.State(getAbsoluteMotorPosition(), 0);
 
-    m_request = new MotionMagicVoltage(0).withSlot(0);
+    // m_request = new MotionMagicVoltage(0).withSlot(0);
 
     delay(1);
 
@@ -117,7 +116,7 @@ public class ElevatorIOReal implements ElevatorIO {
     elevatorGoal = height;
     final MotionMagicVoltage request =
         new MotionMagicVoltage((height - motorOffset) / rotToMetMultFactor);
-    leadingMotor.setControl(request);
+    // leadingMotor.setControl(request);
   }
 
   @Override
@@ -139,7 +138,7 @@ public class ElevatorIOReal implements ElevatorIO {
       volts = clamp(volts, -Double.MAX_VALUE, 0);
     }
 
-    leadingMotor.setVoltage(-volts);
+    // leadingMotor.setVoltage(-volts);
   }
 
   @Override

@@ -73,9 +73,10 @@ public class RobotContainer {
   private final LoggedDashboardChooser<Command> autoChooser;
 
   public RobotContainer() {
+    MusicController.init();
+
     switch (currentMode) {
       case REAL:
-        MusicController.init();
         drive =
             new Drive(
                 new GyroIONavX(),

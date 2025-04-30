@@ -19,7 +19,7 @@ public class GeneralConstants {
     }
   }
 
-  public static final Mode currentMode = Mode.REPLAY;
+  public static final Mode currentMode = Mode.REAL;
 
   public static enum Mode {
     /** Running on a real robot. */

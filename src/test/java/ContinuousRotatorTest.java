@@ -34,6 +34,7 @@ public final class ContinuousRotatorTest {
       try {
         assertEquals((double) i, output, tolerance, message);
       } catch (AssertionError e) {
+        System.out.println(e.getMessage());
         throw e;
       }
     }
@@ -67,10 +68,26 @@ public final class ContinuousRotatorTest {
       try {
         assertEquals((double) i / 2, output, tolerance, message);
       } catch (AssertionError e) {
+        System.out.println(e.getMessage());
         throw e;
       }
     }
   }
 
+  @Test
+  void testContinuousRawOneToOne() {
+    ContinuousRotator rotator =
+        new ContinuousRotator(ContinuousRotator.RotatorMode.CONTINUOUS, 1 / 1);
 
+    for (int i = 0; i < 720; i++) {
+      double output = rotator.getRawDegrees((double) i);
+      String message = String.valueOf(output) + "==" + String.valueOf(i);
+      try {
+        assertEquals((double) i, output, tolerance, message);
+      } catch (AssertionError e) {
+        System.out.println(e.getMessage());
+        throw e;
+      }
+    }
+  }
 }

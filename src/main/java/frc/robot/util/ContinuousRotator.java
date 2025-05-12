@@ -86,7 +86,7 @@ public class ContinuousRotator {
         return continuousRotation;
 
       case SKIPPING:
-        double skipPoint = 360.0 / gearRatio;
+        double skipPoint = 360.0;
         double wrapped = continuousRotation % skipPoint;
         if (wrapped < 0) {
           wrapped += skipPoint;

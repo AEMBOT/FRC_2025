@@ -1,6 +1,6 @@
 {Description of the PR}
 
-Issues this may resolve (delete line if none): 
+Issues this may resolve (delete line if none):
 
 TODO:
 - [ ] Perform basic functions test on production robot

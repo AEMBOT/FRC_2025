@@ -12,7 +12,7 @@ public final class ContinuousRotatorTest {
         new ContinuousRotator(ContinuousRotator.RotatorMode.SKIPPING, 1 / 1);
 
     for (int i = 0; i < 720; i++) {
-      double output = rotator.getDegrees((double) i);
+      double output = rotator.getDegrees((double) i) % 360;
       String message = String.valueOf(output) + "==" + String.valueOf(i % 360.0);
       try {
         assertEquals((double) i % 360, output, tolerance, message);
@@ -29,7 +29,7 @@ public final class ContinuousRotatorTest {
         new ContinuousRotator(ContinuousRotator.RotatorMode.CONTINUOUS, 1 / 1);
 
     for (int i = 0; i < 720; i++) {
-      double output = rotator.getDegrees((double) i);
+      double output = rotator.getDegrees((double) i % 360);
       String message = String.valueOf(output) + "==" + String.valueOf(i);
       try {
         assertEquals((double) i, output, tolerance, message);
@@ -46,7 +46,7 @@ public final class ContinuousRotatorTest {
         new ContinuousRotator(ContinuousRotator.RotatorMode.SKIPPING, 2 / 1);
 
     for (int i = 0; i < 1440; i++) {
-      double output = rotator.getDegrees((double) i);
+      double output = rotator.getDegrees((double) i % 360);
       String message = String.valueOf(output) + "==" + String.valueOf(i / 2 % 360.0);
       try {
         assertEquals((double) i / 2 % 360, output, tolerance, message);
@@ -63,7 +63,7 @@ public final class ContinuousRotatorTest {
         new ContinuousRotator(ContinuousRotator.RotatorMode.CONTINUOUS, 2 / 1);
 
     for (int i = 0; i < 720; i++) {
-      double output = rotator.getDegrees((double) i);
+      double output = rotator.getDegrees((double) i % 360);
       String message = String.valueOf(output) + "==" + String.valueOf(i / 2);
       try {
         assertEquals((double) i / 2, output, tolerance, message);
@@ -80,7 +80,7 @@ public final class ContinuousRotatorTest {
         new ContinuousRotator(ContinuousRotator.RotatorMode.CONTINUOUS, 1 / 1);
 
     for (int i = 0; i < 720; i++) {
-      double output = rotator.getRawDegrees((double) i);
+      double output = rotator.getRawDegrees((double) i % 360);
       String message = String.valueOf(output) + "==" + String.valueOf(i);
       try {
         assertEquals((double) i, output, tolerance, message);

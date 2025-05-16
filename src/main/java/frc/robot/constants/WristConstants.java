@@ -28,17 +28,8 @@ public class WristConstants {
   /** */
   public static final int MOTOR_CURRENT_LIMIT = 120;
 
-  /** */
-  public static final int ENCODER_ID = 2;
-
-  /** */
+  /** Ratio from motor to mechanism, as 1:n */
   public static final double MOTOR_RATIO = 25;
-
-  /** */
-  public static final double ENCODER_POSITION_OFFSET = 105.3502 * -1;
-
-  /** */
-  public static final double GEAR_RATIO = 6;
 
   /** */
   public static final ArmFeedforward FF_MODEL = new ArmFeedforward(0, 0, 0, 0);

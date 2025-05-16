@@ -90,4 +90,22 @@ public final class ContinuousRotatorTest {
       }
     }
   }
+
+  @Test
+  void testSkippingOneToOneOffset() {
+    double offset = 15.3;
+    ContinuousRotator rotator =
+        new ContinuousRotator(ContinuousRotator.RotatorMode.SKIPPING, 1 / 1, offset);
+
+    for (int i = 0; i < 720; i++) {
+      double output = rotator.getDegrees((double) i) % 360;
+      String message = String.valueOf(output) + "==" + String.valueOf((i + offset) % 360.0);
+      try {
+        assertEquals((double) (i + offset) % 360, output, tolerance, message);
+      } catch (AssertionError e) {
+        System.out.println(e.getMessage());
+        throw e;
+      }
+    }
+  }
 }

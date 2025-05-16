@@ -23,14 +23,33 @@ public class ContinuousRotator {
   private final double gearRatio;
   public RotatorMode mode;
 
+  /** The offset of what the rotator considers 0 rotation. Measured in degrees. */
+  public double zeroOffset;
+
   /** The number of full rotations the rotator has undergone. Can be negative. */
   private int fullRotations = 0;
 
   private Rotation2d previousRotation;
 
-  public ContinuousRotator(RotatorMode mode, double gearRatio) {
+  /**
+   * @param mode Determines the output of {@code getDegrees} and {@code getRawDegrees}; whether it
+   *     is wraps at 360 or continues.
+   * @param gearRatio The ratio of sensor:mechanism.
+   * @param zeroOffset The zeroing of the sensor. This will be added to the angle before wrapping.
+   */
+  public ContinuousRotator(RotatorMode mode, double gearRatio, double zeroOffset) {
     this.gearRatio = gearRatio;
     this.mode = mode;
+    this.zeroOffset = zeroOffset;
+  }
+
+  /**
+   * @param mode Determines the output of {@code getDegrees} and {@code getRawDegrees}; whether it
+   *     is wraps at 360 or continues.
+   * @param gearRatio The ratio of sensor:mechanism.
+   */
+  public ContinuousRotator(RotatorMode mode, double gearRatio) {
+    this(mode, gearRatio, 0);
   }
 
   public void update(Rotation2d rotation) {
@@ -49,8 +68,7 @@ public class ContinuousRotator {
   }
 
   /**
-   * Get the rotation on the rotator-side. Note that this is useless if mode is set to {@code
-   * SKIPPING}. This will also update the ContinuousRotator.
+   * Get the rotation on the rotator-side. This will also update the ContinuousRotator.
    *
    * @param rotation The raw/skipping rotation from the rotator
    * @return The rotation, taking into account skipping but not gear ratio. In degrees
@@ -58,15 +76,18 @@ public class ContinuousRotator {
   public double getRawDegrees(Rotation2d rotation) {
     this.update(rotation);
 
+    double continuousRotation =
+        Units.rotationsToDegrees(rotation.getRotations() + (zeroOffset / 360) + fullRotations);
+
     switch (this.mode) {
       case CONTINUOUS:
-        return Units.rotationsToDegrees(rotation.getRotations() + fullRotations);
+        return continuousRotation;
 
       case SKIPPING:
-        return rotation.getDegrees();
+        return continuousRotation % 360;
 
       default:
-        return Units.rotationsToDegrees(rotation.getRotations() + fullRotations);
+        return continuousRotation;
     }
   }
 
@@ -80,7 +101,8 @@ public class ContinuousRotator {
     this.update(rotation);
 
     double continuousRotation =
-        Units.rotationsToDegrees(rotation.getRotations() + fullRotations) / gearRatio;
+        Units.rotationsToDegrees(rotation.getRotations() + (zeroOffset / 360) + fullRotations)
+            / gearRatio;
     switch (this.mode) {
       case CONTINUOUS:
         return continuousRotation;
@@ -99,8 +121,7 @@ public class ContinuousRotator {
   }
 
   /**
-   * Get the rotation on the rotator-side. Note that this is useless if mode is set to {@code
-   * SKIPPING}. This will also update the ContinuousRotator.
+   * Get the rotation on the rotator-side. This will also update the ContinuousRotator.
    *
    * @param rotationDegrees The raw/skipping rotation from the rotator in degrees
    * @return The rotation, taking into account skipping but not gear ratio. In degrees

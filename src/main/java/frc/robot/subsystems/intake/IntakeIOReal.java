@@ -21,6 +21,8 @@ public class IntakeIOReal implements IntakeIO {
     motorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
     topMotor.setNeutralMode(NeutralModeValue.Brake);
     lowMotor.setNeutralMode(NeutralModeValue.Brake);
+    topMotor.getConfigurator().apply(motorConfig);
+    lowMotor.getConfigurator().apply(motorConfig);
   }
 
   public void updateInputs(IntakeIOInputs inputs) {

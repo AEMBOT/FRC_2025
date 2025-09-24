@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.GeneralConstants;
@@ -271,8 +270,8 @@ public class RobotContainer {
 
     controller
         .start()
-        .whileTrue(
-            new RunCommand(
+        .onTrue(
+            runOnce(
                 () ->
                     drive.setYaw(
                         switch (DriverStation.getAlliance().get()) {
@@ -280,6 +279,8 @@ public class RobotContainer {
                           case Red -> Rotation2d.fromDegrees(180);
                           default -> Rotation2d.fromDegrees(0);
                         })));
+
+    controller.back().onTrue(runOnce(drive::zeroToGyro));
   }
 
   private boolean IsEndGame() {

@@ -23,12 +23,6 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void robotInit() {
-
-    Logger.addDataReceiver(new WPILOGWriter("U/logs"));
-    Logger.addDataReceiver(new NT4Publisher());
-
-    Logger.start();
-
     m_robotContainer = new RobotContainer();
 
     // Set up data receivers & replay source
@@ -93,8 +87,6 @@ public class Robot extends LoggedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-
-    m_robotContainer.zeroArm().schedule();
   }
 
   @Override

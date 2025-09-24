@@ -7,19 +7,7 @@
         {
           "type": "named",
           "data": {
-            "name": "ZeroWrist"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Left 1P"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "AutoPlaceRight4"
+            "name": "TestPlaceReefImmobile"
           }
         },
         {
@@ -31,7 +19,7 @@
       ]
     }
   },
-  "resetOdom": true,
+  "resetOdom": false,
   "folder": null,
   "choreoAuto": true
 }

@@ -5,6 +5,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "ZeroWrist"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Right 2P.0"
@@ -63,6 +69,12 @@
           "type": "named",
           "data": {
             "name": "AutoPlaceRight4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ArmToStow"
           }
         }
       ]

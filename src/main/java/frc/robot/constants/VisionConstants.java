@@ -40,7 +40,7 @@ public class VisionConstants {
         new Transform3d(
             new Translation3d(
                 Units.inchesToMeters(9), Units.inchesToMeters(-8.25), Units.inchesToMeters(7.5)),
-            new Rotation3d(Units.degreesToRadians(180), Units.degreesToRadians(-30), 0.0));
+                new Rotation3d(Units.degreesToRadians(180), Units.degreesToRadians(-15), 0.0));
 
     public static final String backLeftName = "back-left";
     public static final Transform3d backLeftFromRobot =

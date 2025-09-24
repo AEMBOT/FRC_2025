@@ -4,15 +4,15 @@ public class IntakeConstants {
   public static final int INTAKE_TOP_MOTOR_ID = 15;
   public static final int INTAKE_LOW_MOTOR_ID = 16;
 
-  public static final double INTAKE_MOTOR_CURRENT_LIMIT = 10;
+  public static final double INTAKE_MOTOR_CURRENT_LIMIT = 20;
 
-  public static final double INTAKE_CORAL_TOP_MOTOR_VOLTAGE = -3;
-  public static final double INTAKE_CORAL_LOW_MOTOR_VOLTAGE = 3;
+  public static final double INTAKE_CORAL_TOP_MOTOR_VOLTAGE = -17.5;
+  public static final double INTAKE_CORAL_LOW_MOTOR_VOLTAGE = 17.5;
 
-  public static final double BACKWARD_EJECT_CORAL_TOP_MOTOR_VOLTAGE = 3;
-  public static final double FOREWARD_EJECT_CORAL_TOP_MOTOR_VOLTAGE = -3;
-  public static final double BACKWARD_EJECT_CORAL_LOW_MOTOR_VOLTAGE = -3;
-  public static final double FOREWARD_EJECT_CORAL_LOW_MOTOR_VOLTAGE = 3;
+  public static final double BACKWARD_EJECT_CORAL_TOP_MOTOR_VOLTAGE = 17.5;
+  public static final double FOREWARD_EJECT_CORAL_TOP_MOTOR_VOLTAGE = -17.5;
+  public static final double BACKWARD_EJECT_CORAL_LOW_MOTOR_VOLTAGE = -17.5;
+  public static final double FOREWARD_EJECT_CORAL_LOW_MOTOR_VOLTAGE = 17.5;
 
   public static final double INTAKE_ALGAE_LOW_MOTOR_VOLTAGE = -4;
   public static final double EJECT_ALGAE_LOW_MOTOR_VOLTAGE = 3;

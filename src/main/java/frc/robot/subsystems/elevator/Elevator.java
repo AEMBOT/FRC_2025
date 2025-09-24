@@ -3,7 +3,7 @@ package frc.robot.subsystems.elevator;
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
 import static edu.wpi.first.wpilibj2.command.Commands.waitUntil;
-import static frc.robot.constants.ElevatorConstants.ALLOWED_DEVIANCE;
+import static frc.robot.constants.ElevatorConstants.*;
 import static frc.robot.constants.GeneralConstants.UPDATE_PERIOD;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -83,6 +83,11 @@ public class Elevator extends SubsystemBase {
     io.setVoltage(volts);
   }
 
+  /** */
+  public void stopElevator() {
+    io.setVoltage(0);
+  }
+
   /**
    * Sets the setpoint of the elevator to a certain height in inches.
    *
@@ -118,9 +123,17 @@ public class Elevator extends SubsystemBase {
     return () -> inputs.elevatorAbsolutePosition;
   }
 
+  /** */
   public Command zeroElevator() {
-    return run(() -> io.setVoltage(-2))
-        .until(() -> ((inputs.elevatorCurrentAmps[0] + inputs.elevatorCurrentAmps[1]) / 2) > 20)
-        .andThen(run(() -> io.reZero()));
+
+    DoubleSupplier avgAmps =
+        () -> (inputs.elevatorCurrentAmps[0] + inputs.elevatorCurrentAmps[1]) / 2;
+
+    Logger.recordOutput("ElevatorAverageAmps", avgAmps.getAsDouble());
+
+    return run(() -> setVoltage(ZEROING_VOLTAGE))
+        .until(() -> avgAmps.getAsDouble() > ELEVATOR_ZEROING_MAX_AMPS)
+        .andThen(runOnce(() -> io.setMotorZero()))
+        .andThen(runOnce(() -> stopElevator()));
   }
 }

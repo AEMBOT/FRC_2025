@@ -198,12 +198,7 @@ public class CompoundCommands {
     return new DeferredCommand(
         () ->
             PathGenerator.simpleGoToPoint(
-                drive,
-                reefTargets.getReefPose(
-                    false,
-                    drive.getPose(),
-                    reefLevel,
-                    intake.getGamePiecePosition().getAsDouble())),
+                drive, reefTargets.getReefPose(false, drive.getPose(), reefLevel)),
         Set.of(drive));
   }
 
@@ -217,9 +212,7 @@ public class CompoundCommands {
     return new DeferredCommand(
         () ->
             PathGenerator.simpleGoToPoint(
-                drive,
-                reefTargets.getReefPose(
-                    true, drive.getPose(), reefLevel, intake.getGamePiecePosition().getAsDouble())),
+                drive, reefTargets.getReefPose(true, drive.getPose(), reefLevel)),
         Set.of(drive));
   }
 
@@ -252,17 +245,14 @@ public class CompoundCommands {
   /** Run outtake with IntakeConstants.ejectTime. */
   public static Command ejectCoral() {
     return intake
-        .ejectCommand()
-        .withTimeout(IntakeConstants.ejectTimeout)
+        .ejectCoralCommand()
+        .withTimeout(IntakeConstants.EJECT_TIMEOUT)
         .andThen(armToStowSafely());
   }
 
   /** Run intake until we have coral or timeout (IntakeConstants.intakeTimeout) runs out */
   public static Command intakeCoral() {
-    return intake
-        .intakeCommand()
-        .until(() -> intake.getHasGamePiece())
-        .withTimeout(IntakeConstants.intakeTimeout);
+    return intake.intakeCoralCommand().withTimeout(IntakeConstants.INTAKE_TIMEOUT);
   }
 
   /**

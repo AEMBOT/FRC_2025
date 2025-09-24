@@ -223,7 +223,7 @@ public class CompoundCommands {
   public static Command driveToLeftReef(int reefLevel) {
     return new DeferredCommand(
         () ->
-            PathGenerator.generateSimpleCorrectedPath(
+            PathGenerator.simpleGoToPoint(
                 drive, reefTargets.getReefPose(false, drive.getPose(), reefLevel)),
         Set.of(drive));
   }
@@ -237,7 +237,7 @@ public class CompoundCommands {
   public static Command driveToRightReef(int reefLevel) {
     return new DeferredCommand(
         () ->
-            PathGenerator.generateSimpleCorrectedPath(
+            PathGenerator.simpleGoToPoint(
                 drive, reefTargets.getReefPose(true, drive.getPose(), reefLevel)),
         Set.of(drive));
   }
@@ -249,7 +249,7 @@ public class CompoundCommands {
   public static Command driveToSource() {
     return new DeferredCommand(
         () ->
-            PathGenerator.generateSimpleCorrectedPath(
+            PathGenerator.simpleGoToPoint(
                 drive, PositionConstants.getSourcePose(FieldUtil.isOnRightSide(drive.getPose()))),
         Set.of(drive));
   }
@@ -257,17 +257,14 @@ public class CompoundCommands {
   /** Drives to the current alliance's left source. */
   public static Command driveToLeftSource() {
     return new DeferredCommand(
-        () ->
-            PathGenerator.generateSimpleCorrectedPath(drive, PositionConstants.getLeftSourcePose()),
+        () -> PathGenerator.simpleGoToPoint(drive, PositionConstants.getLeftSourcePose()),
         Set.of(drive));
   }
 
   /** Drives to the current alliance's right source. */
   public static Command driveToRightSource() {
     return new DeferredCommand(
-        () ->
-            PathGenerator.generateSimpleCorrectedPath(
-                drive, PositionConstants.getRightSourcePose()),
+        () -> PathGenerator.simpleGoToPoint(drive, PositionConstants.getRightSourcePose()),
         Set.of(drive));
   }
 

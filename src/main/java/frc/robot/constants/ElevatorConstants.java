@@ -99,6 +99,9 @@ public class ElevatorConstants {
   /** Maximum acceleration of elevator in m/s² */
   public static final double MAX_ACCELERATION = 4.0;
 
+  /** The motion magic jerk of the elevator in meters */
+  public static final double MOTION_MAGIC_JERK = 0.0;
+
   /* Device IDs */
   public static final int motorID = 12;
 

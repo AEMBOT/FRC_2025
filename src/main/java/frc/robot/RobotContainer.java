@@ -61,7 +61,7 @@ public class RobotContainer {
   private final CommandXboxController backupController = new CommandXboxController(1);
 
   // Driver-assist variables
-  @AutoLogOutput private int reef_level = 4; // Terminology: Trough is L1, top is L4
+  @AutoLogOutput private int reef_level = 3; // Terminology: Trough is L1, top is L4
 
   // The time we start holding button to disable vision
   double visionDisableTimeStart = Double.MAX_VALUE;

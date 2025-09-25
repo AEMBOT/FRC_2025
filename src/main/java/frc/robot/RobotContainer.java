@@ -244,7 +244,8 @@ public class RobotContainer {
         .onTrue(
             runOnce(
                 () -> {
-                  this.reef_level = 4;
+                  // Disabled for first gen because L4 was determined too risky to bot
+                  // this.reef_level = 4;
                 }));
 
     controller

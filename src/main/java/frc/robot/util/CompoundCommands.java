@@ -71,12 +71,12 @@ public class CompoundCommands {
     NamedCommands.registerCommand("AutoPlaceLeft4", placeReef(false, 4));
     NamedCommands.registerCommand("AutoPlaceLeft3", placeReef(false, 3));
     NamedCommands.registerCommand("AutoPlaceLeft2", placeReef(false, 2));
-    NamedCommands.registerCommand("AutoPlaceLeft1", placeReef(false, 1));
 
     NamedCommands.registerCommand("AutoPlaceRight4", placeReef(true, 4));
     NamedCommands.registerCommand("AutoPlaceRight3", placeReef(true, 3));
     NamedCommands.registerCommand("AutoPlaceRight2", placeReef(true, 2));
-    NamedCommands.registerCommand("AutoPlaceRight1", placeReef(true, 1));
+
+    NamedCommands.registerCommand("AutoPlaceTrough", placeReef(false, 1));
 
     NamedCommands.registerCommand("TestPlaceReefImmobile", immobilePlaceReef(false, 4));
 
@@ -111,8 +111,16 @@ public class CompoundCommands {
     Command alignCommand =
         new ParallelCommandGroup(driveCommand, armToReefAvoidAlgae(level)).withTimeout(5.0);
 
+    Command ejectCommand;
+
+    if (level == 1) {
+      ejectCommand = backEjectCoral();
+    } else {
+      ejectCommand = ejectCoral();
+    }
+
     // Small wait to ensure arm is stable before shooting
-    return alignCommand.andThen(waitSeconds(0.5)).andThen(ejectCoral());
+    return alignCommand.andThen(waitSeconds(0.5)).andThen(ejectCommand);
   }
 
   public static Command armToReefAvoidAlgae(int reefLevel) {
@@ -272,6 +280,13 @@ public class CompoundCommands {
   public static Command ejectCoral() {
     return intake
         .ejectCoralCommand()
+        .withTimeout(IntakeConstants.EJECT_TIMEOUT)
+        .andThen(armToStowSafely());
+  }
+
+  public static Command backEjectCoral() {
+    return intake
+        .backEjectCoralCommand()
         .withTimeout(IntakeConstants.EJECT_TIMEOUT)
         .andThen(armToStowSafely());
   }

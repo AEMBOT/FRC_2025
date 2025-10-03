@@ -4,7 +4,7 @@ public class IntakeConstants {
   public static final int INTAKE_TOP_MOTOR_ID = 15;
   public static final int INTAKE_LOW_MOTOR_ID = 16;
 
-  public static final double INTAKE_MOTOR_CURRENT_LIMIT = 20;
+  public static final double INTAKE_MOTOR_CURRENT_LIMIT = 30;
 
   public static final double INTAKE_CORAL_TOP_MOTOR_VOLTAGE = -7.5;
   public static final double INTAKE_CORAL_LOW_MOTOR_VOLTAGE = 7.5;

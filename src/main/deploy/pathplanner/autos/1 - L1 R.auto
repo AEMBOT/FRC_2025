@@ -13,13 +13,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Left 1P"
+            "pathName": "Right 2P.0"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "AutoPlaceRight4"
+            "name": "AutoPlaceTrough"
           }
         },
         {

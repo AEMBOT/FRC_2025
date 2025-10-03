@@ -63,7 +63,13 @@ public final class ReefTargets {
   public Transform2d getTagOffset(int level, Boolean isOnRight) {
 
     Transform2d coralOffset;
-    if (isOnRight) {
+    if (level == 1) { // We need to be centred for the trough
+      coralOffset =
+          new Transform2d(
+              PositionConstants.reefOffsetsX[level - 1],
+              0.0,
+              new Rotation2d(PositionConstants.reefRobotAngle));
+    } else if (isOnRight) {
       coralOffset =
           new Transform2d(
               PositionConstants.reefOffsetsX[level - 1],

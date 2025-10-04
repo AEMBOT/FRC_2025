@@ -57,7 +57,7 @@ public class Intake extends SubsystemBase {
   public Command intakeCoralCommand() {
     return runBothMotorsCommand(
             () -> INTAKE_CORAL_TOP_MOTOR_VOLTAGE, () -> INTAKE_CORAL_LOW_MOTOR_VOLTAGE)
-        .until(getHasGamePiece())
+        // .until(getHasGamePiece())
         .andThen(waitSeconds(INTAKE_INSERTION_DELAY))
         .finallyDo(
             () -> {

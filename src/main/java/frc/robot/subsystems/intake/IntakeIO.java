@@ -8,6 +8,8 @@ public interface IntakeIO {
   public static class IntakeIOInputs {
     public double intakeCoralMotorAppliedVolts = 0.0;
     public double intakeAlgaeMotorAppliedVolts = 0.0;
+    public double intakeCoralMotorAppliedCurrent = 0.0;
+    public double intakeAlgaeMotorAppliedCurrent = 0.0;
 
     public boolean hasGamePiece = true;
     public double canRangeDistance = 0.0;

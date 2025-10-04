@@ -28,6 +28,8 @@ public class IntakeIOReal implements IntakeIO {
   public void updateInputs(IntakeIOInputs inputs) {
     inputs.intakeCoralMotorAppliedVolts = topMotor.getMotorVoltage().getValueAsDouble();
     inputs.intakeAlgaeMotorAppliedVolts = lowMotor.getMotorVoltage().getValueAsDouble();
+    inputs.intakeCoralMotorAppliedCurrent = topMotor.getStatorCurrent().getValueAsDouble();
+    inputs.intakeAlgaeMotorAppliedCurrent = lowMotor.getStatorCurrent().getValueAsDouble();
     inputs.hasGamePiece = hasGamePiece();
     inputs.canRangeDistance = CANRANGE.getDistance().getValueAsDouble();
   }

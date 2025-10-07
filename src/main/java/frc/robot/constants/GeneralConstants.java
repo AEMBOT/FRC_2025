@@ -40,4 +40,12 @@ public class GeneralConstants {
   }
 
   public static final double UPDATE_PERIOD = 0.02;
+
+  public static final String LOG_DIRECTORY_PATH = "/U/logs";
+
+  /**
+   * The minimum space available on the log USB drive. If this space is not available, logs will be
+   * deleted on init until there is space available.
+   */
+  public static final long LOG_SPACE_REQUIREMENT = (long) (0.5 * 1073741824); // Convert Gb to Bytes
 }

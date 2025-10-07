@@ -4,11 +4,16 @@
 
 package frc.robot;
 
+import static frc.robot.constants.GeneralConstants.LOG_DIRECTORY_PATH;
+import static frc.robot.constants.GeneralConstants.LOG_SPACE_REQUIREMENT;
 import static frc.robot.constants.GeneralConstants.currentMode;
 
 import com.pathplanner.lib.commands.PathfindingCommand;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import java.io.File;
+import java.util.Arrays;
+import java.util.Comparator;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -29,8 +34,38 @@ public class Robot extends LoggedRobot {
     switch (currentMode) {
       case REAL:
         // Running on a real robot, log to a USB stick ("/U/logs")
-        Logger.addDataReceiver(new WPILOGWriter("/U/logs"));
+        Logger.addDataReceiver(new WPILOGWriter(LOG_DIRECTORY_PATH));
         Logger.addDataReceiver(new NT4Publisher());
+
+        // Clear out older logs when running out of space
+        File logDirectory = new File(LOG_DIRECTORY_PATH);
+        long freeSpace = logDirectory.getUsableSpace();
+
+        File[] logs = logDirectory.listFiles();
+        Arrays.sort(logs, Comparator.comparingLong(File::lastModified));
+
+        int i = 0;
+        long newSpace = 0;
+        while (freeSpace < LOG_SPACE_REQUIREMENT) {
+          long fileSize = logs[i].length();
+          logs[i].delete();
+
+          freeSpace += fileSize;
+          newSpace += fileSize;
+          i++;
+        }
+
+        if (i > 0) {
+          System.out.println(
+              "WARNING: Ran out of space for logs and deleted "
+                  + i
+                  + " log files, amounting to "
+                  + newSpace
+                  + "bytes freed. There are currently "
+                  + freeSpace
+                  + " bytes free.");
+        }
+
         break;
 
       case SIM:

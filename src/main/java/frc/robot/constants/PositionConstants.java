@@ -77,12 +77,12 @@ public class PositionConstants {
   }
 
   // L1 Arm Setpoint Values
-  public static final double L1WristAngle = 63.11;
+  public static final double L1WristAngle = 50.731249999999996;
   public static final double L1PivotAngle = 22.81;
   public static final double L1ElevatorExtension = 0;
 
   // L2 Arm Setpoint Values
-  public static final double L2WristAngle = 39.109999999999985;
+  public static final double L2WristAngle = 30.516406250000003;
   public static final double L2PivotAngle = 51.82;
   public static final double L2ElevatorExtension = 0;
 
@@ -92,10 +92,10 @@ public class PositionConstants {
   public static final double L3ElevatorExtension = 0.26;
 
   // L4 Arm Setpoint Values
-  public static final double L4WristAngleAuto = 52.74921875000003;
+  public static final double L4WristAngleAuto = 40.167187500000004;
   public static final double L4PivotAngleAuto = 74.399999999999781;
 
-  public static final double L4WristAngle = 54.349;
+  public static final double L4WristAngle = 42.167187500000004;
   public static final double L4PivotAngle = 74.72634881514921;
   public static final double L4ElevatorExtension = 0.9051441865808824;
 

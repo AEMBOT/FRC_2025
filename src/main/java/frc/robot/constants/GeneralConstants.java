@@ -48,5 +48,5 @@ public class GeneralConstants {
    * deleted on init until there is space available.
    */
   public static final long LOG_SPACE_REQUIREMENT =
-      (long) (0.05 * 1073741824); // Convert Gb to Bytes
+      (long) (0.50 * 1073741824); // Convert Gb to Bytes
 }

@@ -52,11 +52,11 @@ public class DriveConstants {
                 Rotation2d.fromRadians(1.73493227109866 + Math.PI) // BR
               };
           case NAUTILUS ->
-              new Rotation2d[] { // This is not currently correct
-                Rotation2d.fromRadians(0.7915340865489908 * -1), // FL
-                Rotation2d.fromRadians((-0.23316507975861744 + Math.PI) * -1), // FR
-                Rotation2d.fromRadians(-0.09050486648525283 * -1), // BL
-                Rotation2d.fromRadians(-3.0802334220743677 * -1) // BR
+              new Rotation2d[] {
+                Rotation2d.fromRadians(0.7669903939428205 * -1), // FL
+                Rotation2d.fromRadians((-0.22549517581918926 + Math.PI) * -1), // FR
+                Rotation2d.fromRadians(-0.11351457830353745 * -1), // BL
+                Rotation2d.fromRadians((0.04908738521234052 + Math.PI) * -1) // BR
               };
         };
 

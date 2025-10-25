@@ -151,6 +151,7 @@ public class PathGenerator {
               Logger.recordOutput("/Pathing/inAcceptableError", inTolerance);
               Logger.recordOutput("/Pathing/translationError", translationError);
               Logger.recordOutput("/Pathing/rotationError", rotationError);
+              Logger.recordOutput("/Pathing/SimpleAutoNavRunning", true);
 
               return inTolerance;
             })
@@ -159,6 +160,10 @@ public class PathGenerator {
               translationPID.close();
               thetaPID.close();
               drive.stop();
+              Logger.recordOutput("/Pathing/inAcceptableError", Float.NaN);
+              Logger.recordOutput("/Pathing/translationError", Float.NaN);
+              Logger.recordOutput("/Pathing/rotationError", Float.NaN);
+              Logger.recordOutput("/Pathing/SimpleAutoNavRunning", false);
             });
   }
 

@@ -139,6 +139,7 @@ public class PathGenerator {
             drive);
 
     return stepCommand
+        .beforeStarting(() -> Logger.recordOutput("/Pathing/targetPose", target))
         .until(
             () -> {
               double translationError =
@@ -164,6 +165,8 @@ public class PathGenerator {
               Logger.recordOutput("/Pathing/translationError", Float.NaN);
               Logger.recordOutput("/Pathing/rotationError", Float.NaN);
               Logger.recordOutput("/Pathing/SimpleAutoNavRunning", false);
+              Logger.recordOutput(
+                  "/Pathing/targetPose", new Pose2d(Double.NaN, Double.NaN, new Rotation2d()));
             });
   }
 

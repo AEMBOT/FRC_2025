@@ -20,7 +20,7 @@ public class PathingConstants {
     }
   }
 
-  public static final PIDConstants translationPIDConstants = new PIDConstants(5.0, 0.0, 0.0);
+  public static final PIDConstants translationPIDConstants = new PIDConstants(3.0, 0.0, 0.0);
   public static final PIDConstants rotationPIDConstants = new PIDConstants(2.5);
 
   /** The default xy tolerance to terminate a corrected path. */
